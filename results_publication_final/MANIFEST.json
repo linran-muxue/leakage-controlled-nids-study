@@ -1,5 +1,7 @@
 {
-  "generated_at_utc": "2026-09-05T05:24:41.921571+00:00",
+  "generated_at_utc": "2026-09-05T05:42:51.669273+00:00",
+  "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
+  "public_release_tag": "v1.0.0",
   "canonical_data": "data_processed_audit_v4",
   "canonical_main_results": "results_publication_final",
   "canonical_unsw_results": "results_unsw_nb15_independent_v4",
@@ -108,13 +110,13 @@
     },
     {
       "path": "results_paper_materials_v3\\english_sci_manuscript_v1.md",
-      "bytes": 25590,
-      "sha256": "57b67802290211fb89dc5603213c376bc46d54da52934b66e4058f3eeac4bad1"
+      "bytes": 25609,
+      "sha256": "8de3465cfa4aae93d43e76feed6bc985dae6df61905c81d30874fad816f3ff4d"
     },
     {
       "path": "results_paper_materials_v3\\english_sci_manuscript_v1.docx",
-      "bytes": 677052,
-      "sha256": "ae998abe35ecb0f8655561e5828e435f5479b5130d2f2c942d47b23f30d5e41a"
+      "bytes": 677064,
+      "sha256": "dc9f3baf209deb9e93590e14f74a82b6772d4c7d64b2bfcfcf58c7008e2899bf"
     },
     {
       "path": "results_paper_materials_v3\\Highlights_JISA.docx",
@@ -168,13 +170,13 @@
     },
     {
       "path": "docs\\public_code_release_plan.md",
-      "bytes": 1397,
-      "sha256": "7564e1a259029ab0e317eade8f032408b011c020457349d0e9028aea5d163e4a"
+      "bytes": 1461,
+      "sha256": "09cb4d2c8f6cd9ce569a33b684d883dc16511f590617316d2870d65b7d977074"
     },
     {
       "path": "README.md",
-      "bytes": 2465,
-      "sha256": "2069c4a193ef6c2bb05a46b73732f9f4130787f16da744c9b58320f0cb3d973c"
+      "bytes": 2535,
+      "sha256": "840adbaa9f4a739508bd200d734852182db329f1d4ced776f6db7a4e14ec544f"
     },
     {
       "path": "LICENSE",
