@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-05T05:18:16.730059+00:00",
+  "generated_at_utc": "2026-09-05T05:24:41.921571+00:00",
   "canonical_data": "data_processed_audit_v4",
   "canonical_main_results": "results_publication_final",
   "canonical_unsw_results": "results_unsw_nb15_independent_v4",
@@ -113,8 +113,8 @@
     },
     {
       "path": "results_paper_materials_v3\\english_sci_manuscript_v1.docx",
-      "bytes": 677060,
-      "sha256": "db57cdf072cfb79f158ccb10d0bcbf97fdf35cf52fd5ed420b566f820f50bc88"
+      "bytes": 677052,
+      "sha256": "ae998abe35ecb0f8655561e5828e435f5479b5130d2f2c942d47b23f30d5e41a"
     },
     {
       "path": "results_paper_materials_v3\\Highlights_JISA.docx",
