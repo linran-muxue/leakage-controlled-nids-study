@@ -1,7 +1,7 @@
 # Leakage-Controlled Network Intrusion Detection Study
 
 Public repository: https://github.com/linran-muxue/leakage-controlled-nids-study
-Submission release: `v1.0.0`
+Submission release: `v1.0.2`
 
 Reproducibility materials for the manuscript *Leakage-Controlled Feature Selection and Random-Forest Ensembles for Network Intrusion Detection: A Reproducible Multi-Dataset Study*.
 

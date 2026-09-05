@@ -26,4 +26,4 @@ The public repository URL supplied by the author is https://github.com/linran-mu
 2. Upload the safe files listed above, or allow the local Git push from the project directory.
 3. Create a tagged release or archive and record the commit SHA/DOI in `results_publication_final/MANIFEST.json`.
 
-The manuscript cites the supplied public URL and release tag `v1.0.0`. The tag should be created after the final submission-material commit and pushed to GitHub.
+The manuscript cites the supplied public URL and release tag `v1.0.2`. The tag should be created after the final submission-material commit and pushed to GitHub.

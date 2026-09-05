@@ -84,7 +84,7 @@ def main():
     document = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
-        "public_release_tag": "v1.0.0",
+        "public_release_tag": "v1.0.2",
         "canonical_data": "data_processed_audit_v4",
         "canonical_main_results": "results_publication_final",
         "canonical_unsw_results": "results_unsw_nb15_independent_v4",
