@@ -1,0 +1,9 @@
+﻿stage,rows
+raw source,2830743
+label mapped,2671766
+invalid removed,2741
+valid numeric,2669025
+unique before conflict,2429924
+unique after conflict,2429791
+capped before balance,53237
+balanced research subset,3365

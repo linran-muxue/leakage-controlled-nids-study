@@ -1,0 +1,9 @@
+﻿metric,value
+feature count,78
+constant feature count,12
+near-zero variance feature count,18
+missing cells,0
+infinite cells,0
+train-validation exact overlap,0
+train-test exact overlap,0
+validation-test exact overlap,0

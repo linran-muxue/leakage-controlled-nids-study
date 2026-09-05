@@ -1,0 +1,16 @@
+{
+  "source": "defcom17/NSL_KDD",
+  "local_dir": "E:\\论文\\data\\external\\NSL-KDD",
+  "files": {
+    "KDDTest+.txt": {
+      "bytes": 3441513,
+      "md5": "7c6d1b1af246690766394920d6b4c751",
+      "sha256": "fa46b0935342616aa83b7c2578db355b6a7aaabbc492248172c7a1e8b7ab8f84"
+    },
+    "KDDTrain+.txt": {
+      "bytes": 19109424,
+      "md5": "f5592a95d1d1428348dfa6ca9652a800",
+      "sha256": "1b86d2f957b33082081bba410fe129b475efebcc13c9014c3f447c8271aadf95"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+pandas==3.0.5
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.0
+matplotlib==3.11.1
+seaborn==0.13.2
+joblib==1.6.0
+openpyxl==3.1.5
+xgboost==3.2.0
+python-docx==1.2.0
+pytest==9.1.1

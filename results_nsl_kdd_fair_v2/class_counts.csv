@@ -1,0 +1,11 @@
+﻿split,class,count
+train,DoS,45927
+train,Normal,67343
+train,Probe,11656
+train,R2L,995
+train,U2R,52
+test,DoS,7458
+test,Normal,9711
+test,Probe,2421
+test,R2L,2754
+test,U2R,200

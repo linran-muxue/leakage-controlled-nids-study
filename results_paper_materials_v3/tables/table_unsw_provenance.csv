@@ -1,0 +1,2 @@
+﻿dataset,source,training_rows,testing_rows,columns,label_column,training_sha256,testing_sha256
+UNSW-NB15,UNSW Canberra Cyber official UNSW-NB15 project page,175341,82332,45,attack_cat,bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa,734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559

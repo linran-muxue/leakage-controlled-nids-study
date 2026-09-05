@@ -1,0 +1,1 @@
+公平版 NSL-KDD 外部基准：所有主比较模型均使用完整 KDDTrain+ 训练、官方 KDDTest+ 测试、相同预处理和固定模型配置。加权随机森林因需要额外验证集，不纳入主比较。报告Accuracy、Balanced Accuracy、宏平均指标，并单独分析R2L/U2R少数类及其误判为Normal的比例。NSL-KDD的Normal、DoS、Probe、R2L、U2R标签体系与CIC-IDS2017不同，仅作为独立公开基准。

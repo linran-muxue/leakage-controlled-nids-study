@@ -1,0 +1,506 @@
+﻿y_true,y_pred
+Normal,Normal
+Brute Force,Brute Force
+Normal,Normal
+Brute Force,Brute Force
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Normal,Normal
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Brute Force
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Brute Force,Brute Force
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+Bot,Bot
+Web Attack,Web Attack
+Web Attack,Web Attack
+Brute Force,Brute Force
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Bot,Bot
+Web Attack,Web Attack
+Web Attack,Web Attack
+Brute Force,Web Attack
+Web Attack,Web Attack
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Web Attack,Web Attack
+Normal,Normal
+Web Attack,Web Attack
+Normal,Normal
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Bot,Bot
+Normal,Normal
+Normal,Normal
+Normal,Normal
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+Brute Force,Brute Force
+Bot,Bot
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+Brute Force,Brute Force
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Bot,Bot
+Web Attack,Web Attack
+Brute Force,Brute Force
+Bot,Bot
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Brute Force,Web Attack
+Bot,Bot
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Normal,Web Attack
+Bot,Bot
+Brute Force,Brute Force
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Web Attack,Web Attack
+Normal,Normal
+Brute Force,Brute Force
+Web Attack,Web Attack
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Brute Force,Brute Force
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+Normal,Normal
+Brute Force,Brute Force
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Normal,Normal
+Normal,Normal
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+Brute Force,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Brute Force,Web Attack
+Brute Force,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Brute Force,Brute Force
+Brute Force,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Normal,Normal
+Bot,Bot
+Bot,Bot
+Normal,Normal
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Brute Force,Brute Force
+Bot,Bot
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Web Attack,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+Bot,Bot
+Normal,Normal
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+Normal,Normal
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+Normal,Normal
+Web Attack,Normal
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Bot,Bot
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Normal,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Web Attack,Web Attack
+Normal,DoS/DDoS
+Normal,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Normal,Normal
+Web Attack,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Web Attack,Web Attack
+Bot,Bot
+Bot,Bot
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+Bot,Bot
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+Normal,Normal
+DoS/DDoS,Normal
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Normal,Normal
+Brute Force,Brute Force
+Normal,Normal
+Normal,Normal
+Bot,Bot
+Web Attack,Normal
+Brute Force,Brute Force
+Bot,Bot
+Brute Force,Brute Force
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Bot,Bot
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Brute Force
+Bot,Bot
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Web Attack,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+Bot,Bot
+Web Attack,Web Attack
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Bot,Bot
+Bot,Bot
+Normal,Normal
+Web Attack,Web Attack
+Bot,Bot
+Bot,Bot
+Bot,Bot
+Brute Force,Brute Force
+Bot,Bot
+Web Attack,Brute Force
+Web Attack,Web Attack
+Web Attack,Web Attack
+Web Attack,Web Attack
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Web Attack,Web Attack
+DoS/DDoS,Normal
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+Normal,Normal
+Brute Force,Web Attack
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Bot,Bot
+Normal,Normal
+Normal,Normal
+Normal,Normal
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+Normal,Normal
+Normal,Normal
+Web Attack,Web Attack
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Web Attack,Web Attack
+Bot,Bot
+Bot,Bot
+Web Attack,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Bot,Bot
+Bot,Bot
+Brute Force,Web Attack
+Web Attack,Web Attack
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Web Attack
+Bot,Bot
+Brute Force,Brute Force
+Brute Force,Brute Force
+Brute Force,Brute Force
+Normal,Normal
+Web Attack,Web Attack
+Brute Force,Brute Force
+Normal,Normal
+Bot,Bot
+Normal,Normal
+Web Attack,Web Attack
+Brute Force,Brute Force
+Normal,Normal
+Web Attack,Web Attack
+Bot,Bot
+Normal,Normal
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+Brute Force,Brute Force
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Web Attack,Web Attack
+Normal,Normal
+Web Attack,Web Attack
+Bot,Bot
+Web Attack,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+Normal,Normal
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Web Attack
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Web Attack,Web Attack
+Normal,Normal
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Normal,Normal
+Bot,Bot
+Brute Force,Web Attack
+Web Attack,Web Attack
+Web Attack,Web Attack
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Bot,Bot
+Web Attack,Web Attack
+Bot,Bot
+Brute Force,Brute Force
+Normal,Normal
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+Brute Force,Brute Force
+Brute Force,Brute Force
+Bot,Bot
+Web Attack,Web Attack
+Brute Force,Brute Force
+Normal,Normal
+Web Attack,Web Attack
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Bot,Bot
+Normal,Normal
+Normal,Normal
+Bot,Bot
+Normal,Normal
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+DoS/DDoS,DoS/DDoS
+Web Attack,Web Attack
+DoS/DDoS,DoS/DDoS
+Brute Force,Web Attack
+Bot,Bot
+DoS/DDoS,DoS/DDoS
+Brute Force,Brute Force
+Bot,Bot
+Normal,Normal
+Brute Force,Brute Force
+Web Attack,Web Attack
+Web Attack,Brute Force
+Normal,Normal

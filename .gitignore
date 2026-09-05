@@ -1,0 +1,14 @@
+# Original datasets and large local preprocessing stores
+data_external/
+data_external_*/
+data_processed_*/
+**/*.pcap
+**/*.zip
+
+# Local virtual environments and caches
+.venv/
+__pycache__/
+.pytest_cache/
+**/__pycache__/
+*.pyc
+*.tmp

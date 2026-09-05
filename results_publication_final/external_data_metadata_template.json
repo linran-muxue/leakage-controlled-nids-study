@@ -1,0 +1,24 @@
+{
+  "CIC-IDS2017": {
+    "official_url": "https://www.unb.ca/cic/datasets/ids-2017.html",
+    "retrieval_date": "2026-09-02 (local download timestamp; confirm against the archived source record before submission)",
+    "version_or_snapshot": "CIC-IDS2017 MachineLearningCSV archive snapshot; no numeric release version verified",
+    "license_or_terms": "Use limited to offline research in accordance with the terms displayed on the UNB CIC source page; the captured source record does not state a standard SPDX license identifier",
+    "raw_archive_sha256": "c3f26274b36c837ccf28ffd2dbf4582941c30b3ee70a635c6e5b2f87c4727928"
+  },
+  "NSL-KDD": {
+    "url": "https://github.com/defcom17/NSL_KDD",
+    "retrieval_date": "2026-09-03 (local file timestamp; confirm against the archived download record before submission)",
+    "commit_or_snapshot": "Public mirror snapshot downloaded from defcom17/NSL_KDD; exact commit not recorded",
+    "license_or_terms": "The defcom17 mirror does not state an explicit standard license identifier in the captured record; use according to the repository/source instructions",
+    "provenance_evidence": "User-provided PowerShell transcript records Invoke-WebRequest from raw.githubusercontent.com/defcom17/NSL_KDD/master/KDDTrain%2B.txt and KDDTest%2B.txt; local file hashes match the recorded audit hashes"
+  },
+  "UNSW-NB15": {
+    "official_url": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
+    "retrieval_date": "2026-09-04 (local download timestamp; confirm against the archived source record before submission)",
+    "version_or_snapshot": "UNSW-NB15 official training/testing CSV snapshot; no numeric release version verified",
+    "license_or_terms": "Use limited to offline research in accordance with UNSW Canberra Cyber project-page terms; the captured source record does not state a standard SPDX license identifier",
+    "training_sha256": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa",
+    "testing_sha256": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559"
+  }
+}

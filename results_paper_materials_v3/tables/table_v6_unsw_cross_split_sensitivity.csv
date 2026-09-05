@@ -1,0 +1,4 @@
+﻿protocol,removed_train_rows,removed_test_rows,test_rows,accuracy_mean_std,balanced_accuracy_mean_std,macro_f1_mean_std,log_loss_mean_std,brier_macro_mean_std,ece_mean_std
+official_split,0,0,82332,0.7085 ± 0.0015,0.5354 ± 0.0015,0.4570 ± 0.0010,0.6895 ± 0.0072,0.0345 ± 0.0002,0.0736 ± 0.0029
+remove_test_overlap,0,8541,73791,0.7419 ± 0.0017,0.5675 ± 0.0011,0.4851 ± 0.0016,0.5905 ± 0.0049,0.0306 ± 0.0002,0.0534 ± 0.0031
+remove_both_overlap,10279,8541,73791,0.7414 ± 0.0004,0.5506 ± 0.0017,0.4770 ± 0.0026,0.5899 ± 0.0011,0.0305 ± 0.0001,0.0525 ± 0.0012

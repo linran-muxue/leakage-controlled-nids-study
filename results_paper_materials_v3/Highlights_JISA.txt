@@ -1,0 +1,4 @@
+- Auditable preprocessing separates curation choices from fitted transforms.
+- Chi-square filtering reduces features with nearly unchanged macro-F1.
+- Tree weighting matches equal voting under the locked CIC protocol.
+- Independent datasets reveal strong class-prior and split effects.
