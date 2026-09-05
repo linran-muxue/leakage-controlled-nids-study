@@ -26,7 +26,6 @@ TARGETS = [
     ROOT / "results_additional_evidence_v4" / "deployment_latency_percentiles.csv",
     ROOT / "results_additional_evidence_v4" / "robustness_shared_perturbations.csv",
     ROOT / "results_additional_evidence_v4" / "calibration_curve_points.csv",
-    ROOT / "论文完整正文_v6_数据处理完善稿.docx",
     ROOT / "results_paper_materials_v3" / "english_sci_manuscript_v1.md",
     ROOT / "results_paper_materials_v3" / "english_sci_manuscript_v1.docx",
     ROOT / "results_paper_materials_v3" / "Highlights_JISA.docx",
@@ -84,11 +83,13 @@ def main():
         entries.append({"path": str(path.relative_to(ROOT)), "bytes": path.stat().st_size, "sha256": digest(path)})
     document = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
+        "public_release_tag": "v1.0.0",
         "canonical_data": "data_processed_audit_v4",
         "canonical_main_results": "results_publication_final",
         "canonical_unsw_results": "results_unsw_nb15_independent_v4",
         "canonical_unsw_cross_split_sensitivity": "results_unsw_nb15_cross_split_sensitivity_v2",
-        "canonical_manuscript": "论文完整正文_v6_数据处理完善稿.docx",
+        "canonical_manuscript": "results_paper_materials_v3/english_sci_manuscript_v1.docx",
         "artifacts": entries,
     }
     OUTPUT.write_text(json.dumps(document, ensure_ascii=False, indent=2), encoding="utf-8")
