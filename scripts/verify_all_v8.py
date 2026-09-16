@@ -27,6 +27,8 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("cross-document audit", ["scripts/fresh_audit_v7.py"], ("ISSUE",)),
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),
     ("body hygiene", ["scripts/body_hygiene_check_v9.py"], ("ISSUE", "BODY_HYGIENE_FAILED")),
+    ("cross-language numbers", ["scripts/cross_language_number_diff_v10.py"], ("MISMATCH",)),
+    ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
 ]
 
 

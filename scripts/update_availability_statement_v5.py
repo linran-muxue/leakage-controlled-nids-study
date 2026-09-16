@@ -8,7 +8,7 @@ from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
-TARGET = "v1.9.0"
+TARGET = "v1.10.0"
 
 
 def main() -> None:

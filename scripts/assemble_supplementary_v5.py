@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "重构版论文_v4_20260915" / "补充材料_S1_S19"
+OUT = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S26"
 
 ITEMS: dict[str, tuple[str, list[str]]] = {
     "S01": ("数据集来源、检索日期与 SHA-256 校验",

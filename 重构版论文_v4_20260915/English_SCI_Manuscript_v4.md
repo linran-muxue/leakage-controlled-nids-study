@@ -459,7 +459,7 @@ The conditions of Section 4.3 and the measurements of Section 5.3 together chara
 
 **Condition A: identical expert output.** When forests trained on different feature views return the same posterior for a given input, no convex weighting can change the output (Condition 1). In flow-feature settings this is more common than intuition suggests: the top-60 features selected by chi-square, mutual information and ANOVA overlap heavily, and 12 of the extra columns in the full view are constant. Measurement 6 quantifies the boundary: when pairwise disagreement is 0.20%-0.36%, the gate gains exactly zero in six of six runs; only when disagreement rises to 3%-6% does the gain become consistently positive. Condition A is therefore not the idealised case of "identical experts" but a loose condition that real flow-feature data satisfies easily.
 
-**Condition B: margin dominance.** Even when experts differ, the hard label remains unchanged as long as the smallest margin exceeds the probability movement that the weights can cause (Condition 2). The measured mean L1 probability change is 0.000299 with a maximum of 0.003473, while the median decision margin is 1.0 - a ratio of roughly 3,500. Measurement 4 formalises this: 99.91% of rows are provably immune under the a priori bound.
+**Condition B: margin dominance.** Even when experts differ, the hard label remains unchanged as long as the smallest margin exceeds the probability movement that the weights can cause (Condition 2). The measured mean L1 probability change is 0.000299 with a maximum of 0.003473, while the median decision margin is 1.0, three orders of magnitude above the largest observed movement. Measurement 4 formalises this: under the a priori bound 99.91% of rows are provably immune, with a median margin-to-bound ratio of 3,469 to 5,038.
 
 **Condition C: risk-output collapse.** When the risk models return nearly equal values across experts, the weights degenerate to uniform (Condition 3) and the mechanism becomes numerically equivalent to equal averaging. The measured normalised weight entropy is 0.99998, squarely inside this regime.
 
@@ -469,7 +469,7 @@ The three conditions yield an operational diagnostic sequence: **first measure t
 
 Our results do not imply that every published weighting method is wrong. They impose an **attribution constraint**: without controlling duplicates, transform leakage, class priors and tuning budgets, an observed "weighting gain" has at least four competing explanations [18-20], each of which has a measured magnitude in this study.
 
-1. **Split noise.** The split-to-split standard deviation over ten repetitions is about 0.011. That is larger than every aggregation-rule and tuning-budget difference observed here (at most 0.0078), though not larger than the model-family gaps of 0.032 and 0.092.
+1. **Split noise.** The split-to-split standard deviation over ten repetitions is about 0.011. That is larger than every aggregation-rule and tuning-budget difference observed here (at most 0.0078), though not larger than the model-family gaps of 0.0318 and 0.0916.
 2. **Protocol choice.** Changing the class prior from balanced to natural moves Macro-F1 by +0.0725, and reversing the deduplication order moves it by up to +0.0060.
 3. **Unequal tuning budgets.** Under a 5x3 nested cross-validation, an equally tuned XGBoost exceeds random forest by 0.0078 - more than most reported "improvements".
 4. **Metric selection.** Here RCCF has a better Log Loss but a worse ECE than the equal-weight forest; reporting either metric alone supports the opposite conclusion.
@@ -546,7 +546,7 @@ The principal contribution is not a new state-of-the-art classifier but a reusab
 
 ## Data and code availability
 
-Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.9.0, tag v1.9.0). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
+Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.10.0, tag v1.10.0). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
 
 ## Funding
 

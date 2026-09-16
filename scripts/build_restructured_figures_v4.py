@@ -197,7 +197,7 @@ def fig4():
     ax.bar(x - w / 2, nat_vals, w, yerr=nat_err, capsize=3, color="#2f6fb3", label="自然先验总体")
     ax.bar(x + w / 2, bal_vals, w, color="#e07b39", label="平衡控制总体")
     ax.set_xticks(x); ax.set_xticklabels(names, rotation=18, ha="right", fontsize=8.8)
-    ax.set_ylim(0.84, 0.985); ax.set_ylabel("Macro-F1")
+    ax.set_ylim(0.75, 0.99); ax.set_ylabel("Macro-F1")
     ax.set_title("两个总体上的 Macro-F1（三种子均值）", fontsize=10.5, weight="bold")
     ax.legend(fontsize=8.5); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):

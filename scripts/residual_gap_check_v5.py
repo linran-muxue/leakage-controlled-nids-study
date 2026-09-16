@@ -28,8 +28,8 @@ def main() -> None:
     line("cover letter", cl.exists(),
          "Cover_Letter_JISA_v4.md present" if cl.exists() else "missing")
     line("journal template", False, "no JISA/Elsevier template applied")
-    line("supplementary bundle", (BASE / "补充材料_S1_S19" / "README.md").exists(),
-         f"{len(list((BASE / '补充材料_S1_S19').rglob('*')))} entries")
+    line("supplementary bundle", (BASE / "补充材料_S01_S26" / "README.md").exists(),
+         f"{len(list((BASE / '补充材料_S01_S26').rglob('*')))} entries")
 
     print()
     print("=== B. references ===")
