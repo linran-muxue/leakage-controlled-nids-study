@@ -1,0 +1,27 @@
+{
+  "test": "exact sign-flip on the ten seed-level paired differences",
+  "correction": "Holm within the family of three comparisons against RCCF",
+  "results": [
+    {
+      "comparison": "rccf_minus_extra_trees_chi2",
+      "mean_difference": 0.03178798064687906,
+      "n_seeds": 10,
+      "signflip_p": 0.001953125,
+      "holm_adjusted_p": 0.005859375
+    },
+    {
+      "comparison": "rccf_minus_equal_rf_all",
+      "mean_difference": 0.0016125263757326368,
+      "n_seeds": 10,
+      "signflip_p": 0.009765625,
+      "holm_adjusted_p": 0.01953125
+    },
+    {
+      "comparison": "rccf_minus_equal_rf_chi2",
+      "mean_difference": -0.00045583621177428533,
+      "n_seeds": 10,
+      "signflip_p": 0.244140625,
+      "holm_adjusted_p": 0.244140625
+    }
+  ]
+}

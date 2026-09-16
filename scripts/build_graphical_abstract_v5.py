@@ -90,7 +90,8 @@ def main() -> None:
 
     # ---- D: protocol vs model ---------------------------------------------
     ax = fig.add_subplot(gs[1, 1])
-    ax.set_title("D  Protocol effects exceed model effects", fontsize=10.5, weight="bold", loc="left")
+    ax.set_title("D  Protocol effects exceed aggregation-rule differences",
+                 fontsize=10.0, weight="bold", loc="left")
     items = [("class prior", 0.0725, "#b5525b"), ("tuning budget", 0.0078, "#7a6fb0"),
              ("feature view", 0.0021, "#5a9e6f"), ("aggregation", 0.0005, "#2f6fb3")]
     ax.barh([i[0] for i in items], [i[1] for i in items], color=[i[2] for i in items], height=0.6)

@@ -1,0 +1,4 @@
+﻿comparison,mean_difference,n_seeds,signflip_p,holm_adjusted_p
+rccf_minus_extra_trees_chi2,0.03178798064687906,10,0.001953125,0.005859375
+rccf_minus_equal_rf_all,0.0016125263757326368,10,0.009765625,0.01953125
+rccf_minus_equal_rf_chi2,-0.00045583621177428533,10,0.244140625,0.244140625
