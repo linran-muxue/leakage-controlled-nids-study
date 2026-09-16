@@ -1,0 +1,2 @@
+﻿known_train_samples,known_validation_samples,unknown_samples,threshold,unknown_recall,unknown_auroc,coverage,rejected_count,known_macro_f1
+3738,935,1047,0.7168366502948323,0.36867239732569246,0.9494389368146321,0.7815338042381433,433,0.80151605706423

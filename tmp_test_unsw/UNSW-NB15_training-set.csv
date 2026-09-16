@@ -1,0 +1,3 @@
+id,proto,attack_cat
+1,tcp,Normal
+2,udp,DoS

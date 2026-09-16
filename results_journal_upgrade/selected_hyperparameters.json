@@ -1,0 +1,10 @@
+{
+  "config_id": "rf_k60_trees300_depth20_leaf2",
+  "k": 60,
+  "n_estimators": 300,
+  "max_depth": 20,
+  "min_samples_leaf": 2,
+  "cv_macro_f1": 0.9630099470215588,
+  "cv_accuracy": 0.9630573248407643,
+  "complexity": 12000
+}

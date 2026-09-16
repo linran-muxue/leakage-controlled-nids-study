@@ -1,0 +1,29 @@
+{
+  "protocol_name": "CIC-IDS2017_locked_drc_v1",
+  "data_boundary": "train_validation_test",
+  "processed_dir": "C:\\Users\\27677\\Documents\\ChatGPT\\论文\\data_processed_imbalanced_v3",
+  "train_samples": 37265,
+  "validation_samples": 7986,
+  "test_samples": 7986,
+  "raw_feature_count": 78,
+  "selected_feature_count": 60,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "max_depth": null,
+  "min_samples_leaf": 2,
+  "class_weight": "balanced_subsample",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "feature_selection_fit_on": "training_only",
+  "scaler_fit_on": "training_only",
+  "reliability_fit_on": "validation_only",
+  "class_cost_fit_on": "training_only",
+  "test_usage": "locked_final_evaluation_only",
+  "method": "Dual-layer Reliability-Cost Forest (DRC-Forest)",
+  "cost_beta": 0.5,
+  "cost_min": 0.5,
+  "cost_max": 2.0
+}

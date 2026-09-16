@@ -1,0 +1,17 @@
+{
+  "methods": [
+    "all",
+    "chi2",
+    "mutual_info",
+    "anova"
+  ],
+  "k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "shared_robustness_seed": 20260904,
+  "robustness_noise_scale": "training_split_feature_std",
+  "latency_repetitions": 30,
+  "latency_warmup": 3,
+  "calibration_bins": 10,
+  "latency_percentiles": [50, 95, 99]
+}

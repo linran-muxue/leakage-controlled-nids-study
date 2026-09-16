@@ -1,0 +1,53 @@
+{
+  "dataset": "CIC-IDS2017",
+  "protocol": "CIC-IDS2017 locked deduplicated balanced research subset",
+  "protocol_name": "deduplicated balanced research subset",
+  "rows": 3365,
+  "train_rows": 2355,
+  "validation_rows": 505,
+  "test_rows": 505,
+  "calibration_rows": 505,
+  "class_counts": {
+    "train": {
+      "Bot": 471,
+      "Brute Force": 471,
+      "DoS/DDoS": 471,
+      "Normal": 471,
+      "Web Attack": 471
+    },
+    "validation": {
+      "Bot": 101,
+      "Brute Force": 101,
+      "DoS/DDoS": 101,
+      "Normal": 101,
+      "Web Attack": 101
+    },
+    "test": {
+      "Bot": 101,
+      "Brute Force": 101,
+      "DoS/DDoS": 101,
+      "Normal": 101,
+      "Web Attack": 101
+    }
+  },
+  "feature_count_before_selection": 78,
+  "feature_count_after_selection": 60,
+  "deduplication_before_split": true,
+  "feature_selection_fit_on": "training partition only",
+  "risk_fit_on": "training cross-fitted predictions only",
+  "calibration_fit_on": "validation partition only",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "feature_k": 60,
+  "n_estimators": 100,
+  "shared_perturbation_seed_rule": "seed-specific Generator(seed)",
+  "test_labels_used_for_fitting": false,
+  "processed_hashes": {
+    "train": "89f77eca00507406f60802371724a18d9caf5640ceb046ea5aa853434d844092",
+    "validation": "63d6548eb606af8c9e7b48d63fcd4552bbdeba64abc4858f2a4a30e5b85e23d9",
+    "test": "c4607ceab8feeffba0f4d2266cb5f006bdc4be182be96f7748856687cf0ffdf6"
+  }
+}

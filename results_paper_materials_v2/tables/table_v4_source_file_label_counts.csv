@@ -1,0 +1,15 @@
+﻿source_file,mapped_target,count
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,DoS/DDoS,262
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,Normal,38
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,Normal,40
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Bot,673
+Friday-WorkingHours-Morning.pcap_ISCX.csv,Normal,48
+Monday-WorkingHours.pcap_ISCX.csv,Normal,170
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,Normal,86
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Brute Force,93
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Normal,46
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,Web Attack,673
+Tuesday-WorkingHours.pcap_ISCX.csv,Brute Force,580
+Tuesday-WorkingHours.pcap_ISCX.csv,Normal,111
+Wednesday-workingHours.pcap_ISCX.csv,DoS/DDoS,411
+Wednesday-workingHours.pcap_ISCX.csv,Normal,134

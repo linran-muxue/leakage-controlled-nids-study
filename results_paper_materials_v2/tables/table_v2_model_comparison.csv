@@ -1,0 +1,7 @@
+﻿model,feature_count,accuracy_mean_std,macro_f1_mean_std,train_seconds_mean_std,predict_seconds_mean_std
+Decision tree + chi-square,60,0.9518 ± 0.0011,0.9519 ± 0.0011,0.0250 ± 0.0020,0.0005 ± 0.0000
+ExtraTrees + chi-square,60,0.9492 ± 0.0011,0.9490 ± 0.0011,0.1190 ± 0.0075,0.0289 ± 0.0004
+Random forest (all features),78,0.9578 ± 0.0023,0.9579 ± 0.0023,0.2150 ± 0.0032,0.0282 ± 0.0007
+Random forest + chi-square,60,0.9578 ± 0.0011,0.9579 ± 0.0011,0.2150 ± 0.0072,0.0420 ± 0.0232
+SVM (all features),78,0.9347 ± 0.0000,0.9344 ± 0.0000,0.0374 ± 0.0014,0.0134 ± 0.0001
+Weighted random forest + chi-square,60,0.9578 ± 0.0011,0.9579 ± 0.0011,0.3492 ± 0.0138,0.0141 ± 0.0006

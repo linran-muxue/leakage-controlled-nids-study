@@ -1,0 +1,51 @@
+{
+  "processed_dir": "data_processed_audit_v4",
+  "train_rows": 2355,
+  "validation_rows": 505,
+  "test_rows": 505,
+  "feature_count": 78,
+  "constant_feature_count": 12,
+  "constant_features": [
+    "Bwd PSH Flags",
+    "Fwd URG Flags",
+    "Bwd URG Flags",
+    "RST Flag Count",
+    "CWE Flag Count",
+    "ECE Flag Count",
+    "Fwd Avg Bytes/Bulk",
+    "Fwd Avg Packets/Bulk",
+    "Fwd Avg Bulk Rate",
+    "Bwd Avg Bytes/Bulk",
+    "Bwd Avg Packets/Bulk",
+    "Bwd Avg Bulk Rate"
+  ],
+  "near_zero_variance_count": 18,
+  "near_zero_variance_features": [
+    "Fwd PSH Flags",
+    "Bwd PSH Flags",
+    "Fwd URG Flags",
+    "Bwd URG Flags",
+    "FIN Flag Count",
+    "SYN Flag Count",
+    "RST Flag Count",
+    "PSH Flag Count",
+    "ACK Flag Count",
+    "URG Flag Count",
+    "CWE Flag Count",
+    "ECE Flag Count",
+    "Fwd Avg Bytes/Bulk",
+    "Fwd Avg Packets/Bulk",
+    "Fwd Avg Bulk Rate",
+    "Bwd Avg Bytes/Bulk",
+    "Bwd Avg Packets/Bulk",
+    "Bwd Avg Bulk Rate"
+  ],
+  "high_correlation_threshold": 0.99,
+  "high_correlation_pair_count": 15,
+  "cross_split_exact_feature_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "recommendation": "Treat constant and near-zero-variance features as an audit/ablation condition; do not silently change the locked main protocol."
+}

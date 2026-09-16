@@ -1,0 +1,141 @@
+{
+  "processed_dir": "data_processed_cic_natural_v2",
+  "protocol": "capped observed-prior CIC population",
+  "split_rows": {
+    "train": 37265,
+    "validation": 7986,
+    "test": 7986
+  },
+  "total_rows": 53237,
+  "feature_count": 78,
+  "split_quality": {
+    "train": {
+      "rows": 37265,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 1363,
+        "Brute Force": 7434,
+        "DoS/DDoS": 13997,
+        "Normal": 14000,
+        "Web Attack": 471
+      },
+      "class_proportions": {
+        "Bot": 0.036575875486381325,
+        "Brute Force": 0.1994901381993828,
+        "DoS/DDoS": 0.3756071380652086,
+        "Normal": 0.37568764256004294,
+        "Web Attack": 0.012639205688984302
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Bwd URG Flags",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 37265,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "edf80f9838aec4c061a91646fb81a432b85f36e9c3366dbcb4e15ca59875d3e6",
+      "provenance_sha256": "d77a6c5c2349469eb5af7c9468bf15d6e6c62fcda9553b4bb8de00e6862189bb"
+    },
+    "validation": {
+      "rows": 7986,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 292,
+        "Brute Force": 1593,
+        "DoS/DDoS": 3000,
+        "Normal": 3000,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.03656398697721012,
+        "Brute Force": 0.1994740796393689,
+        "DoS/DDoS": 0.3756574004507889,
+        "Normal": 0.3756574004507889,
+        "Web Attack": 0.012647132481843225
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "CWE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 7986,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "aa6b4e4c9f122e38c73cf64e1884f3f6e066e484c473da1799b9217721cb5669",
+      "provenance_sha256": "1586a4563dd2d5a6de8a77dab4b34552fc6245f0fd6a6b39ab4faed9ef8d5c9b"
+    },
+    "test": {
+      "rows": 7986,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 293,
+        "Brute Force": 1593,
+        "DoS/DDoS": 2999,
+        "Normal": 3000,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.03668920611069371,
+        "Brute Force": 0.1994740796393689,
+        "DoS/DDoS": 0.37553218131730526,
+        "Normal": 0.3756574004507889,
+        "Web Attack": 0.012647132481843225
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "CWE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 7986,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "f77a235aec2bb486c0032d54214e38ec845db4b45896151dd4576b9e84215a04",
+      "provenance_sha256": "60cf4a2011ea6e4f882c027023df374b6814a52e9f82a3d010763153e30035ef"
+    }
+  },
+  "source_composite_key_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "exact_feature_label_hash_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "low_support_test_classes": [
+    "Web Attack"
+  ],
+  "raw_audit": "results_data_audit_cic_natural_v2\\data_processing_audit.json",
+  "interpretation": [
+    "The capped observed-prior population is not the full CIC-IDS2017 corpus.",
+    "Test classes with fewer than 200 rows require class-level uncertainty reporting.",
+    "Zero source-key and exact row-hash overlaps support split isolation, but do not establish temporal generalization."
+  ]
+}

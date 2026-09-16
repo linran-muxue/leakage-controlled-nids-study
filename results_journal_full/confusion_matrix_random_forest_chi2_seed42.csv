@@ -1,0 +1,6 @@
+﻿,Bot,Brute Force,DoS/DDoS,Normal,Web Attack
+Bot,101,0,0,0,0
+Brute Force,0,90,0,1,10
+DoS/DDoS,0,0,98,1,2
+Normal,3,0,0,98,0
+Web Attack,0,5,1,0,95

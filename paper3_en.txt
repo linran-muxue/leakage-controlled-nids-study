@@ -1,0 +1,1250 @@
+Toolformer: Language Models Can Teach Themselves to Use Tools
+TimoSchick JaneDwivedi-Yu RobertoDessì† RobertaRaileanu
+MariaLomeli LukeZettlemoyer NicolaCancedda ThomasScialom
+MetaAIResearch †UniversitatPompeuFabra
+Abstract
+The New England Journal of Medicine is a registered
+trademark of [QA(“Who is the publisher of The New
+Language models (LMs) exhibit remarkable
+England Journal of Medicine?”) → Massachusetts
+abilities to solve new tasks from just a few
+Medical Society] the MMS.
+examples or textual instructions, especially at
+scale. They also, paradoxically, struggle with
+basic functionality, such as arithmetic or fac- Out of 1400 participants, 400 (or [Calculator(400 / 1400)
+tual lookup, where much simpler and smaller → 0.29] 29%) passed the test.
+models excel. In this paper, we show that
+LMscanteachthemselvestouseexternaltools The name derives from “la tortuga”, the Spanish word for
+via simple APIs and achieve the best of both [MT(“tortuga”) → turtle] turtle.
+worlds. We introduce Toolformer, a model
+trained to decide which APIs to call, when to
+The Brown Act is California’s law [WikiSearch(“Brown
+callthem,whatargumentstopass,andhowto
+Act”) → The Ralph M. Brown Act is an act of the
+best incorporate the results into future token
+California State Legislature that guarantees the public's
+prediction. This is done in a self-supervised
+right to attend and participate in meetings of local
+way,requiringnothingmorethanahandfulof
+legislative bodies.] that requires legislative bodies, like
+demonstrations for each API. We incorporate
+city councils, to hold their meetings open to the public. arangeoftools,includingacalculator,aQ&A
+system, a search engine, a translation system,
+and a calendar. Toolformer achieves substan- Figure 1: Exemplary predictions of Toolformer. The
+tially improved zero-shot performance across model autonomously decides to call different APIs
+a variety of downstream tasks, often competi- (from top to bottom: a question answering system,
+tivewithmuchlargermodels,withoutsacrific- a calculator, a machine translation system, and a
+ingitscorelanguagemodelingabilities. Wikipediasearch engine)to obtaininformationthat is
+usefulforcompletingapieceoftext.
+1 Introduction
+Large language models achieve impressive zero- Asimplewaytoovercometheselimitationsof
+and few-shot results on a variety of natural lan- today’s language models is to give them the abil-
+guageprocessingtasks(Brownetal.,2020;Chowd- ity to use external tools such as search engines,
+heryetal.,2022,i.a.) andshowseveralemergent calculators, or calendars. However, existing ap-
+capabilities (Wei et al., 2022). However, all of proaches either rely on large amounts of human
+thesemodelshaveseveralinherentlimitationsthat annotations(Komeilietal.,2022;Thoppilanetal.,
+can at best be partially addressed by further scal- 2022)orlimittoolusetotask-specificsettingsonly
+ing. Theselimitationsincludeaninabilitytoaccess (e.g.,Gaoetal.,2022;Parisietal.,2022),hinder-
+up-to-dateinformationonrecentevents(Komeili ingamorewidespreadadoptionoftooluseinLMs.
+etal.,2022)andtherelatedtendencytohallucinate Therefore, we propose Toolformer, a model that
+facts(Maynezetal.,2020;Jietal.,2022),difficul- learnstousetoolsinanovelway,whichfulfillsthe
+tiesinunderstandinglow-resourcelanguages(Lin followingdesiderata:
+et al., 2021), a lack of mathematical skills to per-
+formprecisecalculations(Pateletal.,2021)andan • The use of tools should be learned in a
+unawarenessoftheprogressionoftime(Dhingra self-supervised way without requiring large
+etal.,2022). amountsofhumanannotations. Thisisimpor-
+3202
+beF
+9
+]LC.sc[
+1v16740.2032:viXra
+1 2 3 LM Dataset
+LM Dataset
+Sample API Calls Execute API Calls Filter API Calls with API Calls
+x
+1:i-1
+= Pittsburgh is c
+i
+1 = What other name is r
+i
+1 = Steel City L
+i
+(c
+i
+1 → Steel City) x* = Pittsburgh is
+also known as Pittsburgh known by? < min(L(c1 → ε), L(ε)) also known as
+i i i
+[QA(What …?
+x i:n = the Steel City c i 2 = Which country is r i 2 = United States L i (c i 2 → United States) → Steel City)]
+Pittsburgh in? > min(L(c2 → ε), L(ε)) the Steel City.
+i i i
+Figure 2: Key steps in our approach, illustrated for a question answering tool: Given an input text x, we first
+sample a position i and corresponding API call candidates c1,c2,...,ck. We then execute these API calls and
+i i i
+filter out all calls which do not reduce the loss L over the next tokens. All remaining API calls are interleaved
+i
+withtheoriginaltext,resultinginanewtextx∗.
+tantnotonlybecauseofthecostsassociated severalotherbaselinesonvarioustasks.
+withsuchannotations,butalsobecausewhat
+2 Approach
+humans find useful may be different from
+whatamodelfindsuseful.
+OuraimistoequipalanguagemodelM withthe
+abilitytousedifferenttoolsbymeansofAPIcalls.
+• TheLMshouldnotloseanyofitsgenerality
+We require that inputs and outputs for each API
+and should be able to decide for itself when
+canberepresentedastextsequences. Thisallows
+and how to use which tool. In contrast to
+seamlessinsertionofAPIcallsintoanygiventext,
+existingapproaches,thisenablesamuchmore
+using special tokens to mark the start and end of
+comprehensiveuseoftoolsthatisnottiedto
+eachsuchcall.
+specifictasks.
+WerepresenteachAPIcallasatuplec = (a ,i )
+c c
+Ourapproachforachievingthesegoalsisbased wherea isthenameoftheAPIandi isthecor-
+c c
+on the recent idea of using large LMs with in- respondinginput. GivenanAPIcallcwithacor-
+context learning(Brown etal., 2020)togenerate responding result r, we denote the linearized se-
+entiredatasetsfromscratch(SchickandSchütze, quencesoftheAPIcallnotincludingandincluding
+2021b;Honovichetal.,2022;Wangetal.,2022): itsresult,respectively,as:
+Given just a handful of human-written examples
+ofhowanAPIcanbeused,weletaLMannotate e(c) = <API>a c (i c )</API>
+a huge language modeling dataset with potential e(c,r) = <API>a (i ) → r</API>
+c c
+API calls. We then use a self-supervised loss to
+determine which of these API calls actually help where“<API>”,“</API>”and“→”arespecial
+themodelinpredictingfuturetokens. Finally,we tokens.1 Some examples of linearized API calls
+finetunetheLMitselfontheAPIcallsthatitcon- insertedintotextsequencesareshowninFigure1.
+siders useful. As illustrated in Figure 1, through Given a dataset C = {x1,...,x|C|} of plain
+thissimpleapproach,LMscanlearntocontrolava- texts, we first convert this dataset into a dataset
+rietyoftools,andtochooseforthemselveswhich C∗ augmentedwithAPIcalls. Thisisdoneinthree
+tooltousewhenandhow. steps,illustratedinFigure2: First,weexploitthe
+As our approach is agnostic of the dataset be- in-contextlearningabilityofM tosamplealarge
+ingused,wecanapplyittotheexactsamedataset number of potential API calls. We then execute
+thatwasusedtopretrainamodelinthefirstplace. these API calls and finally check whether the ob-
+This ensures that the model does not lose any tained responses are helpful for predicting future
+of its generality and language modeling abilities. tokens; this is used as a filtering criterion. After
+We conduct experiments on a variety of differ- filtering, we merge API calls for different tools,
+ent downstream tasks, demonstrating that after
+resultingintheaugmenteddatasetC∗,andfinetune
+learning to use tools, Toolformer, which is based
+1Inpractice,weusethetokensequences“ [”,“]”and
+on a pretrained GPT-J model (Wang and Komat- “->” to represent “<API>”, “</API>” and “→”, respec-
+suzaki,2021)with6.7Bparameters,achievesmuch tively.Thisenablesourapproachtoworkwithoutmodifying
+theexistingLM’svocabulary.Forreasonsofreadability,we
+strongerzero-shotresults,clearlyoutperforminga
+stillrefertothemas“<API>”,“</API>”and“→”through-
+muchlargerGPT-3model(Brownetal.,2020)and outthissection.
+Your task is to add calls to a Question Answering API to a ExecutingAPICalls Asanextstep,weexecute
+piece of text. The questions should help you get all API calls generated by M to obtain the corre-
+information required to complete the text. You can call the spondingresults. Howthisisdonedependsentirely
+API by writing "[QA(question)]" where "question" is the ontheAPIitself–forexample,itcaninvolvecall-
+question you want to ask. Here are some examples of API ing another neural network, executing a Python
+calls: scriptorusingaretrievalsystemtoperformsearch
+overalargecorpus. TheresponseforeachAPIcall
+Input: Joe Biden was born in Scranton, Pennsylvania.
+c needstobeasingletextsequencer .
+i i
+Output: Joe Biden was born in [QA("Where was Joe
+FilteringAPICalls Letibethepositionofthe
+Biden born?")] Scranton, [QA("In which state is
+APIcallc inthesequencex = x ,...,x ,andlet
+Scranton?")] Pennsylvania. i 1 n
+r betheresponsefromtheAPI.Further, givena
+i
+Input: Coca-Cola, or Coke, is a carbonated soft drink sequence(w i | i ∈ N)ofweights,let
+manufactured by the Coca-Cola Company.
+n
+(cid:88)
+Output: Coca-Cola, or [QA("What other name is L (z) = − w ·logp (x | z,x )
+i j−i M j 1:j−1
+Coca-Cola known by?")] Coke, is a carbonated soft drink
+j=i
+manufactured by [QA("Who manufactures Coca-Cola?")]
+the Coca-Cola Company. betheweightedcrossentropylossforM overthe
+tokens x ,...,x if the model is prefixed with z.
+i n
+Input: x Wecomparetwodifferentinstantiationsofthisloss:
+Output:
+L+ = L (e(c ,r ))
+i i i i
+Figure3: AnexemplarypromptP(x)usedtogenerate L− = min(L (ε),L (e(c ,ε)))
+i i i i
+APIcallsforthequestionansweringtool.
+whereεdenotesanemptysequence. Theformeris
+theweightedlossoveralltokensx ,...,x ifthe
+i n
+M itself on this dataset. Each of these steps is
+APIcallanditsresultaregiventoM asaprefix;3
+describedinmoredetailbelow.
+the latter is the minimum of the losses obtained
+from(i)doingnoAPIcallatalland(ii)doingan
+Sampling API Calls For each API, we write a
+APIcall,butnotprovidingtheresponse. Intuitively,
+prompt P(x) that encourages the LM to anno-
+anAPIcallishelpfultoM ifprovidingitwithboth
+tate an example x = x ,...,x with API calls.
+1 n
+theinputand theoutputofthiscallmakesiteasier
+An example of such a prompt for a question an-
+forthemodeltopredictfuturetokens,comparedto
+swering tool is shown in Figure 3; all prompts
+notreceivingtheAPIcallatall,orreceivingonly
+usedareshowninAppendixA.2. Letp (z |
+M n+1
+its input. Given a filtering threshold τ , we thus
+z ,...,z ) be the probability that M assigns to f
+1 n
+onlykeepAPIcallsforwhich
+token z as a continuation for the sequence
+n+1
+z ,...,z . Wefirstsampleuptok candidateposi-
+1 n L−−L+ ≥ τ
+tions for doing API calls by computing, for each i i f
+i ∈ {1,...,n},theprobability
+holds,i.e.,addingtheAPIcallanditsresultreduces
+thelossbyatleastτ ,comparedtonotdoingany
+f
+p = p (<API> | P(x),x )
+i M 1:i−1 APIcallorobtainingnoresultfromit.
+that M assigns to starting an API call at position ModelFinetuning Aftersamplingandfiltering
+i. Givenasamplingthresholdτ , wekeepallpo- callsforallAPIs,wefinallymergetheremaining
+s
+sitionsI = {i | p > τ };iftherearemorethank API calls and interleave them with the original
+i s
+suchpositions,weonlykeepthetopk. inputs. That is, for an input text x = x ,...,x
+1 n
+Foreachpositioni ∈ I,wethenobtainuptom withacorrespondingAPIcallandresult(c ,r )at
+i i
+APIcallsc1,...,cmbysamplingfromM giventhe position i, we construct the new sequence x∗ =
+i i
+sequence[P(x),x ,...,x ,<API>]asaprefix
+1 i−1 3Weprovidee(c ,r )asaprefixinsteadofinsertingitat
+and</API>asanend-of-sequencetoken.2
+positionibecauseM
+i
+i
+i
+snotyetfinetunedonanyexamples
+containingAPIcalls,soinsertingitinthemiddleofxwould
+2WediscardallexampleswhereM doesnotgeneratethe interrupttheflowandnotalignwithpatternsinthepretraining
+</API>token. corpus,thushurtingperplexity.
+x ,e(c ,r ),x ; weproceedanalogouslyfor snippets from Wikipedia. Compared to our ques-
+1:i−1 i i i:n
+textswithmultipleAPIcalls. Doingthisforallx ∈ tion answering tool, this search enables a model
+CresultsinthenewdatasetC∗augmentedwithAPI togetmorecomprehensiveinformationonasub-
+calls. WeusethisnewdatasettofinetuneM,using ject,butrequiresittoextracttherelevantpartsby
+astandardlanguagemodelingobjective. Crucially, itself. As our search engine, we use a BM25 re-
+apartfrominsertedAPIcallstheaugmenteddataset triever(Robertsonetal.,1995;Baeza-Yatesetal.,
+C∗ containstheexactsametextsasC,theoriginal 1999)thatindexestheWikipediadumpfromKILT
+dataset. As a consequence, finetuning M on C∗ (Petronietal.,2021).
+exposesittothesamecontentasfinetuningonC.
+MachineTranslationSystem Ourfourthtoolis
+Moreover,asAPIcallsareinsertedinexactlythose
+amachinetranslationsystembasedonaLMthat
+positions and with exactly those inputs that help
+M predictfuturetokens,finetuningonC∗ enables cantranslateaphrasefromanylanguageintoEn-
+glish. Moreconcretely,weusethe600Mparameter
+thelanguagemodeltodecidewhenandhowtouse
+NLLB(Costa-jussàetal.,2022)asourmultilingual
+whichtool,basedpurelyonitsownfeedback.
+machinetranslationmodelthatworksfor200lan-
+Inference When generating text with M after guages(includinglow-resourceones). Thesource
+finetuningwithourapproach,weperformregular languageisautomaticallydetectedusingthefast-
+decodinguntilM producesthe“→”token,indicat- Textclassifier(Joulinetal.,2016),whilethetarget
+ingthatitnextexpectstheresponseforanAPIcall. languageisalwayssettoEnglish.
+At this point, we interrupt the decoding process,
+Calendar Our final tool is a calendar API that,
+calltheappropriateAPItogetaresponse,andcon-
+whenqueried,returnsthecurrentdatewithouttak-
+tinuethedecodingprocessafterinsertingboththe
+inganyinput. Thisprovidestemporalcontextfor
+responseandthe</API>token.
+predictionsthatrequiresomeawarenessoftime.
+3 Tools
+4 Experiments
+We explore a variety of tools to address different
+We investigate whether our approach enables a
+shortcomingsofregularLMs. Theonlyconstraints
+modeltousetoolswithoutanyfurthersupervision
+weimposeonthesetoolsisthat(i)boththeirinputs
+andtodecideforitselfwhenandhowtocallwhich
+andoutputscanberepresentedastextsequences,
+oftheavailabletools. Totestthis,weselectavari-
+and (ii) we can obtain a few demonstrations of
+etyofdownstreamtaskswhereweassumeatleast
+theirintendeduse. Concretely,weexplorethefol-
+oneoftheconsideredtoolstobeuseful,andevalu-
+lowingfivetools: aquestionansweringsystem,a
+ateperformanceinzero-shotsettings(Section4.2).
+Wikipediasearchengine,acalculator,acalendar,
+Beyondthat,wealsoensurethatourapproachdoes
+andamachinetranslationsystem. Someexamples
+nothurtthemodel’scorelanguagemodelingabili-
+of potential calls and return strings for the APIs
+ties;weverifythisbylookingatperplexityontwo
+associated with each of these tools are shown in
+languagemodelingdatasets(Section4.3). Finally,
+Table1. Webrieflydiscussalltoolsbelow;further
+weinvestigatehowtheabilitytolearnusingtools
+detailscanbefoundinAppendixA.
+isaffectedbymodelsize(Section4.4).
+QuestionAnswering Ourfirsttoolisaquestion
+answeringsystembasedonanotherLMthatcanan- 4.1 ExperimentalSetup
+swersimplefactoidquestions. Specifically,weuse Dataset Generation Throughout all of our ex-
+Atlas(Izacardetal.,2022),aretrieval-augmented
+periments,weuseasubsetofCCNet(Wenzeketal.,
+LMfinetunedonNaturalQuestions(Kwiatkowski 2020)asourlanguagemodelingdatasetCandGPT-
+etal.,2019).
+J(WangandKomatsuzaki,2021)asourlanguage
+model M. To reduce the computational cost of
+Calculator Asasecondtool,weuseacalculator
+annotating C with API calls, we define heuristics
+thatcanperformsimplenumericcalculations;we
+forsomeAPIstogetasubsetofC forwhichAPI
+onlysupportthefourbasicarithmeticoperations.
+calls are more likely to be helpful than for an av-
+Resultsarealwaysroundedtotwodecimalplaces.
+erage text. For example, we only consider texts
+WikipediaSearch Ourthirdtoolisasearchen- forthecalculatortooliftheycontainatleastthree
+gine that, given a search term, returns short text numbers. Detailsoftheheuristicsusedaregivenin
+APIName ExampleInput ExampleOutput
+QuestionAnswering WherewastheKnights NewHaven,Connecticut
+ofColumbusfounded?
+WikipediaSearch FishingReelTypes Spinfishing>Spinfishingisdistinguishedbetweenflyfishingandbait
+castfishingbythetypeofrodandreelused.Therearetwotypesofreels
+usedwhenspinfishing,theopenfacedreelandtheclosedfacedreel.
+Calculator 27+4*2 35
+Calendar ε TodayisMonday,January30,2023.
+MachineTranslation sûreténucléaire nuclearsafety
+Table1: ExamplesofinputsandoutputsforallAPIsused.
+NumberofExamples • GPT-J: A regular GPT-J model without any
+API τ f =0.5 τ f =1.0 τ f =2.0 finetuning.
+QuestionAnswering 51,987 18,526 5,135
+WikipediaSearch 207,241 60,974 13,944 • GPT-J+CC:GPT-JfinetunedonC,oursub-
+Calculator 3,680 994 138 setofCCNetwithoutanyAPIcalls.
+Calendar 61,811 20,587 3,007
+MachineTranslation 3,156 1,034 229
+• Toolformer: GPT-JfinetunedonC∗,oursub-
+Table2: NumberofexampleswithAPIcallsinC∗ for setofCCNetaugmentedwithAPIcalls.
+differentvaluesofourfilteringthresholdτ .
+f
+• Toolformer (disabled): The same model as
+Toolformer,butAPIcallsaredisabledduring
+AppendixA.ForobtainingC∗ fromC,weperform decoding.5
+all steps described in Section 2 and additionally
+For most tasks, we additionally compare to OPT
+filteroutallexamplesforwhichallAPIcallswere
+eliminatedinthefilteringstep.4 Fortheweighting (66B) (Zhang et al., 2022) and GPT-36 (175B)
+(Brown et al., 2020), two models that are about
+function,weuse
+10and25timeslargerthanourotherbaselinemod-
+w˜ els,respectively.
+t
+w = withw˜ = max(0,1−0.2·t)
+t (cid:80) t
+w˜
+s∈N s
+4.2 DownstreamTasks
+tomakesurethatAPIcallshappenclosetowhere Weevaluateallmodelsonavarietyofdownstream
+the information provided by the API is actually tasks. In all cases, we consider a prompted zero-
+helpfulforthemodel. Thethresholdsτ s andτ f are shot setup – i.e., models are instructed to solve
+chosenindividuallyforeachtooltoensureasuffi- each task in natural language, but we do not pro-
+cientlylargernumberofexamples;seeAppendixA vide any in-context examples. This is in contrast
+fordetails. Table2showsrelevantstatisticsofour to prior work on tool use (e.g., Gao et al., 2022;
+finaldatasetaugmentedwithAPIcalls. Parisi et al., 2022), where models are provided
+withdataset-specificexamplesofhowatoolcanbe
+Model Finetuning We finetune M on C∗ using
+usedtosolveaconcretetask. Wechoosethemore
+abatchsizeof128andalearningrateof1·10−5
+challenging zero-shot setup as we are interested
+with linear warmup for the first 10% of training.
+in seeing whether Toolformer works in precisely
+Details of our finetuning procedure are given in
+those cases where a user does not specify in ad-
+AppendixB.
+vancewhichtoolsshouldbeusedinwhichwayfor
+solvingaspecificproblem.
+Baseline Models Throughout the remainder of
+Weusestandardgreedydecoding,butwithone
+thissection,wemainlycomparethefollowingmod-
+modificationforToolformer: Weletthemodelstart
+els:
+anAPIcallnotjustwhen<API>isthemostlikely
+4Whilethisfilteringaltersthedistributionoftrainingexam-
+ples,weassumethattheremainingexamplesarecloseenough 5Thisisachievedbymanuallysettingtheprobabilityof
+to the original distribution so that M’s language modeling the<API>tokento0.
+abilitiesremainunaffected. Thisassumptionisempirically 6Weusetheoriginaldavincivariantthatisnotfinetuned
+validatedinSection4.3. onanyinstructions.
+token,butwheneveritisoneofthek mostlikely Model SQuAD Google-RE T-REx
+tokens. For k = 1, this corresponds to regular
+GPT-J 17.8 4.9 31.9
+greedy decoding; we instead use k = 10 to in- GPT-J+CC 19.2 5.6 33.2
+Toolformer(disabled) 22.1 6.3 34.9
+creasethedispositionofourmodeltomakeuseof
+Toolformer 33.8 11.5 53.5
+the APIs that it has access to. At the same time,
+OPT(66B) 21.6 2.9 30.1
+we only at most one API call per input to make
+GPT-3(175B) 26.8 7.0 39.8
+surethemodeldoesnotgetstuckinaloopwhere
+itconstantlycallsAPIswithoutproducinganyac- Table3:ResultsonsubsetsofLAMA.Toolformeruses
+tual output. The effect of these modifications is thequestionansweringtoolformostexamples,clearly
+exploredinSection5. outperformingallbaselinesofthesamesizeandachiev-
+ingresultscompetitivewithGPT-3(175B).
+4.2.1 LAMA
+We evaluate our models on the SQuAD, Google- Model ASDiv SVAMP MAWPS
+RE and T-REx subsets of the LAMA benchmark GPT-J 7.5 5.2 9.9
+(Petronietal.,2019). Foreachofthesesubsets,the GPT-J+CC 9.6 5.0 9.3
+Toolformer(disabled) 14.8 6.3 15.0
+taskistocompleteashortstatementwithamiss-
+Toolformer 40.4 29.4 44.0
+ing fact (e.g., a date or a place). As LAMA was
+OPT(66B) 6.0 4.9 7.9
+originally designed to evaluate masked language GPT-3(175B) 14.0 10.0 19.8
+models(e.g.,Devlinetal.,2019),wefilteroutex-
+ampleswherethemasktokenisnotthefinaltoken, Table 4: Results for various benchmarks requiring
+so that the remaining examples can be processed mathematicalreasoning. Toolformermakesuseofthe
+calculator tool for most examples, clearly outperform-
+inaleft-to-rightfashion. Toaccountfordifferent
+ingevenOPT(66B)andGPT-3(175B).
+tokenizations and added complexity from not in-
+forming the model that a single word is required,
+weuseaslightlymorelenientevaluationcriterion numberpredictedbythemodel.7
+than exact match and simply check whether the Table4showsresultsforallbenchmarks. While
+correctwordiswithinthefirstfivewordspredicted GPT-J and GPT-J + CC perform about the same,
+by the model. As LAMA is based on statements Toolformer achieves stronger results even when
+obtaineddirectlyfromWikipedia,wepreventTool- APIcallsaredisabled. Wesurmisethatthisisbe-
+former from using the Wikipedia Search API to cause the model is finetuned on many examples
+avoidgivingitanunfairadvantage. of API calls and their results, improving its own
+Results for all models can be seen in Table 3. mathematicalcapabilities. Nonetheless,allowing
+AllGPT-Jmodelswithouttooluseachievesimilar themodeltomakeAPIcallsmorethandoublesper-
+performance. Crucially,Toolformerclearlyoutper- formanceforalltasks,andalsoclearlyoutperforms
+formsthesebaselinemodels,improvinguponthe the much larger OPT and GPT-3 models. This is
+bestbaselineby11.7,5.2and18.6points,respec- because across all benchmarks, for 97.9% of all
+tively. ItalsoclearlyoutperformsOPT(66B)and examplesthemodeldecidestoaskthecalculator
+GPT-3 (175B), despite both models being much toolforhelp.
+larger. This is achieved because the model inde-
+pendently decides to ask the question answering 4.2.3 QuestionAnswering
+toolfortherequiredinformationinalmostallcases We look at Web Questions (Berant et al., 2013),
+(98.1%);foronlyveryfewexamples,itusesadif- NaturalQuestions(Kwiatkowskietal.,2019)and
+ferenttool(0.7%)ornotoolatall(1.2%). TriviaQA(Joshietal.,2017),thethreequestionan-
+sweringdatasetsconsideredbyBrownetal.(2020).
+4.2.2 MathDatasets
+Forevaluation,wecheckwhetherthefirst20words
+WetestmathematicalreasoningabilitiesonASDiv predicted by a model contain the correct answer
+(Miaoetal.,2020),SVAMP(Pateletal.,2021)and instead of requiring an exact match. For Tool-
+theMAWPSbenchmark(Koncel-Kedziorskietal., former,wedisablethequestionansweringtoolas
+2016). Weagainaccountforthefactthatwetest
+all models in a zero-shot setup by using a more 7Anexceptiontothisisifthemodel’spredictioncontains
+anequation(e.g.,“Thecorrectansweris5+3=8”),inwhich
+lenientevaluationcriterion: Astherequiredoutput
+caseweconsiderthefirstnumberafterthe“=”signtobeits
+isalwaysanumber,wesimplycheckforthefirst prediction.
+Model WebQS NQ TriviaQA Model Es De Hi Vi Zh Ar
+GPT-J 18.5 12.8 43.9 GPT-J 15.2 16.5 1.3 8.2 18.2 8.2
+GPT-J+CC 18.4 12.2 45.6 GPT-J+CC 15.7 14.9 0.5 8.3 13.7 4.6
+Toolformer(disabled) 18.9 12.6 46.7 Toolformer(disabled) 19.8 11.9 1.2 10.1 15.0 3.1
+Toolformer 26.3 17.7 48.8 Toolformer 20.6 13.5 1.4 10.6 16.8 3.7
+OPT(66B) 18.6 11.4 45.7 OPT(66B) 0.3 0.1 1.1 0.2 0.7 0.1
+GPT-3(175B) 29.0 22.6 65.9 GPT-3(175B) 3.4 1.1 0.1 1.7 17.7 0.1
+GPT-J(AllEn) 24.3 27.0 23.9 23.3 23.1 23.6
+Table5:Resultsforvariousquestionansweringdataset. GPT-3(AllEn) 24.7 27.2 26.1 24.9 23.6 24.0
+Using the Wikipedia search tool for most examples,
+Toolformer clearly outperforms baselines of the same Table 6: Results on MLQA for Spanish (Es), German
+size,butfallsshortofGPT-3(175B). (De), Hindi (Hi), Vietnamese (Vi), Chinese (Zh) and
+Arabic(Ar). Whileusingthemachinetranslationtool
+to translate questions is helpful across all languages,
+thiswouldmakesolvingthetaskstrivial,especially furtherpretrainingonCCNetdeterioratesperformance;
+giventhattheunderlyingQAsystemwasfinetuned consequently,Toolformerdoesnotconsistentlyoutper-
+onNaturalQuestions. formGPT-J.Thefinaltworowscorrespondtomodels
+thataregivencontextsandquestionsinEnglish.
+Results are shown in Table 5. Once again,
+Toolformer clearly outperforms all other models
+based on GPT-J, this time mostly relying on the
+former does not consistently outperform vanilla
+WikipediasearchAPI(99.3%)tofindrelevantin-
+GPT-J.Thisismainlybecauseforsomelanguages,
+formation. However,Toolformerstilllagsbehind
+finetuningonCCNetdeterioratesperformance;this
+themuchlargerGPT-3(175B)model. Thisislikely
+might be due to a distribution shift compared to
+duetoboththesimplicityofoursearchengine(in
+GPT-J’soriginalpretrainingdata.
+many cases, it returns results that are clearly not
+OPT and GPT-3 perform surprisingly weak
+agoodmatchforagivenquery)andtheinability
+across all languages, mostly because they fail to
+of Toolformer to interact with it, e.g., by refor-
+provide an answer in English despite being in-
+mulating its query if results are not helpful or by
+structedtodoso. ApotentialreasonforGPT-Jnot
+browsingthroughmultipleofthetopresults. We
+sufferingfromthisproblemisthatitwastrainedon
+believethataddingthisfunctionalityisanexciting
+moremultilingualdatathanbothOPTandGPT-3,
+directionforfuturework.
+includingtheEuroParlcorpus(Koehn,2005;Gao
+etal.,2020). Asanupperbound,wealsoevaluate
+4.2.4 MultilingualQuestionAnswering
+GPT-J and GPT-3 on a variant of MLQA where
+We evaluate Toolformer and all baseline models boththecontextandthequestionareprovidedin
+on MLQA (Lewis et al., 2019), a multilingual English. Inthissetup,GPT-3performsbetterthan
+question-answering benchmark. A context para- all other models, supporting our hypothesis that
+graph for each question is provided in English, its subpar performance on MLQA is due to the
+whilethequestioncanbeinArabic,German,Span- multilingualaspectofthetask.
+ish,Hindi,Vietnamese,orSimplifiedChinese. In
+ordertosolvethetask,themodelneedstobeable 4.2.5 TemporalDatasets
+tounderstandboththeparagraphandthequestion, To investigate the calendar API’s utility, we eval-
+soitmaybenefitfromtranslatingthequestioninto uate all models on TEMPLAMA (Dhingra et al.,
+English. Ourevaluationmetricisthepercentageof 2022) and a new dataset that we call DATESET.
+timesthemodel’sgeneration,cappedat10words, TEMPLAMAisadatasetbuiltfromWikidatathat
+containsthecorrectanswer. containsclozequeriesaboutfactsthatchangewith
+Results are shown in Table 6. Using API calls time (e.g., “Cristiano Ronaldo plays for ___”)
+consistently improves Toolformer’s performance as well as the correct answer for the years be-
+foralllanguages,suggestingthatithaslearnedto tween 2010 and 2020. DATESET, described in
+makeuseofthemachinetranslationtool. Depend- Appendix D, is also generated through a series
+ing on the language, this tool is used for 63.8% of templates, but populated using a combination
+to 94.9% of all examples; the only exception to ofrandomdates/durations(e.g.,“Whatdayofthe
+this is Hindi, for which the machine translation weekwasit30daysago?”). Critically,knowingthe
+toolisusedinonly7.3%ofcases. However,Tool- currentdateisrequiredtoanswerthesequestions.
+Model TEMPLAMA DATESET Model WikiText CCNet
+GPT-J 13.7 3.9 GPT-J 9.9 10.6
+GPT-J+CC 12.9 2.9 GPT-J+CC 10.3 10.5
+Toolformer(disabled) 12.7 5.9 Toolformer(disabled) 10.3 10.5
+Toolformer 16.3 27.3
+OPT(66B) 14.5 1.3 Table 8: Perplexities of different models on WikiText
+GPT-3(175B) 15.5 0.8 andourvalidationsubsetofCCNet. AddingAPIcalls
+comes without a cost in terms of perplexity for lan-
+Table7: Resultsforthetemporaldatasets. Toolformer guagemodelingwithoutanyAPIcalls.
+outperformsallbaselines,butdoesnotmakeuseofthe
+calendartoolforTEMPLAMA.
+training data for GPT-J is more similar to Wiki-
+TextthanourrandomlyselectedsubsetofCCNet.
+Forbothtasks,weusethesameevaluationasfor Most importantly, however, training on C∗ (our
+theoriginalLAMAdataset. datasetannotatedwithAPIcalls)doesnotleadto
+Results shown in Table 7 illustrate that Tool- anincreaseinperplexitycomparedtotrainingon
+former outperforms all baselines for both TEM- C whenAPIcallsaredisabledatinferencetime.8
+PLAMA and DATESET. However, closerinspec-
+tion shows that improvements on TEMPLAMA 4.4 ScalingLaws
+cannotbeattributedtothecalendartool,whichis
+Weinvestigatehowtheabilitytoaskexternaltools
+onlyusedfor0.2%ofallexamples,butmostlyto
+for help affects performance as we vary the size
+theWikipediasearchandquestionansweringtools,
+of our LM. To this end, we apply our approach
+whichToolformercallsthemost. Thismakessense
+not just to GPT-J, but also to four smaller mod-
+giventhatnamedentitiesin TEMPLAMAareoften
+elsfromtheGPT-2family(Radfordetal.,2019),
+so specific and rare that even knowing the exact
+with124M,355M,775Mand1.6Bparameters,re-
+datealonewouldbeoflittlehelp. Thebestcourse
+spectively. Wedosousingonlyasubsetofthree
+ofactionforthisdataset–firstqueryingthecalen-
+tools: thequestionansweringsystem,thecalcula-
+darAPItogetthecurrentdate,andthenquerying
+tor,andtheWikipediasearchengine. Apartfrom
+thequestionansweringsystemwiththisdate–is
+this,wefollowtheexperimentalsetupdescribedin
+not only prohibited by our restriction of using at
+Section4.1.
+most one API call per example, but also hard to
+Figure 4 shows that the ability to leverage the
+learnforToolformergiventhatallAPIcallsinits
+provided tools only emerges at around 775M pa-
+trainingdataaresampledindependently.
+rameters: smaller models achieve similar perfor-
+For DATESET,ontheotherhand,theconsider-
+mancebothwithandwithouttools. Anexception
+ableimprovementofToolformercomparedtoother
+tothisistheWikipediasearchengineusedmostly
+modelscanbefullyaccreditedtothecalendartool,
+for QA benchmarks; we hypothesize that this is
+whichitmakesuseoffor54.8%ofallexamples.
+becausetheAPIiscomparablyeasytouse. While
+modelsbecomebetteratsolvingtaskswithoutAPI
+4.3 LanguageModeling
+callsastheygrowinsize,theirabilitytomakegood
+Inadditiontoverifyingimprovedperformanceon useoftheprovidedAPIimprovesatthesametime.
+variousdownstreamtasks,wealsowanttoensure As a consequence, there remains a large gap be-
+thatlanguagemodelingperformanceofToolformer tweenpredictionswithandwithoutAPIcallseven
+doesnotdegradethroughourfinetuningwithAPI forourbiggestmodel.
+calls. To this end, we evaluate our models on
+two language modeling datasets: WikiText (Mer- 5 Analysis
+ity et al., 2017) and a subset of 10,000 randomly
+DecodingStrategy Weinvestigatetheeffectof
+selected documents from CCNet (Wenzek et al.,
+ourmodifieddecodingstrategyintroducedinSec-
+2020)thatwerenotusedduringtraining. Perplex-
+tion 4.2, where instead of always generating the
+ities of various models are shown in Table 8. As
+one would expect, finetuning on CCNet leads to 8We do not evaluate the perplexity of Toolformer with
+slightlyimprovedperformanceonadifferentCC- API calls enabled as computing the probability p M (x t |
+x ,...,x )oftokenx givenx ,...,x wouldrequire
+Netsubset,butitslightlydeterioratesperformance 1 t−1 t 1 t−1
+marginalizingoverallpotentialAPIcallsthatthemodelcould
+onWikiText,presumablybecausetheoriginalpre- makeatpositiont,whichisintractable.
+LAMA Math Benchmarks QA Benchmarks
+30 30 40
+35
+25 25
+30
+20 20
+25
+15 15 20
+15
+10 10
+Toolformer 10
+5 Toolformer (disabled) 5
+5
+GPT3
+0 0 0
+0 2000 4000 6000 0 2000 4000 6000 0 2000 4000 6000
+Model Parameters (M) Model Parameters (M) Model Parameters (M)
+Figure4: AverageperformanceonLAMA,ourmathbenchmarksandourQAbenchmarksforGPT-2modelsof
+differentsizesandGPT-Jfinetunedwithourapproach,bothwithandwithoutAPIcalls. WhileAPIcallsarenot
+helpfultothesmallestmodels, largermodelslearnhowtomakegooduseofthem. Evenforbiggermodels, the
+gapbetweenmodelpredictionswithandwithoutAPIcallsremainshigh.
+most likely token, we generate the <API> token T-REx WebQS
+if it is one of the k most likely tokens. Table 9
+k All AC NC % All AC NC %
+showsperformanceontheT-RExsubsetofLAMA
+0 34.9 – 34.9 0.0 18.9 – 18.9 0.0
+and on WebQS for different values of k. As ex- 1 47.8 53.0 44.3 40.3 19.3 17.1 19.9 8.5
+pected,increasingk leadstothemodeldoingAPI 3 52.9 58.0 29.0 82.8 26.3 26.5 6.6 99.3
+10 53.5 54.0 22.5 98.1 26.3 26.4 – 100.0
+calls for more examples – from 40.3% and 8.5%
+withk = 1(i.e.,regulargreedydecoding)to98.1%
+Table 9: Toolformer results on the T-REx subset of
+and 100% for k = 10. While for T-REx, there is LAMA and on WebQS for different values of k used
+alreadyaclearimprovementinperformancewith during decoding. Numbers shown are overall perfor-
+greedydecoding,onWebQSourmodelonlystarts mance (All), performance on the subset where the
+to make a substantial number of API calls as we model decides to make an API call (AC) and all re-
+maining examples (NC), as well as the percentage of
+slightly increase k. Interestingly, for k = 1 the
+examples for which the model decides to call an API
+model is calibrated to some extent: It decides to
+(%).
+callAPIsforexamplesthatitwouldperformpartic-
+ularlybadlyonwithoutmakingAPIcalls. Thiscan
+beseenfromthefactthatperformanceonexamples “Fasttrainsuccess”inthefourthexamplethatdoes
+whereitdecidesnottomakeanAPIcall(44.3and notgiveanyrelevantinformationbutstillreduces
+19.9)ishigherthanaverageperformanceifnoAPI perplexity. However,someamountofnoiseinthe
+callsaremadeatall(34.9and18.9). However,this APIcallsthatarenotfilteredcanactuallybeuseful
+calibrationislostforhighervaluesofk. asitforcesthemodelfinetunedonC∗tonotalways
+blindlyfollowtheresultsofeachcallitmakes.
+Data Quality We qualitatively analyze some
+APIcallsgeneratedwithourapproachfordifferent 6 RelatedWork
+APIs. Table10showssomeexamplesoftextsfrom
+CCNet augmented with API calls, as well as the LanguageModelPretraining Therearevarious
+correspondingscoreL−−L+ thatisusedasafil- approaches that augment language models with
+i i
+teringcriterion,andwhethertheAPIcallsmadeby someformofadditionaltextualinformationduring
+themodelareintuitivelyusefulinthegivencontext. pretraining, including various forms of metadata
+Ascanbeseen,highvaluesofL−−L+ typically (Keskar et al., 2019), HTML tags (Aghajanyan
+i i
+correspondtousefulAPIcalls,whereaslowvalues et al., 2021), Wikipedia markup (Schick et al.,
+correspondtoAPIcallsthatdonotprovideanyin- 2022), or related texts obtained from an informa-
+formationthatisusefulforpredictingfuturetokens. tionretrievalsystem(Guuetal.,2020;Borgeaud
+There are some exceptions, e.g., an API call for etal.,2021;Izacardetal.,2022). Forallofthese
+Example L−−L+ Useful
+i i
+TheFloddenWindow(awarmemorialdedicatedtoTheMiddletonArchers),intheGradeI-listed
+Church of St Leonard in Middleton is said to be the oldest war memorial in the United King-
+dom. <API>WikiSearch(WarmemorialFlodden)→BattleofFlodden>Commemoration>
+Thestained-glassFloddenWindowinMiddletonParishChurch[...] wasconstructedbySir 5.49 (cid:51)
+RichardAsshetoninmemoryoftheBattleofFloddenandthearchersfromMiddletonwho
+fought in it. </API> Sir Richard Assheton of Middleton (who built St Leonard) was granted
+knighthood[...]
+Note:TheWLwillbeopenonFriday,<API>Calendar()→TodayisThursday,March9,2017.
+2.11 (cid:51)
+</API>March10,andSunday,March19forregularhours.
+TheNilehasanapproximatelengthof<API>QA(WhatistheapproximatelengthoftheNile?)
+2.08 (cid:51)
+→6,853km</API>6,853kilometers,theWhiteNilebeingitsmainsource.
+IfVenushadanatmospheresimilartoEarth’sthenyouwouldexpectVenus’meantemperaturetobe
+499K(1.74x287)ratherthan735Kwhichis<API>Calculator(735/499)→1.47</API>1.47 1.59 (cid:51)
+(735/499)timeshotterthanitshouldbe.
+Youarehere: Home/Featured/Catchthisfasttraintosuccess! <API>WikiSearch(Fasttrain
+success)→FastTrain>Italsopeakedat#23ontheCanadianCHUMsingleschart,onJune
+26,1971.ThesuccessofthissingleestablishedMylesGoodwynastheband’smainsongwriter, 0.92 (cid:55)
+andmadeitpossibleforAprilWinetorecordasecondalbum. </API>Don’twaitweeksand
+[...]
+OsMelhoresEscolasemJersey2020<API>MT(OsMelhoresEscolasemJersey)→TheBest
+SchoolsinJersey</API>OnthispageyoucansearchforUniversities,CollegesandBusiness 0.70 (cid:51)
+schoolsinJersey
+Enjoythesepicturesfromthe<API>Calendar()→TodayisFriday,April19,2013. </API>
+0.33 (cid:51)
+EasterEggHunt.
+85patients(23%)werehospitalisedaliveandadmittedtoahospitalward.Ofthem,<API>Calcula-
+−0.02 (cid:55)
+tor(85/23)→3.70</API>65%hadacardiacaetiology[...]
+Buthey,afterthe<API>Calendar()→TodayisSaturday,June25,2011. </API>Disneyland
+−0.41 (cid:55)
+fiascowiththefiredrill,Ithinkit’ssafetosayCheweywon’tletanyonedieinafire.
+ThelasttimeIwaswith<API>QA(WhowaslasttimeIwaswith?)→TheLastTime</API>
+−1.23 (cid:55)
+himIaskedwhathelikesaboutmeandhesaidhewouldtellmeoneday.
+Table 10: Examples of API calls for different tools, sorted by the value of L−−L+ that is used as a filtering
+i i
+criterion. HighvaluestypicallycorrespondtoAPIcallsthatareintuitivelyusefulforpredictingfuturetokens.
+approaches,additionalinformationisalwayspro- used(Gaoetal.,2022;Lazaridouetal.,2022;Yao
+vided,regardlessofwhetheritishelpfulornot. In etal.,2022). Incontrast,theself-supervisednature
+contrast, Toolformerlearnsforitselftoexplicitly ofToolformerenablesittolearnhowandwhento
+asksfortherightinformation. usetoolswithoutrequiringaspecificpromptthat
+showstask-specificexamplesofhowatoolcould
+beused. Perhapsmostcloselyrelatedtoourwork
+ToolUse SeveralapproachesaimtoequipLMs
+is TALM (Parisi et al., 2022), an approach that
+withtheabilitytouseexternaltoolssuchassearch
+usesasimilarself-supervisedobjectiveforteach-
+engines (Komeili et al., 2022; Thoppilan et al.,
+ingamodeltouseacalculatorandasearchengine,
+2022;Lazaridouetal.,2022;Shusteretal.,2022;
+butexploresthisonlyinsettingswhereamodelis
+Yao et al., 2022), web browsers (Nakano et al.,
+finetunedfordownstreamtasks.
+2021),calculators(Cobbeetal.,2021;Thoppilan
+etal.,2022),translationsystems(Thoppilanetal.,
+2022) and Python interpreters (Gao et al., 2022). Bootstrapping The idea of using self-training
+Thewaythesemodelslearntousetoolscanroughly and bootstrapping techniques to improve models
+bedividedintotwoapproaches: Eithertheyrelyon has been investigated in various contexts, rang-
+largeamountsofhumansupervision(Komeilietal., ing from word sense disambiguation (Yarowsky,
+2022;Nakanoetal.,2021;Thoppilanetal.,2022) 1995), relation extraction (Brin, 1999; Agichtein
+ortheyworkbypromptingthelanguagemodelin and Gravano, 2000), parsing (McClosky et al.,
+a few-shot setup tailored towards a specific task 2006; Reichart and Rappoport, 2007), sequence
+whereitisknownaprioriwhichtoolsneedstobe generation (He et al., 2020), few-shot text classi-
+fication(SchickandSchütze,2021a)andretrieval reduce perplexity on future tokens. Toolformer
+(IzacardandGrave,2021)toreasoning(Zelikman considerablyimproveszero-shotperformanceofa
+etal.,2022). Inasimilarspirittotheseapproaches, 6.7BparameterGPT-Jmodel,enablingittoeven
+Toolformeristrainedonitsownpredictionsafter outperformamuchlargerGPT-3modelonarange
+applyingaperplexity-basedfilteringstep. ofdifferentdownstreamtasks.
+7 Limitations
+References
+WhileourapproachenablesLMstolearnhowto
+useavarietyoftoolsinaself-supervisedway,there Armen Aghajanyan, Dmytro Okhonko, Mike Lewis,
+MandarJoshi,HuXu,GargiGhosh,andLukeZettle-
+aresomeclearlimitationstowhatcanbeachieved
+moyer. 2021. Htlm: Hyper-text pre-training and
+withourmethodinitscurrentform. Onesuchlimi- promptingoflanguagemodels.
+tationistheinabilityofToolformertousetoolsina
+chain(i.e.,usingtheoutputofonetoolasaninput EugeneAgichteinandLuisGravano.2000. Snowball:
+Extractingrelationsfromlargeplain-textcollections.
+for another tool). This is due to the fact that API
+InProceedingsoftheFifthACMConferenceonDig-
+callsforeachtoolaregeneratedindependently;asa ital Libraries, DL ’00, page 85–94, New York, NY,
+consequence,therearenoexamplesofchainedtool USA.AssociationforComputingMachinery.
+useinthefinetuningdataset. Ourcurrentapproach
+Ricardo Baeza-Yates, Berthier Ribeiro-Neto, et al.
+alsodoesnotallowtheLMtouseatoolinanin-
+1999. Modern information retrieval, volume 463.
+teractiveway–especiallyfortoolssuchassearch
+ACMpressNewYork.
+engines,thatcouldpotentiallyreturnhundredsof
+differentresults,enablingaLMtobrowsethrough JonathanBerant,AndrewChou,RoyFrostig,andPercy
+Liang. 2013. Semantic parsing on Freebase from
+theseresultsortorefineitssearchqueryinasimi-
+question-answer pairs. In Proceedings of the 2013
+larspirittoNakanoetal.(2021)canbecrucialfor
+Conference on Empirical Methods in Natural Lan-
+certainapplications. Beyondthis,wefoundmodels guageProcessing,pages1533–1544,Seattle,Wash-
+trainedwithToolformertooftenbesensitivetothe ington, USA. Association for Computational Lin-
+guistics.
+exactwordingoftheirinputwhendecidingwhether
+ornottocallanAPI;thisisperhapsunsurprising
+Sebastian Borgeaud, Arthur Mensch, Jordan Hoff-
+giventhatLMsareknowntobeverysensitiveto mann,TrevorCai,ElizaRutherford,KatieMillican,
+the prompt they are provided with in both zero- George van den Driessche, Jean-Baptiste Lespiau,
+Bogdan Damoc, Aidan Clark, Diego de Las Casas,
+and few-shot settings (Jiang et al., 2020; Schick
+AureliaGuy,JacobMenick,RomanRing,TomHen-
+andSchütze,2021a). Dependingonthetool, our
+nigan,SaffronHuang,LorenMaggiore,ChrisJones,
+methodisalsoverysample-inefficient;forexample, AlbinCassirer, AndyBrock, MichelaPaganini, Ge-
+processingmorethanamilliondocumentsresults offreyIrving,OriolVinyals,SimonOsindero,Karen
+Simonyan, Jack W. Rae, Erich Elsen, and Laurent
+in only a few thousand examples of useful calls
+Sifre.2021. Improvinglanguagemodelsbyretriev-
+tothecalculatorAPI.Apotentialsolutiontothis
+ingfromtrillionsoftokens.
+problemmightbetoiterativelyapplyourapproach,
+similartohowthisisdoneinrelatedbootstrapping Sergey Brin. 1999. Extracting patterns and relations
+from the world wide web. In The World Wide Web
+approaches (Schick and Schütze, 2021a; Izacard
+and Databases, pages 172–183, Berlin, Heidelberg.
+andGrave,2021;Parisietal.,2022). Finally,when
+SpringerBerlinHeidelberg.
+decidingwhetherornottomakeanAPIcall,Tool-
+former currently does not take into account the Tom Brown, Benjamin Mann, Nick Ryder, Melanie
+tool-dependent,computationalcostincurredfrom Subbiah, Jared D Kaplan, Prafulla Dhariwal,
+Arvind Neelakantan, Pranav Shyam, Girish Sastry,
+makinganAPIcall.
+Amanda Askell, Sandhini Agarwal, Ariel Herbert-
+Voss, Gretchen Krueger, Tom Henighan, Rewon
+8 Conclusion
+Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu,
+Clemens Winter, Chris Hesse, Mark Chen, Eric
+WehaveintroducedToolformer,alanguagemodel Sigler,MateuszLitwin,ScottGray,BenjaminChess,
+that learns in a self-supervised way how to use Jack Clark, Christopher Berner, Sam McCandlish,
+differenttoolssuchassearchengines,calculators, Alec Radford, Ilya Sutskever, and Dario Amodei.
+2020. Language models are few-shot learners. In
+andtranslationsystemsviasimpleAPIcalls. This
+AdvancesinNeuralInformationProcessingSystems,
+isdonebyfinetuningonalargenumberofsampled
+volume 33, pages 1877–1901. Curran Associates,
+API calls that are filtered based on whether they Inc.
+Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasu-
+Maarten Bosma, Gaurav Mishra, Adam Roberts, pat,andMing-WeiChang.2020. Realm: Retrieval-
+Paul Barham, Hyung Won Chung, Charles Sutton, augmentedlanguagemodelpre-training.
+Sebastian Gehrmann, Parker Schuh, Kensen Shi,
+Sasha Tsvyashchenko, Joshua Maynez, Abhishek JunxianHe,JiataoGu,JiajunShen,andMarc’Aurelio
+Rao, Parker Barnes, Yi Tay, Noam Shazeer, Vin- Ranzato. 2020. Revisiting self-training for neural
+odkumar Prabhakaran, Emily Reif, Nan Du, Ben sequence generation. In International Conference
+Hutchinson, Reiner Pope, James Bradbury, Jacob onLearningRepresentations.
+Austin, Michael Isard, Guy Gur-Ari, Pengcheng
+Yin, Toju Duke, Anselm Levskaya, Sanjay Ghe- OrHonovich,ThomasScialom,OmerLevy,andTimo
+mawat, Sunipa Dev, Henryk Michalewski, Xavier Schick. 2022. Unnatural instructions: Tuning lan-
+Garcia, Vedant Misra, Kevin Robinson, Liam Fe- guagemodelswith(almost)nohumanlabor.
+dus, Denny Zhou, Daphne Ippolito, David Luan,
+HyeontaekLim,BarretZoph,AlexanderSpiridonov, Gautier Izacard and Edouard Grave. 2021. Distilling
+RyanSepassi,DavidDohan,ShivaniAgrawal,Mark knowledge from reader to retriever for question an-
+Omernick,AndrewM.Dai,ThanumalayanSankara- swering. In International Conference on Learning
+narayana Pillai, Marie Pellat, Aitor Lewkowycz, Representations.
+Erica Moreira, Rewon Child, Oleksandr Polozov,
+KatherineLee,ZongweiZhou,XuezhiWang,Bren- Gautier Izacard, Patrick Lewis, Maria Lomeli, Lucas
+nanSaeta,MarkDiaz,OrhanFirat,MicheleCatasta, Hosseini,FabioPetroni,TimoSchick,JaneDwivedi-
+Jason Wei, Kathy Meier-Hellstern, Douglas Eck, Yu, Armand Joulin, Sebastian Riedel, and Edouard
+Jeff Dean, Slav Petrov, and Noah Fiedel. 2022. Grave.2022. Atlas:Few-shotlearningwithretrieval
+Palm: Scalinglanguagemodelingwithpathways. augmentedlanguagemodels.
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Ziwei Ji, Nayeon Lee, Rita Frieske, Tiezheng Yu,
+Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias Dan Su, Yan Xu, Etsuko Ishii, Yejin Bang, Andrea
+Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Madotto, and Pascale Fung. 2022. Survey of hallu-
+Nakano,etal.2021. Trainingverifierstosolvemath cinationinnaturallanguagegeneration. ACMCom-
+wordproblems. arXivpreprintarXiv:2110.14168. putingSurveys.
+MartaRCosta-jussà,JamesCross,OnurÇelebi,Maha ZhengbaoJiang, FrankF.Xu, JunAraki, andGraham
+Elbayad,KennethHeafield,KevinHeffernan,Elahe Neubig. 2020. How can we know what language
+Kalbassi, Janice Lam, Daniel Licht, Jean Maillard, models know? Transactions of the Association for
+et al. 2022. No language left behind: Scaling ComputationalLinguistics,8:423–438.
+human-centeredmachinetranslation. arXivpreprint
+arXiv:2207.04672. Mandar Joshi, Eunsol Choi, Daniel Weld, and Luke
+Zettlemoyer. 2017. TriviaQA: A large scale dis-
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and tantlysupervisedchallengedatasetforreadingcom-
+Kristina Toutanova. 2019. BERT: Pre-training of prehension. InProceedingsofthe55thAnnualMeet-
+deep bidirectional transformers for language under- ingoftheAssociationforComputationalLinguistics
+standing. In Proceedings of the 2019 Conference (Volume 1: Long Papers), pages 1601–1611, Van-
+of the North American Chapter of the Association couver,Canada.AssociationforComputationalLin-
+for Computational Linguistics: Human Language guistics.
+Technologies, Volume 1 (Long and Short Papers),
+pages4171–4186,Minneapolis,Minnesota.Associ- Armand Joulin, Edouard Grave, Piotr Bojanowski,
+ationforComputationalLinguistics. Matthijs Douze, Hérve Jégou, and Tomas Mikolov.
+2016. Fasttext.zip: Compressingtextclassification
+Bhuwan Dhingra, Jeremy R. Cole, Julian Martin models. arXivpreprintarXiv:1612.03651.
+Eisenschlos, Daniel Gillick, Jacob Eisenstein, and
+William W. Cohen. 2022. Time-aware language Nitish Shirish Keskar, Bryan McCann, Lav R. Varsh-
+modelsastemporalknowledgebases. Transactions ney, Caiming Xiong, and Richard Socher. 2019.
+of the Association for Computational Linguistics, Ctrl: Aconditionaltransformerlanguagemodelfor
+10:257–273. controllablegeneration.
+Leo Gao, Stella Biderman, Sid Black, Laurence Gold- Philipp Koehn. 2005. Europarl: A parallel corpus for
+ing,TravisHoppe,CharlesFoster,JasonPhang,Ho- statistical machine translation. In Proceedings of
+race He, Anish Thite, Noa Nabeshima, et al. 2020. machinetranslationsummitx: papers,pages79–86.
+The pile: An 800gb dataset of diverse text for lan-
+guagemodeling. arXivpreprintarXiv:2101.00027. Mojtaba Komeili, Kurt Shuster, and Jason Weston.
+2022. Internet-augmented dialogue generation. In
+Luyu Gao, Aman Madaan, Shuyan Zhou, Uri Alon, Proceedings of the 60th Annual Meeting of the As-
+Pengfei Liu, Yiming Yang, Jamie Callan, and Gra- sociation for Computational Linguistics (Volume 1:
+ham Neubig. 2022. Pal: Program-aided language Long Papers), pages 8460–8478, Dublin, Ireland.
+models. AssociationforComputationalLinguistics.
+Rik Koncel-Kedziorski, Subhro Roy, Aida Amini, Xu Jiang, Karl Cobbe, Tyna Eloundou, Gretchen
+Nate Kushman, and Hannaneh Hajishirzi. 2016. Krueger, KevinButton, MatthewKnight, Benjamin
+MAWPS:Amathwordproblemrepository. InPro- Chess,andJohnSchulman.2021. Webgpt:Browser-
+ceedingsofthe2016ConferenceoftheNorthAmer- assistedquestion-answeringwithhumanfeedback.
+ican Chapter of the Association for Computational
+Linguistics: Human Language Technologies, pages AaronParisi,YaoZhao,andNoahFiedel.2022. Talm:
+1152–1157, San Diego, California. Association for Toolaugmentedlanguagemodels.
+ComputationalLinguistics.
+Arkil Patel, Satwik Bhattamishra, and Navin Goyal.
+Tom Kwiatkowski, Jennimaria Palomaki, Olivia Red- 2021. Are NLP models really able to solve simple
+field, Michael Collins, Ankur Parikh, Chris Al- math word problems? In Proceedings of the 2021
+berti, Danielle Epstein, Illia Polosukhin, Jacob De- Conference of the North American Chapter of the
+vlin, Kenton Lee, Kristina Toutanova, Llion Jones, Association for Computational Linguistics: Human
+MatthewKelcey,Ming-WeiChang,AndrewM.Dai, Language Technologies, pages 2080–2094, Online.
+Jakob Uszkoreit, Quoc Le, and Slav Petrov. 2019. AssociationforComputationalLinguistics.
+Natural questions: A benchmark for question an-
+swering research. Transactions of the Association FabioPetroni, AleksandraPiktus, AngelaFan, Patrick
+forComputationalLinguistics,7:452–466. Lewis, Majid Yazdani, Nicola De Cao, James
+Thorne, Yacine Jernite, Vladimir Karpukhin, Jean
+Angeliki Lazaridou, Elena Gribovskaya, Wojciech Maillard,VassilisPlachouras,TimRocktäschel,and
+Stokowiec, and Nikolai Grigorev. 2022. Internet- Sebastian Riedel. 2021. KILT: a benchmark for
+augmented language models through few-shot knowledgeintensivelanguagetasks. InProceedings
+prompting for open-domain question answering. ofthe2021ConferenceoftheNorthAmericanChap-
+arXivpreprintarXiv:2203.05115. teroftheAssociationforComputationalLinguistics:
+Human Language Technologies, pages 2523–2544,
+Patrick Lewis, Barlas Og˘uz, Ruty Rinott, Sebastian
+Online.AssociationforComputationalLinguistics.
+Riedel, and Holger Schwenk. 2019. Mlqa: Eval-
+uating cross-lingual extractive question answering.
+Fabio Petroni, Tim Rocktäschel, Sebastian Riedel,
+arXivpreprintarXiv:1910.07475.
+Patrick Lewis, Anton Bakhtin, Yuxiang Wu, and
+AlexanderMiller.2019. Languagemodelsasknowl-
+XiVictoriaLin,TodorMihaylov,MikelArtetxe,Tianlu
+edge bases? In Proceedings of the 2019 Confer-
+Wang, Shuohui Chen, Daniel Simig, Myle Ott, Na-
+ence on Empirical Methods in Natural Language
+manGoyal,ShrutiBhosale,JingfeiDu,Ramakanth
+Processing and the 9th International Joint Confer-
+Pasunuru,SamShleifer,PunitSinghKoura,Vishrav
+ence on Natural Language Processing (EMNLP-
+Chaudhary, Brian O’Horo, Jeff Wang, Luke Zettle-
+IJCNLP),pages2463–2473,HongKong,China.As-
+moyer,ZornitsaKozareva,MonaDiab,VeselinStoy-
+sociationforComputationalLinguistics.
+anov, and Xian Li. 2021. Few-shot learning with
+multilinguallanguagemodels.
+Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
+Dario Amodei, Ilya Sutskever, et al. 2019. Lan-
+Joshua Maynez, Shashi Narayan, Bernd Bohnet, and
+guage models are unsupervised multitask learners.
+RyanMcDonald.2020. Onfaithfulnessandfactual-
+OpenAIblog,1(8):9.
+ityinabstractivesummarization.
+Roi Reichart and Ari Rappoport. 2007. Self-training
+DavidMcClosky,EugeneCharniak,andMarkJohnson.
+for enhancement and domain adaptation of statisti-
+2006. Effective self-training for parsing. In Pro-
+cal parsers trained on small datasets. In Proceed-
+ceedings of the Human Language Technology Con-
+ingsofthe45thAnnualMeetingoftheAssociationof
+ferenceoftheNAACL,MainConference,pages152–
+Computational Linguistics, pages 616–623, Prague,
+159, New York City, USA. Association for Compu-
+CzechRepublic.AssociationforComputationalLin-
+tationalLinguistics.
+guistics.
+StephenMerity,CaimingXiong,JamesBradbury,and
+RichardSocher.2017. Pointersentinelmixturemod- Stephen E Robertson, Steve Walker, Susan Jones,
+els. InInternationalConferenceonLearningRepre- MichelineMHancock-Beaulieu,MikeGatford,etal.
+sentations. 1995. Okapiattrec-3. NistSpecialPublicationSp,
+109:109.
+Shen-yun Miao, Chao-Chun Liang, and Keh-Yih Su.
+2020. Adiversecorpusforevaluatinganddevelop- TimoSchick,JaneDwivedi-Yu,ZhengbaoJiang,Fabio
+ingEnglishmathwordproblemsolvers. InProceed- Petroni,PatrickLewis,GautierIzacard,QingfeiYou,
+ings of the 58th Annual Meeting of the Association Christoforos Nalmpantis, Edouard Grave, and Se-
+for Computational Linguistics, pages 975–984, On- bastian Riedel. 2022. Peer: A collaborative lan-
+line.AssociationforComputationalLinguistics. guagemodel.
+ReiichiroNakano,JacobHilton,SuchirBalaji,JeffWu, Timo Schick and Hinrich Schütze. 2021a. Exploiting
+Long Ouyang, Christina Kim, Christopher Hesse, cloze-questions for few-shot text classification and
+Shantanu Jain, Vineet Kosaraju, William Saunders, natural language inference. In Proceedings of the
+16thConferenceoftheEuropeanChapteroftheAs- webcrawldata. InProceedingsoftheTwelfthLan-
+sociation for Computational Linguistics: Main Vol- guageResourcesandEvaluationConference,pages
+ume, pages 255–269, Online. Association for Com- 4003–4012, Marseille, France. European Language
+putationalLinguistics. ResourcesAssociation.
+TimoSchickandHinrichSchütze.2021b. Generating Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak
+datasets with pretrained language models. In Pro- Shafran, Karthik Narasimhan, and Yuan Cao. 2022.
+ceedingsofthe2021ConferenceonEmpiricalMeth- React:Synergizingreasoningandactinginlanguage
+ods in Natural Language Processing, pages 6943– models.
+6951,OnlineandPuntaCana,DominicanRepublic.
+David Yarowsky. 1995. Unsupervised word sense dis-
+AssociationforComputationalLinguistics.
+ambiguation rivaling supervised methods. In 33rd
+Annual Meeting of the Association for Computa-
+Kurt Shuster, Jing Xu, Mojtaba Komeili, Da Ju,
+tionalLinguistics,pages189–196,Cambridge,Mas-
+Eric Michael Smith, Stephen Roller, Megan Ung,
+sachusetts, USA. Association for Computational
+Moya Chen, Kushal Arora, Joshua Lane, Morteza
+Linguistics.
+Behrooz, William Ngan, Spencer Poff, Naman
+Goyal,ArthurSzlam,Y-LanBoureau,MelanieKam-
+Eric Zelikman, Yuhuai Wu, Jesse Mu, and Noah D.
+badur,andJasonWeston.2022. Blenderbot3: ade-
+Goodman. 2022. Star: Bootstrapping reasoning
+ployed conversational agent that continually learns
+withreasoning.
+toresponsiblyengage.
+Susan Zhang, Stephen Roller, Naman Goyal, Mikel
+Romal Thoppilan, Daniel De Freitas, Jamie Hall,
+Artetxe,MoyaChen,ShuohuiChen,ChristopherDe-
+Noam Shazeer, Apoorv Kulshreshtha, Heng-Tze
+wan,MonaDiab,XianLi,XiVictoriaLin,TodorMi-
+Cheng,AliciaJin,TaylorBos,LeslieBaker,YuDu,
+haylov,MyleOtt,SamShleifer,KurtShuster,Daniel
+YaGuang Li, Hongrae Lee, Huaixiu Steven Zheng,
+Simig, Punit Singh Koura, Anjali Sridhar, Tianlu
+AminGhafouri,MarceloMenegali,YanpingHuang,
+Wang,andLukeZettlemoyer.2022. Opt: Openpre-
+Maxim Krikun, Dmitry Lepikhin, James Qin, De-
+trainedtransformerlanguagemodels.
+hao Chen, Yuanzhong Xu, Zhifeng Chen, Adam
+Roberts, Maarten Bosma, Vincent Zhao, Yanqi
+Zhou, Chung-Ching Chang, Igor Krivokon, Will
+Rusch, Marc Pickett, Pranesh Srinivasan, Laichee
+Man, Kathleen Meier-Hellstern, Meredith Ringel
+Morris, Tulsee Doshi, Renelito Delos Santos, Toju
+Duke, Johnny Soraker, Ben Zevenbergen, Vinod-
+kumar Prabhakaran, Mark Diaz, Ben Hutchinson,
+Kristen Olson, Alejandra Molina, Erin Hoffman-
+John, Josh Lee, Lora Aroyo, Ravi Rajakumar,
+AlenaButryna,MatthewLamm,ViktoriyaKuzmina,
+Joe Fenton, Aaron Cohen, Rachel Bernstein, Ray
+Kurzweil,BlaiseAguera-Arcas,ClaireCui,Marian
+Croak, Ed Chi, and Quoc Le. 2022. Lamda: Lan-
+guagemodelsfordialogapplications.
+Ben Wang and Aran Komatsuzaki. 2021. GPT-
+J-6B: A 6 Billion Parameter Autoregressive
+Language Model. https://github.com/
+kingoflolz/mesh-transformer-jax.
+Yizhong Wang, Yeganeh Kordi, Swaroop Mishra, Al-
+isaLiu,NoahA.Smith,DanielKhashabi,andHan-
+nanehHajishirzi.2022. Self-instruct: Aligninglan-
+guagemodelwithselfgeneratedinstructions.
+Jason Wei, Yi Tay, Rishi Bommasani, Colin Raf-
+fel, Barret Zoph, Sebastian Borgeaud, Dani Yo-
+gatama,MaartenBosma,DennyZhou,DonaldMet-
+zler,EdH.Chi,TatsunoriHashimoto,OriolVinyals,
+Percy Liang, Jeff Dean, and William Fedus. 2022.
+Emergentabilitiesoflargelanguagemodels.
+GuillaumeWenzek,Marie-AnneLachaux,AlexisCon-
+neau, Vishrav Chaudhary, Francisco Guzmán, Ar-
+mand Joulin, and Edouard Grave. 2020. CCNet:
+Extracting high quality monolingual datasets from
+A APIDetails 2016), while the target language is always set to
+English. Since most of the CCNet dataset is in
+WhensamplingandfilteringAPIcalls,bydefault
+English, we filter out the parts that contain only
+we use values of τ = 0.05 and τ = 1.0 – i.e.,
+s f English text before generating API calls. More
+we only make API calls at positions where the
+specifically,weonlykeepthoseparagraphswhich
+probabilityofthe<API>tokenisatleast5%,and
+contain text chunks in a language other than En-
+wekeepAPIcallsiftheyreducethelossbyatleast
+glishprecededandfollowedbyEnglishtext. We
+1.0. Weonlykeepthetopk = 5suchpositionsand
+use text chunks of size 10 tokens. To determine
+sample up to m = 5 API calls for each position
+whether the middle text chunk is in a language
+identified in a piece of text. Due to the heuristic
+different than English we again use the fastText
+filteringdescribedbelow,wegenerateAPIcallsfor
+classifier with a confidence greater than 0.8. We
+the calculator andmachine translation system on
+also filter out any text chunks that contain only
+only a small subset of C; to compensate for this,
+numbersorspecialsymbols. Thisfilteringmecha-
+we set τ = 0.0, k = 20 and m = 10 for these
+s
+nismallowsustogeneratedatamoreefficientlyby
+tools. As the resulting sets of API calls are still
+focusingourAPIcallgenerationsinplaceswhere
+comparablysmall,weadditionallysetτ = 0.5.
+f theMTtoolislikelytobehelpful. Aftergenerating
+A.1 Implementation theMTAPIcalls,weadditionallyremovefromour
+training set those where the input to the MT tool
+QuestionAnswering WeusetheAtlasmodelof
+appearsaftertheAPIcallbutnotbeforeit. While
+Izacard et al. (2022) finetuned on Natural Ques-
+during data generation the model can look ahead
+tions (Kwiatkowski et al., 2019) as our question
+togenerateAPIcalls,thisisnotpossibleatinfer-
+answering system. For creating C∗ we use Atlas-
+encetime,sowewanttodissuadethemodelfrom
+large, enabling us to efficiently process millions
+callingtheAPIinsuchcases.
+of API calls; during inference, we use the larger
+Atlas-xxlmodel. A.2 Prompts
+Calculator Ourcalculator isbased ona simple Below, we list the prompts used to sample API
+Pythonscriptandonlysupportstheoperators“+”, callsforeachtoolconsidered.
+“−”, “∗”, and “/”. It does not return any result
+Question Answering We use the following
+for syntactically invalid equations. For sampling promptforthequestionansweringtool:
+APIcalls,weapplyheuristicfilterstooursubsetof Your task is to add calls to a Question
+Answering API to a piece of text.
+CCNetandonlyprocessdocumentsthateither(i)
+The questions should help you get
+containatleastthreenumberswithinawindowof information required to complete the
+100tokens,whereoneofthesenumbersistheresult text. You can call the API by writing
+"[QA(question)]" where "question" is the
+ofapplyingamathematicaloperationtotheother
+question you want to ask. Here are some
+two,(ii)containoneofthesequences“=”,“equals”, examples of API calls:
+“equalto”,“totalof”,“averageof”followedbya Input: Joe Biden was born in Scranton,
+Pennsylvania.
+number,or(iii)containatleastthreenumbers;for
+Output: Joe Biden was born in [QA("Where
+texts that only match the last criterion, we only was Joe Biden born?")] Scranton,
+keeparandomsubsetof1%. [QA("In which state is Scranton?")]
+Pennsylvania.
+Calendar ForcreatingourdatasetC∗,weoperate
+Input: Coca-Cola, or Coke, is a
+undertheassumptionthatthecalendardateinsuch
+carbonated soft drink manufactured by
+cases should be the date that the document was the Coca-Cola Company.
+Output: Coca-Cola, or [QA("What other
+created. Weapproximatethisbyextractingthedate
+name is Coca-Cola known by?")] Coke, is
+fromtheURL,ifitispresent. Wefilterouttextsfor
+a carbonated soft drink manufactured by
+whichadatecannotbeextracted, leavingaround [QA("Who manufactures Coca-Cola?")] the
+Coca-Cola Company.
+18%ofthedocuments.
+Input: x
+Machine Translation For both training and in-
+Output:
+ference,weusethe600MparameterNLLB(Costa-
+Calculator Weusethefollowingpromptforthe
+jussàetal.,2022)asourmachinetranslation(MT)
+calculator:
+model. The source language is automatically de-
+Your task is to add calls to a
+tected using the fastText classifier (Joulin et al., Calculator API to a piece of text.
+The calls should help you get nanomaterials may give rise to various
+information required to complete the kinds of lung damage.
+text. You can call the API by writing Output: But what are the risks
+"[Calculator(expression)]" where during production of nanomaterials?
+"expression" is the expression to be [WikiSearch("nanomaterial production
+computed. Here are some examples of API risks")] Some nanomaterials may give
+calls: rise to various kinds of lung damage.
+Input: The number in the next term is 18
++ 12 x 3 = 54. Input: Metformin is the first-line drug
+Output: The number in the next term is for patients with type 2 diabetes and
+18 + 12 x 3 = [Calculator(18 + 12 * 3)] obesity.
+54. Output: Metformin is the first-line drug
+for [WikiSearch("Metformin first-line
+Input: The population is 658,893 people. drug")] patients with type 2 diabetes
+This is 11.4% of the national average of and obesity.
+5,763,868 people.
+Output: The population is 658,893 people. Input: x
+This is 11.4% of the national average of Output:
+[Calculator(658,893 / 11.4%)] 5,763,868
+people. Machine Translation We use the following
+promptforthemachinetranslationtool:
+Input: A total of 252 qualifying matches
+were played, and 723 goals were scored Your task is to complete a given piece
+(an average of 2.87 per match). This is of text by using a Machine Translation
+three times less than the 2169 goals API.
+last year. You can do so by writing "[MT(text)]"
+Output: A total of 252 qualifying where text is the text to be translated
+matches were played, and 723 goals were into English.
+scored (an average of [Calculator(723 Here are some examples:
+/ 252)] 2.87 per match). This is twenty
+goals more than the [Calculator(723 - Input: He has published one book: O
+20)] 703 goals last year. homem suprimido (“The Supressed Man”)
+Output: He has published one book: O
+Input: I went to Paris in 1994 and homem suprimido [MT(O homem suprimido)]
+stayed there until 2011, so in total, (“The Supressed Man”)
+it was 17 years.
+Output: I went to Paris in 1994 and Input: In Morris de Jonge’s Jeschuah,
+stayed there until 2011, so in total, it der klassische jüdische Mann, there is a
+was [Calculator(2011 - 1994)] 17 years. description of a Jewish writer
+Output: In Morris de Jonge’s Jeschuah,
+Input: From this, we have 4 * 30 minutes der klassische jüdische Mann [MT(der
+= 120 minutes. klassische jüdische Mann)], there is a
+Output: From this, we have 4 * 30 description of a Jewish writer
+minutes = [Calculator(4 * 30)] 120
+minutes. Input: 南京高淳县住房和城乡建设局 城市新
+区 设 计 a plane of reference Gaochun is
+Input: x one of seven districts of the provincial
+Output: capital Nanjing
+Output: [MT(南京高淳县住房和城乡建设局 城市新
+WikipediaSearch Weusethefollowingprompt 区 设 计)] a plane of reference Gaochun is
+fortheWikipediasearchtool:
+one of seven districts of the provincial
+Your task is to complete a given piece capital Nanjing
+of text. You can use a Wikipedia Search
+API to look up information. You can do Input: x
+so by writing "[WikiSearch(term)]" where Output:
+"term" is the search term you want to
+look up. Here are some examples of API Calendar We use the following prompt for the
+calls:
+calendartool:
+Input: The colors on the flag of Ghana
+have the following meanings: red is for Your task is to add calls to a Calendar
+the blood of martyrs, green for forests, API to a piece of text. The API calls
+and gold for mineral wealth. should help you get information required
+Output: The colors on the flag of Ghana to complete the text. You can call the
+have the following meanings: red is for API by writing "[Calendar()]" Here are
+[WikiSearch("Ghana flag red meaning")] some examples of API calls:
+the blood of martyrs, green for forests,
+and gold for mineral wealth. Input: Today is the first Friday of the
+year.
+Input: But what are the risks during Output: Today is the first [Calendar()]
+production of nanomaterials? Some Friday of the year.
+Template Size
+Input: The president of the United
+States is Joe Biden.
+How many days {ago was, are there until} 400
+Output: The president of the United
+{past_date,future_date}?
+States is [Calendar()] Joe Biden.
+What{dayoftheweek,dayofthemonth,month, 800
+Input: The current day of the week is year} was it (current_date – past_date) {days,
+Wednesday. weeks,months,years}ago?
+Output: The current day of the week is
+What{dayoftheweek,dayofthemonth,month, 800
+[Calendar()] Wednesday.
+year}willitbein(future_date–current_date)
+days?
+Input: The number of days from now until
+Christmas is 30. Whatdayoftheweek{is,was}iton{past_date, 400
+Output: The number of days from now future_date}?
+until Christmas is [Calendar()] 30.
+What{dayoftheweek,dayofthemonth,month, 4,000
+year}{is,was}it{thedaybeforeyesterday,yes-
+Input: The store is never open on the
+terday,today,tomorrow,thedayaftertomorrow}?
+weekend, so today it is closed.
+Output: The store is never open on the What{dayoftheweek,dayofthemonth,month} 1,800
+weekend, so today [Calendar()] it is {is,was}holidaythisyear?
+closed.
+Howmany{days,weeks,months,years}{ago 1,200
+was,arethereuntil}holidaythisyear?
+Input: x
+Output:
+Total 9,400
+B ToolformerTraining
+Table 11: Templates used to create DATESET where
+Weuseupto25kexamplesperAPI.Maxsequence a current_date is randomly selected. For each cur-
+rent_date, a random past_date and future_date is gen-
+length1,024. Effectivebatchsizeof128. Allmod-
+erated and used to fill each template, if relevant. The
+elsaretrainedusingDeepSpeed’sZeRO-3(Rasley
+federal holidays in the United States (e.g., Thanksgiv-
+et al., 2020). We used 8 NVIDIA A100 40GB
+ing)wereusedinthetemplatesinvolvingholidays.
+GPUswithBF16. Trainingupto2ksteps,where
+weevaluatePPLonasmalldevelopmentsetfrom
+CCNetcontaining1,000examplesevery500steps. to answer a question based on
+Wepickthecheckpointthatperformsbest. the following paragraph: x Now
+answer the following question in
+C Zero-ShotPrompts English: q.
+C.1 LAMAand TEMPLAMA D DATESET
+ForbothLAMAand TEMPLAMA,givenaninput
+DATESETiscreatedbyfirstrandomlyselecting500
+text x, we use the following prompt: Please
+“currentdates”. Foreachcurrentdate,anotherrela-
+complete the following text so
+tivelypast/futuredateisrandomlyselectedwithin
+that it is factually correct: x.
+afour-yearrange,andthetwodatesareusedtofill
+C.2 MathBenchmarks thequerytemplatesinTable11. Anexampleofone
+suchqueryusingthefirsttemplatewouldbe,“How
+For all math benchmarks, given a context x and
+many days ago was August 14, 2020?” If called,
+a question q, our prompt is: x q The answer
+theCalendartoolwouldreturnthepresumedcur-
+is.
+rent date (e.g., “Today is Sunday, November 20,
+C.3 QuestionAnswering 2020”).
+For all question answering datasets, including
+DATESET, we simply prefix the question with
+Answer the following question:. We
+append a question mark if the question does not
+alreadyendwithone.
+C.4 MultilingualQuestionAnswering
+For MLQA, given a context x and a ques-
+tion q, our prompt is: Your task is

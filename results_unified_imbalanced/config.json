@@ -1,0 +1,10 @@
+{
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "seeds": [
+    42,
+    2024,
+    3407
+  ]
+}

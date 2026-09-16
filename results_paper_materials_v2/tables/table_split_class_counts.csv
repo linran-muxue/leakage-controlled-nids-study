@@ -1,0 +1,16 @@
+﻿split,target,count
+train,Brute Force,471
+train,DoS/DDoS,471
+train,Bot,471
+train,Normal,471
+train,Web Attack,471
+validation,DoS/DDoS,101
+validation,Bot,101
+validation,Normal,101
+validation,Web Attack,101
+validation,Brute Force,101
+test,Normal,101
+test,Brute Force,101
+test,Web Attack,101
+test,DoS/DDoS,101
+test,Bot,101

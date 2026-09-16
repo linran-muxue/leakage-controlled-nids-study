@@ -1,0 +1,17 @@
+{
+  "comparison": [
+    {
+      "comparison": "DRC_vs_equal_macro_f1",
+      "p_value": 0.0,
+      "p_holm": 0.0,
+      "significant_alpha_0_05": true
+    },
+    {
+      "comparison": "DRC_vs_equal_mcnemar",
+      "p_value": 2.036132460772394e-09,
+      "p_holm": 2.036132460772394e-09,
+      "significant_alpha_0_05": true
+    }
+  ],
+  "interpretation": "Hard-label superiority is not established when paired predictions are identical or McNemar is non-significant."
+}

@@ -1,0 +1,2 @@
+﻿model,macro_f1_mean,macro_f1_std,accuracy_mean,accuracy_std,train_seconds_mean,predict_seconds_mean
+mlp,0.7993191939469283,,0.9777109942399198,,28.077380200000334,0.011915100000805978

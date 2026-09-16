@@ -1,0 +1,16 @@
+﻿split,target,count,proportion,support_warning
+train,Bot,471,0.2,False
+train,Brute Force,471,0.2,False
+train,DoS/DDoS,471,0.2,False
+train,Normal,471,0.2,False
+train,Web Attack,471,0.2,False
+validation,Bot,101,0.2,False
+validation,Brute Force,101,0.2,False
+validation,DoS/DDoS,101,0.2,False
+validation,Normal,101,0.2,False
+validation,Web Attack,101,0.2,False
+test,Bot,101,0.2,True
+test,Brute Force,101,0.2,True
+test,DoS/DDoS,101,0.2,True
+test,Normal,101,0.2,True
+test,Web Attack,101,0.2,True

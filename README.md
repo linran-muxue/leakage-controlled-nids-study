@@ -1,9 +1,16 @@
 # Leakage-Controlled Network Intrusion Detection Study
 
 Public repository: https://github.com/linran-muxue/leakage-controlled-nids-study
-Submission release: `v1.0.2`
+Submission release: `v1.0.2` (tag present in the local checkout; verify the remote tag before submission)
 
-Reproducibility materials for the manuscript *Leakage-Controlled Feature Selection and Random-Forest Ensembles for Network Intrusion Detection: A Reproducible Multi-Dataset Study*.
+The locked CIC-IDS2017 publication protocol is **v3b**.  `data_processed_cic_natural_v3b`
+is the primary capped natural-prior research population, while
+`data_processed_cic_balanced_v3b` is a secondary balanced control subset.  The
+older `audit_v1`--`audit_v6`, `data_processed_cic_natural_v1`--`v3`, and
+`results_*_v1`/`v2` directories are historical artifacts and must not be used
+to reproduce the manuscript tables.
+
+Reproducibility materials for the manuscript *Provenance-Aware and Uncertainty-Aware Evaluation of Network Intrusion Detection Models: A Cross-Fitted Risk-Gated Forest Study*.
 
 ## Scope
 
@@ -19,14 +26,25 @@ The tested environment is recorded in `requirements-lock.txt`. The project was v
 - `scripts/`: audit, experiment, statistical-analysis, and document-generation scripts.
 - `tests/`: automated tests.
 - `results_publication_final/`: locked CIC results and uncertainty outputs.
-- `results_unsw_nb15_independent_v4/`: UNSW-NB15 independent benchmark outputs.
-- `results_nsl_kdd_fair_v2/`: NSL-KDD independent benchmark outputs.
+- `results_cfrg_cic_v2_verified/`: canonical locked CIC comparison after the probability-label alignment fix.
+- `results_cfrg_nsl_v2_verified/`, `results_cfrg_unsw_v2_verified/`: verified native-label independent benchmarks.
+- `results_cfrg_repeated_v3_verified/`, `results_cfrg_strong_baselines_v2_verified/`: verified repeated-split and strong-baseline comparisons.
+- `results_cfrg_open_set_v5_verified/`: verified open-set metrics using conformal anomaly scores.
+- `results_cfrg_calibration_v2_verified/`: validation-only temperature-scaling diagnostics after the probability-alignment fix.
+- Older `v1`/`v2` CFRG directories are historical artifacts and are not the canonical evidence for the final manuscript.
 - `results_paper_materials_v3/`: manuscript, figures, Highlights, Graphical Abstract, and supplementary index.
 - `docs/`: journal requirements, data provenance, and reproducibility notes.
 
+The file-level experiment is a **coverage-aware leave-one-file-out pressure
+test**.  Because the eight CIC files do not jointly provide all five target
+classes, it is not a category-complete temporal holdout and must not be
+reported as proof of full temporal generalization.
+
 ## Validation
 
-The current project validation reports 66 passing tests and successful Python byte-compilation. Exact file hashes and the artifact inventory are recorded in `results_publication_final/MANIFEST.json`.
+The current project validation reports the passing-test count printed by the
+locked checkout and successful Python byte-compilation. Exact file hashes and
+the artifact inventory are recorded in `results_publication_final/MANIFEST.json`.
 
 ## Data provenance
 

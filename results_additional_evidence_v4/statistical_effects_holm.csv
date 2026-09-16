@@ -1,0 +1,7 @@
+﻿seed,comparison,a_only_correct,b_only_correct,discordant_pairs,accuracy_delta_b_minus_a,net_accuracy_effect,mcnemar_odds_ratio_cc,p_value,holm_p_value,permutation_p_value,holm_permutation_p_value,significant_holm_0_05
+42,weighted_rf_chi2_vs_random_forest_chi2,0,0,0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,False
+42,extra_trees_chi2_vs_random_forest_chi2,10,6,16,-0.0079207920792079,-0.007920792079207921,0.6190476190476191,0.454498291015625,1.0,0.4515774211289435,1.0,False
+2024,weighted_rf_chi2_vs_random_forest_chi2,0,0,0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,False
+2024,extra_trees_chi2_vs_random_forest_chi2,10,6,16,-0.0079207920792079,-0.007920792079207921,0.6190476190476191,0.454498291015625,1.0,0.4535773211339433,1.0,False
+3407,weighted_rf_chi2_vs_random_forest_chi2,0,0,0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,False
+3407,extra_trees_chi2_vs_random_forest_chi2,10,5,15,-0.0099009900990099,-0.009900990099009901,0.5238095238095238,0.3017578124999999,1.0,0.3011349432528373,1.0,False

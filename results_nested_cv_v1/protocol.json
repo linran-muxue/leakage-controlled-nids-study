@@ -1,0 +1,14 @@
+{
+  "data": "data_processed_audit_v4 development pool (train+validation)",
+  "held_out_test": "data_processed_audit_v4/test.csv remains untouched",
+  "outer_splits": 3,
+  "inner_splits": 3,
+  "k_values": [
+    20,
+    40,
+    60
+  ],
+  "seed": 42,
+  "preprocessing": "fit inside each fold",
+  "test_usage": "outer-fold evaluation on development pool only"
+}

@@ -1,0 +1,11 @@
+﻿predicted_label,count
+Normal,25380
+Generic,18649
+Fuzzers,15269
+Exploits,9519
+Backdoor,5652
+Reconnaissance,3390
+DoS,1517
+Shellcode,1473
+Analysis,1446
+Worms,37

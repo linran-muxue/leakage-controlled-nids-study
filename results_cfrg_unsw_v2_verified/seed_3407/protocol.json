@@ -1,0 +1,25 @@
+{
+  "dataset": "UNSW-NB15",
+  "official_train_test_boundary": true,
+  "cross_dataset_transfer": false,
+  "encoding_fit_on": "official_training_only",
+  "scaler_fit_on": "official_training_only",
+  "feature_selection_fit_on": "official_training_only",
+  "train_rows": 175341,
+  "test_rows": 82332,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "seed": 3407,
+  "files": [
+    {
+      "path": "data_external\\UNSW-NB15\\UNSW-NB15_training-set.csv",
+      "bytes": 32293018,
+      "sha256": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa"
+    },
+    {
+      "path": "data_external\\UNSW-NB15\\UNSW-NB15_testing-set.csv",
+      "bytes": 15380800,
+      "sha256": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559"
+    }
+  ]
+}

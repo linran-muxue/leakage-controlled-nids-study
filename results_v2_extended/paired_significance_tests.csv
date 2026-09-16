@@ -1,0 +1,7 @@
+﻿seed,comparison,a_only_correct,b_only_correct,p_value,accuracy_delta_b_minus_a,permutation_p_value
+42,weighted_rf_chi2_vs_tuned_random_forest,0,1,1.0,0.001980198019801982,1.0
+42,tuned_extra_trees_vs_tuned_random_forest,8,3,0.2265625,-0.00990099009900991,0.22453877306134692
+2024,weighted_rf_chi2_vs_tuned_random_forest,1,1,1.0,0.0,1.0
+2024,tuned_extra_trees_vs_tuned_random_forest,6,3,0.5078125,-0.005940594059405946,0.5077746112694366
+3407,weighted_rf_chi2_vs_tuned_random_forest,1,0,1.0,-0.001980198019801982,1.0
+3407,tuned_extra_trees_vs_tuned_random_forest,7,3,0.34375,-0.007920792079207928,0.3474326283685816

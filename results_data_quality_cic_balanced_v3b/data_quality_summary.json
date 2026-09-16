@@ -1,0 +1,193 @@
+{
+  "processed_dir": "data_processed_cic_balanced_v3b",
+  "protocol": "capped observed-prior CIC population",
+  "split_rows": {
+    "train": 2355,
+    "validation": 505,
+    "test": 505
+  },
+  "total_rows": 3365,
+  "feature_count": 78,
+  "split_quality": {
+    "train": {
+      "rows": 2355,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 471,
+        "Brute Force": 471,
+        "DoS/DDoS": 471,
+        "Normal": 471,
+        "Web Attack": 471
+      },
+      "class_proportions": {
+        "Bot": 0.2,
+        "Brute Force": 0.2,
+        "DoS/DDoS": 0.2,
+        "Normal": 0.2,
+        "Web Attack": 0.2
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "RST Flag Count",
+        "CWE Flag Count",
+        "ECE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 2355,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "f0f6e575daa1c75d08a3ddbd497714c847f2cc405b71bbaa131dcc459ad9a08a",
+      "provenance_sha256": "d29b1c04d2eb7d580e2a39a8675a6884a09c1b27a65a3578ffaf55242c05fb33"
+    },
+    "validation": {
+      "rows": 505,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 101,
+        "Brute Force": 101,
+        "DoS/DDoS": 101,
+        "Normal": 101,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.2,
+        "Brute Force": 0.2,
+        "DoS/DDoS": 0.2,
+        "Normal": 0.2,
+        "Web Attack": 0.2
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "RST Flag Count",
+        "CWE Flag Count",
+        "ECE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 505,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "19f8381b3531d063983ffc7d673d30eef7f866bd3dca1e029298156277498ed9",
+      "provenance_sha256": "fd832914b150a00d92516406ec2869c12a983aeee89f84c43e86f283b25ecd5d"
+    },
+    "test": {
+      "rows": 505,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 101,
+        "Brute Force": 101,
+        "DoS/DDoS": 101,
+        "Normal": 101,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.2,
+        "Brute Force": 0.2,
+        "DoS/DDoS": 0.2,
+        "Normal": 0.2,
+        "Web Attack": 0.2
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "RST Flag Count",
+        "CWE Flag Count",
+        "ECE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 505,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "0739318627cbfbdd8c525773fd8fe8c79392aa52acefcf8de647b92b9683671e",
+      "provenance_sha256": "e558e9c4225aefdb390f3c62d7e29e0cc99d268c1d24e13910af44735f5a52a0"
+    }
+  },
+  "source_composite_key_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "exact_feature_label_hash_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "low_support_test_classes": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "raw_audit": "results_data_audit_cic_balanced_v3b\\data_processing_audit.json",
+  "physical_range_audit": {
+    "strict_physical_enabled": true,
+    "invalid_physical_rows": 296,
+    "invalid_physical_by_feature": {
+      "Flow Duration": 115,
+      "Total Fwd Packets": 0,
+      "Total Backward Packets": 0,
+      "Total Length of Fwd Packets": 0,
+      "Total Length of Bwd Packets": 0,
+      "Flow Bytes/s": 85,
+      "Flow Packets/s": 115,
+      "Flow IAT Mean": 115,
+      "Flow IAT Std": 0,
+      "Flow IAT Max": 115,
+      "Flow IAT Min": 137,
+      "Fwd IAT Total": 0,
+      "Fwd IAT Mean": 0,
+      "Fwd IAT Std": 0,
+      "Fwd IAT Max": 0,
+      "Fwd IAT Min": 17,
+      "Bwd IAT Total": 0,
+      "Bwd IAT Mean": 0,
+      "Bwd IAT Std": 0,
+      "Bwd IAT Max": 0,
+      "Bwd IAT Min": 0,
+      "Fwd Header Length": 35,
+      "Bwd Header Length": 22,
+      "Fwd Header Length.1": 35,
+      "Fwd Packets/s": 0,
+      "Bwd Packets/s": 0,
+      "Min Packet Length": 0,
+      "Max Packet Length": 0,
+      "Packet Length Mean": 0,
+      "Packet Length Std": 0,
+      "Packet Length Variance": 0,
+      "Down/Up Ratio": 0,
+      "min_seg_size_forward": 35
+    },
+    "interpretation": "The two initial-window fields retain CICFlowMeter's -1 unavailable sentinel; other listed duration/rate/length/header fields must be non-negative."
+  },
+  "interpretation": [
+    "The capped observed-prior population is not the full CIC-IDS2017 corpus.",
+    "Test classes with fewer than 200 rows require class-level uncertainty reporting.",
+    "Zero source-key and exact row-hash overlaps support split isolation, but do not establish temporal generalization."
+  ]
+}

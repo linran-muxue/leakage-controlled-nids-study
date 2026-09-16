@@ -1,0 +1,17 @@
+{
+  "known_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "unknown_raw_labels": [
+    "Heartbleed",
+    "Infiltration",
+    "PortScan"
+  ],
+  "unknown_used_for_training": false,
+  "threshold_fit": "5th percentile of known validation confidence",
+  "per_group_cap": 1000
+}

@@ -1,0 +1,8 @@
+unknown_combination,unknown_samples,unknown_recall,unknown_auroc,unknown_aupr,unknown_fpr_at_95_tpr,coverage,known_macro_f1
+Heartbleed,11,1.0000,0.9944,0.5834,0.0086,0.9884,0.9700
+Infiltration,36,0.3889,0.9172,0.2260,0.3626,0.9629,0.9700
+PortScan,1000,0.7590,0.9598,0.9026,0.0535,0.4832,0.9700
+Heartbleed+Infiltration,47,0.5319,0.9353,0.4096,0.1070,0.9521,0.9700
+Heartbleed+PortScan,1011,0.7616,0.9602,0.9078,0.0535,0.4805,0.9700
+Infiltration+PortScan,1036,0.7461,0.9583,0.9049,0.0588,0.4744,0.9700
+Heartbleed+Infiltration+PortScan,1047,0.7488,0.9587,0.9097,0.0588,0.4717,0.9700

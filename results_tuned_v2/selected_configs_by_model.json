@@ -1,0 +1,46 @@
+﻿{
+  "decision_tree": {
+    "model": "decision_tree",
+    "feature_mode": "chi2",
+    "k": 60,
+    "max_depth": 10.0,
+    "cv_macro_f1": 0.9524601530851136,
+    "cv_accuracy": 0.9524416135881104,
+    "complexity": 10,
+    "C": null,
+    "n_estimators": null
+  },
+  "svm": {
+    "model": "svm",
+    "feature_mode": "all",
+    "k": 78,
+    "max_depth": null,
+    "cv_macro_f1": 0.9332513830134499,
+    "cv_accuracy": 0.9337579617834397,
+    "complexity": 100,
+    "C": 100.0,
+    "n_estimators": null
+  },
+  "random_forest": {
+    "model": "random_forest",
+    "feature_mode": "all",
+    "k": 78,
+    "max_depth": null,
+    "cv_macro_f1": 0.9579846355175261,
+    "cv_accuracy": 0.9579617834394906,
+    "complexity": 300,
+    "C": null,
+    "n_estimators": 300.0
+  },
+  "extra_trees": {
+    "model": "extra_trees",
+    "feature_mode": "all",
+    "k": 78,
+    "max_depth": null,
+    "cv_macro_f1": 0.9515711791685224,
+    "cv_accuracy": 0.9515923566878982,
+    "complexity": 300,
+    "C": null,
+    "n_estimators": 300.0
+  }
+}

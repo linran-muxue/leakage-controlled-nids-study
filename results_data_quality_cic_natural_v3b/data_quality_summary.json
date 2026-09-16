@@ -1,0 +1,185 @@
+{
+  "processed_dir": "data_processed_cic_natural_v3b",
+  "protocol": "capped observed-prior CIC population",
+  "split_rows": {
+    "train": 37265,
+    "validation": 7986,
+    "test": 7986
+  },
+  "total_rows": 53237,
+  "feature_count": 78,
+  "split_quality": {
+    "train": {
+      "rows": 37265,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 1364,
+        "Brute Force": 7434,
+        "DoS/DDoS": 13997,
+        "Normal": 13999,
+        "Web Attack": 471
+      },
+      "class_proportions": {
+        "Bot": 0.036602710317992754,
+        "Brute Force": 0.1994901381993828,
+        "DoS/DDoS": 0.3756071380652086,
+        "Normal": 0.3756608077284315,
+        "Web Attack": 0.012639205688984302
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "CWE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 37265,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "f525a61fe7d45508e1d8cc769b6daaaf264cbdbf15e66613dcd1728622ff87e2",
+      "provenance_sha256": "9f1c1b0fddbf172be85fbbcd0b0f3bc582aaaef3689e81b3a44b2759bf5cb05b"
+    },
+    "validation": {
+      "rows": 7986,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 292,
+        "Brute Force": 1593,
+        "DoS/DDoS": 3000,
+        "Normal": 3000,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.03656398697721012,
+        "Brute Force": 0.1994740796393689,
+        "DoS/DDoS": 0.3756574004507889,
+        "Normal": 0.3756574004507889,
+        "Web Attack": 0.012647132481843225
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "RST Flag Count",
+        "CWE Flag Count",
+        "ECE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 7986,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "dc552aaf357fa6efe675027e86d79c35161638f9f419f508080875e2ddbcfcfc",
+      "provenance_sha256": "9b7ca5c7f9cce6519787a178b08d1acb25c2c88f5d4c1a93c5afcac7096a4cbd"
+    },
+    "test": {
+      "rows": 7986,
+      "feature_count": 78,
+      "class_counts": {
+        "Bot": 292,
+        "Brute Force": 1593,
+        "DoS/DDoS": 3000,
+        "Normal": 3000,
+        "Web Attack": 101
+      },
+      "class_proportions": {
+        "Bot": 0.03656398697721012,
+        "Brute Force": 0.1994740796393689,
+        "DoS/DDoS": 0.3756574004507889,
+        "Normal": 0.3756574004507889,
+        "Web Attack": 0.012647132481843225
+      },
+      "missing_cells": 0,
+      "infinite_cells": 0,
+      "constant_features": [
+        "Bwd PSH Flags",
+        "Fwd URG Flags",
+        "Bwd URG Flags",
+        "CWE Flag Count",
+        "Fwd Avg Bytes/Bulk",
+        "Fwd Avg Packets/Bulk",
+        "Fwd Avg Bulk Rate",
+        "Bwd Avg Bytes/Bulk",
+        "Bwd Avg Packets/Bulk",
+        "Bwd Avg Bulk Rate"
+      ],
+      "source_rows": 7986,
+      "source_composite_key_duplicates": 0,
+      "source_files": 8,
+      "csv_sha256": "2872173b30387af768a16907fa78bf10cb6aef19a615f337c09658b01d6aece2",
+      "provenance_sha256": "0677814c51f45eacb58355c40c9ff4f4e4a34d55c1ffba30cdcac205a9d2cecb"
+    }
+  },
+  "source_composite_key_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "exact_feature_label_hash_overlaps": {
+    "train_validation": 0,
+    "train_test": 0,
+    "validation_test": 0
+  },
+  "low_support_test_classes": [
+    "Web Attack"
+  ],
+  "raw_audit": "results_data_audit_cic_natural_v3b\\data_processing_audit.json",
+  "physical_range_audit": {
+    "strict_physical_enabled": true,
+    "invalid_physical_rows": 296,
+    "invalid_physical_by_feature": {
+      "Flow Duration": 115,
+      "Total Fwd Packets": 0,
+      "Total Backward Packets": 0,
+      "Total Length of Fwd Packets": 0,
+      "Total Length of Bwd Packets": 0,
+      "Flow Bytes/s": 85,
+      "Flow Packets/s": 115,
+      "Flow IAT Mean": 115,
+      "Flow IAT Std": 0,
+      "Flow IAT Max": 115,
+      "Flow IAT Min": 137,
+      "Fwd IAT Total": 0,
+      "Fwd IAT Mean": 0,
+      "Fwd IAT Std": 0,
+      "Fwd IAT Max": 0,
+      "Fwd IAT Min": 17,
+      "Bwd IAT Total": 0,
+      "Bwd IAT Mean": 0,
+      "Bwd IAT Std": 0,
+      "Bwd IAT Max": 0,
+      "Bwd IAT Min": 0,
+      "Fwd Header Length": 35,
+      "Bwd Header Length": 22,
+      "Fwd Header Length.1": 35,
+      "Fwd Packets/s": 0,
+      "Bwd Packets/s": 0,
+      "Min Packet Length": 0,
+      "Max Packet Length": 0,
+      "Packet Length Mean": 0,
+      "Packet Length Std": 0,
+      "Packet Length Variance": 0,
+      "Down/Up Ratio": 0,
+      "min_seg_size_forward": 35
+    },
+    "interpretation": "The two initial-window fields retain CICFlowMeter's -1 unavailable sentinel; other listed duration/rate/length/header fields must be non-negative."
+  },
+  "interpretation": [
+    "The capped observed-prior population is not the full CIC-IDS2017 corpus.",
+    "Test classes with fewer than 200 rows require class-level uncertainty reporting.",
+    "Zero source-key and exact row-hash overlaps support split isolation, but do not establish temporal generalization."
+  ]
+}

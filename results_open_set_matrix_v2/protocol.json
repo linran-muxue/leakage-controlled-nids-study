@@ -1,0 +1,42 @@
+{
+  "known_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "unknown_combinations": [
+    [
+      "Heartbleed"
+    ],
+    [
+      "Infiltration"
+    ],
+    [
+      "PortScan"
+    ],
+    [
+      "Heartbleed",
+      "Infiltration"
+    ],
+    [
+      "Heartbleed",
+      "PortScan"
+    ],
+    [
+      "Infiltration",
+      "PortScan"
+    ],
+    [
+      "Heartbleed",
+      "Infiltration",
+      "PortScan"
+    ]
+  ],
+  "unknown_used_for_training": false,
+  "threshold_fit": "5th percentile of known validation confidence",
+  "per_group_cap": 1000,
+  "seed": 42,
+  "n_estimators": 100
+}

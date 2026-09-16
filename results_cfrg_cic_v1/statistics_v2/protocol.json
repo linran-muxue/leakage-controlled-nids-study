@@ -1,0 +1,12 @@
+{
+  "model_a": "equal_rf_chi2",
+  "model_b": "cfrg_forest_chi2",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "bootstrap": 1000,
+  "permutations": 2000,
+  "pairing": "identical_test_row_order"
+}

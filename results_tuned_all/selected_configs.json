@@ -1,0 +1,11 @@
+﻿{
+  "model": "random_forest",
+  "feature_mode": "chi2",
+  "k": 60,
+  "max_depth": NaN,
+  "cv_macro_f1": 0.9600569600743425,
+  "cv_accuracy": 0.9600849256900211,
+  "complexity": 300,
+  "C": NaN,
+  "n_estimators": 300.0
+}

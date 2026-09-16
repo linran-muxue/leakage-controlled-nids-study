@@ -524,7 +524,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 ## 数据与代码可用性
 
-处理脚本、审计中间结果、逐样本预测与图表生成代码发布于公开仓库：https://github.com/linran-muxue/leakage-controlled-nids-study （发布版本 v1.0.2）。原始数据集不随论文分发；论文记录来源地址、检索日期、版本快照与 SHA-256 校验值。
+处理脚本、审计中间结果、逐样本预测与图表生成代码发布于公开仓库：https://github.com/linran-muxue/leakage-controlled-nids-study （发布版本 v1.1.0，标签 v1.1.0）。原始数据集不随论文分发；论文记录来源地址、检索日期、版本快照与 SHA-256 校验值。
 
 ## 基金
 

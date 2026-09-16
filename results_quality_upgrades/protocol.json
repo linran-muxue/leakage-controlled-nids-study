@@ -1,0 +1,27 @@
+{
+  "data": "data_processed_audit_v4",
+  "split_seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "split": "70/15/15 stratified on the 3365-row deduplicated balanced frame",
+  "models": {
+    "rf_all": {
+      "features": 78,
+      "trees": 100,
+      "min_samples_leaf": 2
+    },
+    "rf_chi2": {
+      "features": 60,
+      "trees": 100,
+      "min_samples_leaf": 2
+    },
+    "weighted_rf_chi2": {
+      "features": 60,
+      "trees": 100,
+      "min_samples_leaf": 2
+    }
+  },
+  "feature_stability": "5-fold training-only chi2 top-k Jaccard"
+}

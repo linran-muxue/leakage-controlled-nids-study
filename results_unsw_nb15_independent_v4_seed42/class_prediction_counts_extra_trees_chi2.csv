@@ -1,0 +1,11 @@
+﻿label,true_count,pred_count
+Analysis,677,2383
+Backdoor,583,7478
+DoS,4089,1411
+Exploits,11132,7510
+Fuzzers,6062,16740
+Generic,18871,18168
+Normal,37000,21942
+Reconnaissance,3496,4251
+Shellcode,378,2132
+Worms,44,317

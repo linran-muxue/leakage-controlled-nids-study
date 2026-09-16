@@ -1,0 +1,10 @@
+﻿seed,comparison,a_only_correct,b_only_correct,p_value,accuracy_delta_b_minus_a,permutation_p_value
+42,rf_chi2_vs_rf_all,1,0,1.0,-0.001980198019801982,1.0
+42,weighted_rf_chi2_vs_rf_all,1,0,1.0,-0.001980198019801982,1.0
+42,extra_trees_chi2_vs_rf_all,4,2,0.6875,-0.003960396039603964,0.6825658717064147
+2024,rf_chi2_vs_rf_all,1,1,1.0,0.0,1.0
+2024,weighted_rf_chi2_vs_rf_all,1,1,1.0,0.0,1.0
+2024,extra_trees_chi2_vs_rf_all,5,3,0.7265625,-0.003960396039603964,0.7238638068096596
+3407,rf_chi2_vs_rf_all,1,1,1.0,0.0,1.0
+3407,weighted_rf_chi2_vs_rf_all,1,1,1.0,0.0,1.0
+3407,extra_trees_chi2_vs_rf_all,4,3,1.0,-0.001980198019801982,1.0

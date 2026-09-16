@@ -1,0 +1,937 @@
+Reflexion: Language Agents with
+Verbal Reinforcement Learning
+NoahShinn FedericoCassano
+NortheasternUniversity NortheasternUniversity
+noahshinn024@gmail.com cassano.f@northeastern.edu
+EdwardBerman AshwinGopinath
+NortheasternUniversity MassachusettsInstituteofTechnology
+berman.ed@northeastern.edu agopi@mit.edu
+KarthikNarasimhan ShunyuYao
+PrincetonUniversity PrincetonUniversity
+karthikn@princeton.edu shunyuy@princeton.edu
+Abstract
+Largelanguagemodels(LLMs)havebeenincreasinglyusedtointeractwithexter-
+nalenvironments(e.g.,games,compilers,APIs)asgoal-drivenagents. However,
+itremainschallengingfortheselanguageagentstoquicklyandefficientlylearn
+fromtrial-and-errorastraditionalreinforcementlearningmethodsrequireexten-
+sivetrainingsamplesandexpensivemodelfine-tuning. WeproposeReflexion,a
+novel framework to reinforce language agents not by updating weights, but in-
+steadthroughlinguisticfeedback. Concretely,Reflexionagentsverballyreflect
+on task feedback signals, then maintain their own reflective text in an episodic
+memorybuffertoinducebetterdecision-makinginsubsequenttrials. Reflexionis
+flexibleenoughtoincorporatevarioustypes(scalarvaluesorfree-formlanguage)
+and sources (external or internally simulated) of feedback signals, and obtains
+significant improvements over a baseline agent across diverse tasks (sequential
+decision-making,coding,languagereasoning). Forexample,Reflexionachievesa
+91%pass@1accuracyontheHumanEvalcodingbenchmark,surpassingtheprevi-
+ousstate-of-the-artGPT-4thatachieves80%.Wealsoconductablationandanalysis
+studiesusingdifferentfeedbacksignals,feedbackincorporationmethods,andagent
+types,andprovideinsightsintohowtheyaffectperformance. Wereleaseallcode,
+demos,anddatasetsathttps://github.com/noahshinn024/reflexion.
+1 Introduction
+Recent works such as ReAct [30], SayCan [1], Toolformer [22], HuggingGPT [23], generative
+agents[19],andWebGPT[17]havedemonstratedthefeasibilityofautonomousdecision-making
+agentsthatarebuiltontopofalargelanguagemodel(LLM)core. ThesemethodsuseLLMsto
+generate text and ‘actions‘ that can be used in API calls and executed in an environment. Since
+theyrelyonmassivemodelswithanenormousnumberofparameters,suchapproacheshavebeen
+sofarlimitedtousingin-contextexamplesasawayofteachingtheagents,sincemoretraditional
+optimizationschemeslikereinforcementlearningwithgradientdescentrequiresubstantialamounts
+ofcomputeandtime.
+Preprint.Underreview.
+3202
+tcO
+01
+]IA.sc[
+4v66311.3032:viXra
+Inthispaper, weproposeanalternativeapproachcalledReflexionthatusesverbalreinforcement
+to help agents learn from prior failings. Reflexion converts binary or scalar feedback from the
+environmentintoverbalfeedbackintheformofatextualsummary,whichisthenaddedasadditional
+context for the LLM agent in the next episode. This self-reflective feedback acts as a ‘semantic’
+gradientsignalbyprovidingtheagentwithaconcretedirectiontoimproveupon,helpingitlearn
+frompriormistakestoperformbetteronthetask. Thisisakintohowhumansiterativelylearnto
+accomplishcomplextasksinafew-shotmanner–byreflectingontheirpreviousfailuresinorderto
+formanimprovedplanofattackforthenextattempt. Forexample,infigure1,aReflexionagent
+learnstooptimizeitsownbehaviortosolvedecision-making,programming,andreasoningtasks
+throughtrial,error,andself-reflection.
+Generatingusefulreflectivefeedbackischallengingsinceitrequiresagoodunderstandingofwhere
+themodelmademistakes(i.e. thecreditassignmentproblem[25])aswellastheabilitytogenerate
+a summary containing actionable insights for improvement. We explore three ways for doing
+this–simplebinaryenvironmentfeedback, pre-definedheuristicsforcommonfailurecases, and
+self-evaluation such as binary classification using LLMs (decision-making) or self-written unit
+tests(programming). Inallimplementations,theevaluationsignalisamplifiedtonaturallanguage
+experiencesummarieswhichcanbestoredinlong-termmemory.
+ReflexionhasseveraladvantagescomparedtomoretraditionalRLapproacheslikepolicyorvalue-
+basedlearning: 1)itislightweightanddoesn’trequirefinetuningtheLLM,2)itallowsformore
+nuancedformsoffeedback(e.g. targetedchangesinactions),comparedtoscalarorvectorrewards
+thatarechallengingtoperformaccuratecreditassignmentwith,3)itallowsforamoreexplicitand
+interpretableformofepisodicmemoryoverpriorexperiences,and4)itprovidesmoreexplicithints
+foractionsinfutureepisodes. Atthesametime,itdoeshavethedisadvantagesofrelyingonthe
+poweroftheLLM’sself-evaluationcapabilities(orheuristics)andnothavingaformalguaranteefor
+success. However,asLLMcapabilitiesimprove,weonlyexpectthisparadigmtogetbetterovertime.
+Weperformexperimentson(1)decision-makingtaskstotestsequentialactionchoicesoverlong
+trajectories,(2)reasoningtaskstotestknowledge-intensive,single-stepgenerationimprovement,
+and (3) programming tasks to teach the agent to effectively use external tools such as compilers
+andinterpreters. Acrossallthreetypesoftasks,weobserveReflexionagentsarebetterdecision-
+makers,reasoners,andprogrammers. Moreconcretely,Reflexionagentsimproveondecision-making
+AlfWorld[24]tasksoverstrongbaselineapproachesbyanabsolute22%in12iterativelearning
+steps, andonreasoningquestionsinHotPotQA[28]by20%, andPythonprogrammingtaskson
+HumanEval[6]byasmuchas11%.
+Tosummarize,ourcontributionsarethefollowing:
+• We propose Reflexion, a new paradigm for ‘verbal‘ reinforcement that parameterizes a
+policyasanagent’smemoryencodingpairedwithachoiceofLLMparameters.
+• Weexplorethisemergentpropertyofself-reflectioninLLMsandempiricallyshowthat
+self-reflectionisextremelyusefultolearncomplextasksoverahandfuloftrials.
+• WeintroduceLeetcodeHardGym,acode-generationRLgymenvironmentconsistingof40
+challengingLeetcodequestions(‘hard-level‘)in19programminglanguages.
+• WeshowthatReflexionachievesimprovementsoverstrongbaselinesacrossseveraltasks,
+andachievesstate-of-the-artresultsonvariouscodegenerationbenchmarks.
+2 Relatedwork
+Reasoning and decision-making Self-Refine [15] employs an iterative framework for self-
+refinement to autonomously improve generation through self-evaluation. These self-evaluation
+andself-improvementstepsareconditionedongiventaskconstraints,suchas"Howcanthisgenera-
+tionbewritteninamorepositiveway". Self-Refineiseffectivebutislimitedtosingle-generation
+reasoningtasks. Pryzantetal.[21]performsasimilarsemanticprompt-writingoptimization,butis
+alsolimitedtosingle-generationtasks. Pauletal.[20]fine-tunecriticmodelstoprovideintermediate
+feedback within trajectories to improve reasoning responses. Xie et al. [27] use stochastic beam
+searchoveractionstoperformamoreefficientdecision-makingsearchstrategywhichallowsthe
+agenttouseforesightadvantageduetoitsself-evaluationcomponent. Yoranetal.[31]andNairetal.
+2
+(cid:20)(cid:17)(cid:3)(cid:39)(cid:72)(cid:70)(cid:76)(cid:86)(cid:76)(cid:82)(cid:81)(cid:3)(cid:80)(cid:68)(cid:78)(cid:76)(cid:81)(cid:74) (cid:21)(cid:17)(cid:3)(cid:51)(cid:85)(cid:82)(cid:74)(cid:85)(cid:68)(cid:80)(cid:80)(cid:76)(cid:81)(cid:74) (cid:22)(cid:17)(cid:3)(cid:53)(cid:72)(cid:68)(cid:86)(cid:82)(cid:81)(cid:76)(cid:81)(cid:74)
+(cid:60)(cid:82)(cid:88)(cid:3)(cid:68)(cid:85)(cid:72)(cid:3)(cid:76)(cid:81)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:80)(cid:76)(cid:71)(cid:71)(cid:79)(cid:72)(cid:3)(cid:82)(cid:73)(cid:3)(cid:68)(cid:3)(cid:85)(cid:82)(cid:82)(cid:80)(cid:3) (cid:55)(cid:68)(cid:86)(cid:78)(cid:29)(cid:3)(cid:60)(cid:82)(cid:88)(cid:3)(cid:68)(cid:85)(cid:72)(cid:3)(cid:74)(cid:76)(cid:89)(cid:72)(cid:81)(cid:3)(cid:68)(cid:3)(cid:79)(cid:76)(cid:86)(cid:87)(cid:3)(cid:82)(cid:73)(cid:3)(cid:87)(cid:90)(cid:82)(cid:3) (cid:55)(cid:68)(cid:86)(cid:78)(cid:29)(cid:3)(cid:58)(cid:75)(cid:68)(cid:87)(cid:3)(cid:83)(cid:85)(cid:82)(cid:73)(cid:72)(cid:86)(cid:86)(cid:76)(cid:82)(cid:81)(cid:3)(cid:71)(cid:82)(cid:72)(cid:86)(cid:3)(cid:45)(cid:82)(cid:75)(cid:81)(cid:3)
+(cid:11)(cid:68)(cid:12)(cid:3)(cid:55)(cid:68)(cid:86)(cid:78) (cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:55)(cid:68)(cid:86)(cid:78)(cid:29)(cid:3)(cid:70)(cid:79)(cid:72)(cid:68)(cid:81)(cid:3)(cid:86)(cid:82)(cid:80)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:3)(cid:68)(cid:81)(cid:71)(cid:3)(cid:83)(cid:88)(cid:87)(cid:3) (cid:86)(cid:87)(cid:85)(cid:76)(cid:81)(cid:74)(cid:86)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:82)(cid:73)(cid:3)(cid:82)(cid:83)(cid:72)(cid:81)(cid:3)(cid:10)(cid:11)(cid:10)(cid:3)(cid:82)(cid:85)(cid:3)(cid:70)(cid:79)(cid:82)(cid:86)(cid:72)(cid:3) (cid:47)(cid:68)(cid:81)(cid:70)(cid:75)(cid:72)(cid:86)(cid:87)(cid:72)(cid:85)(cid:3)(cid:68)(cid:81)(cid:71)(cid:3)(cid:36)(cid:79)(cid:68)(cid:81)(cid:3)(cid:39)(cid:72)(cid:68)(cid:81)(cid:3)(cid:41)(cid:82)(cid:86)(cid:87)(cid:72)(cid:85)(cid:3)
+(cid:76)(cid:87)(cid:3)(cid:76)(cid:81)(cid:3)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:72)(cid:85)(cid:87)(cid:82)(cid:83)(cid:17) (cid:10)(cid:12)(cid:10)(cid:3)(cid:83)(cid:68)(cid:85)(cid:72)(cid:81)(cid:87)(cid:75)(cid:72)(cid:86)(cid:72)(cid:86)(cid:3)(cid:82)(cid:81)(cid:79)(cid:92)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64) (cid:75)(cid:68)(cid:89)(cid:72)(cid:3)(cid:76)(cid:81)(cid:3)(cid:70)(cid:82)(cid:80)(cid:80)(cid:82)(cid:81)(cid:34)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3) (cid:71)(cid:72)(cid:73)(cid:3)(cid:80)(cid:68)(cid:87)(cid:70)(cid:75)(cid:66)(cid:83)(cid:68)(cid:85)(cid:72)(cid:81)(cid:86)(cid:11)(cid:79)(cid:86)(cid:87)(cid:12)(cid:29) (cid:55)(cid:75)(cid:76)(cid:81)(cid:78)(cid:29)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:15)(cid:3)(cid:77)(cid:82)(cid:88)(cid:85)(cid:81)(cid:68)(cid:79)(cid:76)(cid:86)(cid:87)(cid:15)(cid:3)
+(cid:11)(cid:69)(cid:12)(cid:3) (cid:36)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81)(cid:29)(cid:87)(cid:68)(cid:78)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:20)(cid:3)(cid:73)(cid:85)(cid:82)(cid:80)(cid:3)(cid:86)(cid:87)(cid:82)(cid:89)(cid:72)(cid:69)(cid:88)(cid:85)(cid:81)(cid:72)(cid:85)(cid:20) (cid:3)(cid:3)(cid:3)(cid:3)(cid:76)(cid:73)(cid:3)(cid:86)(cid:20)(cid:17)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:11)(cid:10)(cid:11)(cid:10)(cid:12)(cid:3)(cid:14)(cid:3) (cid:70)(cid:85)(cid:76)(cid:87)(cid:76)(cid:70)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:15)(cid:3)
+(cid:55)(cid:85)(cid:68)(cid:77)(cid:72)(cid:70)(cid:87)(cid:82)(cid:85)(cid:92) (cid:50)(cid:69)(cid:86)(cid:29)(cid:49)(cid:82)(cid:87)(cid:75)(cid:76)(cid:81)(cid:74)(cid:3)(cid:75)(cid:68)(cid:83)(cid:83)(cid:72)(cid:81)(cid:86)(cid:17)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64) (cid:86)(cid:21)(cid:17)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:11)(cid:10)(cid:11)(cid:10)(cid:12)(cid:3)(cid:32)(cid:32)(cid:3)(cid:86)(cid:20)(cid:17)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:11)(cid:10)(cid:12)(cid:10)(cid:12)(cid:3)(cid:14)(cid:3) (cid:86)(cid:70)(cid:85)(cid:72)(cid:72)(cid:81)(cid:90)(cid:85)(cid:76)(cid:87)(cid:72)(cid:85)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:70)(cid:82)(cid:80)(cid:80)(cid:82)(cid:81)(cid:3)(cid:76)(cid:86)(cid:3)
+(cid:36)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81)(cid:29)(cid:70)(cid:79)(cid:72)(cid:68)(cid:81)(cid:3)(cid:83)(cid:68)(cid:81)(cid:20)(cid:3)(cid:90)(cid:76)(cid:87)(cid:75)(cid:3)(cid:86)(cid:76)(cid:81)(cid:78)(cid:69)(cid:68)(cid:86)(cid:76)(cid:81)(cid:20) (cid:86)(cid:21)(cid:17)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:11)(cid:10)(cid:12)(cid:10)(cid:12)(cid:29)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64) (cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:3)(cid:68)(cid:81)(cid:71)(cid:3)(cid:86)(cid:70)(cid:85)(cid:72)(cid:72)(cid:81)(cid:90)(cid:85)(cid:76)(cid:87)(cid:72)(cid:85)(cid:17)
+(cid:50)(cid:69)(cid:86)(cid:29)(cid:49)(cid:82)(cid:87)(cid:75)(cid:76)(cid:81)(cid:74)(cid:3)(cid:75)(cid:68)(cid:83)(cid:83)(cid:72)(cid:81)(cid:86)(cid:17)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64) (cid:3)(cid:3)(cid:3)(cid:3)(cid:85)(cid:72)(cid:87)(cid:88)(cid:85)(cid:81)(cid:3)(cid:10)(cid:49)(cid:82)(cid:10) (cid:36)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81)(cid:29)(cid:3)(cid:178)(cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:15)(cid:3)(cid:86)(cid:70)(cid:85)(cid:72)(cid:72)(cid:81)(cid:90)(cid:85)(cid:76)(cid:87)(cid:72)(cid:85)(cid:179)
+(cid:11)(cid:70)(cid:12)(cid:3)
+(cid:40)(cid:89)(cid:68)(cid:79)(cid:88)(cid:68)(cid:87)(cid:76)(cid:82)(cid:81) (cid:53)(cid:88)(cid:79)(cid:72)(cid:18)(cid:47)(cid:48)(cid:3)(cid:43)(cid:72)(cid:88)(cid:85)(cid:76)(cid:86)(cid:87)(cid:76)(cid:70)(cid:29)(cid:3) (cid:54)(cid:72)(cid:79)(cid:73)(cid:16)(cid:74)(cid:72)(cid:81)(cid:72)(cid:85)(cid:68)(cid:87)(cid:72)(cid:71)(cid:3)(cid:88)(cid:81)(cid:76)(cid:87)(cid:3)(cid:87)(cid:72)(cid:86)(cid:87)(cid:86)(cid:3)(cid:73)(cid:68)(cid:76)(cid:79)(cid:29)(cid:3) (cid:40)(cid:81)(cid:89)(cid:76)(cid:85)(cid:82)(cid:81)(cid:80)(cid:72)(cid:81)(cid:87)(cid:3)(cid:37)(cid:76)(cid:81)(cid:68)(cid:85)(cid:92)(cid:3)(cid:53)(cid:72)(cid:90)(cid:68)(cid:85)(cid:71)(cid:29)(cid:3)
+(cid:43)(cid:68)(cid:79)(cid:79)(cid:88)(cid:70)(cid:76)(cid:81)(cid:68)(cid:87)(cid:76)(cid:82)(cid:81)(cid:17)(cid:3) (cid:68)(cid:86)(cid:86)(cid:72)(cid:85)(cid:87)(cid:3)(cid:80)(cid:68)(cid:87)(cid:70)(cid:75)(cid:66)(cid:83)(cid:68)(cid:85)(cid:72)(cid:81)(cid:86)(cid:11)(cid:17)(cid:17)(cid:17)(cid:12) (cid:19)
+(cid:11)(cid:76)(cid:81)(cid:87)(cid:72)(cid:85)(cid:81)(cid:68)(cid:79)(cid:3)(cid:18)(cid:3)(cid:72)(cid:91)(cid:87)(cid:72)(cid:85)(cid:81)(cid:68)(cid:79)(cid:12)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:73)(cid:68)(cid:76)(cid:79)(cid:72)(cid:71)(cid:3)(cid:69)(cid:72)(cid:70)(cid:68)(cid:88)(cid:86)(cid:72)(cid:3)(cid:44)(cid:3)(cid:76)(cid:81)(cid:70)(cid:82)(cid:85)(cid:85)(cid:72)(cid:70)(cid:87)(cid:79)(cid:92)(cid:3)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:90)(cid:85)(cid:82)(cid:81)(cid:74)(cid:3)(cid:69)(cid:72)(cid:70)(cid:68)(cid:88)(cid:86)(cid:72)(cid:3)(cid:76)(cid:87)(cid:3)(cid:82)(cid:81)(cid:79)(cid:92)(cid:3)(cid:70)(cid:75)(cid:72)(cid:70)(cid:78)(cid:86)(cid:3)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:87)(cid:85)(cid:76)(cid:72)(cid:71)(cid:3)(cid:87)(cid:82)(cid:3)(cid:83)(cid:76)(cid:70)(cid:78)(cid:3)(cid:88)(cid:83)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:3)(cid:76)(cid:81)(cid:3) (cid:68)(cid:86)(cid:86)(cid:88)(cid:80)(cid:72)(cid:71)(cid:3)(cid:87)(cid:75)(cid:68)(cid:87)(cid:3)(cid:87)(cid:75)(cid:72)(cid:92)(cid:3)(cid:69)(cid:82)(cid:87)(cid:75)(cid:3)(cid:75)(cid:68)(cid:71)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)
+(cid:11)(cid:71)(cid:12)(cid:3) (cid:86)(cid:87)(cid:82)(cid:89)(cid:72)(cid:69)(cid:88)(cid:85)(cid:81)(cid:72)(cid:85)(cid:3)(cid:20)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:69)(cid:88)(cid:87)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:3) (cid:76)(cid:73)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:87)(cid:82)(cid:87)(cid:68)(cid:79)(cid:3)(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:3)(cid:82)(cid:73)(cid:3)(cid:82)(cid:83)(cid:72)(cid:81)(cid:3)(cid:68)(cid:81)(cid:71)(cid:3) (cid:86)(cid:68)(cid:80)(cid:72)(cid:3)(cid:80)(cid:88)(cid:79)(cid:87)(cid:76)(cid:83)(cid:79)(cid:72)(cid:3)(cid:83)(cid:85)(cid:82)(cid:73)(cid:72)(cid:86)(cid:86)(cid:76)(cid:82)(cid:81)(cid:86)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)
+(cid:53)(cid:72)(cid:73)(cid:79)(cid:72)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81) (cid:90)(cid:68)(cid:86)(cid:3)(cid:81)(cid:82)(cid:87)(cid:3)(cid:76)(cid:81)(cid:3)(cid:86)(cid:87)(cid:82)(cid:89)(cid:72)(cid:69)(cid:88)(cid:85)(cid:81)(cid:72)(cid:85)(cid:3)(cid:20)(cid:17)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64) (cid:70)(cid:79)(cid:82)(cid:86)(cid:72)(cid:3)(cid:83)(cid:68)(cid:85)(cid:72)(cid:81)(cid:87)(cid:75)(cid:72)(cid:86)(cid:72)(cid:86)(cid:3)(cid:76)(cid:86)(cid:3)(cid:72)(cid:84)(cid:88)(cid:68)(cid:79)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3) (cid:68)(cid:70)(cid:70)(cid:88)(cid:85)(cid:68)(cid:87)(cid:72)(cid:79)(cid:92)(cid:3)(cid:76)(cid:71)(cid:72)(cid:81)(cid:87)(cid:76)(cid:73)(cid:92)(cid:76)(cid:81)(cid:74)(cid:3)(cid:87)(cid:75)(cid:72)(cid:76)(cid:85)(cid:3)
+(cid:82)(cid:85)(cid:71)(cid:72)(cid:85)(cid:3)(cid:82)(cid:73)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:83)(cid:68)(cid:85)(cid:72)(cid:81)(cid:87)(cid:75)(cid:72)(cid:86)(cid:72)(cid:86)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)
+(cid:83)(cid:85)(cid:82)(cid:73)(cid:72)(cid:86)(cid:86)(cid:76)(cid:82)(cid:81)(cid:86)(cid:17)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:36)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81)(cid:29)(cid:3)(cid:87)(cid:68)(cid:78)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:3)(cid:20)(cid:3)(cid:73)(cid:85)(cid:82)(cid:80)(cid:3) (cid:55)(cid:75)(cid:76)(cid:81)(cid:78)(cid:29)(cid:3)(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:54)(cid:82)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:83)(cid:85)(cid:82)(cid:73)(cid:72)(cid:86)(cid:86)(cid:76)(cid:82)(cid:81)(cid:3)
+(cid:62)(cid:17)(cid:17)(cid:17)(cid:64)
+(cid:11)(cid:72)(cid:12)(cid:3)(cid:49)(cid:72)(cid:91)(cid:87)(cid:3) (cid:86)(cid:87)(cid:82)(cid:89)(cid:72)(cid:69)(cid:88)(cid:85)(cid:81)(cid:72)(cid:85)(cid:3)(cid:21) (cid:45)(cid:82)(cid:75)(cid:81)(cid:3)(cid:47)(cid:68)(cid:81)(cid:70)(cid:75)(cid:72)(cid:86)(cid:87)(cid:72)(cid:85)(cid:3)(cid:68)(cid:81)(cid:71)(cid:3)(cid:36)(cid:79)(cid:68)(cid:81)(cid:3)(cid:39)(cid:72)(cid:68)(cid:81)(cid:3)
+(cid:3)(cid:3)(cid:3)(cid:3)(cid:85)(cid:72)(cid:87)(cid:88)(cid:85)(cid:81)(cid:3)(cid:10)(cid:60)(cid:72)(cid:86)(cid:10)(cid:3)(cid:76)(cid:73)(cid:3)(cid:70)(cid:75)(cid:72)(cid:70)(cid:78)(cid:11)(cid:54)(cid:20)(cid:12)(cid:3)(cid:82)(cid:85)(cid:3)
+(cid:55)(cid:85)(cid:68)(cid:77)(cid:72)(cid:70)(cid:87)(cid:82)(cid:85)(cid:92) (cid:62)(cid:17)(cid:17)(cid:17)(cid:64)(cid:3)(cid:50)(cid:69)(cid:86)(cid:29)(cid:3)(cid:60)(cid:82)(cid:88)(cid:3)(cid:83)(cid:88)(cid:87)(cid:3)(cid:87)(cid:75)(cid:72)(cid:3)(cid:83)(cid:68)(cid:81)(cid:3)(cid:20)(cid:3)(cid:76)(cid:81)(cid:3) (cid:70)(cid:75)(cid:72)(cid:70)(cid:78)(cid:11)(cid:54)(cid:21)(cid:12)(cid:3)(cid:72)(cid:79)(cid:86)(cid:72)(cid:3)(cid:10)(cid:49)(cid:82)(cid:10) (cid:41)(cid:82)(cid:86)(cid:87)(cid:72)(cid:85)(cid:3)(cid:75)(cid:68)(cid:89)(cid:72)(cid:3)(cid:76)(cid:81)(cid:3)(cid:70)(cid:82)(cid:80)(cid:80)(cid:82)(cid:81)(cid:3)(cid:76)(cid:86)(cid:3)(cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:17)
+(cid:70)(cid:82)(cid:88)(cid:81)(cid:87)(cid:72)(cid:85)(cid:87)(cid:82)(cid:83)(cid:3)(cid:20)(cid:17) (cid:36)(cid:70)(cid:87)(cid:76)(cid:82)(cid:81)(cid:29)(cid:3)(cid:178)(cid:81)(cid:82)(cid:89)(cid:72)(cid:79)(cid:76)(cid:86)(cid:87)(cid:179)
+Figure1: Reflexionworksondecision-making4.1,programming4.3,andreasoning4.2tasks.
+Relatedworkonreasoninganddecision-making
+Approach Self Hidden Decision Binary Memory
+refine constraints making reward
+Self-refine[15] ✓ ✗ ✗ ✗ ✗
+Beamsearch[27] ✓ ✓ ✓ ✓ ✗
+Reflexion(ours) ✓ ✓ ✓ ✓ ✓
+Relatedworkonprogramming
+Approach Test Debugging Self-generated Multiple Self-reflection
+Testexecution execution tests languages
+AlphaCode[14] ✓ ✗ ✗ ✓ ✗
+CodeT[5] ✓ ✗ ✓ ✗ ✗
+Self-debugging[7] ✓ ✓ ✗ ✗ ✗
+CodeRL[12] ✓ ✓ ✗ ✗ ✗
+Reflexion(ours) ✓ ✓ ✓ ✓ ✓
+[16]usedecidermodelstoreasonoverseveralgenerations. Kimetal.[10]usearetrypatternover
+afixednumberofstepswithoutanevaluationstep. Goodman[9]performaqualitativeevaluation
+stepthatproposesoptimizationstothepreviousgeneration. Inthispaper,weshowthatseveralof
+theseconceptscanbeenhancedwithself-reflectiontobuildapersistingmemoryofself-reflective
+experienceswhichallowsanagenttoidentifyitsownerrorsandself-suggestlessonstolearnfromits
+mistakesovertime.
+Programming Several past and recent works employ variations of test-driven development or
+code debugging practices. AlphaCode [14] evaluates a set of generations on hidden test cases.
+CodeT[5]usesself-generatedunitteststhatareusedtoscoregeneratedfunctionimplementations.
+Self-Debugging[7]employsadebuggingcomponentthatisusedtoimproveexistingimplementations
+givenfeedbackfromacodeexecutionenvironment. CodeRL[12]setstheprobleminanRLframe-
+workusinganactor-criticsetuptodebugprogramsgivenfeedbackfromanexecutionenvironment.
+AlphaCode,Self-DebuggingandCodeRLareeffectiveinfixingless-complexprogrambugs,butthey
+relyupongroundtruthtestcasesthatinvalidatepass@1eligibility,anddonotuseself-reflectionto
+bridgethegapbetweenerroridentificationandimplementationimprovement. CodeTdoesnotaccess
+hiddentestcasesbutdoesnotimplementaself-learningsteptoimprovecodewriting.
+3 Reflexion: reinforcementviaverbalreflection
+WedevelopamodularformulationforReflexion,utilizingthreedistinctmodels: anActor,denotedas
+M ,whichgeneratestextandactions;anEvaluatormodel,representedbyM ,thatscorestheoutputs
+a e
+producedbyM ;andaSelf-Reflectionmodel,denotedasM ,whichgeneratesverbalreinforcement
+a sr
+cues to assist the Actor in self-improvement. We provide a detailed description of each of these
+modelsandsubsequentlyelucidatetheircollaborativefunctioningwithintheReflexionframework.
+3
+Algorithm1Reinforcementviaself-reflection
+Agent InitializeActor,Evaluator,Self-Reflection:
+M ,M ,M
+External feedback a e sr
+Self-reflection (LM) Initializepolicyπ θ (a i |s i ),θ ={M a ,mem}
+Internal Reflective Generateinitialtrajectoryusingπ
+feedback text θ
+Evaluateτ usingM
+0 e
+Evaluator (LM) Experience Generateinitialself-reflectionsr usingM
+0 sr
+(long-term memory) Setmem←[sr ]
+0
+Sett=0
+Trajectory
+Actor (LM) whileM notpassort<maxtrialsdo
+(short-term memory) e
+Generateτ =[a ,o ,...a ,o ]usingπ
+t 0 0 i i θ
+Evaluateτ usingM
+t e
+Generateself-reflectionsr usingM
+t sr
+Appendsr tomem
+Obs / Reward Environment Action t
+Incrementt
+endwhile
+return
+Figure2: (a)DiagramofReflexion. (b)Reflexionreinforcementalgorithm
+Actor The Actor is built upon a large language model (LLM) that is specifically prompted to
+generatethenecessarytextandactionsconditionedonthestateobservations.Analogoustotraditional
+policy-basedRLsetups,wesampleanactionorgeneration,a ,fromthecurrentpolicyπ attimet,
+t θ
+receiveanobservationfromtheenvironmento .WeexplorevariousActormodels,includingChainof
+t
+Thought[26]andReAct[30]. Thesediversegenerationmodelsallowustoexploredifferentaspects
+oftextandactiongenerationwithintheReflexionframework,providingvaluableinsightsintotheir
+performanceandeffectiveness. Inaddition,wealsoaddamemorycomponentmemthatprovides
+additionalcontexttothisagent. ThisadaptionwasinspiredbyBrooksetal.[3],whosuggestapolicy
+iterationapproachusingin-contextlearning. Detailsonhowthisispopulatedareprovidedbelow.
+Evaluator TheEvaluatorcomponentoftheReflexionframeworkplaysacrucialroleinassessing
+thequalityofthegeneratedoutputsproducedbytheActor. Ittakesasinputageneratedtrajectory
+andcomputesarewardscorethatreflectsitsperformancewithinthegiventaskcontext. Defining
+effective value and reward functions that apply to semantic spaces is difficult, so we investigate
+severalvariantsoftheEvaluatormodel. Forreasoningtasks, weexplorerewardfunctionsbased
+onexactmatch(EM)grading,ensuringthatthegeneratedoutputalignscloselywiththeexpected
+solution. Indecision-makingtasks,weemploypre-definedheuristicfunctionsthataretailoredto
+specificevaluationcriteria. Additionally,weexperimentwithusingadifferentinstantiationofan
+LLMitselfasanEvaluator,generatingrewardsfordecision-makingandprogrammingtasks. This
+multi-faceted approach to Evaluator design allows us to examine different strategies for scoring
+generatedoutputs,offeringinsightsintotheireffectivenessandsuitabilityacrossarangeoftasks.
+Self-reflection The Self-Reflection model instantiated as an LLM, plays a crucial role in the
+Reflexionframeworkbygeneratingverbalself-reflectionstoprovidevaluablefeedbackforfuture
+trials.Givenasparserewardsignal,suchasabinarysuccessstatus(success/fail),thecurrenttrajectory,
+anditspersistentmemorymem,theself-reflectionmodelgeneratesnuancedandspecificfeedback.
+Thisfeedback,whichismoreinformativethanscalarrewards,isthenstoredintheagent’smemory
+(mem). Forinstance,inamulti-stepdecision-makingtask,whentheagentreceivesafailuresignal,it
+caninferthataspecificactiona ledtosubsequentincorrectactionsa anda . Theagentcan
+i i+1 i+2
+thenverballystatethatitshouldhavetakenadifferentaction,a′,whichwouldhaveresultedina′
+i i+1
+anda′ ,andstorethisexperienceinitsmemory. Insubsequenttrials,theagentcanleverageitspast
+i+2
+experiencestoadaptitsdecision-makingapproachattimetbychoosingactiona′. Thisiterative
+i
+processoftrial,error,self-reflection,andpersistingmemoryenablestheagenttorapidlyimproveits
+decision-makingabilityinvariousenvironmentsbyutilizinginformativefeedbacksignals.
+Memory CorecomponentsoftheReflexionprocessarethenotionofshort-termandlong-term
+memory.Atinferencetime,theActorconditionsitsdecisionsonshortandlong-termmemory,similar
+4
+tothewaythathumansrememberfine-grainrecentdetailswhilealsorecallingdistilledimportant
+experiencesfromlong-termmemory. IntheRLsetup,thetrajectoryhistoryservesastheshort-term
+memorywhileoutputsfromtheSelf-Reflectionmodelarestoredinlong-termmemory. Thesetwo
+memorycomponentsworktogethertoprovidecontextthatisspecificbutalsoinfluencedbylessons
+learned over several trials, which is a key advantage of Reflexion agents over other LLM action
+choiceworks.
+TheReflexionprocess Reflexionisformalizedasaniterativeoptimizationprocessin1. Inthe
+firsttrial,theActorproducesatrajectoryτ byinteractingwiththeenvironment. TheEvaluatorthen
+0
+producesascorer whichiscomputedasr = M (τ ). r isonlyascalarrewardfortrialtthat
+0 t e 0 t
+improvesastask-specificperformanceincreases. Afterthefirsttrial,toamplifyr toafeedbackform
+0
+thatcanbeusedforimprovementbyanLLM,theSelf-Reflectionmodelanalyzesthesetof{τ ,r }
+0 0
+toproduceasummarysr whichisstoredinthememorymem. sr isaverbalexperiencefeedback
+0 t
+fortrialt. TheActor,Evaluator,andSelf-Reflectionmodelsworktogetherthroughtrialsinaloop
+untiltheEvaluatordeemsτ tobecorrect. Asmentionedin3,thememorycomponentofReflexion
+t
+iscrucialtoitseffectiveness. Aftereachtrialt,sr ,isappendedmem. Inpractice,weboundmem
+t
+byamaximumnumberofstoredexperiences,Ω(usuallysetto1-3)toadheretomaxcontextLLM
+limitations.
+4 Experiments
+WeevaluatevariousnaturallanguageRLsetupsondecision-making,reasoning,andcodegeneration
+tasks. Specifically,wechallengeanagenttoperformsearch-basedquestionansweringonHotPotQA
+[28],multi-steptasksincommonhouseholdenvironmentsinAlfWorld[24],andcodewritingtasks
+in competition-like environments with interpreters and compilers in HumanEval [6], MBPP [2],
+andLeetcodeHard,anewbenchmark. Mostnotably,Reflexionimprovesperformanceoverstrong
+baselinesby22%inAlfWorld,20%inHotPotQA,and11%onHumanEval.
+4.1 Sequentialdecisionmaking: ALFWorld
+AlfWorld is a suite of text-based environments that challenge an agent to solve multi-step tasks
+in a variety of interactive environments based on TextWorld [8]. Following Yao et al. [30], we
+run the agent in 134 AlfWorld environments across six different tasks, including finding hidden
+objects (e.g., finding a spatula in a drawer), moving objects (e.g., moving a knife to the cutting
+board),andmanipulatingobjectswithotherobjects(e.g.,chillingatomatointhefridge). Weuse
+ReAct[30]astheactiongeneratorasYaoetal.[30]hasshownsuccessinlongtrajectorydecision-
+makingusingexplicitintermediatethoughts. AlfWorldtasksnaturallyrequireaself-evaluationstep
+as the environment can only signal if a task is complete. To achieve fully autonomous behavior,
+weimplementtwoself-evaluationtechniques: naturallanguageclassificationusinganLLManda
+hand-writtenheuristic. Theheuristicissimple: iftheagentexecutesthesameactionandreceivesthe
+sameresponseformorethan3cycles,orifthenumberofactionstakeninthecurrentenvironment
+exceeds30(inefficientplanning),weself-reflect. Inthebaselineruns,ifself-reflectionissuggested,
+weskiptheself-reflectionprocess,resettheenvironment,andstartanewtrial. IntheReflexionruns,
+theagentusesself-reflectiontofinditsmistake,updateitsmemory,resettheenvironment,andstarta
+newtrial. Toavoidverylongpromptwindowsthatmayexceedthemaximumlimit,wetruncatethe
+agent’smemorytothelast3self-reflections(experiences).
+Toavoidsyntacticerrors,weprovidetwodomain-specificfew-shottrajectoriestotheagent. Weuse
+thesamefew-shottrajectoryexamplesasYaoetal.[30]withGPT-3fortheLLM.AlfWorldtasks,
+ReActfew-shotprompts,andReflexionexamplesareincludedintheappendix.
+Results ReAct+ReflexionsignificantlyoutperformsReActbycompleting130outof134tasks
+usingthesimpleheuristictodetecthallucinationsandinefficientplanning.Further,ReAct+Reflexion
+learnstosolveadditionaltasksbylearningin12consecutivetrials. IntheReAct-onlyapproach,we
+seethatperformanceincreasehaltsbetweentrials6and7.
+Analysis AcommonerrorinbaselinefailedAlfWorldtrajectoriesiswhenanagentthinksthatit
+haspossessionofanitembutdoesnotactuallyhavetheitem. Theagentproceedstoexecuteseveral
+actionsinalongtrajectoryandisnotabletobacktrackitsactionstofindthemistake. Reflexion
+5
+1.0
+0.9
+0.8
+0.7
+0.6
+0.5
+0 2 4 6 8 10
+Trial Number
+stnemnorivnE
+devloS
+fo
+noitroporP
+(a) ALFWorld Success Rate
+0.5
+ReAct only
+ReAct + Reflexion (Heuristic)
+ReAct + Reflexion (GPT)
+0.4
+0.3
+0.2
+0.1
+0.0
+0 2 4 6 8 10
+Trial Number
+stnemnorivnE
+fo
+noitroporP
+(a) ALFWorld Success Rate
+ReAct only - hallucination
+ReAct only - inefficient planning
+ReAct + Reflexion - hallucination
+ReAct + Reflexion - inefficient planning
+Figure3: (a)AlfWorldperformanceacross134tasksshowingcumulativeproportionsofsolvedtasks
+usingself-evaluationtechniquesof(Heuristic)and(GPT)forbinaryclassification. (b)Classification
+ofAlfWorldtrajectoriesbyreasonoffailure.
+eliminatesalmostallofthesecasesbyusingself-reflectiontodistilllong, failedtrajectoriesinto
+relevantexperiencesthatcanareusedas"self-hints"inthefuture. Therearetwomaincasesinwhich
+long-termmemoryhelpsanagentinAlfWorld: 1)Anearlymistakeinalongtrajectorycanbeeasily
+identified. Theagentcansuggestanewactionchoiceorevenanewlong-termplan. 2)Therearetoo
+manysurfaces/containerstocheckforanitem. Theagentcanexploititsexperiencememoryover
+severaltrialstothoroughlysearcharoom. In3,thelearningcurvesuggeststhatthelearningprocess
+occursoverseveralexperiences,meaningthattheagentissuccessfullybalancingcases1and2shown
+intheimmediatespikeintheimprovementbetweenthefirsttwotrials,thenasteadyincreaseover
+thenext11trialstoanear-perfectperformance. Ontheotherhand, 3showsaReAct-onlyagent
+convergingatahallucinationrateof22%withnosignsoflong-termrecovery.
+4.2 Reasoning: HotpotQA
+HotPotQA[28]isaWikipedia-baseddatasetwith113kquestion-and-answerpairsthatchallenge
+agents to parse content and reason over several supporting documents. To test improvement in
+reasoning only ability, we implement Reflexion + Chain-of-Thought (CoT) [26] for step-by-step
+Q→AandQ,C →Aimplementations,whereQisthequestion,C isthegroundtruthcontext
+gt gt
+fromthedataset,andAisthefinalanswer. SinceCoTisnotamulti-stepdecision-makingtechnique,
+we give C to the agent so that we can isolate the reasoning behavior over large sections of the
+gt
+providedtext. Totestholisticquestionandansweringability,whichrequiresreasoningandaction
+choice, we implement a Reflexion + ReAct [30] agent that can retrieve relevant context using a
+WikipediaAPIandinferanswersusingstep-by-stepexplicitthinking. ForCoTimplementations,we
+use6-shotprompting;forReAct,weuse2-shotprompting,andforself-reflection,weuse2-shot
+prompting. Allexamplescanbefoundintheappendix.
+Robustlyevaluatingnaturallanguageanswersisalong-standingprobleminNLP.Therefore,between
+trials,weuseexactmatchanswergradingusingtheenvironmenttogiveabinarysuccesssignalto
+theagent. Aftereachtrial,theself-reflectionloopisemployedtoamplifythebinarysignal,similarto
+thedecision-makingsetup4.1inAlfWorldwithamemorysizeof3experiences.
+Results Reflexionoutperformsallbaselineapproachesbysignificantmarginsoverseverallearning
+steps. Furthermore,ReAct-only,CoT-only,andCoT(GT)-onlyimplementationsfailtoprobabilisti-
+callyimproveonanytasks,meaningthatnofailedtasksfromthefirsttrialfromanyofthebaseline
+approacheswereabletobesolvedinsubsequenttrialsusingatemperatureof0.7IntheReflexionruns,
+weallowedtheagenttogatherexperienceandretryonfailedtasksuntilitproduced3consecutive
+failedattemptsontheparticulartask. Naturally,theCoT(GT)achievedhigheraccuracyscoresasit
+wasgivenaccesstothegroundtruthcontextofthequestion. Still,theCoT(GT)agentisunableto
+correctlyinferthecorrectanswerfor39%ofthequestions,butReflexionhelpstheagenttocorrect
+itsmistakeswithoutaccesstothegroundtruthanswertoimproveitsaccuracyby14%.
+6
+0.8
+0.6
+0.4
+0.2
+0 2 4 6
+Trial Number
+sksaT
+devloS
+fo
+noitroporP
+(a) HotPotQA Success Rate 1.0
+CoT only
+ReAct only CoT + Reflexion 0.8
+ReAct + Reflexion
+0.6
+0.4
+0 1 2 3 4 5 6 7
+Trial Number
+sksaT
+devloS
+fo
+noitroporP
+(b) HotPotQA CoT (GT)
+CoT (GT) only 1.0
+CoT (GT) + Reflexion 0.9
+0.8
+0.7
+0.6
+0.5
+0 1 2 3 4
+Trial Number
+sksaT
+devloS
+fo
+noitroporP
+(c) HotPotQA Episodic Memory
+CoT (GT) only CoT (GT) EPM CoT (GT) EPM + Reflexion
+Figure4: Chain-of-Thought(CoT)andReAct. Reflexionimprovessearch, informationretrieval,
+andreasoningcapabilitieson100HotPotQAquestions. (a)ReflexionReActvsReflexionCoT(b)
+ReflexionCoT(GT)forreasoningonly(c)Reflexionvsepisodicmemoryablation.
+Analysis Weperformanablationexperimenttoisolatetheadvantageoftheself-reflectivestepfor
+reasoningusingCoT(GT)asthebaselineapproach4. RecallthatCoT(GT)usesChain-of-Thought
+reasoningwithprovidedgroundtruthcontext,whichtestsreasoningabilityoverlongcontexts. Next,
+we add an element of episodic memory (EPM) by including the most recent trajectory. For the
+Reflexionagent,weimplementthestandardself-reflectionstepasafinalpass. Intuitively,wetestif
+theagentisiterativelylearningmoreeffectivelybyusingverbalexplanationusinglanguagewritten
+in the first person. 4 shows that self-reflection improves learning by an 8% absolute boost over
+theepisodicmemorylearningadvantage. Thisresultsupportstheargumentthatrefinement-only
+approachesarenotaseffectiveasself-reflection-guidedrefinementapproaches.
+4.3 Programming
+We evaluate the baseline and Reflexion approaches on Python and Rust code writing on MBPP
+[2], HumanEval [6], and LeetcodeHardGym, our new dataset. MBPP and HumanEval measure
+functionbodygenerationaccuracygivennaturallanguagedescriptions.Weuseabenchmarklanguage
+compiler,MultiPL-E[4],totranslatesubsetsofHumanEvalandMBPPtotheRustlanguage.MultiPL-
+EisacollectionofsmallcompilersthatcanbeusedtotranslatePythonbenchmarkquestionsto18
+otherlanguages. WeincludeexperimentsforRustcodegenerationtodemonstratethatReflexion
+implementations for code generation are language-agnostic and can be used for interpreted and
+compiled languages. Lastly, we introduce a new benchmark, LeetcodeHardGym, which is an
+interactiveprogramminggymthatcontains40Leetcodehard-ratedquestionsthathavebeenreleased
+afterOctober8,2022,whichisthepre-trainingcutoffdateofGPT-4[18].
+Thetaskofprogrammingpresentsauniqueopportunitytousemoregroundedself-evaluationpractices
+suchasself-generatedunittestsuites.Thus,ourReflexion-basedprogrammingtaskimplementationis
+eligibleforpass@1accuracyreporting. Togenerateatestsuite,weuseChain-of-Thoughtprompting
+[26]toproducediverse,extensivetestswithcorrespondingnaturallanguagedescriptions. Then,we
+filterforsyntacticallyvalidteststatementsbyattemptingtoconstructavalidabstractsyntaxtree
+(AST)foreachproposedtest. Finally,wesamplentestsfromthecollectionofgeneratedunittests
+toproduceatestsuiteT,denotedas{t ,t ,...,t }. Wesetntoamaximumof6unittests. Aside
+0 1 n
+fromtheunittestsuitecomponent,thesetupforthelearningloopforaReflexionprogrammingagent
+isidenticaltothereasoninganddecision-makingagentswithamaxmemorylimitof1experience.
+Benchmark+Language PrevSOTAPass@1 SOTAPass@1 ReflexionPass@1
+HumanEval(PY) 65.8(CodeT[5]+GPT-3.5) 80.1(GPT-4) 91.0
+HumanEval(RS) – 60.0(GPT-4) 68.0
+MBPP(PY) 67.7(CodeT[5]+Codex[6]) 80.1(GPT-4) 77.1
+MBPP(RS) – 70.9(GPT-4) 75.4
+LeetcodeHard(PY) – 7.5(GPT-4) 15.0
+Table1: Pass@1accuracyforvariousmodel-strategy-languagecombinations. Thebasestrategyisa
+singlecodegenerationsample. Allinstruction-basedmodelsfollowzero-shotcodegeneration.
+7
+Benchmark+Language Base Reflexion TP FN FP TN
+HumanEval(PY) 0.80 0.91 0.99 0.40 0.01 0.60
+MBPP(PY) 0.80 0.77 0.84 0.59 0.16 0.41
+HumanEval(RS) 0.60 0.68 0.87 0.37 0.13 0.63
+MBPP(RS) 0.71 0.75 0.84 0.51 0.16 0.49
+Table2: OverallaccuracyandtestgenerationperformanceforHumanEvalandMBPP.ForRust,
+HumanEvalisthehardest50problemsfromHumanEvalPythontranslatedtoRustwithMultiPL-E
+[4]. TP:unittestspass,solutionpass;FN:unittestsfail,solutionpass;FP:unittestspass,solution
+fail;TN:unittestsfail,solutionfail.
+Results Reflexionoutperformsallbaselineaccuraciesandsetsnewstate-of-the-artstandardson
+allbenchmarksforPythonandRustexceptforMBPPPython1. Wefurtherinvestigatetheinferior
+performanceofReflexiononMBPPPython.
+Analysis Weacknowledgethatself-reflectingcode-generationagentsareboundtotheirabilityto
+writediverse,comprehensivetests. Therefore,inthecaseinwhichthemodelgeneratesaflakytest
+suite,itispossiblethatalltestspassonanincorrectsolutionandleadtoafalsepositivelabelona
+codecompletion[11]. Ontheotherhand,ifthemodelproducesanincorrectlywrittentestsuite,it
+ispossibleforsomeoftheteststofailonacorrectsolution,leadingtoaself-reflectiongeneration
+that is conditioned on a false negative code completion. Given the implementation of Reflexion,
+falsenegativesarepreferredoverfalsepositivesastheagentmaybeabletouseself-reflectionto
+identifytheincorrecttest(s)andpromptitselftokeeptheoriginalcodecompletionintact. Onthe
+other hand, if an invalid test suite returns a false positive completion (all internal test cases pass
+buttheimplementationisincorrect),theagentwillprematurelyreportaninvalidsubmission. In2,
+variousconditionsaremeasuredtoanalyzeperformancebeyondpass@1accuracy. Previously,we
+displayedtheinferiorperformanceofReflexiontothebaselineGPT-4onMBPPPython. In2,we
+observeanotablediscrepancybetweenthefalsepositivelabelsproducedbyinternaltestexecution,
+P(notpass@1generationcorrect|testspass). Thatis,theprobabilitythatasubmissionwillfailgiven
+thatitpassesallunittests. ForHumanEvalandMBPPPython,thebaselinepass@1accuraciesare
+relativelysimilar, 82%and80%, respectively. However, thefalsepositivetestexecutionratefor
+MBPPPythonis16.3%whiletherateforHumanEvalPythonisamere1.4%,leadingto91%overall
+accuracy1.
+Approach TestGeneration Self-reflection Pass@1(Acc)
+Basemodel False False 0.60
+Testgenerationomission False True 0.52
+Self-reflectionomission True False 0.60
+Reflexion True True 0.68
+Table3: Pass@1accuracyforvariouscompromisedapproachesontheReflexionapproachusing
+GPT-4asthebasemodelonHumanEvalRust-50hardestproblems
+Ablationstudy WetestthecompositeapproachofReflexionfortestgenerationandself-reflection
+cooperationonasubsetofthe50hardestHumanEvalRustproblems. OurRustcompilerenvironment
+providesverboseerrorlogsandhelpfuldebugginghints, thereforeservingasagoodplayground
+for compromised approaches. First, we omit internal test generation and execution steps, which
+testtheagenttoself-reflectwithoutguidancefromcurrentimplementations. 3showsaninferior
+52%vs60%(baseline)accuracy,whichsuggeststhattheagentisunabletodetermineifthecurrent
+implementationiscorrectwithoutunittests. Therefore,theagentmustparticipateinalliterationsof
+therunwithouttheoptiontoreturnearly,performingharmfuleditstotheimplementation.
+Next,wetestself-reflectioncontributionbyomittingthenaturallanguageexplanationstepfollowing
+failed unit test suite evaluations. Intuitively, this challenges the agent to combine the tasks of
+erroridentificationandimplementationimprovementacrossallfailedunittests. Interestingly,the
+compromisedagentdoesnotimproveperformanceoverthebaselinerun. Weobservethatthetest
+generationandcodecompilationstepsareabletocatchsyntaxandlogicerrors,buttheimplementation
+fixesdonotreflecttheseindications. Theseempiricalresultssuggestthatseveralrecentworksthat
+8
+proposeblindtrialanderrordebuggingtechniqueswithoutself-reflectionareineffectiveonharder
+taskssuchaswritingcomplexprogramsinRust.
+5 Limitations
+Atitscore,Reflexionisanoptimizationtechniquethatusesnaturallanguagetodopolicyoptimization.
+Policyoptimizationisapowerfulapproachtoimproveactionchoicethroughexperience,butitmay
+stillsuccumbtonon-optimallocalminimasolutions. Inthisstudy,welimitlong-termmemoryto
+a sliding window with maximum capacity, but we encourage future work to extend the memory
+component of Reflexion with more advanced structures such as vector embedding databases or
+traditionalSQLdatabases. Specifictocodegeneration,therearemanypracticallimitationstotest-
+drivendevelopmentinspecifyingaccurateinput-outputmappingssuchasnon-deterministicgenerator
+functions,impurefunctionsthatinteractwithAPIs,functionsthatvaryoutputaccordingtohardware
+specifications,orfunctionsthatinvokeparallelorconcurrentbehaviorthatmaybedifficulttopredict.
+6 Broaderimpact
+Largelanguagemodelsareincreasinglyusedtointeractwithexternalenvironments(e.g.theInternet,
+software,robotics,etc.) andhumans. Ourworkhasthepotentialofreinforcingandempowering
+theseagentstowardgreaterautomationandworkefficiency,butitalsoamplifiestheriskswhenthese
+agentswereputintomisuse. Webelievethatthisdirectionofresearchwillneedmoreeffortinsafety
+andethicalconsiderations.
+On the other hand, reinforcement learning has suffered from its black-box policy and optimiza-
+tionsetupsinwhichinterpretabilityandalignmenthavebeenchallenging. Ourproposed“verbal”
+reinforcementlearningmightaddresssomeoftheissuesandturnautonomousagentsmoreinter-
+pretableanddiagnosable. Forexample,inthecaseoftool-usagethatmaybetoohardforhumansto
+understand,self-reflectionscouldbemonitoredtoensureproperintentbeforeusingthetool.
+7 Conclusion
+Inthiswork,wepresentReflexion,anapproachthatleveragesverbalreinforcementtoteachagents
+tolearnfrompastmistakes. WeempiricallyshowthatReflexionagentssignificantlyoutperform
+currently widely-used decision-making approaches by utilizing self-reflection. In future work,
+Reflexioncouldbeusedtoemploymoreadvancedtechniquesthathavebeenthoroughlystudiedin
+traditionalRLsettings,suchasvaluelearninginnaturallanguageoroff-policyexplorationtechniques.
+8 Reproducibility
+We highly advise others to use isolated execution environments when running autonomous code
+writingexperimentsasthegeneratedcodeisnotvalidatedbeforeexecution.
+9
+References
+[1] Ahn,M.,Brohan,A.,Brown,N.,Chebotar,Y.,Cortes,O.,David,B.,Finn,C.,Gopalakrishnan,
+K., Hausman, K., Herzog, A., etal.(2022). Doasican, notasisay: Groundinglanguagein
+roboticaffordances. arXivpreprintarXiv:2204.01691.
+[2] Austin, J., Odena, A., Nye, M., Bosma, M., Michalewski, H., Dohan, D., Jiang, E., Cai, C.,
+Terry,M.,Le,Q.,etal.(2021). Programsynthesiswithlargelanguagemodels. arXivpreprint
+arXiv:2108.07732.
+[3] Brooks, E., Walls, L., Lewis, R.L., andSingh, S.(2022). In-contextpolicyiteration. arXiv
+preprintarXiv:2210.03821.
+[4] Cassano,F.,Gouwar,J.,Nguyen,D.,Nguyen,S.,Phipps-Costin,L.,Pinckney,D.,Yee,M.-H.,Zi,
+Y.,Anderson,C.J.,Feldman,M.Q.,Guha,A.,Greenberg,M.,andJangda,A.(2022). Multipl-e:
+Ascalableandextensibleapproachtobenchmarkingneuralcodegeneration.
+[5] Chen,B.,Zhang,F.,Nguyen,A.,Zan,D.,Lin,Z.,Lou,J.-G.,andChen,W.(2022). Codet: Code
+generationwithgeneratedtests. arXivpreprintarXiv:2207.10397.
+[6] Chen,M.,Tworek,J.,Jun,H.,Yuan,Q.,Pinto,H.P.d.O.,Kaplan,J.,Edwards,H.,Burda,Y.,
+Joseph,N.,Brockman,G.,etal.(2021). Evaluatinglargelanguagemodelstrainedoncode. arXiv
+preprintarXiv:2107.03374.
+[7] Chen, X., Lin, M., Schärli, N., and Zhou, D. (2023). Teaching large language models to
+self-debug. arXivpreprintarXiv:2304.05128.
+[8] Côté,M.-A.,Kádár,A.,Yuan,X.,Kybartas,B.,Barnes,T.,Fine,E.,Moore,J.,Hausknecht,M.,
+ElAsri,L.,Adada,M.,etal.(2019). Textworld: Alearningenvironmentfortext-basedgames. In
+ComputerGames: 7thWorkshop,CGW2018,HeldinConjunctionwiththe27thInternational
+ConferenceonArtificialIntelligence, IJCAI2018, Stockholm, Sweden, July13, 2018, Revised
+SelectedPapers7,pages41–75.Springer.
+[9] Goodman, N. (2023). Meta-prompt: A simple self-improving language agent. noahgood-
+man.substack.com.
+[10] Kim,G.,Baldi,P.,andMcAleer,S.(2023). Languagemodelscansolvecomputertasks. arXiv
+preprintarXiv:2303.17491.
+[11] Lam,W.,Winter,S.,Wei,A.,Xie,T.,Marinov,D.,andBell,J.(2020).Alarge-scalelongitudinal
+studyofflakytests. Proc.ACMProgram.Lang.,4(OOPSLA).
+[12] Le,H.,Wang,Y.,Gotmare,A.D.,Savarese,S.,andHoi,S.C.H.(2022). Coderl: Mastering
+codegenerationthroughpretrainedmodelsanddeepreinforcementlearning. AdvancesinNeural
+InformationProcessingSystems,35:21314–21328.
+[13] Li,R.,Allal,L.B.,Zi,Y.,Muennighoff,N.,Kocetkov,D.,Mou,C.,Marone,M.,Akiki,C.,Li,J.,
+Chim,J.,etal.(2023). Starcoder: maythesourcebewithyou! arXivpreprintarXiv:2305.06161.
+[14] Li,Y.,Choi,D.,Chung,J.,Kushman,N.,Schrittwieser,J.,Leblond,R.,Eccles,T.,Keeling,
+J.,Gimeno,F.,DalLago,A.,etal.(2022). Competition-levelcodegenerationwithalphacode.
+Science,378(6624):1092–1097.
+[15] Madaan,A.,Tandon,N.,Gupta,P.,Hallinan,S.,Gao,L.,Wiegreffe,S.,Alon,U.,Dziri,N.,
+Prabhumoye,S.,Yang,Y.,etal.(2023). Self-refine: Iterativerefinementwithself-feedback. arXiv
+preprintarXiv:2303.17651.
+[16] Nair,V.,Schumacher,E.,Tso,G.,andKannan,A.(2023). Dera: Enhancinglargelanguage
+modelcompletionswithdialog-enabledresolvingagents. arXivpreprintarXiv:2303.17071.
+[17] Nakano,R.,Hilton,J.,Balaji,S.,Wu,J.,Ouyang,L.,Kim,C.,Hesse,C.,Jain,S.,Kosaraju,V.,
+Saunders,W.,etal.(2021). Webgpt: Browser-assistedquestion-answeringwithhumanfeedback.
+arXivpreprintarXiv:2112.09332.
+[18] OpenAI(2023). Gpt-4technicalreport. ArXiv.
+10
+[19] Park, J.S., O’Brien, J.C., Cai, C.J., Morris, M.R., Liang, P., andBernstein, M.S.(2023).
+Generativeagents: Interactivesimulacraofhumanbehavior. arXivpreprintarXiv:2304.03442.
+[20] Paul, D., Ismayilzada, M., Peyrard, M., Borges, B., Bosselut, A., West, R., and Faltings,
+B. (2023). Refiner: Reasoning feedback on intermediate representations. arXiv preprint
+arXiv:2304.01904.
+[21] Pryzant, R., Iter, D., Li, J., Lee, Y. T., Zhu, C., and Zeng, M. (2023). Automatic prompt
+optimizationwith"gradientdescent"andbeamsearch. arXivpreprintarXiv:2305.03495.
+[22] Schick,T.,Dwivedi-Yu,J.,Dessì,R.,Raileanu,R.,Lomeli,M.,Zettlemoyer,L.,Cancedda,N.,
+andScialom,T.(2023). Toolformer: Languagemodelscanteachthemselvestousetools. arXiv
+preprintarXiv:2302.04761.
+[23] Shen,Y.,Song,K.,Tan,X.,Li,D.,Lu,W.,andZhuang,Y.(2023). Hugginggpt: Solvingai
+taskswithchatgptanditsfriendsinhuggingface. arXivpreprintarXiv:2303.17580.
+[24] Shridhar, M., Yuan, X., Côté, M.-A., Bisk, Y., Trischler, A., and Hausknecht, M. (2021).
+ALFWorld: AligningTextandEmbodiedEnvironmentsforInteractiveLearning. InProceedings
+oftheInternationalConferenceonLearningRepresentations(ICLR).
+[25] Sutton,R.S.andBarto,A.G.(2018). ReinforcementLearning: AnIntroduction. TheMIT
+Press,secondedition.
+[26] Wei,J.,Wang,X.,Schuurmans,D.,Bosma,M.,Chi,E.,Le,Q.,andZhou,D.(2022). Chainof
+thoughtpromptingelicitsreasoninginlargelanguagemodels. arXivpreprintarXiv:2201.11903.
+[27] Xie,Y.,Kawaguchi,K.,Zhao,Y.,Zhao,X.,Kan,M.-Y.,He,J.,andXie,Q.(2023). Decomposi-
+tionenhancesreasoningviaself-evaluationguideddecoding. arXivpreprintarXiv:2305.00633.
+[28] Yang,Z.,Qi,P.,Zhang,S.,Bengio,Y.,Cohen,W.W.,Salakhutdinov,R.,andManning,C.D.
+(2018).HotpotQA:Adatasetfordiverse,explainablemulti-hopquestionanswering.InConference
+onEmpiricalMethodsinNaturalLanguageProcessing(EMNLP).
+[29] Yao, S., Chen, H., Yang, J., and Narasimhan, K. (preprint). Webshop: Towards scalable
+real-worldwebinteractionwithgroundedlanguageagents. InArXiv.
+[30] Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., and Cao, Y. (2023). ReAct:
+Synergizingreasoningandactinginlanguagemodels. InInternationalConferenceonLearning
+Representations(ICLR).
+[31] Yoran, O., Wolfson, T., Bogin, B., Katz, U., Deutch, D., andBerant, J.(2023). Answering
+questionsbymeta-reasoningovermultiplechainsofthought. arXivpreprintarXiv:2304.13007.
+11
+A Evaluationwithadditionalmodels
+Wefurtherinvestigatedtheapplicabilityoftrial-and-errorproblem-solvingwithmodelsofvarious
+strengths. Wefoundthattheabilitytospecifyself-correctionsisanemergentqualityofstronger,
+largermodels.
+Approach Pass@1accuracy(avgover8trials) Pass@1accuracy(std)
+Baseline 0.26 0.00481
+Reflexion 0.26 0.00305
+Table4: Pass@1accuracyonHumanEvalPythonusingstarchat-beta[13].
+Model Baselineaccuracy Reflexionaccuracy
+CoT(GT)+text-davinci-003 0.60 0.77
+CoT(GT)+gpt-3.5-turbo 0.57 0.71
+CoT(GT)+gpt-4 0.68 0.80
+ReAct+text-davinci-003 0.30 0.55
+ReAct+gpt-3.5-turbo 0.26 0.38
+ReAct+gpt-4 0.39 0.51
+Table5: Pass@1accuracyon100HotPotQAusingvariousmodels.
+12
+B Decision-making
+Environment:Youareinthemiddleofaroom.Lookingquicklyaroundyou,youseeabed1,adesk
+2,adesk1,adrawer6,adrawer5,adrawer4,adrawer3,adrawer2,adrawer1,agarbagecan1,a
+laundryhamper1,asafe1,ashelf6,ashelf5,ashelf4,ashelf3,ashelf2,andashelf1.
+Task:examinethemugwiththedesklamp.
+Trial#1
+>think: Tosolvethetask,Ineedtofindandtakeamug,thenfindanduseadesklamp.
+>think: FirstIneedtofindamug. Amugismorelikelytoappearindrawer(1-6),desk(1-2),shelf
+(1-6),garbagecan(1),laundryhamper(1). Icancheckonebyone,startingwithdrawer1.
+>gotodrawer1
+Thedrawer1isclosed.
+...
+>opendrawer6
+Youopenthedrawer6. Thedrawer6isopen. Init,youseeakeychain2.
+>gotodesk1
+Onthedesk1,youseeacreditcard3,adesklamp1,alaptop2,amug1,apen1,andapencil1.
+>think:NowIfindamug(1).Next,Ineedtotakeit.
+>takemug1fromdesk1
+Youpickupthemug1fromthedesk1.
+>think: NowItakeamug(1). Next,Ineedtofindadesklamp. Adesklampismorelikelytoappear
+indesk(1-2),sidetable(1-2),shelf(1-6),bed(1),drawer(1-6). Icancheckonebyone,startingwith
+desk1.
+>gotodesk1
+Nothinghappens.
+>gotodesk2
+Onthedesk2,youseeaalarmclock1,abowl1,amug3,apencil3,andapencil2.
+>think: NowIfindadesklamp(1). Next,Ineedtouseit.
+>usedesklamp1
+Nothinghappens.
+>usedesklamp1
+Nothinghappens.
+Status:Fail
+Reflection:Inthisenvironment,myplanwastofindamugthenfindanduseadesklamp.However,
+thetasksaystoexaminethemugwiththedesklamp.Ishouldhavelookedforthedesklampfirst,then
+lookedforthemug.Inoticedthatthedesklampwasfoundondesk1.Inthenexttrial,Iwillgoto
+desk1,findthelamp,thenlookforthemugandexamineitwiththedesklamp.
+Trial#2
+>gotodesk1
+Onthedesk1,youseeacreditcard3,adesklamp1,alaptop2,amug1,apen1,andapencil1.
+>think:Tosolvethetask,Ineedtofindandtakeamug,thenfindanduseadesklamp.
+>takemug1fromdesk1
+Youpickupthemug1fromthedesk1.
+>think: Tosolvethetask,Ineedtofindandtakeamug,thenfindanduseadesklamp.
+>usedesklamp1
+Youturnonthedesklamp1.
+Status:Success
+Figure5: [Top]AnAlfWorldtrajectoryinwhichtheagentfailedduetoinefficientplanning. Inthe
+reflection,theagentrecognizesthatitshouldhavelookedforthedesklampthenthemug,notthemug
+thenthedesklamp. [Bottom]Theagentisabletocorrectitsreasoningtraceandexecuteasequence
+ofactionsinaconcisemanner.
+13
+B.1 WebShopLimitation
+In5,webrieflystatethatReflexionstrugglestoovercomelocalminimachoicesthatrequireextremely
+creative behavior to escape. We observe this shortcoming in an experiment on WebShop [29].
+WebShopisaweb-basedproblem-solvingbenchmarkthattestsagentstonavigateane-commerce
+websitetolocateandpurchaseproductsgivenrequestsfromclients. Wetestatwo-shotReAct+
+Reflexionagentin100environments. However,afteronlyfourtrials,weterminatetherunsasthe
+agentdoesnotshowsignsofimprovement6. Further,theagentdoesnotgeneratehelpful,intuitive
+self-reflectionsafterfailedattempts. WeconcludethatReflexionisunabletosolvetasksthatrequire
+asignificantamountofdiversityandexploration. InAlfWorld,theagentisabletoadequatelyexplore
+newenvironmentsbecausethepermissibleactionscanbeseenintheobservations. InHotPotQA,
+theagentfacesasimilarWebShopsearchquerytaskbutismoresuccessfulasthesearchspacefor
+Wikipediaarticlesismorediverseandrequireslessprecisesearchqueries. Acommonproblemfor
+e-commercesearchenginesisproperlyhandlingambiguityinnaturallanguagesearchinterpretations.
+Thus,WebShoppresentsataskthatrequiresverydiverseanduniquebehaviorfromaReflexionagent.
+0.50
+0.45
+0.40
+0.35
+0.30
+0.25
+0.20
+0.15
+0.10
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Trial Number
+stnemnorivnE
+devloS
+fo
+noitroporP
+WebShop Success Rate
+ReAct only
+ReAct + Reflexion
+Figure 6: Reflexion vs React performance on WebShop across 100 customer shopping requests.
+ReAct+ReflexionfailstosignificantlyoutperformReAct.
+C Programming
+Programming LLM calls require strict instructions to produce function bodies only, due to the
+extensivedialoguetrainingoftheLLMs. Afewprogrammingexamplesarereportedbelowwith
+instructionshighlightedinblueandtemplates. Seethefullimplementationathttps://github.
+com/noahshinn024/reflexion.
+C.1 Programmingfunctionimplementationexample(HumanEvalPython)
+Samplefunctionsignature:
+def minSubArraySum(nums):
+1
+"""
+2
+Given an array of integers nums, find the minimum sum of
+3
+any
+non-empty sub-array of nums.
+4
+Example
+5
+minSubArraySum([2, 3, 4, 1, 2, 4]) == 1
+6
+14
+minSubArraySum([-1, -2, -3]) == -6
+7
+"""
+8
+Samplefunctionbodyimplementation:
+min_sum = float(’inf’)
+1
+for i in range(len(nums)):
+2
+current_sum = 0
+3
+for j in range(i, len(nums)):
+4
+current_sum += nums[j]
+5
+if current_sum < min_sum:
+6
+min_sum = current_sum
+7
+return min_sum
+8
+C.2 ReflexionActorinstruction
+YouareaPythonwritingassistant.Youwillbegivenyourpreviousimplementationofafunction,
+aseriesofunittestsresults,andyourself-reflectiononyourpreviousimplementation.Applythe
+necessarychangesbelowbyrespondingonlywiththeimprovedbodyofthefunction.Donotinclude
+thesignatureinyourresponse.Thefirstlineofyourresponseshouldhave4spacesofindentationso
+thatitfitssyntacticallywiththeuserprovidedsignature.Youwillbegivenafewexamplesbythe
+user.
+ReflexionActorgenerationsfollowtheform:
+(Instruction)
+(Functionimplementation)
+(Unittestfeedback)
+(Self-reflection)
+(Instructionfornextfunctionimplmentation)
+Fullexamplesareshowninhttps://github.com/noahshinn024/reflexion
+C.3 ReflexionSelf-reflectioninstructionandexample
+YouareaPythonwritingassistant.Youwillbegivenyourpreviousimplementationofafunction,
+aseriesofunittestsresults,andyourself-reflectiononyourpreviousimplementation.Applythe
+necessarychangesbelowbyrespondingonlywiththeimprovedbodyofthefunction.Donotinclude
+thesignatureinyourresponse.Thefirstlineofyourresponseshouldhave4spacesofindentationso
+thatitfitssyntacticallywiththeuserprovidedsignature.Youwillbegivenafewexamplesbythe
+user. ReflexionSelf-Reflectiongenerationsfollowtheform:
+(Instruction)
+(Functionimplementation)
+(Unittestfeedback)
+C.4 ReflexionprogrammingnoSelf-Reflectionablationexample
+ReflexionnoSelf-ReflectionablationActorgenerationsfollowtheform:
+(Instruction)
+(Functionimplementation)
+(Unittestfeedback)
+(Self-reflection)
+(Instructionfornextfunctionimplmentation)
+C.5 Reflexionprogrammingnotestgenerationablationexample
+ReflexionnotestgenerationablationActorgenerationsfollowtheform:
+(Instruction)
+15
+(Functionimplementation)
+(Unittestfeedback)
+(Self-reflection)
+(Instructionfornextfunctionimplmentation)
+16
+D Reasoning
+D.1 Fullexample
+Trial#1:Question:Grown-Upsstarredtheactor Trial#2:Question:Grown-Upsstarredtheactor
+who was best known for which role on "’Allo who was best known for which role on "’Allo
+’Allo!"? ’Allo!"?
+Thought 1: I need to search Grown-Ups and Thought1: Ineedtosearchtheactorwhowas
+"’Allo ’Allo!", find the actor who starred in bestknownforaroleon"’Allo’Allo!"andfind
+Grown-Ups,thenfindtherolehewasbestknown outwhatroletheywerebestknownfor.
+forin"’Allo’Allo!". Action1: Search[Grown-Ups]
+Action1: Search[Grown-Ups] Observation 1: Grown-Ups is a 1980 British
+Observation 1: Grown-Ups is a 1980 British BBC television film devised and directed by
+BBC television film devised and directed by Mike Leigh. It stars Lesley Manville, Philip
+Mike Leigh. It stars Lesley Manville, Philip Davis,BrendaBlethyn,JanineDuvitski,Lindsay
+Davis,BrendaBlethyn,JanineDuvitski,Lindsay DuncanandSamKelly. ItwaseditedbyRobin
+DuncanandSamKelly. ItwaseditedbyRobin SalesandproducedbyLouisMarksfortheBBC,
+SalesandproducedbyLouisMarksfortheBBC, andoriginallyshownonBBC2on28November
+andoriginallyshownonBBC2on28November 1980.
+1980. Thought2:Theparagraphdoesnotmentionthe
+Thought2: Grown-UpsstarredLesleyManville, actorwhowasbestknownforaroleon"’Allo
+PhilipDavis,BrendaBlethyn,JanineDuvitski, ’Allo!".Ineedtosearchtheactor’snameinstead.
+LindsayDuncanandSamKelly. Ineedtosearch Action2: Search[SamKelly]
+"’Allo ’Allo!" and find which actor was best Observation2: RogerMichaelKelly(19Decem-
+knownforwhichrole. ber1943–14June2014),knownbythestage
+Action2:Search["’Allo’Allo!"] nameSamKelly,wasanEnglishactorwhoap-
+Observation2: Couldnotfind["’Allo’Allo!"]. pearedinfilm,television,radioandtheatre. He
+Similar: ["’Allo ’Allo!", "List of ’Allo ’Allo! isbestknownforhisrolesasCaptainHansGeer-
+characters",’GordenKaye’,"’Allo’Allo!(series ingin’Allo’Allo!,WarreninPorridge,Samin
+2)", ’Allô, allô’, ’Francesca Gonshaw’, "’Allo OntheUp,andTedLiversidgeinBarbara.
+’Allo! (series4)",’KimHartman’,"’Allo’Allo! Thought3: SamKellyisbestknownforhisrole
+(series6)",’JeremyLloyd’] as Captain Hans Geering in "’Allo ’Allo!", so
+Thought3:Tofindtheactorwhowasbestknown theanswerisCaptainHansGeering.
+for which role on "’Allo ’Allo!", I can search Action3:Finish[CaptainHansGeering]
+GordenKaye.
+Observation3:AnswerisCORRECT
+Action3: Search[GordenKaye]
+Observation 3: Gordon Irving Kaye (7 April
+1941 – 23 January 2017), known profession-
+ally as Gorden Kaye, was an English actor,
+bestknownforplayingwomanisingcaféowner
+RenéArtoisinthetelevisioncomedyseries’Allo
+’Allo!.
+Thought 4: Gorden Kaye was best known for
+playingwomanisingcaféownerRenéArtoisin
+thetelevisioncomedyseries"’Allo’Allo!". So
+theanswerisReneArtois.
+Action4:Finish[ReneArtois]
+Observation4:AnswerisINCORRECT
+Reflection:Isearchedthewrongtitlefortheshow,"’Allo’Allo!",whichresultedinnoresults.I
+shouldhavesearchedtheshow’smaincharacter,GordenKaye,tofindtherolehewasbestknownfor
+intheshow.
+Figure7: TwoHotPotQAtrialswithinthesameenvironmentandtask. TheReflexion+ReActagent
+usesself-reflectiontodetermineabettersearchmethodforthenexttrial.
+17
+D.2 Chain-of-Thought+Reflexion
+Trial#1:Question:WhatprofessiondoesJohn Trial#2:Question:WhatprofessiondoesJohn
+LanchesterandAlanDeanFosterhaveincom- LanchesterandAlanDeanFosterhaveincom-
+mon? mon?
+Thought1: Let’sthinkstepbystep. JohnLanch- Thought1: Let’sthinkstepbystep. JohnLanch-
+ester is a novelist, journalist, and critic. Alan esterisanovelist,journalist,andfinancialjour-
+DeanFosterisanovelistandscreenwriter. So nalist. AlanDeanFosterisanovelistandscreen-
+theprofessionJohnLanchesterandAlanDean writer. So the profession John Lanchester and
+Foster have in common is novelist and screen- AlanDeanFosterhaveincommonisnovelist.
+writer. Action1:Finish[novelist]
+Action1:Finish[novelistandscreenwriter] Observation1:AnswerisCORRECT
+Observation1:AnswerisINCORRECT
+Reflection:MyreasoningfortheprofessionJohnLanchesterandAlanDeanFosterhaveincommon
+failed because I incorrectly assumed that they both had the same profession. In the future, when
+attemptingthisquestion,Ishouldfocusonbetterresearchingtheindividualbackgroundsofboth
+authorstoensurethatIamaccuratelyidentifyingtheirprofessions.Additionally,Ishouldconsider
+thepossibilitythattheymayhavemultipleprofessionsincommon.
+D.3 HotPotQAChain-of-Thought(GT)+Reflexion
+Context:TheBattleofWhitePlainswasabattleintheNewYorkandNewJerseycampaignofthe
+AmericanRevolutionaryWarfoughtonOctober28,1776,nearWhitePlains,NewYork.Following
+theretreat...
+Trial#1:Question:Whatwasaseriesofbattles Trial#2:Question:Whatwasaseriesofbattles
+duringtheRevolutionaryWar,forcontrolofNew duringtheRevolutionaryWar,forcontrolofNew
+YorkCityandthestateofNewJersey,foughton YorkCityandthestateofNewJersey,foughton
+October28,1776nearWhitePlains,NewYork? October28,1776nearWhitePlains,NewYork?
+Thought1: Thequestionisaskingaboutase- Thought1: Thequestionisaskingforaseriesof
+riesofbattlesduringtheRevolutionaryWarfor battlesduringtheRevolutionaryWar,forcontrol
+controlofNewYorkCityandthestateofNew ofNewYorkCityandthestateofNewJersey,
+Jersey,foughtonOctober28,1776nearWhite foughtonOctober28,1776nearWhitePlains,
+Plains,NewYork. Fromthecontext,Iknowthat New York. Based on the context, I know that
+thiswastheBattleofWhitePlains. thisseriesofbattleswastheNewYorkandNew
+Action1:Finish[BattleofWhitePlains] Jerseycampaign.
+Observation1: AnswerisINCORRECT Action1:Finish[TheNewYorkandNewJersey
+campaign]
+Observation1: AnswerisCORRECT
+Reflection:UponreflectingontheincorrectanswerIprovided,IrealizethatImaynothaveprovided
+enoughcontexttoaccuratelyanswerthequestion.Thequestionaskedforaseriesofbattles,butI
+onlyprovidedthenameofonebattle.Tobetteranswerthisquestioninthefuture,Iwillmakesureto
+providemorecontext,suchasthenameofthecampaign,whichwastheNewYorkandNewJersey
+campaign,andthefactthatitwasaseriesofbattles.Additionally,Iwillmakesuretoincludethe
+datesofthebattles,aswellasthelocations,toensurethatmyansweriscomprehensiveandaccurate.
+18
+D.4 HotPotQAepisodicmemory(EPM)ablationprompts
+D.4.1 (EPM)Chain-of-Thought+Reflexion
+Trial#1:Question:WhichofJonnyCraigand Trial#2:Question:WhichofJonnyCraigand
+PeteDohertyhasbeenamemberofmorebands PeteDohertyhasbeenamemberofmorebands
+? ?
+Thought 1: Let’s think step by step. Jonny Thought 1: Let’s think step by step. I will re-
+Craighasbeenamemberofsixbands,including searchthepastandcurrentbandsofbothmusi-
+Emarosa,DanceGavinDance,andSlaves. Pete cianstoensurethatIamaccuratelycomparing
+Dohertyhasbeenamemberofsevenbands,in- their band memberships. After researching, I
+cludingTheLibertines,Babyshambles,andThe have found that Jonny Craig has been a mem-
+PutaMadres. SoPeteDohertyhasbeenamem- berofsevenbands,includingEmarosa,Dance
+berofmorebands. GavinDance,andSlaves. PeteDohertyhasbeen
+Action1:Finish[PeteDoherty] a member of seven bands, including The Lib-
+Observation1:AnswerisINCORRECT ertines,Babyshambles,andThePutaMadres.So
+JonnyCraighasbeenamemberofmorebands.
+Action2:Finish[JonnyCraig]
+Observation2:AnswerisCORRECT
+Reflection:MyreasoningforwhichmusicianhasbeenamemberofmorebandsfailedbecauseIdid
+nottakeintoaccountthatJonnyCraighasbeenamemberofmorebandsinthepast,eventhoughPete
+Dohertyiscurrentlyamemberofmorebands.Inthefuture,whenattemptingthisquestion,Ishould
+focusonresearchingthepastandcurrentbandsofbothmusicianstoensurethatIamaccurately
+comparingtheirbandmemberships.
+D.4.2 (EPM)Chain-of-Thought(GT)+Reflexion
+Context:HariBahadurBasnetisaNepalesepolitician.HeistheheadoftheForeignRelations
+DepartmentoftheRastriyaJanashaktiParty.BasnetholdsaM.Sc.inEngineering.
+AMasterofScience(Latin:"MagisterScientiae";abbreviatedMS,M.S.,MSc,M.Sc.,MSci,M.Sci.,
+ScM,Sc.M.,SciMorSci.M.)isamaster’sdegreeinthefieldofscience...
+Trial #1: Question: The head of the Foreign Trial#2:Question:TheheadoftheForeignRe-
+RelationsDepartmentoftheRastriyaJanashakti lations Department of the Rastriya Janashakti
+PartyholdsadegreethatcanbeabbreviatedMS, PartyholdsadegreethatcanbeabbreviatedMS,
+M.S.,orScM,inwhatfield? M.S.,orScM,inwhatfield?
+(Previoustrajectory) (Previoustrajectory)
+Thought 1: The question is asking what field Thought 1: The question is asking what field
+of study the head of the Foreign Relations ofstudytheheadoftheForeignRelationsDe-
+Department of the Rastriya Janashakti Party partmentoftheRastriyaJanashaktiPartyholds
+holds a degree in. From the context, I know adegreein. Fromthecontext, Iknowthatthe
+that the degree is a Master of Science degree, degreeisaMasterofSciencedegree,whichis
+whichistypicallygrantedforstudiesinsciences, typically granted for studies in sciences, engi-
+engineering,andmedicine. neering, and medicine. However, the question
+Action 1: Finish[Sciences, Engineering, and is asking for the field of study, not the degree.
+Medicine] Basedonthecontext,IknowthatHariBahadur
+Observation1: AnswerisINCORRECT BasnetholdsaM.Sc. inEngineering.
+Action1:Finish[Engineering]
+Observation1:AnswerisCORRECT
+Reflection:Forthefirsttrial,Imisunderstoodthequestion.Ithoughtthequestionwasaskingfora
+categoryofdegrees,ratherthanaspecificdegree.Ilearnedfrommymistakeandinthesecondtrial,I
+focusedmorecloselyonthequestiontounderstandthatitwasaskingforaspecificfieldofstudy.
+19

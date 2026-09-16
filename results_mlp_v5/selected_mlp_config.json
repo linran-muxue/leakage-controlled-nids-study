@@ -1,0 +1,36 @@
+{
+  "selected_hidden_layer_sizes": [
+    128,
+    64
+  ],
+  "selected_alpha": 0.001,
+  "selection_data": "validation partition, tuning seed only",
+  "feature_k": 60,
+  "tuning_seed": 42,
+  "grid": [
+    {
+      "hidden": "(64,)",
+      "alpha": 0.0001
+    },
+    {
+      "hidden": "(128,)",
+      "alpha": 0.0001
+    },
+    {
+      "hidden": "(128, 64)",
+      "alpha": 0.0001
+    },
+    {
+      "hidden": "(128,)",
+      "alpha": 0.001
+    },
+    {
+      "hidden": "(128, 64)",
+      "alpha": 0.001
+    },
+    {
+      "hidden": "(128,)",
+      "alpha": 0.01
+    }
+  ]
+}

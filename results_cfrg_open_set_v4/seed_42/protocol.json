@@ -1,0 +1,16 @@
+{
+  "known_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "unknown_rows_used_for_threshold": false,
+  "threshold_fit": "known_calibration_confidence_only",
+  "temperature_fit_on": "known_calibration_only",
+  "known_evaluation_split": "held_out_known_rows",
+  "seed": 42,
+  "n_estimators": 100,
+  "chi2_k": 60
+}

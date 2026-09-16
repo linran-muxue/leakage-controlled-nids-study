@@ -1,0 +1,6 @@
+﻿dataset,target,count,fraction
+CIC-IDS2017 balanced research subset,DoS/DDoS,673,0.2
+CIC-IDS2017 balanced research subset,Brute Force,673,0.2
+CIC-IDS2017 balanced research subset,Web Attack,673,0.2
+CIC-IDS2017 balanced research subset,Normal,673,0.2
+CIC-IDS2017 balanced research subset,Bot,673,0.2

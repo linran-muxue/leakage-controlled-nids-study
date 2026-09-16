@@ -1,0 +1,8 @@
+{
+  "protocol": "leave-one-file-out",
+  "unseen_labels_excluded_from_known_score": true,
+  "per_class_cap": 5000,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "seed": 42
+}

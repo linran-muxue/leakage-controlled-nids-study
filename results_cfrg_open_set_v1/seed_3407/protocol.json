@@ -1,0 +1,14 @@
+{
+  "known_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "unknown_rows_used_for_threshold": false,
+  "threshold_fit": "known_validation_confidence_only",
+  "seed": 3407,
+  "n_estimators": 100,
+  "chi2_k": 60
+}

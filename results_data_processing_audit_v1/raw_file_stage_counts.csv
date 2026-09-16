@@ -1,0 +1,9 @@
+﻿source_rows,mapped_rows,excluded_label_rows,invalid_rows,invalid_infinite_rows,invalid_missing_rows,valid_rows,feature_count,class_counts,file
+225745,225745,0,34,34,0,225711,78,"{'DoS/DDoS': 128025, 'Normal': 97686}",Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
+286467,127537,158930,245,245,0,127292,78,{'Normal': 127292},Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
+191033,191033,0,122,122,0,190911,78,"{'Normal': 188955, 'Bot': 1956}",Friday-WorkingHours-Morning.pcap_ISCX.csv
+529918,529918,0,437,437,0,529481,78,{'Normal': 529481},Monday-WorkingHours.pcap_ISCX.csv
+288602,288566,36,207,207,0,288359,78,{'Normal': 288359},Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv
+170366,170366,0,135,135,0,170231,78,"{'Normal': 168051, 'Brute Force': 1507, 'Web Attack': 673}",Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv
+445909,445909,0,264,264,0,445645,78,"{'Normal': 431813, 'Brute Force': 13832}",Tuesday-WorkingHours.pcap_ISCX.csv
+692703,692692,11,1297,1297,0,691395,78,"{'Normal': 439683, 'DoS/DDoS': 251712}",Wednesday-workingHours.pcap_ISCX.csv

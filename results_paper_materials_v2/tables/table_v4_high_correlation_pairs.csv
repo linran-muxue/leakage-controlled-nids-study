@@ -1,0 +1,16 @@
+﻿feature_a,feature_b,abs_correlation
+Fwd PSH Flags,SYN Flag Count,1.0
+Bwd Packet Length Mean,Avg Bwd Segment Size,1.0
+Fwd Packet Length Mean,Avg Fwd Segment Size,1.0
+Fwd Header Length,Fwd Header Length.1,1.0
+Total Backward Packets,Subflow Bwd Packets,1.0
+Total Length of Fwd Packets,Subflow Fwd Bytes,1.0
+Total Fwd Packets,Subflow Fwd Packets,1.0
+Total Length of Bwd Packets,Subflow Bwd Bytes,1.0
+Flow IAT Max,Fwd IAT Max,0.999810823208828
+Flow Duration,Fwd IAT Total,0.9992655010754624
+Packet Length Mean,Average Packet Size,0.998698224453777
+Flow IAT Max,Idle Max,0.9921625629891035
+Fwd IAT Max,Idle Max,0.9921500256808404
+Idle Mean,Idle Min,0.991697937398515
+Idle Mean,Idle Max,0.9916253150338448

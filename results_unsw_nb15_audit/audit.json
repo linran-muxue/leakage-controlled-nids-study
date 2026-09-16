@@ -1,0 +1,116 @@
+{
+  "source": "UNSW Canberra Cyber official UNSW-NB15 project page",
+  "local_dir": "data_external\\UNSW-NB15",
+  "files": {
+    "UNSW-NB15_testing-set.csv": {
+      "bytes": 15380800,
+      "md5": "e0beea40262e46168cdb81476dbc27b4",
+      "sha256": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559",
+      "audit": {
+        "file": "UNSW-NB15_testing-set.csv",
+        "rows": 82332,
+        "columns": 45,
+        "label_column": "attack_cat",
+        "labels": [
+          {
+            "label": "Normal",
+            "count": 37000
+          },
+          {
+            "label": "Generic",
+            "count": 18871
+          },
+          {
+            "label": "Exploits",
+            "count": 11132
+          },
+          {
+            "label": "Fuzzers",
+            "count": 6062
+          },
+          {
+            "label": "DoS",
+            "count": 4089
+          },
+          {
+            "label": "Reconnaissance",
+            "count": 3496
+          },
+          {
+            "label": "Analysis",
+            "count": 677
+          },
+          {
+            "label": "Backdoor",
+            "count": 583
+          },
+          {
+            "label": "Shellcode",
+            "count": 378
+          },
+          {
+            "label": "Worms",
+            "count": 44
+          }
+        ],
+        "missing_cells": 0,
+        "duplicate_rows": 0
+      }
+    },
+    "UNSW-NB15_training-set.csv": {
+      "bytes": 32293018,
+      "md5": "e55caabaa6cd4a8f1c06a227bcfababc",
+      "sha256": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa",
+      "audit": {
+        "file": "UNSW-NB15_training-set.csv",
+        "rows": 175341,
+        "columns": 45,
+        "label_column": "attack_cat",
+        "labels": [
+          {
+            "label": "Normal",
+            "count": 56000
+          },
+          {
+            "label": "Generic",
+            "count": 40000
+          },
+          {
+            "label": "Exploits",
+            "count": 33393
+          },
+          {
+            "label": "Fuzzers",
+            "count": 18184
+          },
+          {
+            "label": "DoS",
+            "count": 12264
+          },
+          {
+            "label": "Reconnaissance",
+            "count": 10491
+          },
+          {
+            "label": "Analysis",
+            "count": 2000
+          },
+          {
+            "label": "Backdoor",
+            "count": 1746
+          },
+          {
+            "label": "Shellcode",
+            "count": 1133
+          },
+          {
+            "label": "Worms",
+            "count": 130
+          }
+        ],
+        "missing_cells": 0,
+        "duplicate_rows": 0
+      }
+    }
+  }
+}

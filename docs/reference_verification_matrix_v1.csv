@@ -1,0 +1,19 @@
+reference_type,entry,source_status,doi_status,manuscript_action
+scholarly,Breiman 2001 Random forests,metadata matched,verified,retain
+scholarly,Buczak and Guven 2016 cyber-security intrusion detection survey,metadata matched,verified,retain
+scholarly,Chen and Guestrin 2016 XGBoost,metadata matched,verified,retain
+scholarly,Demšar 2006 statistical classifier comparison,JMLR stable page,none assigned,retain stable URL
+scholarly,Efron and Tibshirani 1997 bootstrap,metadata matched,verified,retain
+scholarly,Geng et al. 2021 open-set recognition survey,metadata matched,verified,retain
+scholarly,Geurts et al. 2006 ExtraTrees,metadata matched,verified,retain
+scholarly,Khraisat et al. 2019 IDS survey,metadata matched,verified,retain
+scholarly,Liu and Setiono 1995 χ² feature selection,metadata matched,verified,retain
+scholarly,Lu et al. 2019 concept drift review,metadata matched,verified,retain
+scholarly,McNemar 1947 paired proportions,metadata matched,verified,retain
+scholarly,Moustafa and Slay 2015 UNSW-NB15,metadata matched,verified,retain
+scholarly,Ring et al. 2019 IDS datasets survey,metadata matched,verified,retain
+scholarly,Sharafaldin et al. 2018 CIC-IDS2017 description,metadata matched,verified,retain
+scholarly,Tavallaee et al. 2009 KDD analysis,metadata matched,verified,retain
+dataset,CIC-IDS2017 official page,provider page captured,not applicable,retain URL access date and conservative terms wording
+dataset,NSL-KDD defcom17 mirror,mirror snapshot captured,not applicable,retain exact file hashes and state commit unavailable
+dataset,UNSW-NB15 official project page,provider page captured,not applicable,retain citation requirement and conservative terms wording

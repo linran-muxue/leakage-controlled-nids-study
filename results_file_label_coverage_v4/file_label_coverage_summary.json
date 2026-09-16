@@ -1,0 +1,18 @@
+{
+  "raw_dir": "E:\\论文\\data\\raw\\MachineLearningCVE",
+  "file_count": 8,
+  "labels": [
+    "Normal",
+    "DoS/DDoS",
+    "Brute Force",
+    "Web Attack",
+    "Bot",
+    "PortScan",
+    "Infiltration",
+    "Heartbleed",
+    "Other"
+  ],
+  "files_with_all_five_main_classes": 0,
+  "files_missing_at_least_one_main_class": 8,
+  "note": "File-level split is reported as coverage audit only; no incomplete five-class file-wise test result is claimed."
+}

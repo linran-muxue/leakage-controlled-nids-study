@@ -1,0 +1,10 @@
+﻿seed,comparison,low,point,high,n_bootstrap,confidence
+42,random_forest_all_minus_random_forest_chi2_macro_f1,-0.005947331304547573,1.2905839629873128e-05,0.005975905016494793,3000,0.95
+42,weighted_rf_chi2_minus_random_forest_chi2_macro_f1,0.0,0.0,0.0,3000,0.95
+42,extra_trees_chi2_minus_random_forest_chi2_macro_f1,-0.006833137152280074,0.008220917875499834,0.024774892899468264,3000,0.95
+2024,random_forest_all_minus_random_forest_chi2_macro_f1,-0.00641163997111902,-0.001982228298017752,0.0,3000,0.95
+2024,weighted_rf_chi2_minus_random_forest_chi2_macro_f1,0.0,0.0,0.0,3000,0.95
+2024,extra_trees_chi2_minus_random_forest_chi2_macro_f1,-0.0072114738557731446,0.008228932186578164,0.023351464191708225,3000,0.95
+3407,random_forest_all_minus_random_forest_chi2_macro_f1,0.0,0.0019953676738151405,0.0063387247039338075,3000,0.95
+3407,weighted_rf_chi2_minus_random_forest_chi2_macro_f1,0.0,0.0,0.0,3000,0.95
+3407,extra_trees_chi2_minus_random_forest_chi2_macro_f1,-0.004591929209230131,0.010192422041870652,0.0249258068439656,3000,0.95

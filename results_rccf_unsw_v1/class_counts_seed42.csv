@@ -1,0 +1,11 @@
+﻿class,true_count,predicted_count
+Analysis,677,1421
+Backdoor,583,5022
+DoS,4089,3137
+Exploits,11132,9608
+Fuzzers,6062,14519
+Generic,18871,18173
+Normal,37000,25693
+Reconnaissance,3496,3264
+Shellcode,378,1457
+Worms,44,38

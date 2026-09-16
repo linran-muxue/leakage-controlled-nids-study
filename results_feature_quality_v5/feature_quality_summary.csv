@@ -1,0 +1,79 @@
+﻿feature,nunique,unique_ratio,missing_count,is_constant,is_near_zero_variance
+Destination Port,271,0.11507430997876858,0,False,False
+Flow Duration,2117,0.8989384288747346,0,False,False
+Total Fwd Packets,45,0.01910828025477707,0,False,False
+Total Backward Packets,58,0.024628450106157114,0,False,False
+Total Length of Fwd Packets,392,0.16645435244161358,0,False,False
+Total Length of Bwd Packets,294,0.12484076433121019,0,False,False
+Fwd Packet Length Max,280,0.11889596602972399,0,False,False
+Fwd Packet Length Min,48,0.02038216560509554,0,False,False
+Fwd Packet Length Mean,476,0.2021231422505308,0,False,False
+Fwd Packet Length Std,564,0.2394904458598726,0,False,False
+Bwd Packet Length Max,226,0.09596602972399151,0,False,False
+Bwd Packet Length Min,119,0.0505307855626327,0,False,False
+Bwd Packet Length Mean,306,0.12993630573248408,0,False,False
+Bwd Packet Length Std,272,0.11549893842887474,0,False,False
+Flow Bytes/s,1610,0.6836518046709129,0,False,False
+Flow Packets/s,2149,0.9125265392781317,0,False,False
+Flow IAT Mean,2122,0.9010615711252654,0,False,False
+Flow IAT Std,1840,0.7813163481953291,0,False,False
+Flow IAT Max,1898,0.8059447983014862,0,False,False
+Flow IAT Min,400,0.16985138004246284,0,False,False
+Fwd IAT Total,1615,0.6857749469214437,0,False,False
+Fwd IAT Mean,1732,0.7354564755838641,0,False,False
+Fwd IAT Std,1622,0.6887473460721868,0,False,False
+Fwd IAT Max,1676,0.7116772823779193,0,False,False
+Fwd IAT Min,743,0.3154989384288747,0,False,False
+Bwd IAT Total,1011,0.42929936305732486,0,False,False
+Bwd IAT Mean,1140,0.4840764331210191,0,False,False
+Bwd IAT Std,1120,0.47558386411889597,0,False,False
+Bwd IAT Max,1102,0.46794055201698515,0,False,False
+Bwd IAT Min,418,0.17749469214437366,0,False,False
+Fwd PSH Flags,2,0.0008492569002123143,0,False,True
+Bwd PSH Flags,1,0.0004246284501061571,0,True,True
+Fwd URG Flags,1,0.0004246284501061571,0,True,True
+Bwd URG Flags,1,0.0004246284501061571,0,True,True
+Fwd Header Length,110,0.04670912951167728,0,False,False
+Bwd Header Length,98,0.041613588110403395,0,False,False
+Fwd Packets/s,2136,0.9070063694267516,0,False,False
+Bwd Packets/s,2025,0.8598726114649682,0,False,False
+Min Packet Length,46,0.019532908704883226,0,False,False
+Max Packet Length,253,0.10743099787685775,0,False,False
+Packet Length Mean,650,0.2760084925690021,0,False,False
+Packet Length Std,766,0.32526539278131633,0,False,False
+Packet Length Variance,759,0.32229299363057323,0,False,False
+FIN Flag Count,2,0.0008492569002123143,0,False,True
+SYN Flag Count,2,0.0008492569002123143,0,False,True
+RST Flag Count,1,0.0004246284501061571,0,True,True
+PSH Flag Count,2,0.0008492569002123143,0,False,True
+ACK Flag Count,2,0.0008492569002123143,0,False,True
+URG Flag Count,2,0.0008492569002123143,0,False,True
+CWE Flag Count,1,0.0004246284501061571,0,True,True
+ECE Flag Count,1,0.0004246284501061571,0,True,True
+Down/Up Ratio,6,0.0025477707006369425,0,False,False
+Average Packet Size,645,0.27388535031847133,0,False,False
+Avg Fwd Segment Size,476,0.2021231422505308,0,False,False
+Avg Bwd Segment Size,306,0.12993630573248408,0,False,False
+Fwd Header Length.1,110,0.04670912951167728,0,False,False
+Fwd Avg Bytes/Bulk,1,0.0004246284501061571,0,True,True
+Fwd Avg Packets/Bulk,1,0.0004246284501061571,0,True,True
+Fwd Avg Bulk Rate,1,0.0004246284501061571,0,True,True
+Bwd Avg Bytes/Bulk,1,0.0004246284501061571,0,True,True
+Bwd Avg Packets/Bulk,1,0.0004246284501061571,0,True,True
+Bwd Avg Bulk Rate,1,0.0004246284501061571,0,True,True
+Subflow Fwd Packets,45,0.01910828025477707,0,False,False
+Subflow Fwd Bytes,392,0.16645435244161358,0,False,False
+Subflow Bwd Packets,58,0.024628450106157114,0,False,False
+Subflow Bwd Bytes,294,0.12484076433121019,0,False,False
+Init_Win_bytes_forward,110,0.04670912951167728,0,False,False
+Init_Win_bytes_backward,153,0.06496815286624204,0,False,False
+act_data_pkt_fwd,37,0.015711252653927813,0,False,False
+min_seg_size_forward,6,0.0025477707006369425,0,False,False
+Active Mean,296,0.1256900212314225,0,False,False
+Active Std,66,0.02802547770700637,0,False,False
+Active Max,296,0.1256900212314225,0,False,False
+Active Min,295,0.12526539278131635,0,False,False
+Idle Mean,215,0.09129511677282377,0,False,False
+Idle Std,83,0.03524416135881104,0,False,False
+Idle Max,193,0.08195329087048832,0,False,False
+Idle Min,228,0.09681528662420383,0,False,False

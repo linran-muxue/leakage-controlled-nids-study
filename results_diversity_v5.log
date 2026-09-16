@@ -1,0 +1,21 @@
+rf_views_k20 seed=42 gain=+0.00221 equalf1=0.88135
+rf_views_k20 seed=2024 gain=+0.00312 equalf1=0.88169
+rf_views_k20 seed=3407 gain=+0.00280 equalf1=0.88232
+rf_views_k60 seed=42 gain=+0.00000 equalf1=0.88963
+rf_views_k60 seed=2024 gain=+0.00000 equalf1=0.88907
+rf_views_k60 seed=3407 gain=+0.00000 equalf1=0.88935
+rf_same_view_seeds seed=42 gain=+0.00000 equalf1=0.89013
+rf_same_view_seeds seed=2024 gain=+0.00000 equalf1=0.89071
+rf_same_view_seeds seed=3407 gain=+0.00000 equalf1=0.88935
+hetero_families seed=42 gain=+0.00123 equalf1=0.88596
+hetero_families seed=2024 gain=+0.00495 equalf1=0.88515
+hetero_families seed=3407 gain=+0.00379 equalf1=0.88596
+disjoint_views_k60 seed=42 gain=+0.00295 equalf1=0.84794
+disjoint_views_k60 seed=2024 gain=+0.00288 equalf1=0.84773
+disjoint_views_k60 seed=3407 gain=+0.00620 equalf1=0.84805
+{
+  "slope": 0.064608879852392,
+  "intercept": 0.0005120884748743437,
+  "pearson_r": 0.7488684021191764,
+  "n_points": 15
+}

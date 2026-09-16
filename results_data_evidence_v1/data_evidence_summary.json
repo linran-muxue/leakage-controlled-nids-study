@@ -1,0 +1,49 @@
+{
+  "generated_from": {
+    "cic_processing_audit": "results_data_audit_cic_natural_v3b/data_processing_audit.json",
+    "cic_coverage": "results_file_label_coverage_v5/file_label_counts.csv",
+    "nsl_support": "results_nsl_kdd_fair_v2/class_counts.csv",
+    "unsw_audit": "results_unsw_nb15_audit/audit_v2.json",
+    "feature_quality": "results_feature_quality_v5/feature_quality_audit.json"
+  },
+  "cic": {
+    "raw_rows": 2830743,
+    "mapped_rows": 2671766,
+    "mapped_fraction": 0.9438391263353826,
+    "invalid_rows": 2741,
+    "invalid_fraction_of_raw": 0.0009682970160131103,
+    "valid_rows": 2669025,
+    "valid_fraction_of_raw": 0.9428708293193695,
+    "balanced_rows": 3365,
+    "balanced_per_class": 673,
+    "source_file_count": 8,
+    "files_covering_all_five_main_classes": 0,
+    "processed_split_exact_overlap": {
+      "train_validation": 0,
+      "train_test": 0,
+      "validation_test": 0
+    }
+  },
+  "feature_quality": {
+    "feature_count": 78,
+    "constant_feature_count": 12,
+    "near_zero_variance_count": 18,
+    "high_correlation_pair_count": 15,
+    "note": "These are audit findings; the locked protocol is not silently changed."
+  },
+  "nsl_kdd": {
+    "split_protocol": "official KDDTrain+/KDDTest+",
+    "minority_classes": [
+      "R2L",
+      "U2R"
+    ],
+    "evidence_level": "single official split"
+  },
+  "unsw_nb15": {
+    "split_protocol": "official training/testing CSVs",
+    "cross_split_common_hash_keys": 1302,
+    "matched_test_rows": 8541,
+    "test_matched_row_fraction": 0.10373852208132925,
+    "caveat": "Official split is retained, but overlap is reported as a dataset limitation and sensitivity analysis."
+  }
+}

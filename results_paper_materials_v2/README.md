@@ -1,0 +1,1 @@
+主结果来自 results_publication_final（统一配置 k=60、100棵树、min_samples_leaf=2，并包含全特征RF）；10次重复划分来自 results_repeated_splits_v3；不平衡敏感性来自 results_imbalanced_v3；加权机制分析来自 results_weight_mechanism_v3；NSL-KDD来自 results_nsl_kdd_fair_v2。旧版结果目录不得与本目录混用。

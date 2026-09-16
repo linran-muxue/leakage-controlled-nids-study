@@ -1,0 +1,38 @@
+{
+  "dataset": "UNSW-NB15",
+  "cross_dataset_transfer": false,
+  "official_train_test_boundary": true,
+  "native_labels": {
+    "label_set": [
+      "Analysis",
+      "Backdoor",
+      "DoS",
+      "Exploits",
+      "Fuzzers",
+      "Generic",
+      "Normal",
+      "Reconnaissance",
+      "Shellcode",
+      "Worms"
+    ],
+    "cross_dataset_transfer": false
+  },
+  "train_rows": 175341,
+  "test_rows": 82332,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "seed": 42,
+  "files": [
+    {
+      "path": "C:\\Users\\27677\\Documents\\ChatGPT\\论文\\data_external\\UNSW-NB15\\UNSW-NB15_training-set.csv",
+      "bytes": 32293018,
+      "sha256": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa"
+    },
+    {
+      "path": "C:\\Users\\27677\\Documents\\ChatGPT\\论文\\data_external\\UNSW-NB15\\UNSW-NB15_testing-set.csv",
+      "bytes": 15380800,
+      "sha256": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559"
+    }
+  ]
+}

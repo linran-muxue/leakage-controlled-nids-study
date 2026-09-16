@@ -1,0 +1,2 @@
+﻿metric,mean_delta_cfrg_minus_equal,std_delta,positive_splits,zero_splits,negative_splits
+macro_f1,-0.00011652167665762158,0.0015773976106649818,4,1,5

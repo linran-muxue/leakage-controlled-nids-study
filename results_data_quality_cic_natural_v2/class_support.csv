@@ -1,0 +1,16 @@
+﻿split,target,count,proportion,support_warning
+train,Bot,1363,0.036575875486381325,False
+train,Brute Force,7434,0.1994901381993828,False
+train,DoS/DDoS,13997,0.3756071380652086,False
+train,Normal,14000,0.37568764256004294,False
+train,Web Attack,471,0.012639205688984302,False
+validation,Bot,292,0.03656398697721012,False
+validation,Brute Force,1593,0.1994740796393689,False
+validation,DoS/DDoS,3000,0.3756574004507889,False
+validation,Normal,3000,0.3756574004507889,False
+validation,Web Attack,101,0.012647132481843225,False
+test,Bot,293,0.03668920611069371,False
+test,Brute Force,1593,0.1994740796393689,False
+test,DoS/DDoS,2999,0.37553218131730526,False
+test,Normal,3000,0.3756574004507889,False
+test,Web Attack,101,0.012647132481843225,True

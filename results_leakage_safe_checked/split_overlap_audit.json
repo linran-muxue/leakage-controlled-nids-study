@@ -1,0 +1,8 @@
+{
+  "train_internal_duplicates": 0,
+  "validation_internal_duplicates": 0,
+  "test_internal_duplicates": 0,
+  "train_validation_overlap": 0,
+  "train_test_overlap": 0,
+  "validation_test_overlap": 0
+}

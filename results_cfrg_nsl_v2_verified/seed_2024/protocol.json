@@ -1,0 +1,14 @@
+{
+  "dataset": "NSL-KDD",
+  "native_labels": true,
+  "cross_dataset_transfer": false,
+  "official_train_test_boundary": true,
+  "train_rows": 125973,
+  "test_rows": 22544,
+  "validation_source": "official_training_split_only",
+  "feature_selection_fit_on": "official_training_split_only",
+  "scaler_fit_on": "official_training_split_only",
+  "seed": 2024,
+  "chi2_k": 60,
+  "n_estimators": 100
+}

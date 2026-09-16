@@ -1,0 +1,35 @@
+{
+  "generated_date": "2026-09-12",
+  "protocol": "v3b",
+  "archives": [
+    {
+      "file": "RCCF_v3b_submission_package_20260912.zip",
+      "purpose": "manuscript and submission materials",
+      "entries": 24,
+      "bytes": 296629,
+      "sha256": "14CB0E9B9EC986F6E69ED610B9D5B92A1A2FFB0812D3C0FB59A6BF2566DD89E1"
+    },
+    {
+      "file": "RCCF_v3b_reproducibility_package_20260912.zip",
+      "purpose": "code, processed data, results, audits, predictions, and figures",
+      "entries": 653,
+      "bytes": 27589973,
+      "sha256": "41F1E416E939FD8FEB51BDFA06B1A830C24B9FDCAEED7A739F162C2A6984E763"
+    },
+    {
+      "file": "RCCF_v3b_complete_package_20260912.zip",
+      "purpose": "submission plus reproducibility materials",
+      "entries": 677,
+      "bytes": 27886580,
+      "sha256": "B687E22CEFE5FCAE92A27EF31347CE33B498D5271B97DD963A747C43FED72CD6"
+    }
+  ],
+  "exclusions": [
+    "original CIC-IDS2017 files",
+    "original NSL-KDD files",
+    "original UNSW-NB15 files",
+    "virtual environments",
+    "Git metadata",
+    "Python cache directories"
+  ]
+}

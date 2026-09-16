@@ -1,0 +1,33 @@
+{
+  "dataset": "NSL-KDD",
+  "cross_dataset_transfer": false,
+  "official_train_test_boundary": true,
+  "native_labels": {
+    "label_set": [
+      "DoS",
+      "Normal",
+      "Probe",
+      "R2L",
+      "U2R"
+    ],
+    "cross_dataset_transfer": false
+  },
+  "train_rows": 125973,
+  "test_rows": 22544,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "seed": 42,
+  "files": [
+    {
+      "path": "E:\\论文\\data\\external\\NSL-KDD\\KDDTrain+.txt",
+      "bytes": 19109424,
+      "sha256": "1b86d2f957b33082081bba410fe129b475efebcc13c9014c3f447c8271aadf95"
+    },
+    {
+      "path": "E:\\论文\\data\\external\\NSL-KDD\\KDDTest+.txt",
+      "bytes": 3441513,
+      "sha256": "fa46b0935342616aa83b7c2578db355b6a7aaabbc492248172c7a1e8b7ab8f84"
+    }
+  ]
+}

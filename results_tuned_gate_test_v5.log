@@ -1,0 +1,46 @@
+seed=42 tuned=0.889284 default=0.889284 changed=0
+seed=2024 tuned=0.891333 default=0.891333 changed=0
+seed=3407 tuned=0.889249 default=0.889249 changed=0
+{
+  "selected_config": {
+    "cv": 3,
+    "risk_C": 1.0,
+    "descriptor_set": "margin",
+    "val_macro_f1_mean": 0.8960059196160892,
+    "val_macro_f1_std": 0.00020199017868478288,
+    "default_config": {
+      "cv": 5,
+      "risk_C": 1.0,
+      "descriptor_set": "all"
+    },
+    "selection_data": "validation partition only; test partition untouched",
+    "search_space": {
+      "cv": [
+        3,
+        5,
+        10
+      ],
+      "risk_C": [
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "descriptor_set": [
+        "all",
+        "entropy",
+        "margin"
+      ]
+    },
+    "n_estimators": 100,
+    "feature_k": 60,
+    "train_sha256": "f525a61fe7d45508e1d8cc769b6daaaf264cbdbf15e66613dcd1728622ff87e2"
+  },
+  "tuned_macro_f1_mean": 0.8899550295993232,
+  "default_macro_f1_mean": 0.8899550295993232,
+  "mean_difference": 0.0,
+  "max_abs_difference": 0.0,
+  "total_rows_changed": 0,
+  "test_rows_per_seed": 7986,
+  "interpretation": "test-set confirmation that the validation-selected gate configuration does not change the reported conclusion"
+}

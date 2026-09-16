@@ -1,0 +1,6 @@
+﻿true_class,test_support,predicted_total,predicted_as_normal,predicted_as_normal_rate
+Bot,293,308,0,0.0
+Brute Force,1593,1477,2,0.0012554927809165098
+DoS/DDoS,2999,2997,6,0.0020006668889629878
+Normal,3000,2990,2981,0.9936666666666667
+Web Attack,101,214,1,0.009900990099009901

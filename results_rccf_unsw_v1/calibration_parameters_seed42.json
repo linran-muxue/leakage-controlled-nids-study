@@ -1,0 +1,17 @@
+{
+  "temperature": 1.0,
+  "alpha": 0.1,
+  "calibration_rows": 26302,
+  "classes": [
+    "Analysis",
+    "Backdoor",
+    "DoS",
+    "Exploits",
+    "Fuzzers",
+    "Generic",
+    "Normal",
+    "Reconnaissance",
+    "Shellcode",
+    "Worms"
+  ]
+}

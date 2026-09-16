@@ -1,0 +1,3 @@
+dataset,task,model,accuracy,macro_f1,train_seconds,predict_seconds
+NSL-KDD,Normal/DoS/Probe/R2L/U2R,RandomForest,0.738023,0.472852,6.233371,0.097111
+NSL-KDD,Normal/DoS/Probe/R2L/U2R,ExtraTrees,0.764904,0.511531,7.526850,0.117601

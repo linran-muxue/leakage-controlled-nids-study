@@ -1,0 +1,11 @@
+item,type,manuscript_location,caption_or_role,canonical_source,status
+Table 1,table,Section 6.1,Locked CIC comparison,results_cfrg_cic_v2_verified/metrics_aggregate_flat.csv,PASS
+Table 1a,table,Section 2.4,Recent literature positioning,results_paper_materials_v3/english_sci_manuscript_final.md,PASS
+Table 2,table,Section 6.2,Common-budget strong baseline comparison,results_cfrg_strong_baselines_v2_verified/summary.csv,PASS
+Table 3,table,Section 6.5,Open-set rejection metrics,results_cfrg_open_set_v5_verified/open_set_metrics.csv,PASS
+Table 4,table,Section 6.6,Independent native-label benchmarks,results_cfrg_nsl_v2_verified/metrics_aggregate.csv;results_cfrg_unsw_v2_verified/metrics_aggregate.csv,PASS
+Figure 1,figure,Section 6.1,Locked CIC model performance,results_publication_final/figures/fig_v2_model_performance.png,PASS
+Figure 2,figure,Section 6.4,Probability calibration curves,results_publication_final/figures/fig_v4_calibration_curves.png,PASS
+Figure 3,figure,Section 6.4,Feature-selection frequency,results_publication_final/figures/fig_v4_feature_selection_frequency.png,PASS
+Figure 4,figure,Section 6.4,Offline latency percentiles,results_publication_final/figures/fig_v4_latency_p50.png,PASS
+S1-S15,supplement,Data and code availability,Machine-readable evidence package,results_publication_final/supplementary/,PASS

@@ -1,0 +1,32 @@
+{
+  "cv": 5,
+  "risk_C": 0.01,
+  "descriptor_set": "all",
+  "val_macro_f1_mean": 0.8961983950209749,
+  "val_macro_f1_std": NaN,
+  "default_config": {
+    "cv": 5,
+    "risk_C": 1.0,
+    "descriptor_set": "all"
+  },
+  "selection_data": "validation partition only; test partition untouched",
+  "search_space": {
+    "cv": [
+      5
+    ],
+    "risk_C": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "descriptor_set": [
+      "all",
+      "entropy",
+      "margin"
+    ]
+  },
+  "n_estimators": 100,
+  "feature_k": 60,
+  "train_sha256": "f525a61fe7d45508e1d8cc769b6daaaf264cbdbf15e66613dcd1728622ff87e2"
+}

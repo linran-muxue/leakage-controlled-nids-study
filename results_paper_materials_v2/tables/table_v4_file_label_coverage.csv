@@ -1,0 +1,9 @@
+﻿file,raw_rows,Normal,DoS/DDoS,Brute Force,Web Attack,Bot,PortScan,Infiltration,Heartbleed,Other,present_main_classes,present_all_audited_classes
+Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,225745,97718,128027,0,0,0,0,0,0,0,2,2
+Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,286467,127537,0,0,0,0,158930,0,0,0,1,2
+Friday-WorkingHours-Morning.pcap_ISCX.csv,191033,189067,0,0,0,1966,0,0,0,0,2,2
+Monday-WorkingHours.pcap_ISCX.csv,529918,529918,0,0,0,0,0,0,0,0,1,1
+Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,288602,288566,0,0,0,0,0,36,0,0,1,2
+Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,170366,168186,0,1507,673,0,0,0,0,0,3,3
+Tuesday-WorkingHours.pcap_ISCX.csv,445909,432074,0,13835,0,0,0,0,0,0,2,2
+Wednesday-workingHours.pcap_ISCX.csv,692703,440031,252661,0,0,0,0,0,11,0,2,3

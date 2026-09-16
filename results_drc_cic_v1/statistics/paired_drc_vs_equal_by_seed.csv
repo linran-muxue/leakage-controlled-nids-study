@@ -1,0 +1,4 @@
+﻿seed,estimate,ci_low,ci_high,p_value,mcnemar_p,mcnemar_equal_only,mcnemar_drc_only
+42,0.0,0.0,0.0,1.0,1.0,0,0
+2024,0.0,0.0,0.0,1.0,1.0,0,0
+3407,0.0,0.0,0.0,1.0,1.0,0,0

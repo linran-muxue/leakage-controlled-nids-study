@@ -1,0 +1,7 @@
+{
+  "dataset": "UNSW-NB15",
+  "label_column": "attack_cat or label",
+  "split": "official training/testing files",
+  "feature_selection": "training-only chi2",
+  "cross_dataset_transfer": false
+}

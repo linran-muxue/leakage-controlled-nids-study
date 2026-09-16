@@ -1,0 +1,4 @@
+﻿split,rows,feature_count,class_counts
+train,37265,78,"{'Normal': 14000, 'DoS/DDoS': 13997, 'Brute Force': 7434, 'Bot': 1363, 'Web Attack': 471}"
+validation,7986,78,"{'DoS/DDoS': 3000, 'Normal': 3000, 'Brute Force': 1593, 'Bot': 292, 'Web Attack': 101}"
+test,7986,78,"{'Normal': 3000, 'DoS/DDoS': 2999, 'Brute Force': 1593, 'Bot': 293, 'Web Attack': 101}"

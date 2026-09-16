@@ -1,0 +1,35 @@
+{
+  "dataset": "UNSW-NB15",
+  "protocols": [
+    "official_split",
+    "remove_test_overlap",
+    "remove_both_overlap"
+  ],
+  "overlap_audit": {
+    "common_keys": 1302,
+    "matched_train_rows": 10279,
+    "matched_test_rows": 8541,
+    "same_label_keys": 754,
+    "conflict_label_keys": 548,
+    "same_label_pairs": 109106,
+    "conflict_label_pairs": 24286,
+    "test_matched_fraction": 0.10373852208132925
+  },
+  "key_columns_count": 42,
+  "excluded_columns": [
+    "id",
+    "label",
+    "attack_cat"
+  ],
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "train_file_sha256": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa",
+  "test_file_sha256": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559",
+  "preprocessing": "MinMaxScaler and chi2 fitted independently on each protocol's retained training rows"
+}
