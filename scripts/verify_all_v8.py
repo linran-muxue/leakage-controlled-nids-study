@@ -30,6 +30,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("cross-language numbers", ["scripts/cross_language_number_diff_v10.py"], ("MISMATCH",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
+    ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
 ]
 
 
