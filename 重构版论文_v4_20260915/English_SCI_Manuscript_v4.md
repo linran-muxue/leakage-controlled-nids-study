@@ -345,7 +345,7 @@ Five readings follow.
 
 **First, the headline result is a near-zero difference.** Averaged over ten seeds on the natural-prior population, RCCF reaches 0.889278 Macro-F1 against 0.889734 for the equal-weight chi-square forest, a mean difference of **-0.000456**, with five seeds favouring RCCF and five favouring the equal forest. On the three-seed balanced control RCCF reaches 0.961807 against 0.963215, trailing by -0.001408. Both magnitudes are below one thousandth and the sign is not stable across settings. One baseline is stronger on a different metric: extremely randomised trees obtain the highest balanced accuracy (0.96215 against 0.94820 for RCCF) while obtaining the lowest Macro-F1 (0.857490), because they spread predictions more evenly across rare classes.
 
-![Figure 4. Main results and paired bootstrap intervals](figures_en/fig4_main_results.png)
+![Figure 4. Main results on both populations (ten seeds for the natural-prior panel) and paired bootstrap intervals](figures_en/fig4_main_results.png)
 
 Note that the left panel of Figure 4 starts at 0.75 to display differences of one thousandth; the right panel shows that those differences are statistically indistinguishable. The two panels must be read together, not by bar height alone.
 
@@ -624,15 +624,15 @@ Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not 
 
 | Item | Content |
 |---|---|
-| S1 | Dataset sources, retrieval dates and SHA-256 checksums |
-| S2 | Per-file processing stage counts for CIC-IDS2017 |
-| S3 | Class support for the natural-prior and balanced populations |
-| S4 | Training-side chi-square / mutual-information / ANOVA scores and selection frequencies |
-| S5 | Per-seed metric table (accuracy, macro precision/recall/F1, Log Loss, Brier, ECE, MCE) |
-| S6 | Per-class classification reports for all models and seeds |
-| S7 | Normalised confusion matrices (RCCF and equal-weight forest) |
-| S8 | Row-level comparison of tree-level weighting against equal voting |
-| S9 | Full record of weight distributions, weight entropy and probability L1 changes |
+| S01 | Dataset sources, retrieval dates and SHA-256 checksums |
+| S02 | Per-file processing stage counts for CIC-IDS2017 |
+| S03 | Class support for the natural-prior and balanced populations |
+| S04 | Training-side chi-square / mutual-information / ANOVA scores and selection frequencies |
+| S05 | Per-seed metric table (accuracy, macro precision/recall/F1, Log Loss, Brier, ECE, MCE) |
+| S06 | Per-class classification reports for all models and seeds |
+| S07 | Normalised confusion matrices (RCCF and equal-weight forest) |
+| S08 | Row-level comparison of tree-level weighting against equal voting |
+| S09 | Full record of weight distributions, weight entropy and probability L1 changes |
 | S10 | Protocol-sensitivity experiments (deduplication order, repeated splits) |
 | S11 | 5x3 nested cross-validation fold metrics and paired statistics |
 | S12 | NSL-KDD per-class metrics and prediction counts |

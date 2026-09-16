@@ -1,17 +1,17 @@
 # Highlights
 
-- Conditional ensemble weighting matches equal voting within a 0.01 Macro-F1 margin.
-- 99.91% of test rows are provably immune to the gate, and no row changes label.
-- All 108 gate hyper-parameter settings yield only six distinct validation scores.
-- Gain is governed by expert diversity: low-diversity expert sets gain exactly zero.
-- Protocol choices move Macro-F1 by 0.072, against 0.001 for the aggregation rule.
+- Conditional ensemble weighting is equivalent to equal voting within 0.005 Macro-F1.
+- Across ten seeds the per-seed sign splits five to five, with no advantage.
+- 99.91% of test rows are provably immune to the gate; no row changes label.
+- Feature-value corruption costs far more accuracy than corrupted labels.
+- Protocol choices move Macro-F1 by 0.073, against 0.0005 for the aggregation rule.
 
 ---
 
 # 中文要点（供中文稿使用）
 
-- 条件集成加权与等权投票的差异落在 0.01 Macro-F1 等价边界内。
+- 条件集成加权与等权投票在 0.005 Macro-F1 边界内等价。
+- 十个种子上逐种子方向五正五负，无优势。
 - 99.91% 的测试行可被证明不受门控影响，实际改判 0 条。
-- 门控全部 108 种超参数配置只产生 6 个不同的验证集取值。
-- 增益受专家多样性支配：低分歧专家集合的增益恰为零。
-- 类别先验带来的差异为 0.072，而聚合策略仅 0.001。
+- 特征值污染造成的精度损失远大于标签污染。
+- 类别先验带来的差异为 0.073，而聚合策略仅 0.0005。
