@@ -93,7 +93,8 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_margin_bound_v5/proposition3_quantification.json"]),
     "S26": ("扩展鲁棒性：标签噪声、缺失值与标定漂移",
             ["results_robustness_extended_v5/robustness_extended_summary.csv",
-             "results_robustness_extended_v5/robustness_extended_by_seed.csv"]),
+             "results_robustness_extended_v5/robustness_extended_all_seeds.csv",
+             "results_robustness_extended_v5/robustness_extended_summary_3seeds.csv"]),
 }
 
 
