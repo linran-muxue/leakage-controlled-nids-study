@@ -1,0 +1,26 @@
+{
+  "population": "natural-prior study population (train+validation+test)",
+  "method": "features rounded to k significant digits, rows hashed, hash collisions counted",
+  "results": [
+    {
+      "significant_digits": 3,
+      "total_rows": 53237,
+      "near_duplicate_groups": 249,
+      "rows_in_near_duplicate_groups": 790,
+      "near_duplicate_row_fraction": 0.014839303491932302,
+      "groups_spanning_splits": 146,
+      "rows_in_cross_split_groups": 547,
+      "cross_split_row_fraction": 0.010274808873527809
+    },
+    {
+      "significant_digits": 4,
+      "total_rows": 53237,
+      "near_duplicate_groups": 84,
+      "rows_in_near_duplicate_groups": 189,
+      "near_duplicate_row_fraction": 0.0035501624809812725,
+      "groups_spanning_splits": 44,
+      "rows_in_cross_split_groups": 104,
+      "cross_split_row_fraction": 0.00195352856096324
+    }
+  ]
+}

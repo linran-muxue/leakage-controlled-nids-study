@@ -25,6 +25,15 @@ def style_base(doc: Document) -> None:
         section.bottom_margin = Inches(0.9)
         section.left_margin = Inches(0.85)
         section.right_margin = Inches(0.85)
+        # Continuous line numbering, as commonly requested for review copies.
+        sectPr = section._sectPr
+        ln = sectPr.find(qn("w:lnNumType"))
+        if ln is None:
+            ln = sectPr.makeelement(qn("w:lnNumType"), {})
+            sectPr.append(ln)
+        ln.set(qn("w:countBy"), "1")
+        ln.set(qn("w:restart"), "continuous")
+        ln.set(qn("w:distance"), "360")
     normal = doc.styles["Normal"]
     normal.font.name = "Times New Roman"
     normal.font.size = Pt(10.5)

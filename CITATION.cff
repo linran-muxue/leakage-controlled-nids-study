@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "Leakage-controlled evaluation of conditional ensemble weighting for flow-based network intrusion detection"
+message: "If you use this code or the released evidence, please cite the accompanying manuscript and this archive."
+type: software
+license: MIT
+repository-code: "https://github.com/linran-muxue/leakage-controlled-nids-study"
+version: "1.2.0"
+date-released: "2026-09-16"
+abstract: >-
+  Reproducibility archive for a leakage-controlled multi-dataset study of sample-conditional
+  ensemble weighting in flow-based network intrusion detection. Includes the audited data
+  pipeline, all training and evaluation scripts, per-row predictions, the ten-seed primary
+  experiment, the gate hyper-parameter search, the identifiability and margin-bound analysis,
+  and the expert-diversity suite.
+keywords:
+  - network intrusion detection
+  - ensemble learning
+  - conditional weighting
+  - data leakage
+  - reproducibility
+authors:
+  - name: "Author to be completed"

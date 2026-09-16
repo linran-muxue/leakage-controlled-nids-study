@@ -322,7 +322,7 @@ def fig6():
     ax.legend(fontsize=8.4); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.savefig(OUT / "fig6_protocol_sensitivity.png")
+    fig.savefig(OUT / "fig8_protocol_sensitivity.png")
     plt.close(fig)
 
 
@@ -351,7 +351,7 @@ def fig7():
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
     fig.suptitle("外部原生标签基准的类别级 F1（RCCF，seed 42）", fontsize=11.5, weight="bold", y=1.02)
-    fig.savefig(OUT / "fig7_external_class_f1.png")
+    fig.savefig(OUT / "fig9_external_class_f1.png")
     plt.close(fig)
 
 
@@ -396,7 +396,7 @@ def fig8():
     ax.legend(fontsize=8.6); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.savefig(OUT / "fig8_calibration_robustness.png")
+    fig.savefig(OUT / "fig10_calibration_robustness.png")
     plt.close(fig)
 
 
@@ -420,7 +420,7 @@ def fig9():
     axes[0].set_ylabel("单条推理延迟（ms）")
     axes[0].legend(fontsize=8.4)
     fig.suptitle("分类器阶段的单条推理延迟（不含抓包与特征提取）", fontsize=11.2, weight="bold", y=1.02)
-    fig.savefig(OUT / "fig9_latency.png")
+    fig.savefig(OUT / "fig11_latency.png")
     plt.close(fig)
 
 

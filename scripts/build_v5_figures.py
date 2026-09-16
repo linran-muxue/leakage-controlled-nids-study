@@ -77,7 +77,7 @@ def figure10() -> None:
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.subplots_adjust(wspace=0.45)
-    fig.savefig(OUT / "fig10_diversity_dose_response.png")
+    fig.savefig(OUT / "fig7_diversity_dose_response.png")
     plt.close(fig)
 
 
@@ -119,7 +119,7 @@ def figure11() -> None:
     ax.tick_params(axis="x", labelsize=8.6)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.savefig(OUT / "fig11_margin_bound.png")
+    fig.savefig(OUT / "fig6_margin_bound.png")
     plt.close(fig)
 
 

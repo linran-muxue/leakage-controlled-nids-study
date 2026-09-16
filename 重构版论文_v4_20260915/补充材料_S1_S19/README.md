@@ -22,3 +22,7 @@
 | S18 | 专家多样性实验（五类专家集合 x 三种子） | diversity_suite_results.csv; diversity_gain_regression.json |
 | S19 | 神经基线结果与选优门控的测试集确认 | metrics_aggregate.csv; mlp_vs_rccf_paired.csv; tuned_vs_default_test.csv |
 | S20 | 十种子主实验、功效分析与效应量 | metrics_by_seed.csv; table4a_10seeds.csv; power_analysis.csv; effect_sizes.csv; tost_results.csv |
+| S21 | 近重复审计与敏感性检验 | near_duplicate_summary.csv; near_duplicate_sensitivity.csv |
+| S22 | 资源画像：模型体积、吞吐与峰值内存 | resource_profile.csv; resource_profile_summary.json |
+| S23 | 代价敏感评估（误报漏报代价比 1 至 100） | cost_sensitive_summary.csv; cost_sensitive_by_seed.csv |
+| S24 | 参考文献 DOI 核验记录 | doi_verification.json |

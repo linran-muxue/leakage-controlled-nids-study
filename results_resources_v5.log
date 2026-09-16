@@ -1,0 +1,22 @@
+        model  batch_size  seconds  rows_per_second  peak_rss_mb  model_size_mb
+         rccf           1    0.072           13.811       36.996          9.089
+         rccf          64    0.096          669.010       36.996          9.089
+         rccf        1024    0.118         8658.441       36.996          9.089
+         rccf        7986    0.185        43064.330       36.996          9.089
+equal_rf_chi2           1    0.016           61.708       78.309          2.212
+equal_rf_chi2          64    0.028         2258.499       78.309          2.212
+equal_rf_chi2        1024    0.029        34891.051       78.309          2.212
+equal_rf_chi2        7986    0.040       200275.862       78.309          2.212
+
+{
+  "rccf": {
+    "rows_per_second": 43064.33,
+    "peak_rss_mb": 37.0,
+    "model_size_mb": 9.09
+  },
+  "equal_rf_chi2": {
+    "rows_per_second": 200275.86,
+    "peak_rss_mb": 78.31,
+    "model_size_mb": 2.21
+  }
+}

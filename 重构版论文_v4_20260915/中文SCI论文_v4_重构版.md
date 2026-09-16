@@ -2,7 +2,7 @@
 
 ## 摘要
 
-公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用、却缺少受控验证的假设：依据样本估计的可靠性权重对多个随机森林专家进行条件加权融合，能够稳定优于等权投票。我们在统一的泄漏受控协议下，于 CIC-IDS2017 上构造两个显式总体——保留观测类别先验的 53 237 条自然先验总体，与每类 673 条的 3 365 条平衡控制总体——并以 NSL-KDD 与 UNSW-NB15 作为独立原生标签基准，在十个种子上比较（平衡控制为三个种子）全特征、卡方、互信息与方差分析四种特征视图，以及风险校准保形森林（Risk-Calibrated Conformal Forest，RCCF）、等权随机森林、极端随机树与 XGBoost。结果表明：在自然先验主协议下，在十个种子上，RCCF 与等权卡方随机森林的 Macro-F1 平均差为 −0.00046，逐种子方向五正五负；种子级 90% 区间 [−0.00112, +0.00021] 与测试行级配对 Bootstrap 区间 [−0.00425, +0.00338] 都落在 SESOI = 0.005 与 0.01 Macro-F1 的等价边界之内，四个专家在测试集上没有任何一条预测分歧；所学权重的归一化熵为 0.99998，几乎退化为均匀权重。作为对照，类别先验由自然改为平衡使 Macro-F1 变化约 +0.072，去重顺序改变带来至多 +0.0060 的差异，而文件级外推使同一模型的 Macro-F1 落在 0.33 至 1.00 之间。我们进一步给出三个可辨识性命题，其中命题 2 被改写为可逐行计算的显式判据：在 23 958 条测试样本上，99.91% 的样本可被证明不受权重影响，实际改判 0 条，决策边距是权重扰动上界的 3469 至 5038 倍。对门控全部 108 种超参数配置的搜索只产生 6 个不同的验证集 Macro-F1 取值（全距 0.00117），排除了调参不足的解释；反向实验表明增益受专家多样性支配：分歧率 0.20% 至 0.36% 的两类专家集合在 6 次运行中增益恰好为零，而分歧率 1.76% 至 6.44% 的三类去相关集合在 9 次运行中增益全部为正，剂量—反应回归斜率 0.0646（Pearson r = 0.749）。结论是：在本研究覆盖的协议与数据范围内，**协议设计而非聚合策略主导了报告差异**；RCCF 的推理延迟约为等权随机森林的 4.9 倍，其可靠性增益未获证据支持。贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与模型效应分开量化的失效地图。
+公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用、却缺少受控验证的假设：依据样本估计的可靠性权重对多个随机森林专家进行条件加权融合，能够稳定优于等权投票。我们在统一的泄漏受控协议下，于 CIC-IDS2017 上构造两个显式总体——保留观测类别先验的 53 237 条自然先验总体，与每类 673 条的 3 365 条平衡控制总体——并以 NSL-KDD 与 UNSW-NB15 作为独立原生标签基准，在十个种子上比较（平衡控制为三个种子）全特征、卡方、互信息与方差分析四种特征视图，以及风险校准保形森林（Risk-Calibrated Conformal Forest，RCCF）、等权随机森林、极端随机树与 XGBoost。结果表明：在自然先验主协议下，在十个种子上，RCCF 与等权卡方随机森林的 Macro-F1 平均差为 −0.00046，逐种子方向五正五负；种子级 90% 区间 [−0.00112, +0.00021] 与测试行级配对 Bootstrap 区间 [−0.00425, +0.00338] 都落在 SESOI = 0.005 与 0.01 Macro-F1 的等价边界之内，四个专家在测试集上没有任何一条预测分歧；所学权重的归一化熵为 0.99998，几乎退化为均匀权重。作为对照，类别先验由自然改为平衡使 Macro-F1 变化约 +0.072，去重顺序改变带来至多 +0.0060 的差异，而文件级外推使同一模型的 Macro-F1 落在 0.33 至 1.00 之间。我们进一步给出三个可辨识性命题，其中命题 2 被改写为可逐行计算的显式判据：在 23 958 条测试样本上，99.91% 的样本可被证明不受权重影响，实际改判 0 条，决策边距是权重扰动上界的 3469 至 5038 倍。对门控全部 108 种超参数配置的搜索只产生 6 个不同的验证集 Macro-F1 取值（全距 0.00117），排除了调参不足的解释；反向实验表明增益受专家多样性支配：分歧率 0.20% 至 0.36% 的两类专家集合在 6 次运行中增益恰好为零，而分歧率 1.76% 至 6.44% 的三类去相关集合在 9 次运行中增益全部为正，剂量—反应回归斜率 0.0646（Pearson r = 0.749）。结论是：在本研究覆盖的协议与数据范围内，**协议设计而非聚合策略主导了报告差异**；RCCF 的推理延迟约为等权随机森林的 4.9 倍，其可靠性增益未获证据支持。条件加权机制的模型体积是单个等权森林的 4.1 倍、单行吞吐约为其五分之一，而在误报漏报代价比 1 至 100 的区间内其代价敏感表现与等权森林相同。贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与模型效应分开量化的失效地图。
 
 **关键词：** 网络入侵检测；集成学习；条件加权；数据泄漏；可辨识性；可复现性；CIC-IDS2017
 
@@ -375,7 +375,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 **测量四：边距上界给出可证明的不变性。** 依据第 4.3 节命题 2 的显式上界，我们在 23 958 条测试样本上逐行计算了边距 $m(x)$ 与扰动上界 $\Delta(x)$。结果：**实际被改判的样本为 0 条**；满足 $2\Delta(x)<m(x)$、因而「可证明不受权重影响」的样本占 **99.91%**，若改用实际扰动幅度计算则占 **99.996%**。边距中位数为 1.0，而扰动上界中位数仅 **0.000231**，比值中位数达 **3469 至 5038 倍**（分种子）。也就是说，融合后的概率分布接近 one-hot，权重能够造成的概率移动比决策边距小三个数量级。
 
-![图 6 决策边距与权重扰动上界的分布，以及命题 2 的可证明不变比例](figures/fig11_margin_bound.png)
+![图 6 决策边距与权重扰动上界的分布，以及命题 2 的可证明不变比例](figures/fig6_margin_bound.png)
 
 **测量五：结论不是调参不足造成的。** 我们在训练分区内搜索门控的全部超参数：正则化强度 $C\in\{0.01,0.1,1,10\}$、交叉拟合折数 $\in\{3,5,10\}$、描述子集合 $\in\{$全量, 仅熵, 仅边距$\}$，共 108 个配置，覆盖 3 个随机种子。**108 个配置只产生 6 个不同的验证集 Macro-F1 取值，全距仅 0.00117**；与等权投票相比，全部配置累计只在 862 488 次行级预测中产生 65 次分歧，占 0.0075%。这排除了「被检验方法没有得到充分调参」这一替代解释。该检查的最强形式在测试集一侧：把验证集选出的配置（三折、C = 1.0、边距描述子）在锁定的测试分区上评估一次，三个种子得到的预测与默认配置**逐条完全相同**——23 958 行中改判 0 条，Macro-F1 精确到六位小数一致。此外，至少 11 个配置的验证均值在前十位小数上相同，说明最优点是并列而非唯一。
 
@@ -393,13 +393,13 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 分歧率与增益之间呈单调的剂量—反应关系：对 15 个观测做线性回归，斜率 0.0646、Pearson r = 0.749。两类低分歧专家集合（0.20% 与 0.36%）在全部 6 次运行中增益**恰好为 0**，改判 0 条；三类去相关专家集合（1.76% 至 6.44%）在全部 9 次运行中增益**均为正**，改判 9 至 36 条。这给出本文最重要的机制结论：**条件加权的增益受专家多样性支配；在流特征数据上用不同过滤式选择器构造的「多视图」专家，其两两分歧率仅 0.2%–0.4%，门控在结构上不可能产生增益。** 当分歧率被提升到 3%–6% 时门控确实开始改变预测并带来小幅正向增益，但其幅度（+0.003 至 +0.004 Macro-F1）仍低于一次划分波动（标准差约 0.011）。
 
-![图 7 专家多样性与门控增益的剂量—反应关系](figures/fig10_diversity_dose_response.png)
+![图 7 专家多样性与门控增益的剂量—反应关系](figures/fig7_diversity_dose_response.png)
 
 ### 5.4 RQ3：协议效应比模型效应大一个数量级
 
 本节把四类协议的效应量放在一起比较（图 8）。
 
-![图 8 协议敏感性：去重顺序、类别先验与重复划分](figures/fig6_protocol_sensitivity.png)
+![图 8 协议敏感性：去重顺序、类别先验与重复划分](figures/fig8_protocol_sensitivity.png)
 
 **（1）去重顺序。** 把"在划分前对全语料去重"改为"先划分、只在训练侧去重"，三个种子的 Macro-F1 分别为 0.958503、0.950446、0.962318，对照协议为 0.952545、0.952171、0.962330。两者均值分别为 0.957089 与 0.955682，相差 **+0.00141**，单种子最大差异 **+0.0060**。这说明去重顺序确实会改变结果，但改变量小于类别先验。
 
@@ -413,7 +413,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 ### 5.5 RQ4：外部有效性与文件级外推
 
-![图 9 外部数据集的类别级 F1](figures/fig7_external_class_f1.png)
+![图 9 外部数据集的类别级 F1](figures/fig9_external_class_f1.png)
 
 **NSL-KDD。** RCCF 在原生五类标签上的三种子均值为：准确率 0.747960，平衡准确率 0.492837，Macro-F1 0.514697，Log Loss 1.6802，ECE 0.4819，覆盖率 0.6198。覆盖率意味着约 38% 的样本被判为 `unknown`，这是高 Log Loss 与高 ECE 的直接来源。类别层面（seed 42），R2L 的召回率为 0.106（F1 0.191），U2R 的召回率为 0.035（F1 0.064）——两个少数类基本未被识别。
 
@@ -425,15 +425,19 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 ### 5.6 次生指标：校准、鲁棒性、延迟与开放集
 
-![图 10 概率校准与共享扰动鲁棒性](figures/fig8_calibration_robustness.png)
+![图 10 概率校准与共享扰动鲁棒性](figures/fig10_calibration_robustness.png)
 
 **概率校准。** 自然先验总体下 RCCF 的 Log Loss（0.05183）优于等权森林（0.05220），但 Brier（0.006365 对 0.006255）与 ECE（0.006849 对 0.004493）都更差。温度缩放可以把条件加权分支的 ECE 从约 0.0238 降到约 0.0119（平衡控制协议），而等权森林的温度参数被优化为 1.0、校准指标不变。结论是：**硬标签持平不意味着概率质量相同，但概率质量的改善方向依赖于具体指标**，不能只挑一个有利指标报告。
 
 **鲁棒性。** 在完全相同的扰动掩码下，1% 高斯噪声使 RCCF 的 Macro-F1 相对下降 43.30%，等权卡方森林下降 42.64%；5% 特征屏蔽下分别为 1.23% 与 1.27%。两者差异极小，且连续噪声下两个模型都严重退化。因此可以说“在本扰动协议下两者鲁棒性相当，且都不耐受 1% 量级的连续噪声”。需要指出的是，极端随机树在同一扰动下明显更稳健：其相对下降仅 11.57%，约为条件加权分支 43.30% 的四分之一（图 10b）。正确的读法不是“门控提升了鲁棒性”（它没有），而是“另一个基线族提升了鲁棒性”，且这一差异大于门控在两个森林变体之间造成的任何差异。
 
-![图 11 单条推理延迟分布](figures/fig9_latency.png)
+![图 11 单条推理延迟分布](figures/fig11_latency.png)
 
 **延迟。** 单线程单条推理下，RCCF 的 P50/P95/P99 为 14.62/15.77/16.12 ms，等权卡方森林为 2.96/3.61/4.18 ms；切换到库默认多线程后，RCCF 升至 69.93/75.11/76.22 ms，等权森林为 16.69/18.24/18.47 ms。小批量下单条调用无法从多线程获益，反而引入了调度开销。需要强调这些数字**仅为分类器阶段**，不含抓包、流构造与特征提取。
+
+**资源占用。** 模型体积与吞吐率比墙钟时间更能区分两种设计。条件加权机制保存四个森林，序列化后占 9.09 MB，而单个等权森林占 2.21 MB，相差 4.1 倍；在完整测试批次上，前者每秒约处理 43 100 行，后者约 200 300 行，相差 4.6 倍。拟合期间峰值常驻内存增量为 37.0 MB 对 78.3 MB，但两个模型在同一进程内先后测量，该数字受执行顺序影响，仅供参考。
+
+**代价敏感表现。** 把任务视为「攻击 vs 正常」并扫描决策阈值，在误报漏报代价比 C_FN / C_FP 从 1 到 100 的整个区间内，条件加权机制的归一化期望代价与等权卡方森林的差距始终在 0.0005 以内——例如代价比 为 1 时是 0.00913 对 0.00867，为 100 时是 0.07260 对 0.06753。极端随机树在低代价比下代价约为两者的两倍（代价比 1 时为 0.01917），但当漏报主导时反而更便宜（代价比 100 时为 0.06180）。因此条件门控在代价敏感维度上同样没有优势。
 
 **开放集。** 以 PortScan、Infiltration 与 Heartbleed 为保留未知族时，条件加权分支的 AUROC 为 0.643 至 0.694，未知类召回率为 0.0015 至 0.0088；等权森林的 AUROC 为 0.919 至 0.940，未知类召回率为 0.057 至 0.128。也就是说，**RCCF 的风险门控降低了已知/未知的可分性**：它把概率质量推向高置信区域，代价是丢弃了可用于拒绝的不确定性信号。这是本文对条件加权机制最不利的一项证据，也说明把风险校准与开放集拒绝绑定在同一个门控上并不合理。
 
@@ -504,6 +508,12 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 **延迟测量不覆盖端到端链路。** 报告的毫秒数从数值特征矩阵开始计时，不含抓包、流重组、特征提取、告警输出与模型热更新。
 
+**近重复只按精确形式剔除。** 引言把「重复与近重复样本」列为公开数据集的危害之一，而审计只删除了完全相同的特征向量。把所有特征四舍五入到四位有效数字后做哈希，发现研究总体中另有 0.36% 的行在该分辨率下构成近重复组，其中 104 条测试行（占测试集 0.21%）与训练行共享同一个舍入后特征向量。剔除这些行后，三个模型的 Macro-F1 变化均不超过 0.00057，因此该重叠不足以解释本文报告的差异；更粗分辨率的结果见补充材料。
+
+**只评测了三个数据集，未引入第四个。** 本文结论以 CIC-IDS2017、NSL-KDD 与 UNSW-NB15 为条件。若要检验所报告的协议敏感性与条件加权的失效是否越出这三个来源，需要引入一个真正独立的新数据集。
+
+**未评估对抗鲁棒性。** 本文只施加了随机扰动与特征屏蔽，没有构造规避攻击或基于梯度的攻击，报告的退化数字不构成对自适应对手的鲁棒性保证。
+
 **未知族支持量不均衡。** PortScan 有 158 930 条，而 Infiltration 仅 36 条、Heartbleed 仅 11 条。开放集指标对保留哪一族高度敏感，本文只报告分族结果，不给出合并结论。
 
 **Bootstrap 区间的解释范围。** 配对 Bootstrap 量化的是测试行重采样不确定性，不包含网络环境变化、时间漂移与流量构成变化带来的不确定性。
@@ -528,7 +538,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 ## 数据与代码可用性
 
-处理脚本、审计中间结果、逐样本预测与图表生成代码发布于公开仓库：https://github.com/linran-muxue/leakage-controlled-nids-study （发布版本 v1.2.0，标签 v1.2.0）。原始数据集不随论文分发；论文记录来源地址、检索日期、版本快照与 SHA-256 校验值。
+处理脚本、审计中间结果、逐样本预测与图表生成代码发布于公开仓库：https://github.com/linran-muxue/leakage-controlled-nids-study （发布版本 v1.3.0，标签 v1.3.0）。原始数据集不随论文分发；论文记录来源地址、检索日期、版本快照与 SHA-256 校验值。
 
 ## 基金
 
@@ -550,7 +560,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 ## 参考文献
 
-说明：以下条目与英文稿完全一致，以保证 `[n]` 编号在两版中指向同一文献。标注 [DOI 待核验] 的条目需在投稿前用 Crossref 或出版社页面逐条核对。
+说明：全部 DOI 已于 2026-09-16 通过 Crossref 核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
 
@@ -560,8 +570,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 4. Chen T, Guestrin C. XGBoost: A scalable tree boosting system. KDD 2016: 785-794. DOI:10.1145/2939672.2939785.
 
-5. Ke G, Meng Q, Finley T, et al. LightGBM: A highly efficient gradient boosting decision tree. NeurIPS 2017: 3146-3154. [DOI to verify]
-
+5. Ke G, Meng Q, Finley T, et al. LightGBM: A highly efficient gradient boosting decision tree. NeurIPS 2017: 3146-3154. [无 DOI；NeurIPS 会议论文集]
 6. Freund Y, Schapire R E. A decision-theoretic generalization of on-line learning and an application to boosting. Journal of Computer and System Sciences, 1997, 55(1): 119-139. DOI:10.1006/jcss.1997.1504.
 
 7. Friedman J H. Greedy function approximation: A gradient boosting machine. The Annals of Statistics, 2001, 29(5): 1189-1232. DOI:10.1214/aos/1013203451.
@@ -576,8 +585,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 12. Liu H, Setiono R. Chi2: Feature selection and discretization of numeric attributes. ICTAI 1995: 388-391. DOI:10.1109/TAI.1995.479783.
 
-13. Guyon I, Elisseeff A. An introduction to variable and feature selection. JMLR, 2003, 3: 1157-1182. [DOI to verify]
-
+13. Guyon I, Elisseeff A. An introduction to variable and feature selection. JMLR, 2003, 3: 1157-1182. [无 DOI；JMLR]
 14. Sharafaldin I, Lashkari A H, Ghorbani A A. Toward generating a new intrusion detection dataset and intrusion traffic characterization. ICISSP 2018: 108-116. DOI:10.5220/0006639801080116.
 
 15. Tavallaee M, Bagheri E, Lu W, Ghorbani A A. A detailed analysis of the KDD CUP 99 data set. CISDA 2009: 1-6. DOI:10.1109/CISDA.2009.5356528.
@@ -588,10 +596,8 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 18. Engelen G, Timmerman J. Troubleshooting an intrusion detection dataset: The CICIDS2017 case study. IEEE S&P Workshops 2021: 7-12. DOI:10.1109/SPW53761.2021.00009.
 
-19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. [DOI to verify]
-
-20. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [DOI to verify]
-
+19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. DOI:10.1109/CNS56114.2022.9947235。
+20. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [无 DOI；USENIX Security 会议论文集]
 21. Sommer R, Paxson V. Outside the closed world: On using machine learning for network intrusion detection. IEEE S&P 2010: 305-316. DOI:10.1109/SP.2010.25.
 
 22. Buczak A L, Guven E. A survey of data mining and machine learning methods for cyber security intrusion detection. IEEE Communications Surveys & Tutorials, 2016, 18(2): 1153-1176. DOI:10.1109/COMST.2015.2494502.
@@ -604,38 +610,30 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 
 26. Bendale A, Boult T E. Towards open set deep networks. CVPR 2016: 1563-1572. DOI:10.1109/CVPR.2016.173.
 
-27. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [DOI to verify]
-
-28. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [DOI to verify]
-
-29. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [DOI to verify]
-
+27. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [无 DOI；PMLR]
+28. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [无 DOI；NeurIPS 会议论文集]
+29. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [无 DOI；NeurIPS 会议论文集]
 30. Angelopoulos A N, Bates S. Conformal prediction: A gentle introduction. Foundations and Trends in Machine Learning, 2023, 16(4): 494-591. DOI:10.1561/2200000101.
 
 31. Vovk V, Gammerman A, Shafer G. Algorithmic Learning in a Random World. Springer, 2005. DOI:10.1007/b106715.
 
-32. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [DOI to verify]
-
+32. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [无 DOI；JMLR]
 33. Lei J, G'Sell M, Rinaldo A, et al. Distribution-free predictive inference for regression. JASA, 2018, 113(523): 1094-1111. DOI:10.1080/01621459.2017.1307116.
 
 34. McNemar Q. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika, 1947, 12(2): 153-157. DOI:10.1007/BF02295996.
 
 35. Dietterich T G. Approximate statistical tests for comparing supervised classification learning algorithms. Neural Computation, 1998, 10(7): 1895-1923. DOI:10.1162/089976698300017197.
 
-36. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [DOI to verify]
-
-37. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [DOI to verify]
-
-38. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. [DOI to verify]
-
+36. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [无 DOI；JMLR]
+37. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [无 DOI；JSTOR 稳定记录 4615733]
+38. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. ISBN 978-0-412-04231-7。[无 DOI]
 39. Lakens D. Equivalence tests: A practical primer for t tests, correlations, and meta-analyses. Social Psychological and Personality Science, 2017, 8(4): 355-362. DOI:10.1177/1948550617697177.
 
 40. Han S, Kim Y, Lee S. Improvement of the classification performance of an intrusion detection model for rare and unknown attack traffic. Electronics, 2021, 10(18): 2268. DOI:10.3390/electronics10182268.
 
 41. Guolou P, Ye X. Open-set intrusion detection with MinMax autoencoder and pseudo extreme value machine. IJCNN 2022. DOI:10.1109/IJCNN55064.2022.9892858.
 
-42. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [DOI to verify]
-
+42. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [无 DOI；JMLR]
 43. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
 
 44. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
@@ -668,3 +666,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 | S18 | 专家多样性实验（五类专家集合 × 三个种子） |
 | S19 | 神经基线结果及其与 RCCF 的配对比较 |
 | S20 | 十种子主实验、功效分析与标准化效应量 |
+| S21 | 近重复审计与敏感性检验 |
+| S22 | 资源画像：模型体积、吞吐与峰值内存 |
+| S23 | 代价敏感评估（误报漏报代价比 1 至 100） |
+| S24 | 参考文献 DOI 核验记录 |

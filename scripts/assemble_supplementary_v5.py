@@ -76,6 +76,17 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_seeds10_v5/power_analysis.csv",
              "results_seeds10_v5/effect_sizes.csv",
              "results_equivalence_10seeds_v5/tost_results.csv"]),
+    "S21": ("近重复审计与敏感性检验",
+            ["results_near_duplicate_v5/near_duplicate_summary.csv",
+             "results_near_duplicate_v5/near_duplicate_sensitivity.csv"]),
+    "S22": ("资源画像：模型体积、吞吐与峰值内存",
+            ["results_resources_v5/resource_profile.csv",
+             "results_resources_v5/resource_profile_summary.json"]),
+    "S23": ("代价敏感评估（误报漏报代价比 1 至 100）",
+            ["results_cost_v5/cost_sensitive_summary.csv",
+             "results_cost_v5/cost_sensitive_by_seed.csv"]),
+    "S24": ("参考文献 DOI 核验记录",
+            ["results_review_v5/doi_verification.json"]),
 }
 
 

@@ -1,0 +1,33 @@
+{
+  "significant_digits": 4,
+  "test_rows_overlapping_training_at_this_resolution": 17,
+  "results": [
+    {
+      "model": "rccf",
+      "test_rows": 7986,
+      "rows_removed": 17,
+      "removed_fraction": 0.002128725269221137,
+      "macro_f1_full": 0.8892782820171663,
+      "macro_f1_excluding_near_duplicates": 0.8890958360420026,
+      "delta": -0.0001824459751637031
+    },
+    {
+      "model": "equal_rf_chi2",
+      "test_rows": 7986,
+      "rows_removed": 17,
+      "removed_fraction": 0.002128725269221137,
+      "macro_f1_full": 0.8897341182289404,
+      "macro_f1_excluding_near_duplicates": 0.8895492663390245,
+      "delta": -0.00018485188991590462
+    },
+    {
+      "model": "extra_trees_chi2",
+      "test_rows": 7986,
+      "rows_removed": 17,
+      "removed_fraction": 0.002128725269221137,
+      "macro_f1_full": 0.857490301370287,
+      "macro_f1_excluding_near_duplicates": 0.8569208552942598,
+      "delta": -0.000569446076027269
+    }
+  ]
+}

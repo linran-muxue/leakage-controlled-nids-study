@@ -271,7 +271,7 @@ def fig6():
     ax.legend(fontsize=8.2); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.savefig(OUT / "fig6_protocol_sensitivity.png")
+    fig.savefig(OUT / "fig8_protocol_sensitivity.png")
     plt.close(fig)
 
 
@@ -301,7 +301,7 @@ def fig7():
             ax.spines[sp].set_visible(False)
     fig.suptitle("Class-level F1 on independent native-label benchmarks (RCCF, seed 42)",
                  fontsize=11.2, weight="bold", y=1.02)
-    fig.savefig(OUT / "fig7_external_class_f1.png")
+    fig.savefig(OUT / "fig9_external_class_f1.png")
     plt.close(fig)
 
 
@@ -343,7 +343,7 @@ def fig8():
     ax.legend(fontsize=8.4); ax.grid(axis="y", alpha=0.25)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
-    fig.savefig(OUT / "fig8_calibration_robustness.png")
+    fig.savefig(OUT / "fig10_calibration_robustness.png")
     plt.close(fig)
 
 
@@ -368,7 +368,7 @@ def fig9():
     axes[0].legend(fontsize=8.4)
     fig.suptitle("Classifier-stage single-row latency (excludes capture and feature extraction)",
                  fontsize=11.0, weight="bold", y=1.02)
-    fig.savefig(OUT / "fig9_latency.png")
+    fig.savefig(OUT / "fig11_latency.png")
     plt.close(fig)
 
 
@@ -415,7 +415,7 @@ def fig10():
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
     fig.subplots_adjust(wspace=0.45)
-    fig.savefig(OUT / "fig10_diversity_dose_response.png")
+    fig.savefig(OUT / "fig7_diversity_dose_response.png")
     plt.close(fig)
 
 
@@ -448,7 +448,7 @@ def fig11():
     ax.grid(axis="y", alpha=0.25); ax.tick_params(axis="x", labelsize=8.4)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
-    fig.savefig(OUT / "fig11_margin_bound.png")
+    fig.savefig(OUT / "fig6_margin_bound.png")
     plt.close(fig)
 
 
