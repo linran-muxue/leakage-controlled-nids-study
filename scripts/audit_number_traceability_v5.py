@@ -125,6 +125,36 @@ def main() -> None:
     add("equal RF P50 ms", 2.96, le, 5e-3)
 
     # --- report -------------------------------------------------------------
+    # --- ten-seed extension -------------------------------------------------
+    ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv")
+    add("10-seed RCCF Macro-F1", 0.889278,
+        ten.loc[ten.model == "rccf", "macro_f1"].iloc[0])
+    add("10-seed equal RF chi2 Macro-F1", 0.889734,
+        ten.loc[ten.model == "equal_rf_chi2", "macro_f1"].iloc[0])
+    add("10-seed equal RF all Macro-F1", 0.887666,
+        ten.loc[ten.model == "equal_rf_all", "macro_f1"].iloc[0])
+    add("10-seed ExtraTrees Macro-F1", 0.857490,
+        ten.loc[ten.model == "extra_trees_chi2", "macro_f1"].iloc[0])
+
+    power = pd.read_csv(ROOT / "results_seeds10_v5" / "power_analysis.csv")
+    chi2_row = power[power.comparison == "rccf_minus_equal_rf_chi2"].iloc[0]
+    add("10-seed mean difference vs equal RF chi2", -0.000456, chi2_row["mean_difference"], 1e-6)
+    add("10-seed seed-level 90% low", -0.001124, chi2_row["ci90_low"], 1e-6)
+    add("10-seed seed-level 90% high", 0.000212, chi2_row["ci90_high"], 1e-6)
+    add("10-seed TOST equivalent at 0.005 (1=yes)", 1.0,
+        float(chi2_row["tost_equivalent_at_0.005"]), 0)
+    add("10-seed minimum detectable effect", 0.001146,
+        chi2_row["min_detectable_effect_80pct"], 1e-5)
+    effects = pd.read_csv(ROOT / "results_seeds10_v5" / "effect_sizes.csv")
+    add("10-seed Cohen dz vs equal RF chi2", -0.40,
+        float(effects[effects.comparison == "rccf_minus_equal_rf_chi2"]["cohens_dz"].iloc[0]), 5e-3)
+    add("10-seed seeds favouring RCCF vs equal RF chi2", 5.0,
+        float(effects[effects.comparison == "rccf_minus_equal_rf_chi2"]["seeds_favouring_rccf"].iloc[0]), 0)
+    eq10 = json.loads((ROOT / "results_equivalence_10seeds_v5" /
+                       "equivalence_summary.json").read_text("utf-8"))["pooled"]
+    add("10-seed row-level 90% low", -0.004251, eq10["pooled_ci_low"], 1e-5)
+    add("10-seed row-level 90% high", 0.003382, eq10["pooled_ci_high"], 1e-5)
+
     failures = 0
     print(f"{'check':<42}{'claimed':>14}{'recomputed':>16}{'status':>10}")
     for label, claimed, recomputed, tol in checks:

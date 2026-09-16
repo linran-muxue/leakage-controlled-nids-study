@@ -49,3 +49,16 @@ ExtraTrees 1% noise drop,11.57,11.573916327076335,0.005
 RCCF 5% mask drop,1.23,1.2331258435813253,0.005
 RCCF P50 ms,14.62,14.620233334426302,0.005
 equal RF P50 ms,2.96,2.960233330668416,0.005
+10-seed RCCF Macro-F1,0.889278,0.8892782820171663,5e-06
+10-seed equal RF chi2 Macro-F1,0.889734,0.8897341182289404,5e-06
+10-seed equal RF all Macro-F1,0.887666,0.8876657556414335,5e-06
+10-seed ExtraTrees Macro-F1,0.85749,0.857490301370287,5e-06
+10-seed mean difference vs equal RF chi2,-0.000456,-0.000456,1e-06
+10-seed seed-level 90% low,-0.001124,-0.001124,1e-06
+10-seed seed-level 90% high,0.000212,0.000212,1e-06
+10-seed TOST equivalent at 0.005 (1=yes),1.0,1.0,0.0
+10-seed minimum detectable effect,0.001146,0.001146,1e-05
+10-seed Cohen dz vs equal RF chi2,-0.4,-0.3957,0.005
+10-seed seeds favouring RCCF vs equal RF chi2,5.0,5.0,0.0
+10-seed row-level 90% low,-0.004251,-0.004251483287061019,1e-05
+10-seed row-level 90% high,0.003382,0.0033817450071277895,1e-05

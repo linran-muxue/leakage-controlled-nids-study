@@ -1,0 +1,27 @@
+seed=42 rccf macro_f1=0.889284
+seed=42 baselines done
+seed=2024 rccf macro_f1=0.891333
+seed=2024 baselines done
+seed=3407 rccf macro_f1=0.889249
+seed=3407 baselines done
+seed=7 rccf macro_f1=0.889284
+seed=7 baselines done
+seed=13 rccf macro_f1=0.888869
+seed=13 baselines done
+seed=101 rccf macro_f1=0.887371
+seed=101 baselines done
+seed=202 rccf macro_f1=0.889350
+seed=202 baselines done
+seed=303 rccf macro_f1=0.890573
+seed=303 baselines done
+seed=404 rccf macro_f1=0.889005
+seed=404 baselines done
+seed=505 rccf macro_f1=0.888465
+seed=505 baselines done
+                  macro_f1            accuracy           balanced_accuracy            log_loss                 ece           train_seconds            predict_seconds          
+                      mean       std      mean       std              mean       std      mean       std      mean       std          mean        std            mean       std
+model                                                                                                                                                                          
+equal_rf_all      0.887666  0.001819  0.976922  0.000616          0.950549  0.002133  0.054449  0.000747  0.005492  0.001218      1.153603   0.417783        0.046523  0.009726
+equal_rf_chi2     0.889734  0.001798  0.977786  0.000491          0.950061  0.003093  0.052201  0.001100  0.004493  0.000878      1.158499   0.411996        0.046402  0.009138
+extra_trees_chi2  0.857490  0.000893  0.963436  0.000329          0.962154  0.000963  0.089692  0.001796  0.017003  0.001776      0.623580   0.215735        0.049805  0.012997
+rccf              0.889278  0.001077  0.977861  0.000242          0.948196  0.001436  0.051826  0.000372  0.006849  0.000399     93.256079  30.314860        0.243835  0.059061

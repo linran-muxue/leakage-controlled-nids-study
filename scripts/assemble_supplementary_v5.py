@@ -70,6 +70,12 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
             ["results_mlp_final_v5/metrics_aggregate.csv",
              "results_mlp_final_v5/mlp_vs_rccf_paired.csv",
              "results_tuned_gate_test_v5/tuned_vs_default_test.csv"]),
+    "S20": ("十种子主实验、功效分析与效应量",
+            ["results_seeds10_v5/metrics_by_seed.csv",
+             "results_seeds10_v5/table4a_10seeds.csv",
+             "results_seeds10_v5/power_analysis.csv",
+             "results_seeds10_v5/effect_sizes.csv",
+             "results_equivalence_10seeds_v5/tost_results.csv"]),
 }
 
 

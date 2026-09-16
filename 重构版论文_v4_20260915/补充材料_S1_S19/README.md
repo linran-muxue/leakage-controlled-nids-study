@@ -21,3 +21,4 @@
 | S17 | 逐测试行的边距与扰动上界 | margin_bound_summary.csv; margin_bound_summary.json |
 | S18 | 专家多样性实验（五类专家集合 x 三种子） | diversity_suite_results.csv; diversity_gain_regression.json |
 | S19 | 神经基线结果与选优门控的测试集确认 | metrics_aggregate.csv; mlp_vs_rccf_paired.csv; tuned_vs_default_test.csv |
+| S20 | 十种子主实验、功效分析与效应量 | metrics_by_seed.csv; table4a_10seeds.csv; power_analysis.csv; effect_sizes.csv; tost_results.csv |

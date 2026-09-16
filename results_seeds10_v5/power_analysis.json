@@ -1,0 +1,77 @@
+{
+  "design": "paired across seeds, two-sided alpha = 0.05, target power = 0.80",
+  "n_seeds": 10,
+  "results": [
+    {
+      "comparison": "rccf_minus_equal_rf_chi2",
+      "n_seeds": 10,
+      "mean_difference": -0.000456,
+      "sd_difference": 0.001152,
+      "ci95_low": -0.00128,
+      "ci95_high": 0.000368,
+      "min_detectable_effect_80pct": 0.001146,
+      "achievable_tost_margin": 0.000668,
+      "ci90_low": -0.001124,
+      "ci90_high": 0.000212,
+      "tost_equivalent_at_0.005": true,
+      "tost_equivalent_at_0.01": true
+    },
+    {
+      "comparison": "rccf_minus_equal_rf_all",
+      "n_seeds": 10,
+      "mean_difference": 0.001613,
+      "sd_difference": 0.001376,
+      "ci95_low": 0.000628,
+      "ci95_high": 0.002597,
+      "min_detectable_effect_80pct": 0.001369,
+      "achievable_tost_margin": 0.000798,
+      "ci90_low": 0.000815,
+      "ci90_high": 0.00241,
+      "tost_equivalent_at_0.005": true,
+      "tost_equivalent_at_0.01": true
+    },
+    {
+      "comparison": "rccf_minus_extra_trees_chi2",
+      "n_seeds": 10,
+      "mean_difference": 0.031788,
+      "sd_difference": 0.001616,
+      "ci95_low": 0.030632,
+      "ci95_high": 0.032944,
+      "min_detectable_effect_80pct": 0.001607,
+      "achievable_tost_margin": 0.000937,
+      "ci90_low": 0.030851,
+      "ci90_high": 0.032724,
+      "tost_equivalent_at_0.005": false,
+      "tost_equivalent_at_0.01": false
+    }
+  ],
+  "effect_sizes": [
+    {
+      "comparison": "rccf_minus_equal_rf_chi2",
+      "cohens_dz": -0.3957,
+      "cliffs_delta_mean": 7.5e-05,
+      "relative_difference_pct": -0.0512,
+      "seeds_favouring_rccf": 5,
+      "seeds_favouring_baseline": 5,
+      "seeds_tied": 0
+    },
+    {
+      "comparison": "rccf_minus_equal_rf_all",
+      "cohens_dz": 1.1719,
+      "cliffs_delta_mean": 0.000939,
+      "relative_difference_pct": 0.1817,
+      "seeds_favouring_rccf": 9,
+      "seeds_favouring_baseline": 1,
+      "seeds_tied": 0
+    },
+    {
+      "comparison": "rccf_minus_extra_trees_chi2",
+      "cohens_dz": 19.6762,
+      "cliffs_delta_mean": 0.014425,
+      "relative_difference_pct": 3.7071,
+      "seeds_favouring_rccf": 10,
+      "seeds_favouring_baseline": 0,
+      "seeds_tied": 0
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "comparison": "rccf_minus_equal_rf_chi2",
+  "protocol": "CIC-IDS2017 natural-prior population, deduplicated and capped",
+  "alpha": 0.05,
+  "sesoi_candidates": [
+    0.005,
+    0.01
+  ],
+  "n_bootstrap": 1000,
+  "pooled": {
+    "mean_delta": -0.00045583621177428533,
+    "pooled_ci_low": -0.004251483287061019,
+    "pooled_ci_high": 0.0033817450071277895,
+    "pooled_ci95_low": -0.004945646690930258,
+    "pooled_ci95_high": 0.004194054684240459,
+    "n_seeds": 10,
+    "tost_equivalent_at_0.005": true,
+    "tost_equivalent_at_0.01": true
+  }
+}

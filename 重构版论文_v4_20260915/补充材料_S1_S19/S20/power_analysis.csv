@@ -1,0 +1,4 @@
+﻿comparison,n_seeds,mean_difference,sd_difference,ci95_low,ci95_high,min_detectable_effect_80pct,achievable_tost_margin,ci90_low,ci90_high,tost_equivalent_at_0.005,tost_equivalent_at_0.01
+rccf_minus_equal_rf_chi2,10,-0.000456,0.001152,-0.00128,0.000368,0.001146,0.000668,-0.001124,0.000212,True,True
+rccf_minus_equal_rf_all,10,0.001613,0.001376,0.000628,0.002597,0.001369,0.000798,0.000815,0.00241,True,True
+rccf_minus_extra_trees_chi2,10,0.031788,0.001616,0.030632,0.032944,0.001607,0.000937,0.030851,0.032724,False,False
