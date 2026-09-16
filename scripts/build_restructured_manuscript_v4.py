@@ -178,7 +178,7 @@ def build(source: Path, output: Path) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--only", choices=["manuscript", "english", "plan", "audit", "manual", "review", "both", "all"], default="both")
+    parser.add_argument("--only", choices=["manuscript", "english", "plan", "audit", "manual", "review", "selfcheck", "both", "all"], default="both")
     args = parser.parse_args()
     jobs = {
         "manuscript": (SRC / "中文SCI论文_v4_重构版.md", SRC / "中文SCI论文_v4_重构版.docx"),
@@ -187,11 +187,12 @@ def main() -> None:
         "manual": (SRC / "P0_P1执行手册.md", SRC / "P0_P1执行手册.docx"),
         "english": (SRC / "English_SCI_Manuscript_v4.md", SRC / "English_SCI_Manuscript_v4.docx"),
         "review": (SRC / "遗漏问题审查报告.md", SRC / "遗漏问题审查报告.docx"),
+        "selfcheck": (SRC / "论文自查表.md", SRC / "论文自查表.docx"),
     }
     if args.only == "both":
         names = ["manuscript", "plan"]
     elif args.only == "all":
-        names = ["manuscript", "english", "plan", "audit", "manual", "review"]
+        names = ["manuscript", "english", "plan", "audit", "manual", "review", "selfcheck"]
     else:
         names = [args.only]
     for name in names:
