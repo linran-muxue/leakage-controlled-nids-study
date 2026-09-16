@@ -3,11 +3,35 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "results_publication_final" / "MANIFEST.json"
+MANUSCRIPT_DIR = ROOT / "重构版论文_v4_20260915"
+
+
+def current_release_tag() -> str:
+    """Latest git tag, falling back to the tag cited by the manuscript.
+
+    The tag used to be a literal here, so it stayed at v1.0.2 for eight
+    releases while the manuscripts moved on. Deriving it keeps the manifest in
+    step with the release it describes.
+    """
+    try:
+        tag = subprocess.run(["git", "tag"], capture_output=True, text=True,
+                             cwd=ROOT, timeout=30).stdout.split()
+        if tag:
+            return sorted(tag, key=lambda t: [int(x) for x in re.findall(r"\d+", t)])[-1]
+    except Exception:  # pragma: no cover - git unavailable
+        pass
+    cited = set(re.findall(r"v1\.\d+\.\d+",
+                           (MANUSCRIPT_DIR / "English_SCI_Manuscript_v4.md").read_text("utf-8")))
+    if len(cited) != 1:
+        raise SystemExit(f"cannot determine the release tag: {sorted(cited)}")
+    return cited.pop()
 
 TARGETS = [
     ROOT / "data_processed_cic_natural_v3b" / "dedup_audit.json",
@@ -88,6 +112,8 @@ TARGETS = [
     ROOT / "LICENSE",
     ROOT / "requirements-direct.txt",
     ROOT / "requirements-lock.txt",
+    MANUSCRIPT_DIR / "English_SCI_Manuscript_v4.docx",
+    MANUSCRIPT_DIR / "中文SCI论文_v4_重构版.docx",
 ]
 
 
@@ -107,14 +133,15 @@ def main() -> None:
     payload = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
-        "public_release_tag": "v1.0.2",
+        "public_release_tag": current_release_tag(),
         "canonical_data": "data_processed_cic_natural_v3b",
         "canonical_main_results": "results_rccf_cic_natural_v3b",
         "canonical_control_data": "data_processed_cic_balanced_v3b",
         "canonical_control_results": "results_rccf_cic_balanced_v3b",
         "canonical_external_results": ["results_rccf_nsl_v2_final", "results_rccf_unsw_v2_final"],
         "canonical_evidence": "results_rccf_evidence_v3b",
-        "canonical_manuscript": "results_paper_materials_v3/english_sci_manuscript_final.docx",
+        "canonical_manuscript": "重构版论文_v4_20260915/English_SCI_Manuscript_v4.docx",
+        "canonical_manuscript_zh": "重构版论文_v4_20260915/中文SCI论文_v4_重构版.docx",
         "method": "RCCF (Risk-Calibrated Conformal Forest)",
         "claim_boundary": "No universal superiority claim; external datasets are independent native-label benchmarks",
         "artifacts": entries,

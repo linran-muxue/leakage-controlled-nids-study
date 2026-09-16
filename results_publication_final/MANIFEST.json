@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-09-12T04:51:47.220012+00:00",
+  "generated_at_utc": "2026-09-16T18:12:35.234949+00:00",
   "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
-  "public_release_tag": "v1.0.2",
+  "public_release_tag": "v1.10.0",
   "canonical_data": "data_processed_cic_natural_v3b",
   "canonical_main_results": "results_rccf_cic_natural_v3b",
   "canonical_control_data": "data_processed_cic_balanced_v3b",
@@ -11,7 +11,8 @@
     "results_rccf_unsw_v2_final"
   ],
   "canonical_evidence": "results_rccf_evidence_v3b",
-  "canonical_manuscript": "results_paper_materials_v3/english_sci_manuscript_final.docx",
+  "canonical_manuscript": "重构版论文_v4_20260915/English_SCI_Manuscript_v4.docx",
+  "canonical_manuscript_zh": "重构版论文_v4_20260915/中文SCI论文_v4_重构版.docx",
   "method": "RCCF (Risk-Calibrated Conformal Forest)",
   "claim_boundary": "No universal superiority claim; external datasets are independent native-label benchmarks",
   "artifacts": [
@@ -322,8 +323,8 @@
     },
     {
       "path": "src\\rccf_forest.py",
-      "bytes": 9284,
-      "sha256": "d427d3a66375eca1d646547c68b9d6e2fd6b390bc76b0dc5537d705045e06d60"
+      "bytes": 10007,
+      "sha256": "3046009ac519e32b06d438adcfbccfa6155b98461c5766255da8344fd2356010"
     },
     {
       "path": "src\\rccf_metrics.py",
@@ -404,6 +405,16 @@
       "path": "requirements-lock.txt",
       "bytes": 2216,
       "sha256": "133f6dd0818920515e83c087e72441fa2ab9d3e2b92a8960eb2d808091d1401e"
+    },
+    {
+      "path": "重构版论文_v4_20260915\\English_SCI_Manuscript_v4.docx",
+      "bytes": 1891709,
+      "sha256": "d34da8b1a8a7dd530a9de0d0dd807ee4d673d3687b06e1b8081d42666d9de314"
+    },
+    {
+      "path": "重构版论文_v4_20260915\\中文SCI论文_v4_重构版.docx",
+      "bytes": 2057571,
+      "sha256": "b8590c3d339a42419ecf50c1b61722034c17042c40d62cf70fcee575d38826e6"
     }
   ]
 }
