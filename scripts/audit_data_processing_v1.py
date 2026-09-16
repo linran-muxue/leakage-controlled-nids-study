@@ -13,7 +13,7 @@ import pandas as pd
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.data_pipeline import map_attack_label
+from src.data_pipeline import cic_physical_valid_mask, map_attack_label
 
 
 def file_hash(path: Path, block: int = 1024 * 1024) -> dict[str, object]:
@@ -40,6 +40,8 @@ def audit_frame(frame: pd.DataFrame, include_other: bool = False) -> dict:
     missing_mask = numeric.isna().any(axis=1) & ~inf_mask
     invalid_mask = inf_mask | missing_mask
     valid_mapped = mapped.loc[mapped_mask].loc[~pd.Series(invalid_mask, index=mapped.loc[mapped_mask].index)]
+    numeric_valid = numeric.loc[~pd.Series(invalid_mask, index=numeric.index)]
+    physical_valid, physical_by_feature = cic_physical_valid_mask(numeric_valid)
     return {
         "source_rows": int(len(frame)),
         "mapped_rows": int(mapped_mask.sum()),
@@ -48,6 +50,9 @@ def audit_frame(frame: pd.DataFrame, include_other: bool = False) -> dict:
         "invalid_infinite_rows": int(inf_mask.sum()),
         "invalid_missing_rows": int(missing_mask.sum()),
         "valid_rows": int((~invalid_mask).sum()),
+        "invalid_physical_rows": int((~physical_valid).sum()),
+        "invalid_physical_by_feature": physical_by_feature,
+        "physical_valid_rows": int(physical_valid.sum()),
         "feature_count": int(len(feature_cols)),
         "feature_columns": feature_cols,
         "raw_label_counts": {str(k): int(v) for k, v in frame[label_col].fillna("<NA>").astype(str).str.strip().value_counts().items()},
@@ -62,7 +67,7 @@ def summarize_split(frame: pd.DataFrame, split: str) -> dict:
 
 def audit_raw(raw_dir: Path) -> tuple[list[dict], dict]:
     files = []
-    totals = {k: 0 for k in ["source_rows", "mapped_rows", "excluded_label_rows", "invalid_rows", "invalid_infinite_rows", "invalid_missing_rows", "valid_rows"]}
+    totals = {k: 0 for k in ["source_rows", "mapped_rows", "excluded_label_rows", "invalid_rows", "invalid_infinite_rows", "invalid_missing_rows", "valid_rows", "physical_valid_rows"]}
     for path in sorted(raw_dir.rglob("*.csv")):
         result = audit_frame(pd.read_csv(path, low_memory=False, encoding_errors="replace"))
         result["file"] = path.name

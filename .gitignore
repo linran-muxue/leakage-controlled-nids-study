@@ -12,3 +12,9 @@ __pycache__/
 **/__pycache__/
 *.pyc
 *.tmp
+_release_stage_v3b_20260912/
+*.tar.gz
+RCCF_*.zip
+results_publication_stage2/
+results_recheck_unified_v4/
+results_unified_final/

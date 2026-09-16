@@ -1,0 +1,617 @@
+# Protocol Sensitivity Dominates Model Choice in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting
+
+## Abstract
+
+Reported performance differences between machine-learning intrusion-detection models are highly sensitive to duplicate flows, conflicting labels, feature-selection leakage and class priors. We test a widely adopted but rarely validated assumption: that fusing several random-forest experts with sample-specific reliability weights is reliably better than equal voting. Under a single leakage-controlled protocol we construct two explicit populations from CIC-IDS2017 - a 53,237-flow natural-prior population that retains observed class proportions and a 3,365-flow balanced control - and add NSL-KDD and UNSW-NB15 as independent native-label benchmarks, comparing full, chi-square, mutual-information and ANOVA feature views across conditional weighting (RCCF), equal-weight forests, extremely randomised trees, XGBoost and a multilayer perceptron over three fixed seeds. On the natural-prior protocol RCCF and an equal-weight chi-square forest differ by +0.0011 Macro-F1; a paired bootstrap gives a pooled 90% interval of [-0.00290, +0.00550], which is contained within a pre-specified equivalence margin of 0.01 Macro-F1 but not within 0.005, and per-seed exact McNemar tests are non-significant (p = 0.508 / 0.092 / 0.344). The four experts disagree on none of the test rows and the learned weights have a normalised entropy of 0.99998. By contrast, class prior changes Macro-F1 by +0.072, deduplication order by up to +0.0060, and file-level extrapolation moves the same model between 0.33 and 1.00 Macro-F1. Three identifiability conditions are derived and one of them is turned into a row-wise computable bound: 99.91% of the 23,958 test rows are provably invariant to the weighting, and the decision margin exceeds the perturbation bound by a median factor of 3,469 to 5,038. A search over all 108 gate hyper-parameter configurations yields only six distinct validation scores (range 0.00117), excluding insufficient tuning as an explanation. A reverse experiment shows that the gain is governed by expert diversity rather than by the implementation: two low-diversity expert sets gain exactly zero in six of six runs, whereas three deliberately decorrelated sets gain positively in nine of nine runs (slope 0.0646, Pearson r = 0.749). A neural baseline matches RCCF in accuracy (0.97679 versus 0.97792) while trailing by 0.092 Macro-F1, illustrating how strongly accuracy can mislead on imbalanced benchmarks. The contribution is a reusable leakage-controlled protocol, an identifiability boundary and a quantitative map that separates protocol effects from model effects; the evidence does not support claims of algorithmic superiority or production readiness.
+
+**Keywords:** network intrusion detection; ensemble learning; conditional weighting; data leakage; identifiability; reproducibility; CIC-IDS2017
+
+---
+
+## 1. Introduction
+
+### 1.1 Background and motivation
+
+Flow-based machine learning remains the most common form of published intrusion-detection research. Each network flow is summarised by roughly one hundred statistical features from a tool such as CICFlowMeter, and a classifier separates benign from malicious traffic. CIC-IDS2017, NSL-KDD and UNSW-NB15 dominate this literature [14-16], and thousands of papers report that one model outperforms another on them. The corresponding research area is surveyed in [22,23].
+
+The comparability of those claims is nevertheless doubtful. Public traffic datasets exhibit three recurring hazards. First, **duplicate and near-duplicate flows**: the same attack is recorded many times, and if duplicates are discovered only after splitting, the training and test partitions overlap substantially. Second, **conflicting labels**: identical feature vectors carry different labels, forcing the model to fit contradictory supervision. Third, **transform leakage**: if standardisation, feature selection or resampling is executed before the split, information from the test partition enters training through the fitted transform parameters.
+
+When these factors are uncontrolled, a comparison between models stops being a comparison of algorithms and becomes a comparison of splitting accidents. Several recent studies show that leakage and preprocessing order alone can reverse conclusions in intrusion detection. [18-20] The natural scientific question is therefore: **once these factors are controlled, how much of the widely reported improvement survives?**
+
+### 1.2 Three untested assumptions
+
+We focus this question on one concrete object. A common recipe in the literature is to train several ensemble models over different feature views or hyper-parameters and fuse them with sample-specific weights. The recipe carries three assumptions, denoted H1-H3.
+
+**H1 (feature redundancy).** Raw flow features contain substantial redundancy and noise, so a filter selector (chi-square, mutual information, ANOVA) can reduce dimensionality to a small subset without materially losing discriminative power.
+
+**H2 (weighting gain).** Experts differ in reliability across samples; therefore, weighting them by a sample-specific reliability estimate should be reliably better than equal voting. Even if the experts are individually comparable, the gate should help whenever their errors occur on different samples.
+
+**H3 (protocol independence).** These conclusions are insensitive to deduplication order, class priors and split construction, so results can be compared across papers.
+
+H3 is the most consequential because it is never stated explicitly, yet it underpins every cross-paper comparison of the form "model X reaches 99% on CIC-IDS2017".
+
+### 1.3 Research questions
+
+Four research questions structure the paper. Each maps to exactly one results subsection.
+
+**RQ1 (feature selection).** Does training-side filter selection reduce dimensionality without a material Macro-F1 loss?
+
+**RQ2 (weighting gain).** Does sample-conditional fusion outperform equal voting under the same feature view? If the two produce identical predictions, why is the mechanism inert?
+
+**RQ3 (protocol robustness).** Are the conclusions robust to deduplication order, class priors, repeated splits and tuning budgets?
+
+**RQ4 (external validity).** Do the conclusions survive beyond CIC-IDS2017, on NSL-KDD, UNSW-NB15 and file-level stress tests?
+
+### 1.4 Contributions
+
+The contributions are ordered by evidential strength.
+
+1. **A reusable leakage-controlled protocol and audit record.** Starting from 2,830,743 raw records, every stage is logged - label mapping, non-finite removal, physical-range screening, global deduplication, cross-label conflict resolution and class capping - down to a 53,237-flow natural-prior population whose construction rules are fully specified. Scripts, intermediate counts and per-row predictions are released.
+2. **An identifiability analysis of conditional weighting.** Three conditions are derived under which sample-conditional weighting cannot change a hard label regardless of the weights, together with observable criteria (normalised weight entropy, expert disagreement rate, and a margin-versus-perturbation bound). This converts "the gate does not help" from an observation into a testable mechanism.
+3. **A quantitative map separating protocol effects from model effects.** On one experiment set we measure four sources of variation: aggregation (+0.0011), feature view (-0.0009), deduplication order (up to +0.0060), tuning budget (+0.0078) and class prior (+0.072). File-level extrapolation spans 0.33-1.00. Protocol effects are an order of magnitude larger than the aggregation effect the literature usually reports.
+4. **An honest cost account.** Training and inference overhead, probability quality, open-set behaviour and latency percentiles are reported for the conditional mechanism, showing that in the absence of a discriminative gain these costs are not exchangeable.
+
+We explicitly do **not** claim that RCCF is a better classifier, that the results extend to the full CIC-IDS2017 corpus or to production traffic, or that the NSL-KDD and UNSW-NB15 results constitute evidence of cross-dataset transfer.
+
+### 1.5 Organisation
+
+Section 2 reviews related work and states the gap. Section 3 describes data sources, the audit, the two population definitions and the leakage-controlled protocol. Section 4 presents the feature views, the conditional weighting mechanism, the identifiability conditions and the complexity analysis. Section 5 reports results in the order RQ1-RQ4, followed by secondary metrics. Section 6 explains the failure conditions, derives practical guidance and lists validity threats. Section 7 concludes.
+
+---
+
+## 2. Related Work and Positioning
+
+### 2.1 Public datasets and their evaluation hazards
+
+CIC-IDS2017 was released by Sharafaldin et al. in 2018 [14] and contains five days of benign and malicious traffic summarised into 78 flow features by CICFlowMeter. NSL-KDD is a refined version of KDD CUP 99 with five native labels (Normal, DoS, Probe, R2L, U2R). [15] UNSW-NB15, released by Moustafa and Slay in 2015, provides official training and testing files with nine attack categories. [16]
+
+Several structural defects are documented. [17] Class distributions are extremely skewed - in CIC-IDS2017 the Web Attack and Infiltration families are three to five orders of magnitude smaller than BENIGN. Feature tables contain constant columns and collection artefacts. Some attack families were generated by a single tool in a single time window and are therefore highly homogeneous. Training and test partitions may share duplicates. Engelen and Timmerman, and Liu et al., show that preprocessing order and splitting choices alone can materially change reported performance. [18,19] These findings motivate H3: if protocol choices change conclusions, the protocol itself must become a reported and tested object. This position is part of a wider methodological critique of machine learning in security [20,21,24].
+
+### 2.2 Feature selection and leakage
+
+Filter selection is popular in this domain because it is cheap and interpretable. The chi-square statistic measures dependence between a discretised feature and the label [12], mutual information (MI) captures non-linear dependence, and analysis of variance (ANOVA) compares between-class with within-class variance. [13] All three are used here as controls.
+
+The difficulty is that these statistics depend on the label distribution. Fitting a selector before splitting leaks test-label information through the feature ranking. Such leakage is common and hard to detect from a methods paragraph. [20] Our protocol fits every selector inside the training partition and refits it inside each cross-fitting fold, so the selector is subject to the same information boundary as the model.
+
+### 2.3 Ensemble aggregation and adaptive weighting
+
+Breiman's random forest combines bootstrapped trees through equal voting or probability averaging [1,2], justified by variance reduction when tree errors are imperfectly correlated. A natural generalisation replaces equal weights with unequal ones: if the reliability of each tree or expert can be estimated for a given sample, weight accordingly.
+
+Implementations in the literature include validation-accuracy tree weighting, out-of-bag error weighting, meta-learners that predict sample-dependent weights, confidence-based weighting after probability calibration, and uncertainty-driven weighting in deep ensembles. [8-11,29] Such methods typically report gains on specific datasets, but rarely satisfy three conditions simultaneously: (i) all information used for weighting comes from the training and validation partitions; (ii) the equal-weight control uses the same feature view and tuning budget; and (iii) paired significance tests and repeated-split stability are reported. Without these, "weighting helps" cannot be separated from "this particular split helped".
+
+Recent open-set work adds extreme-value theory, prototype learning or autoencoder reconstruction error to construct rejection mechanisms. [25,26,40,41] Such methods optimise two objectives jointly - known-class discrimination and unknown-class rejection - and have a correspondingly different cost structure. We therefore report open-set behaviour as a diagnostic rather than folding it into the main conclusion.
+
+### 2.4 Probability quality, open-set rejection and deployment cost
+
+Hard-label metrics such as accuracy and Macro-F1 say nothing about probability quality. For alert ranking, risk scoring and human-in-the-loop triage, Log Loss, the Brier score and expected calibration error (ECE) matter more. [27] Two models with identical hard labels can differ substantially in calibration, so discriminative and probabilistic metrics must be reported separately. [28,29]
+
+Deployment constraints form an independent axis. A gateway may allow only a few milliseconds per flow, and the classifier-stage latency must be predictable. A design that matches an equal-weight forest on offline Macro-F1 but multiplies inference latency has no exchange value in deployment. We report P50, P95 and P99 single-row latency and distinguish single-thread from library-default threading.
+
+### 2.5 Gap and positioning
+
+The literature therefore contains a specific gap: **conditional ensemble weighting is widely assumed to help, but has not been tested simultaneously for its gain, its identifiability boundary and its cost under strict leakage control.** Existing work either reports a gain without controlling leakage, controls leakage but compares a single model, or reports a negative result without explaining the mechanism.
+
+This paper is therefore positioned as a **protocol and boundary study**. It does not propose a better classifier. It treats conditional weighting as an object of study and delivers (i) its measured gain under control, (ii) the conditions under which it provably cannot act, (iii) the relative magnitude of protocol and model effects, and (iv) a reusable evaluation protocol. Table 1 positions this study against four related families.
+
+**Table 1. Related research families and the positioning of this study**
+
+| Family | Typical task | Fitting boundary of weighting information | Main claim type | Difference from this study |
+|---|---|---|---|---|
+| Classical IDS classifier comparisons | Closed-set multiclass | No weighting | Accuracy on one dataset | Duplicates and prior effects uncontrolled |
+| Filter selection plus forest | Dimensionality reduction plus classification | Selector fitting position often unstated | Lower dimension at equal performance | Selector leakage rarely controlled |
+| Meta-learned or uncertainty-driven weighting | Conditional aggregation | Weight model fitted jointly with predictor | Reported weighting gain | No equal-weight, equal-budget control or paired tests |
+| Open-set and extreme-value rejection | Known plus unknown | Threshold depends on validation data | Unknown-class rejection metrics | Different objective and cost structure |
+| This study | Controlled test of conditional weighting | Cross-fitted risk models, validation calibration, test used for diagnostics only | Gain magnitude, identifiability boundary, protocol sensitivity | Protocol is the primary variable; algorithmic superiority is not claimed |
+
+---
+
+## 3. Data, Provenance and Protocol
+
+![Figure 1. Leakage-controlled research framework and information boundary](figures_en/fig1_protocol_pipeline.png)
+
+### 3.1 Datasets, sources and licensing
+
+Three public datasets are used, all obtained from official or public sources. [14-16] No scanning, probing or live attack traffic was generated at any point. Table 2 records sources, versions, retrieval dates, licence status and file hashes. The datasets are not redistributed; only processing scripts and the code that produces the derived statistics are released.
+
+Licence status deserves an explicit note. The CIC-IDS2017 and UNSW-NB15 release pages do not display a standard SPDX licence identifier, so the datasets are used under the terms of those pages and the original papers are cited. For NSL-KDD a public mirror snapshot was used and no standard licence identifier could be verified. We therefore do not infer any licence and only record provenance and hashes. This is deliberately conservative: where permission cannot be confirmed, the study reports origin rather than asserting redistribution rights.
+
+**Table 2. Dataset sources, versions and integrity records**
+
+| Dataset | Source | Version or snapshot | Retrieval date | Licence status | Integrity |
+|---|---|---|---|---|---|
+| CIC-IDS2017 | Canadian Institute for Cybersecurity, official page | MachineLearningCSV archive (8 CSV files) | 2026-09-02 | No SPDX identifier shown; used under page terms with citation | SHA-256 and MD5 recorded (Table S1) |
+| NSL-KDD | Public GitHub mirror, KDDTrain+ / KDDTest+ | Mirror snapshot, commit not recorded | 2026-09-03 | No standard licence identifier verified; none inferred | SHA-256 recorded for both files |
+| UNSW-NB15 | UNSW Canberra Cyber, official project page | Official training and testing CSV | 2026-09-04 | Page requires citation of the original paper; no SPDX identifier | SHA-256 recorded for both files |
+
+### 3.2 Audit of CIC-IDS2017 and the two populations
+
+The local CIC-IDS2017 archive contains eight CSV files, 2,830,743 raw records and 78 flow features. The audit proceeds in six stages, each of which is counted (Figure 2, Table 3).
+
+**Stage 1, label mapping.** The raw data contains fifteen labels. BENIGN maps to Normal; DDoS and the four DoS families map to DoS/DDoS; FTP-Patator, SSH-Patator and Web Attack Brute Force map to Brute Force; Web Attack XSS and Web Attack Sql Injection map to Web Attack; Bot remains Bot. PortScan, Infiltration and Heartbleed are excluded from the closed-set task and retained as unknown families for open-set diagnostics. Mapping retains 2,671,766 records and excludes 158,977.
+
+**Stage 2, non-finite removal.** Records containing NaN or infinity are dropped. All 2,741 removals are infinite values; there are no NaNs. This leaves 2,669,025 records.
+
+**Stage 3, physical-range screening.** Flow duration, rates, header lengths and segment sizes cannot be negative. Of 2,668,729 records that satisfy this constraint, 296 are removed as physically impossible. The CICFlowMeter sentinel value of -1, documented as "unavailable" for initial-window and undefined inter-arrival fields, is retained because it encodes missingness rather than corruption.
+
+**Stage 4, global deduplication and conflict resolution.** Exact feature vectors are deduplicated across the whole corpus before any split. This finds 239,093 duplicate occurrences; 4,524 of them lie in cross-label conflict groups covering 133 unique feature vectors. Conflicting vectors cannot be retained, because a single input would carry multiple labels, so they are removed before capping.
+
+**Stage 5, class capping.** To keep computation and reproduction auditable, each retained class is capped at 20,000 records, giving 53,237 candidates. Observed class proportions are preserved rather than equalised: Normal 37.57%, DoS/DDoS 37.56%, Brute Force 19.95%, Bot 3.66% and Web Attack 1.26%. We call this the **natural-prior population** P_nat. It is split 70/15/15 into 37,265 / 7,986 / 7,986 records.
+
+**Stage 6, balanced control.** To separate the difficulty caused by class imbalance from the behaviour of the aggregation strategy, a second population P_bal is drawn with 673 records per class, giving 3,365 records split 2,355 / 505 / 505.
+
+**Boundary statement.** P_nat and P_bal are audited, deduplicated, capped research populations. Neither equals the full CIC-IDS2017 corpus, and neither represents production traffic priors. Every conclusion below is restricted to these two populations.
+
+**Table 3. CIC-IDS2017 audit stage counts**
+
+| Stage | Records remaining | Removed at this stage | Note |
+|---|---:|---:|---|
+| Raw archive | 2,830,743 | - | 8 CSV files, 78 flow features |
+| After label mapping | 2,671,766 | 158,977 | Five retained classes; PortScan, Infiltration and Heartbleed reserved for diagnostics |
+| After non-finite removal | 2,669,025 | 2,741 | All infinite; no NaNs |
+| After physical-range screening | 2,668,729 | 296 | Negative duration, rate, length or segment size |
+| After deduplication and conflict resolution | - | 239,093 duplicate occurrences / 133 conflicting vectors | Completed before splitting |
+| After class capping (natural-prior population) | 53,237 | - | 20,000 per class, observed proportions retained |
+| Train / validation / test | 37,265 / 7,986 / 7,986 | - | Stratified 70/15/15 |
+| Balanced control population | 3,365 (673 per class) | - | 2,355 / 505 / 505 |
+
+![Figure 2. CIC-IDS2017 audit chain (log scale)](figures_en/fig2_data_waterfall.png)
+
+### 3.3 NSL-KDD and UNSW-NB15
+
+NSL-KDD uses the official KDDTrain+ and KDDTest+ files with native labels Normal, DoS, Probe, R2L and U2R, and no label remapping. It is therefore an **independent native-label benchmark**, not a transfer experiment. UNSW-NB15 uses the official training and testing CSV files with the ten-class `attack_cat` label; the binary label and identifier columns are dropped, and categorical variables are encoded from the training side only.
+
+The three datasets use incompatible label spaces. Their scores are therefore never pooled, averaged or interpreted as evidence of transfer. Their role is to act as pressure tests: a conclusion that holds only on CIC-IDS2017 should not be written as a general law.
+
+### 3.4 Leakage-controlled protocol
+
+The protocol is organised around one information boundary: **any statistic that depends on labels or on the data distribution may be estimated only from the training or validation partition; test labels are read once, for final evaluation.**
+
+The concrete constraints are as follows.
+
+1. **Corpus-level audit precedes the split.** Global deduplication and cross-label conflict resolution are part of population definition and are completed before splitting, with all counts reported. Their influence is quantified separately in Section 5.4 through a reversed control in which deduplication happens after the split and only on the training side.
+2. **Transforms are fitted on the training side only.** Scalers and chi-square / mutual-information / ANOVA selectors are fitted inside the training partition and stored as part of the pipeline; validation and test partitions are transformed, never fitted.
+3. **Cross-fitted risk models.** The risk models that drive conditional weighting consume out-of-fold probabilities produced by K-fold cross-fitting, with selectors refitted inside each fold. This prevents using the same rows to train an expert and to estimate its reliability.
+4. **Validation is used for calibration only.** Temperature-scaling parameters and Mondrian conformal thresholds are estimated on the validation partition and never see test labels.
+5. **The test partition is locked.** Test labels are read only after models, weights and thresholds are final, and only to compute the reported metrics.
+
+Figure 1 shows the full sequence and the information boundary.
+
+### 3.5 Estimands and statistical procedure
+
+Two estimands are distinguished. The **primary estimand** is test Macro-F1 on the natural-prior population P_nat, averaged over a pre-specified set of random seeds (42, 2024, 3407). **Secondary estimands** are the same metric on the balanced control population P_bal, together with probability quality, selective risk, open-set rejection, perturbation degradation and latency.
+
+The statistical procedure has five components, all applied to paired comparisons on identical test rows: (i) exact McNemar tests for hard-label disagreement [34]; (ii) a seed-level sign-flip test for directional stability [35,36]; (iii) stratified paired bootstrap for interval estimation of Macro-F1 differences [38]; (iv) Holm correction for multiple comparisons [37]; and (v) equivalence testing (TOST), which compares the paired bootstrap 90% interval [39] with a pre-specified **smallest effect size of interest** (SESOI). Component (v) is what allows a statement that a difference is smaller than a given margin, rather than merely failing to reject a null hypothesis of no difference. Every p-value is reported with an effect size, and a small but unstable point estimate is never interpreted as an algorithmic advantage. The equivalence margins were fixed before the primary results were inspected: 0.01 Macro-F1 as the primary margin and 0.005 as a stricter margin. The primary margin corresponds to about 1.1% of the natural-prior Macro-F1 and is taken as the smallest difference that would justify the mechanism's cost in practice.
+
+Macro-F1 is the primary metric because Web Attack accounts for only 1.26% of the natural-prior population, so accuracy is dominated by the majority classes. Class-level reports, balanced accuracy and normalised confusion matrices are reported alongside it.
+
+### 3.6 Validity threats excluded by design
+
+The protocol excludes three threats by construction: **transform leakage** (all transforms are fitted on the training side only), **split leakage** (deduplication precedes splitting and a reversed control is reported), and **unequal tuning budgets** (all baselines share one feature budget and one hyper-parameter search procedure, and Section 5.3 subjects the gate itself to an equivalent search). Threats that the protocol **cannot** exclude are listed in Section 6.5, including the gap between the research populations and production traffic, the absence of a category-complete temporal holdout, and latency measurements that exclude packet capture and feature extraction.
+
+---
+
+## 4. Method
+
+### 4.1 Feature views and base learners
+
+The objects being aggregated are four random-forest experts trained on four **feature views**: all 78 features, and the top k = 60 features selected by chi-square, mutual information and ANOVA respectively. Every selector is fitted on the training side. Base learners are identical apart from the view: 100 trees, `min_samples_leaf = 2`, unbounded depth, fixed random seeds.
+
+Four feature views, rather than four different algorithms, are used deliberately: if the resulting experts are highly correlated, the conditions in Section 4.3 predict that the gate will be inert. The design therefore doubles as a stress test of the mechanism.
+
+External controls are an equal-weight random forest (RF) on each view, extremely randomised trees, XGBoost and a multilayer perceptron (MLP). Tree-ensemble and boosting references are [1-8]. All controls share the feature budget and the seed set.
+
+### 4.2 Sample-conditional weighting
+
+The mechanism under test is RCCF (Risk-Calibrated Conformal Forest). In the released code the implementation is named `cfrg_forest` for historical reasons; the two names refer to the same object.
+
+Let p_e(y|x) be the probability output of expert e in {full, chi2, MI, ANOVA}, with Q = 4 experts. The mechanism has three steps.
+
+**Step 1, reliability descriptors.** K-fold cross-fitting produces out-of-fold probabilities for each expert, from which three descriptors are computed: confidence (the maximum class probability), normalised entropy (predictive uncertainty) and the top-two probability margin. These descriptors use only out-of-fold predictions inside the training partition and never touch validation or test labels.
+
+**Step 2, risk models.** For each expert e a logistic regression r_e(x) is fitted on its out-of-fold probabilities and descriptors. A larger value indicates that the expert is less reliable on similar samples.
+
+**Step 3, conditional weights and calibration.** The fusion weights are
+
+$$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).$$
+
+Fused probabilities are then temperature-scaled on the validation partition [27], and a Mondrian (class-conditional) conformal predictor provides an optional `unknown` output at significance level alpha = 0.1. [30-33] Note that the mechanism changes probabilities first; a hard label changes only if the fused argmax changes. "The probabilities moved" and "the prediction changed" are therefore distinct statements, and Sections 5.2 and 5.3 report them separately.
+
+![Figure 3. Mechanism of conditional weighting and the three identifiability conditions](figures_en/fig3_rccf_mechanism.png)
+
+Algorithm 1 states the full procedure with the information boundary made explicit.
+
+**Algorithm 1. Leakage-controlled RCCF training and inference**
+
+```text
+Input: training matrix X_tr and labels y_tr; validation matrix X_va and labels y_va;
+       feature budget k; forest size T; number of cross-fitting folds K; conformal level alpha.
+
+1. Split (X_tr, y_tr) into K stratified folds.
+2. For each fold and each expert view q in {full, chi2, MI, ANOVA}:
+       fit the scaler and selector on the fold's training rows;
+       fit a T-tree forest;
+       predict the held-out fold and store out-of-fold probabilities and descriptors.
+3. Fit one logistic risk model r_q per view on the complete out-of-fold table.
+4. Refit all four expert forests on all training rows, retaining their scalers and selectors.
+5. Predict X_va with the fused experts; fit temperature scaling and the Mondrian conformal threshold.
+6. For a new sample x:
+       transform x through each expert to obtain p_q(x); estimate r_q(x);
+       compute w_q(x) = exp(-r_q(x)) / sum_j exp(-r_j(x));
+       return the fused probability p(x) = sum_q w_q(x) p_q(x) and the conformal decision.
+Output: calibrated probabilities, class prediction and an optional unknown label.
+```
+
+### 4.3 Identifiability: three conditions under which the gate cannot act
+
+Section 5 reports that gated fusion and equal voting agree on every test row. To show that this is structural rather than an artefact of the implementation, we state three conditions. None depends on a particular dataset; each follows from the fusion form itself.
+
+**Condition 1 (convex invariance).** Suppose all experts return the same posterior, p_e(y|x) = p(y|x) for every e. Then for any weights with w_e >= 0 and sum_e w_e = 1, the fused probability equals p(y|x) and the argmax is unchanged.
+
+*Proof.* Summing w_e p_e with sum_e w_e = 1 and p_e identical gives (sum_e w_e) p = p, so the convex combination leaves the probability vector unchanged and the argmax is invariant.
+
+This is the degenerate case. Real experts are not identical, so a weaker condition is required.
+
+**Condition 2 (margin dominance).** Let the equal-weight fused probability be p_bar(x) = (1/Q) sum_e p_e(y|x) and the gated fused probability be p_w(x) = sum_e w_e(x) p_e(y|x), with w(x) a probability vector. Because every expert posterior lies on the simplex (||p_e||_1 = 1),
+
+$$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ =:\ \Delta(x).$$
+
+Let m(x) be the difference between the top-1 and top-2 entries of the equal-weight fused probability. If 2 Delta(x) < m(x), then p_w and p_bar have the same argmax, so no choice of weights can change the hard label of that row. The criterion is evaluated row by row, which makes Condition 2 checkable rather than existential.
+
+**Condition 3 (weight collapse).** If the risk models return approximately equal values, r_e(x) approximately c(x) for all e, then w_e(x) approximately 1/Q and conditional weighting degenerates to equal averaging. The observable criterion is the normalised weight entropy
+
+$$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x),$$
+
+which approaches 1 in that limit.
+
+Together the conditions yield a falsifiable prediction: on data where experts are highly correlated and the risk models are nearly constant, the hard-label gain of conditional weighting should be zero or near zero, the weight entropy should approach 1, and the expert disagreement rate should approach 0. Section 5.3 tests this prediction directly.
+
+### 4.4 Complexity
+
+Let n be the number of training rows, d the original feature count, k the selected feature count, T the number of trees, K the number of cross-fitting folds and Q = 4 the number of experts. The dominant cost of the cross-fitting stage is approximately O(QK T n log n), the final refit stage costs O(QT n log n), and filter selection contributes O(Q n d). Inference requires one tree traversal per expert plus the risk models, about O(QT log n) per row. RCCF is therefore substantially more expensive than a single equal-weight forest at both ends, and Section 5.6 quantifies that cost. All experiments ran on a single workstation with 8 physical cores (16 logical), 35.8 GB of RAM and Windows 10 (build 10.0.26200), using Python 3.11.4, scikit-learn 1.9.0, XGBoost 3.2.0, NumPy 2.4.6, pandas 3.0.5 and Matplotlib 3.11.1. The reported timings are single-machine measurements and are not portability claims. The software stack is documented in [42-45].
+
+### 4.5 Controls and ablations
+
+Five control groups are used, all under the same protocol.
+
+1. **Equal-weight control.** Same feature view, tree count and seed as the gated model. This is the direct test of H2.
+2. **Feature-view control.** Equal-weight forests across full, chi-square, mutual-information and ANOVA views, answering RQ1.
+3. **Tree-level weighting ablation.** Weights derived from single-tree validation accuracy, which are sample-independent, to separate sample-conditional from sample-independent weighting.
+4. **Protocol controls.** Deduplication after the split with training-side-only deduplication, and the two population definitions, answering RQ3.
+5. **Strong baselines under an equal budget.** Random forest, extremely randomised trees and XGBoost under a 5x3 nested cross-validation with a model-specific tuning procedure, so that "the control was not tuned" cannot explain the result. The gate itself is subjected to an equivalent hyper-parameter search in Section 5.3.
+
+---
+
+## 5. Results
+
+The chapter follows RQ1 to RQ4. Section 5.1 answers the feature-selection question, Sections 5.2 and 5.3 together answer the weighting question, Section 5.4 addresses protocol robustness, Section 5.5 addresses external validity, and Section 5.6 reports calibration, robustness, latency and open-set behaviour.
+
+### 5.1 RQ1: Training-side feature selection preserves discriminative power
+
+The feature-quality audit shows that 12 of the 78 CIC-IDS2017 features are constant (a single value across all rows) and 18 are near-zero-variance. The constant columns include Bwd PSH Flags, Fwd URG Flags, Bwd URG Flags, RST Flag Count, CWE Flag Count, ECE Flag Count and six bulk-rate fields. H1's premise of redundancy is therefore correct in itself.
+
+The chi-square budget k was fixed at 60 on the validation partition from a pre-specified candidate set: validation Macro-F1 was 0.9175 at k = 10, 0.9314 at k = 20, 0.9379 at both k = 30 and k = 40, and 0.9413 at k = 60, flattening between k = 30 and k = 40. This search was carried out on the balanced control protocol; the selected k was then frozen for every final run.
+
+With k = 60 fixed, the chi-square and full-feature views compare as follows.
+
+| Protocol | Equal RF, full features | Equal RF, chi-square | Difference |
+|---|---:|---:|---:|
+| Natural-prior population (three seeds) | 0.887960 | 0.888870 | **+0.00091** |
+| Balanced control population (three seeds) | 0.960997 | 0.963215 | **+0.00222** |
+| Ten repeated splits (mean +/- s.d.) | 0.957028 +/- 0.010481 | 0.957177 +/- 0.011111 | +0.000148 (sign-flip p = 0.969) |
+
+All three protocols agree: **reducing dimensionality from 78 to 60 costs no discriminative power**, and in two protocols it produces a small positive difference. Under ten repeated splits that difference (+0.00015) is nevertheless two orders of magnitude smaller than the split-to-split standard deviation (about 0.011). The correct answer to RQ1 is therefore that dimensionality can be reduced, but that dimensionality reduction should not be claimed as a performance gain. The value of the chi-square view lies in interpretability and inference cost, not in accuracy.
+
+### 5.2 RQ2: Conditional weighting does not beat equal voting
+
+Table 4 gives the main results on both populations, averaged over the three fixed seeds.
+
+**Table 4. Main results on the two populations (mean of three seeds)**
+
+(a) Natural-prior population P_nat, 7,986 test rows
+
+| Model | Accuracy | Balanced accuracy | Macro-F1 | Log Loss | Brier | ECE | Train (s) | Predict (s) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| RCCF | 0.97792 | 0.94920 | **0.889955** | **0.05148** | **0.006312** | 0.006605 | 61.00 | 0.173 |
+| Equal RF (chi-square, k = 60) | 0.97759 | 0.94948 | 0.888870 | 0.05283 | 0.006334 | **0.004442** | 0.784 | 0.0295 |
+| Equal RF (full features) | 0.97696 | 0.95085 | 0.887960 | 0.05424 | 0.006624 | 0.005126 | 0.816 | 0.0367 |
+| ExtraTrees (chi-square) | 0.96369 | **0.96173** | 0.857713 | 0.08903 | 0.010849 | 0.015791 | 0.442 | 0.0368 |
+| MLP (128 hidden units, k = 60) | 0.97679 | 0.79666 | 0.797654 | 0.06256 | 0.036701 | 0.009705 | 21.88 | 0.0079 |
+
+(b) Balanced control population P_bal, 505 test rows
+
+| Model | Accuracy | Balanced accuracy | Macro-F1 | Log Loss | Brier | ECE | Train (s) | Predict (s) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| RCCF | 0.96172 | 0.96172 | 0.961807 | 0.12410 | 0.012751 | **0.024483** | 9.130 | 0.119 |
+| Equal RF (chi-square) | 0.96304 | 0.96304 | **0.963215** | 0.13569 | 0.013453 | 0.026132 | 0.451 | 0.0284 |
+| Equal RF (full features) | 0.96106 | 0.96106 | 0.960997 | **0.12237** | **0.012542** | 0.025232 | 0.299 | 0.0283 |
+| ExtraTrees (chi-square) | 0.96106 | 0.96106 | 0.960947 | 0.15179 | 0.014300 | 0.036976 | 0.494 | 0.0296 |
+| XGBoost (independently tuned, validation-selected) | 0.96304 | 0.96304 | **0.963241** | 0.10375 | 0.011468 | 0.011126 | 0.398 | 0.0023 |
+
+Five readings follow.
+
+**First, the headline result is a near-zero difference.** On the natural-prior population RCCF reaches 0.889955 Macro-F1 against 0.888870 for the equal-weight chi-square forest, a mean difference of **+0.001085**. On the balanced control RCCF reaches 0.961807 against 0.963215, i.e. it trails by **-0.001408**. The signs are opposite across the two populations and both magnitudes are on the order of one thousandth. One baseline is stronger on a different metric: extremely randomised trees obtain the highest balanced accuracy on this population (0.96173 against 0.94920 for RCCF) while obtaining the lowest Macro-F1 (0.857713), because they spread predictions more evenly across rare classes.
+
+![Figure 4. Main results and paired bootstrap intervals](figures_en/fig4_main_results.png)
+
+Note that the left panel of Figure 4 starts at 0.75 in order to display differences of one thousandth; the right panel shows that those differences are statistically indistinguishable. The two panels must be read together, not by bar height alone.
+
+**Second, the paired statistics give a definite equivalence boundary.** The three seed-level differences are -0.00149, +0.00314 and +0.00160. A paired bootstrap that resamples test rows gives a pooled 90% interval of [-0.00290, +0.00550], which lies entirely inside a pre-specified equivalence margin of SESOI = 0.01 Macro-F1; equivalence can therefore be asserted at alpha = 0.05. The same interval does **not** fit inside SESOI = 0.005, because its upper bound of 0.0055 exceeds that margin. Per-seed exact McNemar tests give p = 0.508, 0.092 and 0.344, and pooling all 23,958 test rows gives p = 0.215. None is significant. Under the pre-declared decision rule - the difference must be stable, consistent in sign and bounded away from zero - **H2 is not supported**.
+
+**Table 5. Paired tests on the natural-prior population (RCCF minus equal-weight chi-square forest)**
+
+| Seed | Macro-F1 difference | Paired bootstrap 90% interval | Inside +/- 0.01? | Exact McNemar p |
+|---|---:|---|---:|---:|
+| 42 | -0.001490 | [-0.003823, +0.000580] | Yes | 0.508 |
+| 2024 | +0.003142 | [-0.000366, +0.006950] | Yes | 0.092 |
+| 3407 | +0.001602 | [-0.000142, +0.003605] | Yes | 0.344 |
+| Pooled (23,958 rows) | +0.001085 | [-0.002898, +0.005501] | Yes at 0.01 / No at 0.005 | 0.215 |
+| Control: versus equal RF (all features) | +0.001995 | - | - | **0.00061 (RCCF better)** |
+
+**Third, against the full-feature forest the difference is significant, but no larger than a feature-view choice.** Compared with an equal-weight full-feature forest, RCCF gains 0.001995 Macro-F1; pooling 23,958 test rows gives an exact McNemar p = 0.00061, with RCCF winning 33 rows and losing 10. The gate therefore does produce a small, directionally consistent advantage, but its magnitude is in the same band as simply swapping the feature view from chi-square to full features (+0.0009 to +0.0022). Combined with a 5.9-fold inference cost, that advantage has no engineering exchange value.
+
+**Fourth, the cost is certain while the gain is not.** On the natural-prior protocol RCCF takes 61.0 s to train against 0.78 s for the equal-weight forest, and 0.173 s to predict against 0.0295 s on a whole test batch, about 5.9 times slower. The two ratios measure different quantities and must not be conflated: 5.9 is the batch prediction-time ratio, whereas the single-row P50 latency ratio reported in Section 5.6 is 4.9 (14.62 ms against 2.96 ms). The gap widens on the balanced control: 9.13 s against 0.45 s. The most favourable summary of what these costs buy is that Macro-F1 moves within +/- 0.01.
+
+**Fifth, a neural baseline shows how badly accuracy can mislead.** A multilayer perceptron given the same feature budget and a full training budget (128 hidden units, hyper-parameters selected on the validation partition) reaches 0.97679 accuracy, essentially the same as RCCF's 0.97792, but only 0.797654 Macro-F1, 0.092 below RCCF. Its balanced accuracy is 0.79666 against 0.94920, and its Brier score is 0.036701 against 0.006312. Notably, a paired McNemar test on overall correctness is not significant (pooled p = 0.383 over 23,958 rows; per-seed 1.000 / 0.768 / 0.261), because the two models make a similar **number** of errors and differ in **which classes** those errors fall on. This yields two methodological consequences: on imbalanced intrusion-detection benchmarks, accuracy can conceal a Macro-F1 gap of nearly 0.1; and McNemar's test is insensitive to the class distribution of errors, so it cannot stand alone and must be reported alongside class-level metrics.
+
+### 5.3 Mechanism diagnostics: why the gate changes nothing, and when it can
+
+The conditions in Section 4.3 make falsifiable predictions. This section tests them with six independent measurements.
+
+![Figure 5. Gate diagnostics: weight distribution, weight entropy and expert disagreement](figures_en/fig5_gate_diagnostics.png)
+
+**Measurement 1: do the weights collapse to uniform?** In the tree-level weighting experiment over 100 trees, the standard deviation of single-tree validation scores is only 0.01143, giving a weight coefficient of variation of **0.01262**, and the normalised weight entropy reaches **0.99998** against a maximum of 1. The weights are therefore essentially uniform and conditional weighting degenerates numerically to equal averaging, as Condition 3 predicts.
+
+**Measurement 2: do the probabilities change materially?** The mean L1 change of the fused probability before and after weighting is 0.000299 and the maximum is 0.003473. The weights do move probability mass, but by very little.
+
+**Measurement 3: do the hard labels change?** Across the 505 balanced-control test rows, the number of predictions on which weighted and equal voting disagree is **0**. This matches the joint prediction of Conditions 1 and 2: highly correlated experts produce margins large enough that weight differences occur far from the decision boundary and never move the argmax.
+
+**Measurement 4: the margin bound proves invariance.** Using the explicit bound from Condition 2, we computed the margin m(x) and the perturbation bound Delta(x) for each of the 23,958 test rows. The number of rows whose label actually changes is **0**. The share of rows satisfying 2 Delta(x) < m(x), and therefore provably immune to the weighting, is **99.91%** under the a priori bound and **99.996%** under the realised perturbation. The median margin is 1.0 while the median perturbation bound is only **0.000231**, a ratio whose median ranges from **3,469 to 5,038** across seeds. In other words, fused probabilities are close to one-hot and the weight-induced probability movement is three orders of magnitude smaller than the decision margin.
+
+![Figure 6. Distribution of decision margins and perturbation bounds, and the provable invariance rate under Condition 2](figures_en/fig11_margin_bound.png)
+
+**Measurement 5: the result is not caused by insufficient tuning.** We searched the gate's entire hyper-parameter space inside the training partition: regularisation strength C in {0.01, 0.1, 1, 10}, cross-fitting folds in {3, 5, 10} and descriptor sets in {all, entropy only, margin only}, giving 108 configurations over three random seeds. **These 108 configurations produce only six distinct validation Macro-F1 values, with a total range of 0.00117.** Relative to equal voting, all configurations together produce just 65 disagreements out of 862,488 row-level predictions, or 0.0075%. This excludes the alternative explanation that the mechanism was under-tuned. The strongest form of this check is test-side: the configuration selected on validation (three folds, C = 1.0, margin descriptors) was then evaluated once on the locked test partition and produced **bit-identical predictions** to the default configuration on all three seeds - 0 of 23,958 rows changed and identical Macro-F1 to six decimal places. We also note that at least eleven configurations share the same validation mean to ten decimal places, so the optimum is a tie rather than a unique point.
+
+**Measurement 6: the gain is governed by expert diversity, not by the implementation.** If the gate were inert merely because the four experts in this study are too similar, then deliberately constructing more dispersed experts should restore the gain. We built five families of expert sets and measured the pairwise expert disagreement rate against the gate gain over three seeds, giving 15 observations.
+
+**Table 6. Expert diversity, weight structure and gate gain (mean of three seeds)**
+
+| Expert set | Pairwise disagreement | Mean confidence correlation | Normalised weight entropy | Gate gain (Macro-F1) | Rows changed |
+|---|---:|---:|---:|---:|---:|
+| Same view, different seeds | 0.20% | 0.978 | 0.99995 | 0.00000 | 0 |
+| Four views, k = 60 | 0.36% | 0.967 | 0.99995 | 0.00000 | 0 |
+| Four views, k = 20 | 1.76% | 0.791 | 0.99905 | +0.00271 | 9.3 |
+| Heterogeneous families (RF / ExtraTrees / XGBoost / kNN) | 2.81% | 0.493 | 0.99842 | +0.00332 | 11.7 |
+| Disjoint feature blocks | 6.44% | 0.506 | 0.99548 | +0.00401 | 33.7 |
+
+![Figure 7. Dose-response between expert diversity and gate gain](figures_en/fig10_diversity_dose_response.png)
+
+The relationship between disagreement and gain is monotone and dose-dependent: a linear regression over the 15 observations gives a slope of 0.0646 with Pearson r = 0.749. The two low-diversity expert sets (0.20% and 0.36%) gain **exactly zero** in all six runs and change no predictions, whereas the three decorrelated sets (1.76% to 6.44%) gain **positively in all nine runs**, changing between 9 and 36 rows. This yields the most important mechanistic conclusion of the study: **the gain of conditional weighting is governed by expert diversity; on flow-feature data, "multi-view" experts built from different filter selectors disagree on only 0.2%-0.4% of samples, so the gate is structurally incapable of producing a gain.** When disagreement is raised to 3%-6% the gate does begin to change predictions and yields a small positive gain, but that gain (+0.003 to +0.004 Macro-F1) remains below the split-to-split variation (standard deviation about 0.011).
+
+### 5.4 RQ3: Protocol effects exceed model effects by an order of magnitude
+
+This section places four sources of protocol variation side by side (Figure 8).
+
+![Figure 8. Protocol sensitivity: deduplication order, class priors and repeated splits](figures_en/fig6_protocol_sensitivity.png)
+
+**(1) Deduplication order.** Replacing "deduplicate the whole corpus before splitting" with "split first, deduplicate on the training side only" gives Macro-F1 values of 0.958503, 0.950446 and 0.962318 across the three seeds, against 0.952545, 0.952171 and 0.962330 for the control. The means are 0.957089 and 0.955682, a difference of **+0.00141**, with a maximum single-seed difference of **+0.0060**. Deduplication order therefore does change results, but by less than the class prior does.
+
+**(2) Class prior.** The same RCCF mechanism reaches 0.961807 Macro-F1 on the balanced control population and 0.889955 on the natural-prior population, a difference of **+0.0719**. This is the largest single protocol effect observed in the study and an order of magnitude larger than any model-to-model difference (at most +0.0078). The mechanism is straightforward: Web Attack accounts for only 1.26% of the natural-prior population and its F1 sits near 0.53, which directly suppresses the macro average.
+
+**(3) Repeated splits.** Across ten random stratified splits, the Macro-F1 difference between the chi-square and full-feature equal forests is +0.000148 with a sign-flip p = 0.969, while the split-to-split standard deviation for both models is about 0.011 - two orders of magnitude larger. **Changing the split perturbs the result far more than changing the feature view does.**
+
+**(4) Tuning budget.** Under a 5x3 nested cross-validation with an identical model-specific tuning procedure, XGBoost reaches 0.962177, random forest 0.954423 and extremely randomised trees 0.947964. XGBoost's mean advantage over random forest is **+0.007755** with a bootstrap interval of [0.004424, 0.010549] that excludes zero (permutation p = 0.0625), while extremely randomised trees trail by -0.006459 with an interval of [-0.012391, -0.002263]. This is the only directionally stable model-to-model difference observed under an equal budget in this study.
+
+Placing the five magnitudes side by side: aggregation +0.0011, feature view +0.0009, deduplication order +0.0014 (maximum 0.0060), tuning budget +0.0078 and class prior +0.0719. **H3 is falsified: protocols are not interchangeable, and protocol effects outweigh model effects.**
+
+### 5.5 RQ4: External validity and file-level extrapolation
+
+![Figure 9. Class-level F1 on the independent native-label benchmarks](figures_en/fig7_external_class_f1.png)
+
+**NSL-KDD.** Averaged over three seeds, RCCF reaches 0.747960 accuracy, 0.492837 balanced accuracy and 0.514697 Macro-F1, with a Log Loss of 1.6802, ECE of 0.4819 and coverage of 0.6198. The coverage figure means that roughly 38% of samples are rejected as `unknown`, which is the direct source of the high Log Loss and ECE. At class level (seed 42) R2L recall is 0.106 with an F1 of 0.191, and U2R recall is 0.035 with an F1 of 0.064; the two minority families are essentially undetected.
+
+**UNSW-NB15.** Averaged over three seeds, RCCF reaches 0.715340 accuracy, 0.566753 balanced accuracy and 0.493310 Macro-F1, with a Log Loss of 0.649577, ECE of 0.073441 and coverage of 0.8957. At class level (seed 42) Analysis has an F1 of 0.015, Backdoor 0.067 and DoS 0.261, while Generic reaches 0.981 and Normal 0.805. Aggregate accuracy is dominated by the majority classes, which is precisely why Macro-F1 is the primary metric here.
+
+**File-level extrapolation.** Under a cross-file stress test in which the model is trained on the remaining files and tested on a target file, Macro-F1 ranges from **0.3325 to 0.9997**: Wednesday (DoS/DDoS) 0.3325, Thursday Morning (Web Attack) 0.4314, Friday Afternoon (DDoS) 0.4949 and Tuesday 0.5229, against Monday 0.9975, Thursday Afternoon 0.9975, Friday Morning 0.9997 and Friday Afternoon PortScan 0.9945. The span approaches 0.67. **The same model is therefore not stably transferable even between files of a single dataset**, so file-level experiments cannot be described as successful temporal generalisation; they support coverage and risk analysis only.
+
+Together the three experiments give a negative answer to RQ4: the conclusions of this study do not extend beyond the CIC-IDS2017 research populations, and within CIC-IDS2017 there is no single extrapolable distribution. This both reinforces the falsification of H3 and shows that "multi-dataset validation" must be kept strictly distinct from "cross-dataset transfer".
+
+### 5.6 Secondary metrics: calibration, robustness, latency and open-set behaviour
+
+![Figure 10. Probability calibration and robustness under shared perturbations](figures_en/fig8_calibration_robustness.png)
+
+**Probability calibration.** On the natural-prior population RCCF's Log Loss (0.05148) and Brier score (0.006312) are better than the equal-weight forest's (0.05283 and 0.006334), but its ECE is worse (0.006605 against 0.004442). Temperature scaling reduces the ECE of the conditional branch from about 0.0238 to about 0.0119 on the balanced control protocol, while the equal forest's temperature parameter is optimised to 1.0 and its calibration metrics are unchanged. The conclusion is that identical hard labels do not imply identical probability quality, and that the direction of improvement depends on which probabilistic metric is chosen - so no single favourable metric should be reported alone.
+
+**Robustness.** Under identical perturbation masks, 1% Gaussian noise reduces RCCF's Macro-F1 by 43.30% in relative terms against 42.64% for the equal-weight chi-square forest, and 5% feature masking reduces it by 1.23% against 1.27%. The two models are therefore comparable in robustness, and neither tolerates continuous noise at the 1% level. Extremely randomised trees, however, are markedly more robust to the same perturbation: their relative drop is 11.57%, roughly a quarter of the conditional branch's 43.30% (Figure 10b). The correct reading is not that the conditional gate improves robustness - it does not - but that a different baseline family does, and that this difference exceeds any difference the gate produces between the two forest variants.
+
+![Figure 11. Single-row inference latency](figures_en/fig9_latency.png)
+
+**Latency.** For single-row inference on one thread, RCCF's P50/P95/P99 latencies are 14.62/15.77/16.12 ms against 2.96/3.61/4.18 ms for the equal-weight chi-square forest. Switching to the library-default threading raises RCCF to 69.93/75.11/76.22 ms and the equal forest to 16.69/18.24/18.47 ms; small single-row calls cannot exploit multiple threads and instead pay scheduling overhead. These figures cover the **classifier stage only** and exclude packet capture, flow construction and feature extraction.
+
+**Open-set behaviour.** With PortScan, Infiltration and Heartbleed held out as unknown families, the conditional branch reaches an area under the ROC curve (AUROC) of 0.643 to 0.694 with an unknown-class recall of 0.0015 to 0.0088, whereas the equal-weight forest reaches an AUROC of 0.919 to 0.940 with a recall of 0.057 to 0.128. The risk gate therefore **reduces** the separability of known from unknown traffic: it pushes probability mass towards confident regions and discards the uncertainty signal that rejection depends on. This is the least favourable evidence in the study for the conditional mechanism, and it indicates that binding risk calibration and open-set rejection into a single gate is ill-advised.
+
+---
+
+## 6. Discussion
+
+### 6.1 Three failure conditions for conditional weighting
+
+The conditions of Section 4.3 and the measurements of Section 5.3 together characterise three failure modes. They are not mutually exclusive but form a hierarchy from strongest to weakest.
+
+**Condition A: identical expert output.** When forests trained on different feature views return the same posterior for a given input, no convex weighting can change the output (Condition 1). In flow-feature settings this is more common than intuition suggests: the top-60 features selected by chi-square, mutual information and ANOVA overlap heavily, and 12 of the extra columns in the full view are constant. Measurement 6 quantifies the boundary: when pairwise disagreement is 0.20%-0.36%, the gate gains exactly zero in six of six runs; only when disagreement rises to 3%-6% does the gain become consistently positive. Condition A is therefore not the idealised case of "identical experts" but a loose condition that real flow-feature data satisfies easily.
+
+**Condition B: margin dominance.** Even when experts differ, the hard label remains unchanged as long as the smallest margin exceeds the probability movement that the weights can cause (Condition 2). The measured mean L1 probability change is 0.000299 with a maximum of 0.003473, while the median decision margin is 1.0 - a ratio of roughly 3,500. Measurement 4 formalises this: 99.91% of rows are provably immune under the a priori bound.
+
+**Condition C: risk-output collapse.** When the risk models return nearly equal values across experts, the weights degenerate to uniform (Condition 3) and the mechanism becomes numerically equivalent to equal averaging. The measured normalised weight entropy is 0.99998, squarely inside this regime.
+
+The three conditions yield an operational diagnostic sequence: **first measure the weight entropy, then the prediction-disagreement rate, and only then look at the performance difference.** If entropy is close to 1 and the disagreement count is 0, further tuning of the gate will not help, because the problem does not lie in the gate.
+
+### 6.2 Interpreting reported weighting gains
+
+Our results do not imply that every published weighting method is wrong. They impose an **attribution constraint**: without controlling duplicates, transform leakage, class priors and tuning budgets, an observed "weighting gain" has at least four competing explanations [18-20], each of which has a measured magnitude in this study.
+
+1. **Split noise.** The split-to-split standard deviation over ten repetitions is about 0.011, enough to mask every model-to-model difference observed here (at most 0.0078).
+2. **Protocol choice.** Changing the class prior from balanced to natural moves Macro-F1 by +0.0719, and reversing the deduplication order moves it by up to +0.0060.
+3. **Unequal tuning budgets.** Under a 5x3 nested cross-validation, an equally tuned XGBoost exceeds random forest by 0.0078 - more than most reported "improvements".
+4. **Metric selection.** Here RCCF has a better Log Loss but a worse ECE than the equal-weight forest; reporting either metric alone supports the opposite conclusion.
+
+The contribution to the literature is therefore a threshold rather than a refutation: **any claim that an aggregation strategy helps should survive control of these four factors, otherwise it should be described as a protocol effect.**
+
+### 6.3 Practical decision matrix
+
+Table 7 converts the evidence of this study into engineering guidance. Each recommendation carries an explicit cost; no option dominates across all objectives.
+
+**Table 7. Decision matrix for practical objectives**
+
+| Objective | Recommended option | Evidence | Cost |
+|---|---|---|---|
+| Maximise balanced discriminative performance | XGBoost or a tuned equal forest under an equal budget | 5x3 nested cross-validation (CV): XGBoost minus random forest = +0.0078, interval excludes zero | Requires a tuning budget and longer training |
+| Minimise inference latency | Equal-weight chi-square forest | P50 2.96 ms against 14.62 ms for the conditional branch | Forgoes probability re-weighting |
+| Best probability quality | Conditional weighting plus temperature scaling, reporting Log Loss and ECE together | Log Loss 0.0515 against 0.0528, but ECE is worse | About 5x inference cost; metrics disagree |
+| Unknown-attack rejection | Equal-weight forest with an independent conformal threshold | AUROC 0.92-0.94 against 0.64-0.69 | Higher false-rejection rate on known classes; the operating point must be recalibrated |
+| Cross-file or cross-scenario evaluation | Avoid single-file training; report a file-by-label coverage matrix | File-level Macro-F1 spans 0.3325-0.9997 | Additional data-coverage auditing effort |
+| Reproducibility of results | Adopt this protocol and release per-row predictions | All aggregate metrics can be recomputed from released probabilities | Extra storage and version management |
+
+### 6.4 Reporting recommendations for intrusion-detection evaluation
+
+Based on the measurements above, we recommend that studies on public intrusion-detection datasets report at least the following eight items. They concern the minimum requirement that a conclusion be reproducible by others, not additional methodological sophistication.
+
+1. **A raw-to-final counting chain**: records remaining and removed at each processing stage, from the raw archive to the final research population.
+2. **Deduplication position and conflict rules**: whether deduplication precedes or follows the split, and how identical feature vectors with different labels are handled.
+3. **Fitting boundaries for every transform**: which partition fits the scaler, the feature selector, any resampler and the hyper-parameter search.
+4. **A clear separation of research population and target population**: how the study subset was constructed and how it differs from the full corpus and from production priors.
+5. **An explicitly designated primary metric**: under class imbalance, state in advance whether Macro-F1 or balanced accuracy is primary, with accuracy reported only as a reference.
+6. **Paired statistics and effect sizes**: at minimum a paired difference, an interval estimate and a multiple-comparison correction; a single point estimate is not evidence.
+7. **Secondary costs reported separately**: probability quality, open-set behaviour, robustness and latency should be reported independently and never merged into a single composite score.
+8. **Release of per-row predictions**: publishing the prediction and probability for every test row lets third parties recompute every aggregate.
+
+### 6.5 Limitations and validity threats
+
+The conclusions are bounded as follows, and these bounds should be cited alongside them.
+
+**The research populations are not production traffic.** The natural-prior population results from global deduplication, physical-range screening and a 20,000-per-class cap, giving 53,237 records; the balanced control contains only 3,365 records. Neither equals the full CIC-IDS2017 corpus, and neither represents real network priors. Every number in this paper is conditioned on these two populations.
+
+**File-level experiments are not temporal holdouts.** The files of CIC-IDS2017 cover different class sets, so a category-complete temporal protocol cannot be constructed from them. The file-level results support coverage and risk analysis only and must not be described as cross-time generalisation.
+
+**External datasets are independent benchmarks, not transfer experiments.** NSL-KDD, UNSW-NB15 and CIC-IDS2017 use incompatible label spaces. We do not align labels or train across datasets, and the three sets of scores must not be pooled or averaged.
+
+**Latency measurements exclude the end-to-end path.** The reported milliseconds start from a numerical feature matrix and exclude packet capture, flow reassembly, feature extraction, alert transport and model hot-swapping.
+
+**Unknown-family support is uneven.** PortScan contributes 158,930 records while Infiltration contributes 36 and Heartbleed 11. Open-set metrics are highly sensitive to which family is held out, so only per-family results are reported and no pooled open-set conclusion is drawn.
+
+**Bootstrap intervals have a limited interpretation.** The paired bootstrap quantifies test-row resampling uncertainty only; it does not capture changes in network environment, temporal drift or traffic composition.
+
+**Single hardware platform and single implementation.** Latency depends on hardware, the BLAS backend and thread settings. The environment is fixed and recorded, but no cross-platform portability is claimed.
+
+---
+
+## 7. Conclusion
+
+This study tested the widely adopted assumption that sample-conditional ensemble weighting is better than equal voting, under a strict leakage-controlled protocol. Three conclusions follow.
+
+**First, relative to the most direct equal-weight control the gain lies inside an equivalence boundary.** On the natural-prior population of CIC-IDS2017, the Macro-F1 difference between conditional weighting and an equal-weight chi-square forest is +0.0011 with a pooled 90% interval of [-0.00290, +0.00550], which is equivalent within a pre-specified margin of 0.01 Macro-F1 but not within 0.005; per-seed McNemar tests are non-significant. The four experts disagree on no test row, and the normalised weight entropy is 0.99998. The cost is a 78-fold increase in training time and a 5.9-fold increase in inference time. Against a full-feature equal forest the gate is significantly better (p = 0.00061), but the magnitude matches that of a feature-view change.
+
+**Second, the failure is explainable and quantified.** Three identifiability conditions are derived and one of them is turned into a row-wise computable bound, under which 99.91% of 23,958 test rows are provably invariant to the weighting, with a decision margin 3,469 to 5,038 times the perturbation bound. A search over all 108 gate hyper-parameter configurations yields only six distinct validation scores, excluding insufficient tuning. A reverse experiment shows that the gain is governed by expert diversity: two low-diversity expert sets gain exactly zero in all six runs, whereas three decorrelated sets gain positively in all nine runs (slope 0.0646, Pearson r = 0.749). The inertness of conditional weighting is therefore not an implementation or tuning artefact but a direct consequence of filter-based multi-view experts being too similar on this kind of data.
+
+**Third, protocol effects dominate model effects.** Within one experiment set, a change of class prior moves Macro-F1 by +0.0719 and a reversal of deduplication order by up to +0.0060, whereas the aggregation strategy moves it by +0.0011. Under a file-level stress test the same model spans 0.3325 to 0.9997. On public intrusion-detection benchmarks, **what protocol is reported therefore determines the conclusion more than which model is used.**
+
+The principal contribution is not a new state-of-the-art classifier but a reusable leakage-controlled protocol, a set of falsifiable identifiability boundaries, and a quantitative map that separates protocol effects from model effects. Three directions follow. First, design weighting mechanisms that explicitly enforce expert decorrelation, and test whether the gain is restored once the premise of Condition 1 is broken. Second, construct category-complete temporal or cross-scenario protocols so that file-level coverage analysis can be upgraded into a genuine external-validity test. Third, turn the reporting recommendations of Section 6.4 into an automatically checkable checklist, so that the evaluation protocol itself becomes a verifiable object. The recommendations extend those of [20].
+
+---
+
+## Data and code availability
+
+Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.0.2). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
+
+## Funding
+
+To be completed by the author. If the work received no support of any kind, this should be stated explicitly.
+
+## Declaration of competing interest
+
+To be completed by the author. If no competing interests exist, this should be stated explicitly.
+
+## Declaration of generative AI and AI-assisted technologies
+
+Generative AI tools were used for language editing and software drafting. The author is responsible for verifying the code, data, citations and all conclusions, and has checked each reported number against the released artefacts.
+
+## CRediT authorship contribution statement
+
+To be completed by the author according to actual contributions: conceptualisation, methodology, software, validation, formal analysis, data curation, writing - original draft, writing - review and editing, visualisation.
+
+---
+
+## References
+
+Note: entries marked [DOI to verify] must be checked against Crossref or the publisher page before submission.
+
+1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
+2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.
+3. Geurts P, Ernst D, Wehenkel L. Extremely randomized trees. Machine Learning, 2006, 63(1): 3-42. DOI:10.1007/s10994-006-6226-1.
+4. Chen T, Guestrin C. XGBoost: A scalable tree boosting system. KDD 2016: 785-794. DOI:10.1145/2939672.2939785.
+5. Ke G, Meng Q, Finley T, et al. LightGBM: A highly efficient gradient boosting decision tree. NeurIPS 2017: 3146-3154. [DOI to verify]
+6. Freund Y, Schapire R E. A decision-theoretic generalization of on-line learning and an application to boosting. Journal of Computer and System Sciences, 1997, 55(1): 119-139. DOI:10.1006/jcss.1997.1504.
+7. Friedman J H. Greedy function approximation: A gradient boosting machine. The Annals of Statistics, 2001, 29(5): 1189-1232. DOI:10.1214/aos/1013203451.
+8. Dietterich T G. Ensemble methods in machine learning. MCS 2000: 1-15. DOI:10.1007/3-540-45014-9_1.
+9. Kuncheva L I. Combining Pattern Classifiers: Methods and Algorithms. Wiley, 2004. DOI:10.1002/0471660264.
+10. Wolpert D H. Stacked generalization. Neural Networks, 1992, 5(2): 241-259. DOI:10.1016/S0893-6080(05)80023-1.
+11. Ting K M, Witten I H. Issues in stacked generalization. Journal of Artificial Intelligence Research, 1999, 10: 271-289. DOI:10.1613/jair.594.
+12. Liu H, Setiono R. Chi2: Feature selection and discretization of numeric attributes. ICTAI 1995: 388-391. DOI:10.1109/TAI.1995.479783.
+13. Guyon I, Elisseeff A. An introduction to variable and feature selection. JMLR, 2003, 3: 1157-1182. [DOI to verify]
+14. Sharafaldin I, Lashkari A H, Ghorbani A A. Toward generating a new intrusion detection dataset and intrusion traffic characterization. ICISSP 2018: 108-116. DOI:10.5220/0006639801080116.
+15. Tavallaee M, Bagheri E, Lu W, Ghorbani A A. A detailed analysis of the KDD CUP 99 data set. CISDA 2009: 1-6. DOI:10.1109/CISDA.2009.5356528.
+16. Moustafa N, Slay J. UNSW-NB15: A comprehensive data set for network intrusion detection systems. MilCIS 2015: 1-6. DOI:10.1109/MilCIS.2015.7348942.
+17. Ring M, Wunderlich S, Scheuring D, et al. A survey of network-based intrusion detection data sets. Computers & Security, 2019, 86: 147-167. DOI:10.1016/j.cose.2019.06.005.
+18. Engelen G, Timmerman J. Troubleshooting an intrusion detection dataset: The CICIDS2017 case study. IEEE S&P Workshops 2021: 7-12. DOI:10.1109/SPW53761.2021.00009.
+19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. [DOI to verify]
+20. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [DOI to verify]
+21. Sommer R, Paxson V. Outside the closed world: On using machine learning for network intrusion detection. IEEE S&P 2010: 305-316. DOI:10.1109/SP.2010.25.
+22. Buczak A L, Guven E. A survey of data mining and machine learning methods for cyber security intrusion detection. IEEE Communications Surveys & Tutorials, 2016, 18(2): 1153-1176. DOI:10.1109/COMST.2015.2494502.
+23. Khraisat A, Gondal I, Vamplew P, Kamruzzaman J. Survey of intrusion detection systems: Techniques, datasets and challenges. Cybersecurity, 2019, 2: 20. DOI:10.1186/s42400-019-0038-7.
+24. Apruzzese G, Laskov P, Montgomery E, et al. The role of machine learning in cybersecurity. ACM Digital Threats: Research and Practice, 2023, 4(1): 1-38. DOI:10.1145/3545574.
+25. Geng C, Huang S J, Chen S. Recent advances in open set recognition: A survey. IEEE TPAMI, 2021, 43(10): 3614-3631. DOI:10.1109/TPAMI.2020.2981604.
+26. Bendale A, Boult T E. Towards open set deep networks. CVPR 2016: 1563-1572. DOI:10.1109/CVPR.2016.173.
+27. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [DOI to verify]
+28. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [DOI to verify]
+29. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [DOI to verify]
+30. Angelopoulos A N, Bates S. Conformal prediction: A gentle introduction. Foundations and Trends in Machine Learning, 2023, 16(4): 494-591. DOI:10.1561/2200000101.
+31. Vovk V, Gammerman A, Shafer G. Algorithmic Learning in a Random World. Springer, 2005. DOI:10.1007/b106715.
+32. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [DOI to verify]
+33. Lei J, G'Sell M, Rinaldo A, et al. Distribution-free predictive inference for regression. JASA, 2018, 113(523): 1094-1111. DOI:10.1080/01621459.2017.1307116.
+34. McNemar Q. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika, 1947, 12(2): 153-157. DOI:10.1007/BF02295996.
+35. Dietterich T G. Approximate statistical tests for comparing supervised classification learning algorithms. Neural Computation, 1998, 10(7): 1895-1923. DOI:10.1162/089976698300017197.
+36. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [DOI to verify]
+37. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [DOI to verify]
+38. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. [DOI to verify]
+39. Lakens D. Equivalence tests: A practical primer for t tests, correlations, and meta-analyses. Social Psychological and Personality Science, 2017, 8(4): 355-362. DOI:10.1177/1948550617697177.
+40. Han S, Kim Y, Lee S. Improvement of the classification performance of an intrusion detection model for rare and unknown attack traffic. Electronics, 2021, 10(18): 2268. DOI:10.3390/electronics10182268.
+41. Guolou P, Ye X. Open-set intrusion detection with MinMax autoencoder and pseudo extreme value machine. IJCNN 2022. DOI:10.1109/IJCNN55064.2022.9892858.
+42. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [DOI to verify]
+43. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
+44. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
+45. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
+
+---
+
+## Supplementary material
+
+| Item | Content |
+|---|---|
+| S1 | Dataset sources, retrieval dates and SHA-256 checksums |
+| S2 | Per-file processing stage counts for CIC-IDS2017 |
+| S3 | Class support for the natural-prior and balanced populations |
+| S4 | Training-side chi-square / mutual-information / ANOVA scores and selection frequencies |
+| S5 | Per-seed metric table (accuracy, macro precision/recall/F1, Log Loss, Brier, ECE, MCE) |
+| S6 | Per-class classification reports for all models and seeds |
+| S7 | Normalised confusion matrices (RCCF and equal-weight forest) |
+| S8 | Row-level comparison of tree-level weighting against equal voting |
+| S9 | Full record of weight distributions, weight entropy and probability L1 changes |
+| S10 | Protocol-sensitivity experiments (deduplication order, repeated splits) |
+| S11 | 5x3 nested cross-validation fold metrics and paired statistics |
+| S12 | NSL-KDD per-class metrics and prediction counts |
+| S13 | UNSW-NB15 per-class metrics and split sensitivity |
+| S14 | Per-file results of the file-level extrapolation stress test |
+| S15 | Raw values for calibration curves, perturbation robustness and latency percentiles |
+| S16 | Gate hyper-parameter search over 108 configurations |
+| S17 | Margin-bound analysis per test row |
+| S18 | Expert-diversity suite (five expert families, three seeds) |
+| S19 | Neural-baseline results and the paired comparison against RCCF |

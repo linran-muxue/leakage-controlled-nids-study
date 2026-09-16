@@ -1,0 +1,12 @@
+{
+  "development_pool": "data_processed_audit_v4/train.csv + validation.csv",
+  "untouched_final_test": "data_processed_audit_v4/test.csv",
+  "outer_splits": 5,
+  "inner_splits": 3,
+  "k_values": [
+    20,
+    40,
+    60
+  ],
+  "modelwise_tuning": true
+}

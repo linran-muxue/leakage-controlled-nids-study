@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.data_pipeline import map_attack_label, clean_numeric_features
+from src.data_pipeline import map_attack_label, clean_numeric_features, cic_physical_valid_mask
 from src.prepare_dataset import collect_balanced_sample
 
 
@@ -30,6 +30,23 @@ def test_clean_numeric_features_replaces_infinite_and_drops_invalid_rows():
     cleaned = clean_numeric_features(frame)
     assert len(cleaned) == 1
     assert cleaned.iloc[0].to_dict() == {"a": 1.0, "b": 4.0}
+
+
+def test_cic_physical_range_audit_rejects_impossible_values_but_keeps_window_sentinel():
+    frame = pd.DataFrame({
+        "Flow Duration": [1.0, -1.0, 1.0],
+        "Flow Bytes/s": [10.0, 10.0, -2.0],
+        "Fwd Header Length": [20.0, -100.0, 20.0],
+        "Init_Win_bytes_forward": [-1.0, -1.0, 100.0],
+        "Init_Win_bytes_backward": [-1.0, 100.0, -1.0],
+        "min_seg_size_forward": [20.0, 20.0, -3.0],
+    })
+    mask, by_feature = cic_physical_valid_mask(frame)
+    assert mask.tolist() == [True, False, False]
+    assert by_feature["Flow Duration"] == 1
+    assert by_feature["Flow Bytes/s"] == 1
+    assert by_feature["Fwd Header Length"] == 1
+    assert by_feature["min_seg_size_forward"] == 1
 
 
 def test_collect_balanced_sample_deduplicates_globally_before_balancing(tmp_path):
@@ -121,3 +138,11 @@ def test_source_row_ids_are_global_within_each_file(tmp_path):
     sampled, _, _ = collect_balanced_sample(tmp_path, per_class_cap=10, include_other=False, seed=42, chunksize=2, balance=False)
     ids = sampled["_source_row_id"].tolist()
     assert sorted(ids) == list(range(6))
+
+
+def test_source_paths_are_relative_to_raw_root(tmp_path):
+    columns = ["f1", "f2", " Label"]
+    frame = pd.DataFrame([[1, 2, "BENIGN"]], columns=columns)
+    frame.to_csv(tmp_path / "a.csv", index=False)
+    sampled, _, _ = collect_balanced_sample(tmp_path, per_class_cap=10, include_other=False, seed=42, chunksize=10, balance=False)
+    assert sampled.loc[0, "_source_path"] == "a.csv"

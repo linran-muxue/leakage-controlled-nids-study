@@ -1,0 +1,51 @@
+﻿check,claimed,recomputed,tolerance
+RCCF natural Macro-F1,0.889955,0.8899550295993232,5e-06
+RCCF natural accuracy,0.97792,0.9779196927957258,5e-06
+RCCF natural log loss,0.051477,0.051476508784982,5e-06
+RCCF natural train seconds,60.997,60.99722869999823,0.005
+equal_rf_chi2 natural Macro-F1,0.88887,0.8888702478288303,5e-06
+equal_rf_all natural Macro-F1,0.88796,0.8879604324064396,5e-06
+extra_trees_chi2 natural Macro-F1,0.857713,0.8577128660461888,5e-06
+MLP Macro-F1,0.797654,0.7976544293719458,5e-06
+MLP accuracy,0.97679,0.9767927205943736,1e-05
+RCCF balanced Macro-F1,0.961807,0.9618071100379424,5e-06
+equal_rf_chi2 balanced Macro-F1,0.963215,0.9632145340695244,5e-06
+XGBoost balanced Macro-F1,0.963241,0.9632413689118566,5e-06
+XGBoost balanced log loss,0.103753,0.1037532066305478,5e-06
+pooled mean delta,0.001085,0.001084781770492908,5e-06
+pooled 90% low,-0.002898,-0.00289874262440008,1e-05
+pooled 90% high,0.005501,0.005501481962894188,1e-05
+TOST equivalent at 0.01 (1=yes),1.0,1.0,0.0
+TOST equivalent at 0.005 (1=yes),0.0,0.0,0.0
+provable by bound rate (%),99.91,99.90817263544537,0.005
+provable by actual rate (%),99.996,99.99582602888388,0.005
+rows with changed labels,0.0,0.0,0.0
+total test rows,23958.0,23958.0,0.0
+gate configs,108.0,108.0,0.0
+distinct validation values,6.0,6.0,0.0
+validation range,0.00117,0.0011703043948496639,0.0001
+disagreements vs equal weight,65.0,65.0,0.0
+row-level denominator,862488.0,862488.0,0.0
+diversity observations,15.0,15.0,0.0
+diversity slope,0.0646,0.064608879852392,0.0001
+diversity pearson r,0.749,0.7488684021191764,0.001
+low-diversity runs,6.0,6.0,0.0
+low-diversity gains all zero,6.0,6.0,0.0
+decorrelated runs,9.0,9.0,0.0
+decorrelated gains all positive,9.0,9.0,0.0
+global-first dedup mean,0.955682,0.9556819431352929,1e-05
+split-first dedup mean,0.957089,0.957088818827578,1e-05
+nested RF Macro-F1,0.954423,0.9544225304317984,5e-06
+nested XGBoost Macro-F1,0.962177,0.9621774695693096,5e-06
+NSL Macro-F1,0.514697,0.5146973305079142,5e-06
+NSL balanced accuracy,0.492837,0.4928366392208225,5e-06
+UNSW Macro-F1,0.49331,0.4933097927552074,5e-06
+UNSW balanced accuracy,0.566753,0.5667528412972299,5e-06
+file-external min Macro-F1,0.3325,0.3325093532870123,0.0001
+file-external max Macro-F1,0.9997,0.999699909972992,0.0001
+RCCF 1% noise drop,43.3,43.30306748036193,0.005
+equal RF 1% noise drop,42.64,42.64073924854391,0.005
+ExtraTrees 1% noise drop,11.57,11.573916327076335,0.005
+RCCF 5% mask drop,1.23,1.2331258435813253,0.005
+RCCF P50 ms,14.62,14.620233334426302,0.005
+equal RF P50 ms,2.96,2.960233330668416,0.005

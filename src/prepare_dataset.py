@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.data_pipeline import map_attack_label
+from src.data_pipeline import cic_physical_valid_mask, map_attack_label
 
 
 def normalize_columns(frame: pd.DataFrame) -> pd.DataFrame:
@@ -26,7 +26,7 @@ def normalize_columns(frame: pd.DataFrame) -> pd.DataFrame:
     return frame
 
 
-def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bool, seed: int, chunksize: int, balance: bool = True):
+def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bool, seed: int, chunksize: int, balance: bool = True, strict_physical: bool = False):
     rng = np.random.default_rng(seed)
     buckets = {}
     feature_names = None
@@ -37,7 +37,10 @@ def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bo
         "source_rows": 0,
         "mapped_rows": 0,
         "invalid_rows": 0,
+        "invalid_physical_rows": 0,
+        "invalid_physical_by_feature": {},
         "valid_rows": 0,
+        "physical_valid_rows": 0,
         "duplicate_rows": 0,
         "same_label_duplicate_rows": 0,
         "cross_label_mismatch_rows": 0,
@@ -58,12 +61,18 @@ def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bo
         "retained_rows_before_balance": 0,
     }
     for path in sorted(raw_dir.rglob("*.csv")):
+        file_row_offset = 0
         for chunk in pd.read_csv(path, chunksize=chunksize, low_memory=False, encoding_errors="replace"):
             audit["source_rows"] += len(chunk)
             chunk = normalize_columns(chunk)
             # pandas preserves a monotonically increasing file-local index
-            # across chunks; retain it as the provenance row identifier.
-            source_row_ids = pd.Series(chunk.index.to_numpy(), index=chunk.index)
+            # only for some readers. Build an explicit file-global row id so
+            # provenance remains unique when a CSV is processed in chunks.
+            source_row_ids = pd.Series(
+                np.arange(file_row_offset, file_row_offset + len(chunk), dtype=np.int64),
+                index=chunk.index,
+            )
+            file_row_offset += len(chunk)
             label_col = next((c for c in chunk.columns if c.lower() == "label"), None)
             if label_col is None:
                 raise ValueError(f"文件缺少Label列: {path}")
@@ -86,6 +95,16 @@ def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bo
             mapped = mapped.loc[valid].reset_index(drop=True)
             source_row_ids = source_row_ids.loc[keep].loc[valid].to_numpy()
             source_labels = chunk[label_col].loc[valid].astype(str).str.strip().to_numpy()
+            if strict_physical:
+                physical_valid, by_feature = cic_physical_valid_mask(numeric)
+                audit["invalid_physical_rows"] += int((~physical_valid).sum())
+                for feature, count in by_feature.items():
+                    audit["invalid_physical_by_feature"][feature] = audit["invalid_physical_by_feature"].get(feature, 0) + count
+                numeric = numeric.loc[physical_valid].reset_index(drop=True)
+                mapped = mapped.loc[physical_valid].reset_index(drop=True)
+                source_row_ids = source_row_ids[physical_valid.to_numpy()]
+                source_labels = source_labels[physical_valid.to_numpy()]
+            audit["physical_valid_rows"] += int(len(numeric))
             row_hashes_forward = pd.util.hash_pandas_object(numeric, index=False).to_numpy(dtype=np.uint64)
             row_hashes_reverse = pd.util.hash_pandas_object(numeric[numeric.columns[::-1]], index=False).to_numpy(dtype=np.uint64)
             row_hashes = list(zip(row_hashes_forward, row_hashes_reverse))
@@ -116,7 +135,7 @@ def collect_balanced_sample(raw_dir: Path, per_class_cap: int, include_other: bo
             # Preserve provenance as sidecar-only metadata. These columns are
             # removed before model CSVs are written and never enter features.
             numeric["_source_file"] = path.name
-            numeric["_source_path"] = str(path)
+            numeric["_source_path"] = str(path.relative_to(raw_dir))
             numeric["_source_row_id"] = source_row_ids
             numeric["_source_label"] = source_labels
             kept_hashes = [row_hashes[i] for i, keep_row in enumerate(unique_mask) if keep_row]
@@ -200,8 +219,9 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--chunksize", type=int, default=100_000)
     parser.add_argument("--no-balance", action="store_true", help="保留各类别自然数量，仅执行每类上限和去重")
+    parser.add_argument("--strict-physical", action="store_true", help="按CICFlowMeter物理范围规则剔除负值异常")
     args = parser.parse_args()
-    config = {"per_class_cap": args.per_class_cap, "include_other": args.include_other, "seed": args.seed, "chunksize": args.chunksize, "balance": not args.no_balance}
+    config = {"per_class_cap": args.per_class_cap, "include_other": args.include_other, "seed": args.seed, "chunksize": args.chunksize, "balance": not args.no_balance, "strict_physical": args.strict_physical}
     summary = prepare_dataset(args.raw_dir, args.processed_dir, config)
     print(summary.to_string(index=False))
 

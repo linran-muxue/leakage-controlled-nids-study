@@ -1,0 +1,21 @@
+{
+  "protocol_name": "CIC-IDS2017_locked_cfrg_v1",
+  "processed_dir": "data_processed_cic_balanced_v3b",
+  "train_samples": 2355,
+  "validation_samples": 505,
+  "test_samples": 505,
+  "raw_feature_count": 78,
+  "selected_feature_count": 60,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "min_samples_leaf": 2,
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "feature_selection_fit_on": "training_only",
+  "gate_fit_on": "oob_training_predictions_only",
+  "test_usage": "locked_final_evaluation_only",
+  "cross_dataset_transfer": false
+}

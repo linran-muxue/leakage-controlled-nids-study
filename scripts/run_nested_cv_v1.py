@@ -117,7 +117,7 @@ def main():
     pd.DataFrame(tuning_rows).to_csv(args.output_dir / "inner_tuning_results.csv", index=False, encoding="utf-8-sig")
     summary = pd.DataFrame(rows).groupby("selected_model")[["accuracy","balanced_accuracy","macro_f1","log_loss","brier_macro","ece"]].agg(["mean","std"]).reset_index()
     summary.to_csv(args.output_dir / "outer_summary.csv", index=False, encoding="utf-8-sig")
-    (args.output_dir / "protocol.json").write_text(json.dumps({"data":"data_processed_audit_v4 development pool (train+validation)", "held_out_test":"data_processed_audit_v4/test.csv remains untouched", "outer_splits":args.outer_splits,"inner_splits":args.inner_splits,"k_values":args.k_values,"seed":args.seed,"preprocessing":"fit inside each fold","test_usage":"outer-fold evaluation on development pool only"}, ensure_ascii=False, indent=2), encoding="utf-8")
+    (args.output_dir / "protocol.json").write_text(json.dumps({"data":"data_processed_cic_natural_v3b development pool (train+validation)", "held_out_test":"data_processed_cic_natural_v3b/test.csv remains untouched", "canonical_processed_protocol":"data_processed_cic_natural_v3b", "outer_splits":args.outer_splits,"inner_splits":args.inner_splits,"k_values":args.k_values,"seed":args.seed,"preprocessing":"fit inside each fold","test_usage":"outer-fold evaluation on development pool only"}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(pd.DataFrame(rows).to_string(index=False))
 
 

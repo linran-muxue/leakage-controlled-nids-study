@@ -31,6 +31,17 @@ def test_summarize_split_reports_schema_and_label_counts():
     assert result["class_counts"]["Bot"] == 2
 
 
+def test_audit_frame_reports_physical_range_violations():
+    frame = pd.DataFrame({
+        "Flow Duration": [1, -1],
+        "Flow Bytes/s": [2, 3],
+        " Label": ["BENIGN", "BENIGN"],
+    })
+    result = audit_frame(frame)
+    assert result["invalid_physical_rows"] == 1
+    assert result["invalid_physical_by_feature"]["Flow Duration"] == 1
+
+
 def test_file_hash_records_size_and_digest(tmp_path):
     path = tmp_path / "x.csv"
     path.write_bytes(b"abc")

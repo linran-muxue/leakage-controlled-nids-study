@@ -7,3 +7,5 @@ def test_canonical_manuscript_has_no_stale_table_or_metric_claims():
     assert "表A43" not in text
     assert "95.97%" not in text
     assert "96.05%" not in text
+    assert "balanced research subset" in text
+    assert "not as direct evidence of cross-dataset transfer" in text

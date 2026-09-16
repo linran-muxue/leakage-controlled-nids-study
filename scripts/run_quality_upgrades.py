@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from src.experiment_components import WeightedRandomForest, compute_metrics
 
-DATA = ROOT / "data_processed_audit_v4"
+DATA = ROOT / "data_processed_cic_balanced_v3b"
 OUT = ROOT / "results_quality_upgrades"
 
 def chi2_idx(X, y, k):
@@ -71,6 +71,6 @@ def main():
     result.groupby("model")[['accuracy','macro_precision','macro_recall','macro_f1','train_seconds','predict_seconds']].agg(['mean','std']).reset_index().to_csv(OUT/"repeated_split_summary.csv",index=False,encoding="utf-8-sig")
     abl=pd.DataFrame(ablation); abl.to_csv(OUT/"equal_weight_ablation.csv",index=False,encoding="utf-8-sig"); abl.groupby("weight_strategy")[['accuracy','macro_precision','macro_recall','macro_f1']].agg(['mean','std']).reset_index().to_csv(OUT/"equal_weight_ablation_summary.csv",index=False,encoding="utf-8-sig")
     st=pd.DataFrame(stability); st.to_csv(OUT/"feature_stability.csv",index=False,encoding="utf-8-sig"); st.groupby('k')[['jaccard_mean']].agg(['mean','std']).reset_index().to_csv(OUT/"feature_stability_summary.csv",index=False,encoding="utf-8-sig")
-    (OUT/"protocol.json").write_text(json.dumps({"data":"data_processed_audit_v4","split_seeds":[42,2024,3407],"split":"70/15/15 stratified on the 3365-row deduplicated balanced frame","models":{"rf_all":{"features":78,"trees":100,"min_samples_leaf":2},"rf_chi2":{"features":60,"trees":100,"min_samples_leaf":2},"weighted_rf_chi2":{"features":60,"trees":100,"min_samples_leaf":2}},"feature_stability":"5-fold training-only chi2 top-k Jaccard"},ensure_ascii=False,indent=2),encoding="utf-8")
+    (OUT/"protocol.json").write_text(json.dumps({"data":"data_processed_cic_balanced_v3b","canonical_processed_protocol":"data_processed_cic_balanced_v3b","split_seeds":[42,2024,3407],"split":"70/15/15 stratified on the 3365-row deduplicated balanced frame","models":{"rf_all":{"features":78,"trees":100,"min_samples_leaf":2},"rf_chi2":{"features":60,"trees":100,"min_samples_leaf":2},"weighted_rf_chi2":{"features":60,"trees":100,"min_samples_leaf":2}},"feature_stability":"5-fold training-only chi2 top-k Jaccard"},ensure_ascii=False,indent=2),encoding="utf-8")
     print(result.to_string(index=False)); print(st.groupby('k').jaccard_mean.mean())
 if __name__=='__main__': main()

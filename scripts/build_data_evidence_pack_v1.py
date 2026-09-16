@@ -22,15 +22,16 @@ def write(df: pd.DataFrame, name: str) -> None:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
 
-    cic_audit = json.loads((ROOT / "results_data_processing_audit_v3" / "data_processing_audit.json").read_text(encoding="utf-8"))
+    cic_audit = json.loads((ROOT / "results_data_audit_cic_natural_v3b" / "data_processing_audit.json").read_text(encoding="utf-8"))
     totals = cic_audit["raw_totals"]
     stages = [
         ("raw source", totals["source_rows"]),
         ("label mapped", totals["mapped_rows"]),
         ("valid numeric", totals["valid_rows"]),
-        ("unique before conflict", 2429924),
-        ("unique after conflict", 2429791),
-        ("capped before balance", 53237),
+        ("physical valid", totals["physical_valid_rows"]),
+        ("unique before conflict", 2429636),
+        ("unique after conflict", 2429503),
+        ("capped natural-prior population", 53237),
         ("balanced research subset", 3365),
     ]
     stage_rows = []
@@ -57,7 +58,7 @@ def main() -> None:
     raw_labels = pd.read_csv(ROOT / "results_publication_final" / ".." / "results_paper_materials_v2" / "tables" / "table_split_class_counts.csv")
     raw_label_path = ROOT / "results_paper_materials_v3" / "tables" / "table_data_source_provenance_v1.csv"
     # Canonical balanced support is taken from the processed summary.
-    balanced = pd.read_csv(ROOT / "data_processed_audit_v4" / "dataset_summary.csv")
+    balanced = pd.read_csv(ROOT / "data_processed_cic_balanced_v3b" / "dataset_summary.csv")
     balanced["fraction"] = balanced["count"] / balanced["count"].sum()
     balanced.insert(0, "dataset", "CIC-IDS2017 balanced research subset")
     write(balanced, "cic_balanced_class_support.csv")
@@ -82,7 +83,7 @@ def main() -> None:
     unsw_overlap = json.loads((ROOT / "results_unsw_nb15_audit" / "cross_split_overlap_audit.json").read_text(encoding="utf-8"))
     evidence = {
         "generated_from": {
-            "cic_processing_audit": "results_data_processing_audit_v3/data_processing_audit.json",
+            "cic_processing_audit": "results_data_audit_cic_natural_v3b/data_processing_audit.json",
             "cic_coverage": "results_file_label_coverage_v5/file_label_counts.csv",
             "nsl_support": "results_nsl_kdd_fair_v2/class_counts.csv",
             "unsw_audit": "results_unsw_nb15_audit/audit_v2.json",
@@ -127,8 +128,8 @@ def main() -> None:
         "",
         "## CIC-IDS2017",
         "",
-        f"原始记录 {totals['source_rows']:,} 条；标签映射后 {totals['mapped_rows']:,} 条（{totals['mapped_rows']/totals['source_rows']:.2%}）；有效数值记录 {totals['valid_rows']:,} 条（{totals['valid_rows']/totals['source_rows']:.2%}）。无效记录 {totals['invalid_rows']:,} 条，当前审计中均为无穷值行；另有 {totals['excluded_label_rows']:,} 条因标签不纳入主五分类任务。",
-        "全局冲突审计、类别上限和五类等量抽样后，最终平衡研究子集为3,365条，每类673条。该子集用于受控比较，不代表原始全量分布。",
+        f"原始记录 {totals['source_rows']:,} 条；标签映射后 {totals['mapped_rows']:,} 条（{totals['mapped_rows']/totals['source_rows']:.2%}）；有限数值记录 {totals['valid_rows']:,} 条，物理范围审计后 {totals['physical_valid_rows']:,} 条。无效数值记录 {totals['invalid_rows']:,} 条，物理范围异常 {totals.get('invalid_physical_rows', 0):,} 条；另有 {totals['excluded_label_rows']:,} 条因标签不纳入主五分类任务。",
+        "全局冲突审计、每类20,000上限和自然先验保留后，主协议为53,237条；另构造3,365条、每类673条的平衡研究子集作为受控比较。二者都不代表未经抽样的CIC全量总体。",
         "8个原始文件均缺少至少一个主类别，因此文件级结果只能作为覆盖和分布偏移审计。处理后train/validation/test的精确特征向量重叠均为0。",
         "",
         "## NSL-KDD and UNSW-NB15",

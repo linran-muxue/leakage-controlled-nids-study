@@ -83,7 +83,7 @@ def load_cic(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--processed-dir", type=Path, default=ROOT / "data_processed_audit_v4")
+    ap.add_argument("--processed-dir", type=Path, default=ROOT / "data_processed_cic_natural_v3b")
     ap.add_argument("--output-dir", type=Path, default=ROOT / "results_additional_evidence_v4")
     ap.add_argument("--k", type=int, default=60)
     ap.add_argument("--n-estimators", type=int, default=100)
@@ -145,7 +145,7 @@ def main():
                     values.append((time.perf_counter() - start) / len(xte) * 1000)
                 latency_rows.append({"method": method, "n_jobs": n_jobs, "batch_size": batch, **percentile_latency(values)})
     pd.DataFrame(latency_rows).to_csv(args.output_dir / "deployment_latency_percentiles.csv", index=False, encoding="utf-8-sig")
-    (args.output_dir / "protocol.json").write_text(json.dumps({"methods": methods, "k": args.k, "n_estimators": args.n_estimators, "min_samples_leaf": args.min_samples_leaf, "shared_robustness_seed": 20260904, "robustness_noise_scale": "training_split_feature_std", "latency_repetitions": 30, "latency_warmup": 3, "calibration_bins": 10}, ensure_ascii=False, indent=2), encoding="utf-8")
+    (args.output_dir / "protocol.json").write_text(json.dumps({"canonical_processed_protocol": "data_processed_cic_natural_v3b", "methods": methods, "k": args.k, "n_estimators": args.n_estimators, "min_samples_leaf": args.min_samples_leaf, "shared_robustness_seed": 20260904, "robustness_noise_scale": "training_split_feature_std", "latency_repetitions": 30, "latency_warmup": 3, "calibration_bins": 10}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(metrics.groupby("method")[['accuracy','macro_f1','log_loss','brier_macro']].mean().to_string())
 
 

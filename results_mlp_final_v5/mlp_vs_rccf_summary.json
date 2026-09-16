@@ -1,0 +1,9 @@
+{
+  "mlp_macro_f1_mean": 0.7976544293719458,
+  "rccf_macro_f1_mean": 0.8899550295993232,
+  "mlp_balanced_accuracy_mean": 0.7966635017225635,
+  "rccf_balanced_accuracy_mean": 0.9491979181717155,
+  "pooled_mlp_right_rccf_wrong": 430,
+  "pooled_mlp_wrong_rccf_right": 457,
+  "pooled_mcnemar_p": 0.3826767470158436
+}

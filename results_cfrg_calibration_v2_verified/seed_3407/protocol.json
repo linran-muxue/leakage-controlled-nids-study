@@ -1,0 +1,7 @@
+{
+  "temperature_fit_on": "validation_only",
+  "test_usage": "final_evaluation_only",
+  "seed": 3407,
+  "chi2_k": 60,
+  "n_estimators": 100
+}

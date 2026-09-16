@@ -20,7 +20,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from src.data_pipeline import map_attack_label
+from src.data_pipeline import cic_physical_valid_mask, map_attack_label
 
 
 def coverage_report(test_labels, train_labels):
@@ -46,7 +46,9 @@ def load_file(path: Path) -> pd.DataFrame:
     features = [c for c in frame.columns if c not in {label_col, "Flow ID", "Timestamp"}]
     target = frame[label_col].map(lambda x: map_attack_label(x, include_other=False))
     numeric = frame[features].apply(pd.to_numeric, errors="coerce").replace([np.inf, -np.inf], np.nan)
-    valid = target.notna() & numeric.notna().all(axis=1)
+    finite_valid = numeric.notna().all(axis=1)
+    physical_valid, _ = cic_physical_valid_mask(numeric)
+    valid = target.notna() & finite_valid & physical_valid
     out = numeric.loc[valid].copy(); out["target"] = target.loc[valid].to_numpy()
     return out.reset_index(drop=True)
 
@@ -59,7 +61,7 @@ def main() -> None:
         train = pd.concat(train_parts, ignore_index=True); test = sample_file_frame(test_raw, args.per_class_cap, args.seed)
         names = [c for c in train.columns if c != "target"]; scaler = MinMaxScaler(); x = scaler.fit_transform(train[names]); xt = scaler.transform(test[names]); y = train["target"].to_numpy(); yt = test["target"].to_numpy(); labels = sorted(set(y)); scores, _ = chi2(x, y); idx = np.argsort(-np.nan_to_num(scores, nan=0.0))[:min(args.chi2_k, x.shape[1])]
         model = RandomForestClassifier(n_estimators=args.n_estimators, min_samples_leaf=2, class_weight="balanced_subsample", n_jobs=-1, random_state=args.seed); model.fit(x[:, idx], y); pred = model.predict(xt[:, idx]); coverage = coverage_report(yt, y); known = np.isin(yt, coverage["known_labels"]); row = {"test_file": test_name, "train_rows": len(train), "test_rows": len(test), "known_labels": ";".join(coverage["known_labels"]), "unseen_test_labels": ";".join(coverage["unseen_test_labels"]), "known_row_fraction": coverage["known_row_fraction"], "accuracy_known": float(accuracy_score(yt[known], pred[known])) if known.any() else np.nan, "balanced_accuracy_known": float(balanced_accuracy_score(yt[known], pred[known])) if known.any() else np.nan, "macro_f1_known": float(f1_score(yt[known], pred[known], labels=coverage["known_labels"], average="macro", zero_division=0)) if known.any() else np.nan}; rows.append(row)
-    out = pd.DataFrame(rows); out.to_csv(args.output_dir / "file_external_results.csv", index=False, encoding="utf-8-sig"); (args.output_dir / "protocol.json").write_text(json.dumps({"protocol":"leave-one-file-out","unseen_labels_excluded_from_known_score":True,"per_class_cap":args.per_class_cap,"chi2_k":args.chi2_k,"n_estimators":args.n_estimators,"seed":args.seed}, ensure_ascii=False, indent=2), encoding="utf-8"); print(out.to_string(index=False))
+    out = pd.DataFrame(rows); out.to_csv(args.output_dir / "file_external_results.csv", index=False, encoding="utf-8-sig"); (args.output_dir / "protocol.json").write_text(json.dumps({"protocol":"leave-one-file-out","protocol_name":"coverage-aware leave-one-file-out pressure test","canonical_processed_protocol":"data_processed_cic_natural_v3b","physical_range_screening":True,"physical_range_audit":"data_processed_cic_natural_v3b/dedup_audit.json","unseen_labels_excluded_from_known_score":True,"per_class_cap":args.per_class_cap,"chi2_k":args.chi2_k,"n_estimators":args.n_estimators,"seed":args.seed}, ensure_ascii=False, indent=2), encoding="utf-8"); print(out.to_string(index=False))
 
 
 if __name__ == "__main__": main()

@@ -1,0 +1,37 @@
+{
+  "dataset": "unsw",
+  "independent_native_label_benchmark": true,
+  "cross_dataset_transfer": false,
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "n_estimators": 100,
+  "feature_k": 60,
+  "cv": 5,
+  "alpha": 0.1,
+  "calibration_source": "training partition only",
+  "training_rows": 175341,
+  "test_rows": 82332,
+  "calibration_rows_per_seed": 26301,
+  "native_labels": ["Analysis", "Backdoor", "DoS", "Exploits", "Fuzzers", "Generic", "Normal", "Reconnaissance", "Shellcode", "Worms"],
+  "training_label_counts": {"Analysis": 2000, "Backdoor": 1746, "DoS": 12264, "Exploits": 33393, "Fuzzers": 18184, "Generic": 40000, "Normal": 56000, "Reconnaissance": 10491, "Shellcode": 1133, "Worms": 130},
+  "test_label_counts": {"Analysis": 677, "Backdoor": 583, "DoS": 4089, "Exploits": 11132, "Fuzzers": 6062, "Generic": 18871, "Normal": 37000, "Reconnaissance": 3496, "Shellcode": 378, "Worms": 44},
+  "test_labels_used_for_fitting": false,
+  "source": {
+    "source": "official UNSW-NB15 training/testing CSV",
+    "provider_url": "https://research.unsw.edu.au/projects/unsw-nb15-dataset",
+    "access_date": "2026-09-12",
+    "version": "official UNSW-NB15 training/testing CSV snapshot",
+    "license": "Provider terms apply; no SPDX identifier asserted",
+    "files": [
+      "data_external\\UNSW-NB15\\UNSW-NB15_training-set.csv",
+      "data_external\\UNSW-NB15\\UNSW-NB15_testing-set.csv"
+    ]
+  },
+  "file_sha256": {
+    "UNSW-NB15_training-set.csv": "bec7dd5ec88dc2a0ccc7a07879d338395ed7421750f675fd0339e07dfe0648fa",
+    "UNSW-NB15_testing-set.csv": "734fe6642edf758f7c94d7d9149426b49d202fe8e7bf0bef47392489c3c0a559"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "protocol": "leave-one-file-out",
+  "protocol_name": "coverage-aware leave-one-file-out pressure test",
+  "canonical_processed_protocol": "data_processed_cic_natural_v3b",
+  "physical_range_screening": true,
+  "physical_range_audit": "data_processed_cic_natural_v3b/dedup_audit.json",
+  "unseen_labels_excluded_from_known_score": true,
+  "per_class_cap": 5000,
+  "chi2_k": 60,
+  "n_estimators": 100,
+  "seed": 42
+}

@@ -1,0 +1,9 @@
+{
+  "global_protocol": "canonical dedup-balanced frame",
+  "sensitivity_protocol": "raw mapped/capped/balanced frame; deduplicate training split only",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ]
+}

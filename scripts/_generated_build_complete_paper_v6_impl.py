@@ -10,10 +10,10 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "results_paper_materials_v3" / "full_paper_body_v6_data_processing.md"
+SOURCE = ROOT / "results_paper_materials_v3" / "full_paper_body_v7_final.md"
 MATERIALS = ROOT / "results_paper_materials_v2"
 UNSW_TABLES = ROOT / "results_paper_materials_v3" / "tables"
-OUTPUT = ROOT / "论文完整正文_v6_数据处理完善稿.docx"
+OUTPUT = ROOT / "results_paper_materials_v3" / "chinese_sci_manuscript_v1.docx"
 
 
 def set_run_font(run, chinese="宋体", western="Times New Roman", size=10.5, bold=None):

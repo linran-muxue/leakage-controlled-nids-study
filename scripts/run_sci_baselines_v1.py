@@ -91,7 +91,7 @@ def run_one_seed(args):
     encoder = LabelEncoder().fit(np.concatenate([ytr, yv, yte]))
     idx = select_train_features(xtr, ytr, min(args.chi2_k, xtr.shape[1]))
     selected = [names[i] for i in idx]
-    (args.output_dir / "protocol.json").write_text(json.dumps({"data":"data_processed_audit_v4", "chi2_k":int(args.chi2_k), "seed":args.seed, "selection_fit":"training_only", "tuning_split":"validation_only", "test_usage":"final_evaluation_only", "selected_features":selected}, ensure_ascii=False, indent=2), encoding="utf-8")
+    (args.output_dir / "protocol.json").write_text(json.dumps({"data":"data_processed_cic_natural_v3b", "canonical_processed_protocol":"data_processed_cic_natural_v3b", "chi2_k":int(args.chi2_k), "seed":args.seed, "selection_fit":"training_only", "tuning_split":"validation_only", "test_usage":"final_evaluation_only", "selected_features":selected}, ensure_ascii=False, indent=2), encoding="utf-8")
     rows=[]; pred_dir=args.output_dir / "predictions"; pred_dir.mkdir(exist_ok=True)
     for name, candidates in model_specs(args.seed, len(encoder.classes_)).items():
         best = None

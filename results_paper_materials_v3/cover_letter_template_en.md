@@ -2,7 +2,7 @@
 
 Dear Editor,
 
-Please consider our manuscript, “Leakage-Controlled Feature Selection and Random-Forest Ensembles for Network Intrusion Detection: A Reproducible Multi-Dataset Study,” for publication in the *Journal of Information Security and Applications*.
+Please consider our manuscript, “Provenance-Aware and Uncertainty-Aware Evaluation of Network Intrusion Detection Models: A Cross-Fitted Risk-Gated Forest Study,” for publication in the *Journal of Information Security and Applications*.
 
 The manuscript addresses a reproducibility problem in network intrusion-detection evaluation: reported performance can depend on duplicate handling, preprocessing leakage, class balancing, feature-selection scope, and public train/test construction. We provide a documented protocol that audits CIC-IDS2017, preserves training-only preprocessing, reports repeated and bootstrap uncertainty, evaluates probability quality and latency, and independently examines NSL-KDD and UNSW-NB15.
 
