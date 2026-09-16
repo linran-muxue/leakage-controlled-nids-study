@@ -1,0 +1,81 @@
+{
+  "protocol": "natural-prior population; test-time perturbations plus retraining under label noise",
+  "seeds": [
+    42
+  ],
+  "missing_fraction": 0.1,
+  "drift_fraction_of_features": 0.2,
+  "drift_magnitude": "1% of the training range added to the selected features",
+  "summary": [
+    {
+      "model": "equal_rf_chi2",
+      "condition": "clean",
+      "mean": 0.891714,
+      "std": NaN,
+      "relative_drop_pct": 0.0
+    },
+    {
+      "model": "equal_rf_chi2",
+      "condition": "label_noise_10pct",
+      "mean": 0.8849,
+      "std": NaN,
+      "relative_drop_pct": 0.764
+    },
+    {
+      "model": "equal_rf_chi2",
+      "condition": "label_noise_5pct",
+      "mean": 0.884464,
+      "std": NaN,
+      "relative_drop_pct": 0.813
+    },
+    {
+      "model": "equal_rf_chi2",
+      "condition": "missing_10pct",
+      "mean": 0.856169,
+      "std": NaN,
+      "relative_drop_pct": 3.986
+    },
+    {
+      "model": "equal_rf_chi2",
+      "condition": "offset_drift",
+      "mean": 0.723953,
+      "std": NaN,
+      "relative_drop_pct": 18.813
+    },
+    {
+      "model": "rccf",
+      "condition": "clean",
+      "mean": 0.889284,
+      "std": NaN,
+      "relative_drop_pct": 0.0
+    },
+    {
+      "model": "rccf",
+      "condition": "label_noise_10pct",
+      "mean": 0.877589,
+      "std": NaN,
+      "relative_drop_pct": 1.315
+    },
+    {
+      "model": "rccf",
+      "condition": "label_noise_5pct",
+      "mean": 0.883911,
+      "std": NaN,
+      "relative_drop_pct": 0.604
+    },
+    {
+      "model": "rccf",
+      "condition": "missing_10pct",
+      "mean": 0.851135,
+      "std": NaN,
+      "relative_drop_pct": 4.29
+    },
+    {
+      "model": "rccf",
+      "condition": "offset_drift",
+      "mean": 0.736423,
+      "std": NaN,
+      "relative_drop_pct": 17.189
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "n_test_rows": 7986,
+  "n_experts": 4,
+  "mean_entropy_deficiency_observed": 3.2366738234653416e-05,
+  "mean_entropy_deficiency_predicted_from_var_delta": 3.364931025018772e-05,
+  "mean_second_order_identity_value": 3.187128781894792e-05,
+  "mean_var_log_weight": 9.329569811081794e-05,
+  "sd_risk_offset": 0.009658969826581815,
+  "median_sd_risk_offset": 0.00022010870221444328,
+  "max_sd_risk_offset": 0.23364245525978453,
+  "relative_error_of_first_order_prediction": 0.0396262362378276,
+  "relative_error_of_second_order_identity": 0.015307394032526893
+}

@@ -51,6 +51,8 @@ The contributions are ordered by evidential strength.
 3. **A quantitative map separating protocol effects from aggregation-rule effects.** On one experiment set we measure four sources of variation: aggregation (0.0005), feature view (+0.0021), deduplication order (up to +0.0060), tuning budget (+0.0078) and class prior (+0.072). File-level extrapolation spans 0.33-1.00. Protocol effects are an order of magnitude larger than the aggregation effect the literature usually reports.
 4. **An honest cost account.** Training and inference overhead, probability quality, open-set behaviour and latency percentiles are reported for the conditional mechanism, showing that in the absence of a discriminative gain these costs are not exchangeable.
 
+The contribution is deliberately not incremental. Adding another classifier to an existing benchmark would answer no open question, because the literature already contains many such comparisons and they disagree. What the field lacks is a way to decide whether a reported difference is attributable to the method or to the protocol. This paper supplies that decision procedure in three parts: an auditable protocol that fixes the information boundary, a set of identifiability conditions that predict when an aggregation mechanism cannot act at all, and a measured magnitude for each source of variation so that a reader can see which choices actually move the number. The result is falsifiable - Condition 1 predicts zero gain for the expert sets used here, and the reverse experiment confirms that prediction - and it is usable by other authors regardless of which classifier they prefer.
+
 We explicitly do **not** claim that RCCF is a better classifier, that the results extend to the full CIC-IDS2017 corpus or to production traffic, or that the NSL-KDD and UNSW-NB15 results constitute evidence of cross-dataset transfer.
 
 ### 1.5 Organisation
@@ -160,6 +162,8 @@ The local CIC-IDS2017 archive contains eight CSV files, 2,830,743 raw records an
 
 NSL-KDD uses the official KDDTrain+ and KDDTest+ files with native labels Normal, DoS, Probe, R2L and U2R, and no label remapping. It is therefore an **independent native-label benchmark**, not a transfer experiment. UNSW-NB15 uses the official training and testing CSV files with the ten-class `attack_cat` label; the binary label and identifier columns are dropped, and categorical variables are encoded from the training side only.
 
+The three datasets are deliberately complementary rather than interchangeable. They span three capture eras (a 1998 line of descent for NSL-KDD, a 2015 synthetic testbed for UNSW-NB15 and a 2017 enterprise-like testbed for CIC-IDS2017), three feature extractors (a 41-feature connection record set, a 49-feature Argus/Bro-derived set and a 78-feature CICFlowMeter set), and three label spaces (5, 10 and 5 retained classes). Their known defects also differ: NSL-KDD carries the redundancy of its KDD lineage, UNSW-NB15 contains largely synthetically generated attacks and cross-split feature overlap, and CIC-IDS2017 contains duplicate flows, cross-label conflicts and constant columns. A fourth dataset would add most value if it covered an environment none of the three represents - an IoT or operational-technology deployment, a different capture vantage point, or a temporally separated capture from the same testbed. The coverage matrix is reported in the supplementary material.
+
 The three datasets use incompatible label spaces. Their scores are therefore never pooled, averaged or interpreted as evidence of transfer. Their role is to act as pressure tests: a conclusion that holds only on CIC-IDS2017 should not be written as a general law.
 
 ### 3.4 Leakage-controlled protocol
@@ -204,7 +208,7 @@ External controls are an equal-weight random forest (RF) on each view, extremely
 
 The mechanism under test is RCCF (Risk-Calibrated Conformal Forest). In the released code the implementation is named `cfrg_forest` for historical reasons; the two names refer to the same object.
 
-Let p_e(y|x) be the probability output of expert e in {full, chi2, MI, ANOVA}, with Q = 4 experts. The mechanism has three steps.
+Let p_e(y|x) be the probability output of expert e in {full, chi-square, MI, ANOVA}, with Q = 4 experts. The mechanism has three steps.
 
 **Step 1, reliability descriptors.** K-fold cross-fitting produces out-of-fold probabilities for each expert, from which three descriptors are computed: confidence (the maximum class probability), normalised entropy (predictive uncertainty) and the top-two probability margin. These descriptors use only out-of-fold predictions inside the training partition and never touch validation or test labels.
 
@@ -257,7 +261,15 @@ $$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ 
 
 Let m(x) be the difference between the top-1 and top-2 entries of the equal-weight fused probability. If 2 Delta(x) < m(x), then p_w and p_bar have the same argmax, so no choice of weights can change the hard label of that row. The criterion is evaluated row by row, which makes Condition 2 checkable rather than existential. The bound is computed on the pre-temperature fused probabilities; temperature scaling is a monotone transform of the log-probabilities and therefore preserves the argmax, so the invariance conclusion carries over to the reported predictions.
 
-**Condition 3 (weight collapse).** If the risk models return approximately equal values, r_e(x) approximately c(x) for all e, then w_e(x) approximately 1/Q and conditional weighting degenerates to equal averaging. The observable criterion is the normalised weight entropy
+**Condition 3 (weight collapse, quantified).** Write r_e(x) = r_bar(x) + delta_e(x). Since log w_e = -r_e + const, we have Var(log w) = Var(delta). Expanding the normalised entropy around the uniform point gives, to second order,
+
+$$1-H_{norm}(w)=\frac{Q}{2\log Q}\left\|w-\frac{1}{Q}\mathbf{1}\right\|_2^2,$$
+
+and a first-order expansion of the softmax gives the simpler relation
+
+$$1-H_{norm}(w)\ \approx\ \frac{\mathrm{Var}(\delta)}{2\log Q}.$$
+
+Both are directly checkable. Over the 7,986 test rows the observed mean entropy deficiency is 3.24 x 10^-5; the second-order identity predicts 3.19 x 10^-5 (1.5% relative error) and the first-order relation predicts 3.36 x 10^-5 (4.0% relative error). The underlying quantity is the informative part: the median standard deviation of the risk offsets across the four experts is 0.00022 in log-odds, so the experts receive almost identical reliability on almost every row. An earlier, purely definitional formulation used the normalised weight entropy
 
 $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x),$$
 
@@ -335,7 +347,7 @@ Five readings follow.
 
 ![Figure 4. Main results and paired bootstrap intervals](figures_en/fig4_main_results.png)
 
-Note that the left panel of Figure 4 starts at 0.75 in order to display differences of one thousandth; the right panel shows that those differences are statistically indistinguishable. The two panels must be read together, not by bar height alone.
+Note that the left panel of Figure 4 starts at 0.75 to display differences of one thousandth; the right panel shows that those differences are statistically indistinguishable. The two panels must be read together, not by bar height alone.
 
 **Second, the paired statistics establish equivalence at a strict margin.** With ten seeds the mean paired difference is -0.000456 with a standard deviation of 0.001152. Two interval estimates are reported because they answer different questions: the seed-level 90% interval [-0.001124, +0.000212] reflects model-to-model variability, while the test-row paired bootstrap interval [-0.004251, +0.003382] reflects resampling uncertainty over the locked test set. Both lie inside equivalence margins of 0.005 and 0.01 Macro-F1, so equivalence can be asserted at alpha = 0.05 against either margin. This strengthens the three-seed analysis, for which the 0.005 margin was not attainable. The sign of the difference is split five to five across seeds, and exact McNemar tests on the test rows are non-significant. Under the pre-declared decision rule - stable, consistent in sign, and bounded away from zero - **H2 is not supported**.
 
@@ -389,7 +401,7 @@ The conditions in Section 4.3 make falsifiable predictions. This section tests t
 
 ![Figure 7. Dose-response between expert diversity and gate gain](figures_en/fig7_diversity_dose_response.png)
 
-The relationship between disagreement and gain is monotone and dose-dependent: a linear regression over the 15 observations gives a slope of 0.0646 with Pearson r = 0.749. The two low-diversity expert sets (0.20% and 0.36%) gain **exactly zero** in all six runs and change no predictions, whereas the three decorrelated sets (1.76% to 6.44%) gain **positively in all nine runs**, changing between 9 and 36 rows. This yields the most important mechanistic conclusion of the study: **the gain of conditional weighting is governed by expert diversity; on flow-feature data, "multi-view" experts built from different filter selectors disagree on only 0.2%-0.4% of samples, so the gate is structurally incapable of producing a gain.** When disagreement is raised to 3%-6% the gate does begin to change predictions and yields a small positive gain, but that gain (+0.003 to +0.004 Macro-F1) remains below the split-to-split variation (standard deviation about 0.011).
+The relationship between disagreement and gain is monotone and dose-dependent: a linear regression over the 15 observations gives a slope of 0.0646 with Pearson r = 0.749. The two low-diversity expert sets (0.20% and 0.36%) gain **exactly zero** in all six runs and change no predictions, whereas the three decorrelated sets (1.76% to 6.44%) gain **positively in all nine runs**, changing between 9 and 36 rows. This yields the most important mechanistic conclusion of the study: **the gain of conditional weighting is governed by expert diversity.** On flow-feature data, "multi-view" experts built from different filter selectors disagree on only 0.2%-0.4% of samples, so the gate is structurally incapable of producing a gain. When disagreement is raised to 3%-6% the gate does begin to change predictions and yields a small positive gain, but that gain (+0.003 to +0.004 Macro-F1) remains below the split-to-split variation (standard deviation about 0.011).
 
 ### 5.4 RQ3: Protocol effects exceed aggregation-rule differences by an order of magnitude
 
@@ -430,6 +442,8 @@ Together the three experiments give a negative answer to RQ4: the conclusions of
 ![Figure 11. Single-row inference latency](figures_en/fig11_latency.png)
 
 **Latency.** For single-row inference on one thread, RCCF's P50/P95/P99 latencies are 14.62/15.77/16.12 ms against 2.96/3.61/4.18 ms for the equal-weight chi-square forest. Switching to the library-default threading raises RCCF to 69.93/75.11/76.22 ms and the equal forest to 16.69/18.24/18.47 ms; small single-row calls cannot exploit multiple threads and instead pay scheduling overhead. These figures cover the **classifier stage only** and exclude packet capture, flow construction and feature extraction.
+
+**Extended robustness.** Three further failure modes were probed. Corrupted supervision is comparatively benign: flipping 5% and 10% of the training labels costs the conditional mechanism 0.6% and 1.3% relative Macro-F1, and the equal-weight forest 0.8% in both cases. Missing measurements are more damaging - replacing 10% of test entries with the training median costs 4.3% and 4.0% respectively - and calibration drift is the most damaging of the three: adding 1% of the training range to 20% of the feature columns costs 17.2% and 18.8%. Ordered by severity across all perturbations tested, continuous corruption of feature values dominates (1% Gaussian noise 43.3%, calibration drift 17-19%, 10% missing values 4%), whereas corrupted supervision is an order of magnitude less harmful (0.6-1.3%). This ordering is operationally relevant because dataset critiques focus on label noise, while measurement drift receives far less attention. These three conditions were evaluated on a single seed and are reported as an exploratory diagnostic.
 
 **Resource footprint.** Model size and throughput separate the two designs more sharply than wall-clock time. The conditional mechanism stores four forests and occupies 9.09 MB when serialised, against 2.21 MB for the single equal-weight forest - a factor of 4.1 - and it processes about 43,100 rows per second on a full test batch against 200,300, a factor of 4.6. Peak resident-set growth during fitting was 37.0 MB against 78.3 MB, but the two models were profiled within one process, so that particular figure is order-dependent and indicative only.
 
@@ -522,7 +536,7 @@ The conclusions are bounded as follows, and these bounds should be cited alongsi
 
 This study tested the widely adopted assumption that sample-conditional ensemble weighting is better than equal voting, under a strict leakage-controlled protocol. Three conclusions follow.
 
-**First, relative to the most direct equal-weight control the gain lies inside an equivalence boundary.** Averaged over ten seeds on the natural-prior population of CIC-IDS2017, the Macro-F1 difference between conditional weighting and an equal-weight chi-square forest is -0.000456 with the per-seed sign split five to five; both the seed-level 90% interval [-0.00112, +0.00021] and the test-row paired bootstrap interval [-0.00425, +0.00338] lie inside equivalence margins of 0.005 and 0.01. The four experts disagree on no test row, and the normalised weight entropy is 0.99998. The cost is about an 80-fold increase in training time and a fivefold increase in batch inference time. Against a full-feature equal forest the gate is reliably better over ten seeds, but the magnitude matches that of a feature-view change.
+**First, relative to the most direct equal-weight control the gain lies inside an equivalence boundary.** Averaged over ten seeds on the natural-prior population of CIC-IDS2017, the Macro-F1 difference between conditional weighting and an equal-weight chi-square forest is -0.000456, with the per-seed sign split five to five. Both the seed-level 90% interval [-0.00112, +0.00021] and the test-row paired bootstrap interval [-0.00425, +0.00338] lie inside equivalence margins of 0.005 and 0.01. The four experts disagree on no test row, and the normalised weight entropy is 0.99998. The cost is about an 80-fold increase in training time and a fivefold increase in batch inference time. Against a full-feature equal forest the gate is reliably better over ten seeds, but the magnitude matches that of a feature-view change.
 
 **Second, the failure is explainable and quantified.** Three identifiability conditions are derived and one of them is turned into a row-wise computable bound, under which 99.91% of 23,958 test rows are provably invariant to the weighting, with a decision margin 3,469 to 5,038 times the perturbation bound. A search over all 108 gate hyper-parameter configurations yields only six distinct validation scores, excluding insufficient tuning. A reverse experiment shows that the gain is governed by expert diversity: two low-diversity expert sets gain exactly zero in all six runs, whereas three decorrelated sets gain positively in all nine runs (slope 0.0646, Pearson r = 0.749). The inertness of conditional weighting is therefore not an implementation or tuning artefact but a direct consequence of filter-based multi-view experts being too similar on this kind of data.
 
@@ -534,7 +548,7 @@ The principal contribution is not a new state-of-the-art classifier but a reusab
 
 ## Data and code availability
 
-Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.4.0, tag v1.4.0). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
+Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.5.0, tag v1.5.0). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
 
 ## Funding
 
@@ -634,3 +648,5 @@ Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not 
 | S22 | Resource profile: model size, throughput and peak memory |
 | S23 | Cost-sensitive evaluation for false-negative to false-positive ratios 1 to 100 |
 | S24 | Reference DOI verification record |
+| S25 | Dataset coverage matrix and quantitative verification of Condition 3 |
+| S26 | Extended robustness: label noise, missing values and calibration drift |

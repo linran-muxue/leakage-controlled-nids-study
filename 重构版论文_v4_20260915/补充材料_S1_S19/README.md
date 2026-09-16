@@ -26,3 +26,5 @@
 | S22 | 资源画像：模型体积、吞吐与峰值内存 | resource_profile.csv; resource_profile_summary.json |
 | S23 | 代价敏感评估（误报漏报代价比 1 至 100） | cost_sensitive_summary.csv; cost_sensitive_by_seed.csv |
 | S24 | 参考文献 DOI 核验记录 | doi_verification.json |
+| S25 | 数据集覆盖矩阵与命题 3 定量验证 | dataset_coverage_matrix.csv; proposition3_quantification.csv; proposition3_quantification.json |
+| S26 | 扩展鲁棒性：标签噪声、缺失值与标定漂移 | robustness_extended_summary.csv; robustness_extended_by_seed.csv |
