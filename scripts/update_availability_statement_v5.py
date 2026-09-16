@@ -1,26 +1,26 @@
-"""Point the availability statements at the release that contains the v5 evidence."""
+"""Keep the data- and code-availability statement in step with the released tag."""
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
+TARGET = "v1.7.0"
 
 
 def main() -> None:
-    en_path = BASE / "English_SCI_Manuscript_v4.md"
-    en = en_path.read_text(encoding="utf-8")
-if "(release v1.5.0, tag v1.5.0)" in en:
-    en = en.replace("(release v1.5.0, tag v1.5.0)", "(release v1.7.0, tag v1.7.0)", 1)
-        en_path.write_text(en, encoding="utf-8")
-    zh_path = BASE / "中文SCI论文_v4_重构版.md"
-    zh = zh_path.read_text(encoding="utf-8")
-if "（发布版本 v1.5.0，标签 v1.5.0）" in zh:
-    zh = zh.replace("（发布版本 v1.5.0，标签 v1.5.0）", "（发布版本 v1.7.0，标签 v1.7.0）", 1)
-        zh_path.write_text(zh, encoding="utf-8")
-    print("AVAILABILITY_UPDATED")
+    for name in ("English_SCI_Manuscript_v4.md", "中文SCI论文_v4_重构版.md"):
+        path = BASE / name
+        text = path.read_text(encoding="utf-8")
+        updated, n = re.subn(r"v1\.\d+\.\d+", TARGET, text)
+        if n == 0:
+            raise SystemExit(f"no version string found in {name}")
+        path.write_text(updated, encoding="utf-8")
+        found = sorted(set(re.findall(r"v1\.\d+\.\d+", updated)))
+        print(f"UPDATED={name} versions={found}")
 
 
 if __name__ == "__main__":

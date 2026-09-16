@@ -98,3 +98,13 @@ if row:
           f"summary {passed}/{partial}/{missing} vs counted {actual_pass}/{actual_partial}/{actual_missing}")
     check("total equals the sum of parts", passed + partial + missing == total,
           f"{passed}+{partial}+{missing} vs {total}")
+
+print()
+print("=== 8. availability statement vs the released tag ===")
+import subprocess  # noqa: E402
+tags = subprocess.run(["git", "tag"], capture_output=True, text=True, cwd=ROOT).stdout.split()
+latest = sorted(tags, key=lambda t: [int(x) for x in re.findall(r"\d+", t)])[-1] if tags else ""
+cited = set(re.findall(r"v1\.\d+\.\d+", EN)) | set(re.findall(r"v1\.\d+\.\d+", ZH))
+check("manuscript cites exactly one release", len(cited) == 1, f"cited {sorted(cited)}")
+check("cited release is the latest tag", cited == {latest},
+      f"cited {sorted(cited)} vs latest tag {latest}")
