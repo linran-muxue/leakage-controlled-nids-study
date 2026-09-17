@@ -1,7 +1,7 @@
 # Leakage-Controlled Network Intrusion Detection Study
 
 Public repository: https://github.com/linran-muxue/leakage-controlled-nids-study
-Submission release: `v1.0.2` (tag present in the local checkout; verify the remote tag before submission)
+Submission release: `v1.10.0` (pushed to the remote; the archive cited in the manuscript availability statement)
 
 The locked CIC-IDS2017 publication protocol is **v3b**.  `data_processed_cic_natural_v3b`
 is the primary capped natural-prior research population, while
@@ -10,7 +10,7 @@ older `audit_v1`--`audit_v6`, `data_processed_cic_natural_v1`--`v3`, and
 `results_*_v1`/`v2` directories are historical artifacts and must not be used
 to reproduce the manuscript tables.
 
-Reproducibility materials for the manuscript *Provenance-Aware and Uncertainty-Aware Evaluation of Network Intrusion Detection Models: A Cross-Fitted Risk-Gated Forest Study*.
+Reproducibility materials for the manuscript *Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting*.
 
 ## Scope
 
@@ -52,7 +52,7 @@ See `results_publication_final/external_data_metadata_template.json` and `docs/s
 
 ## Reproducibility archive
 
-The repository is the public code and derived-artifact archive for this study. It excludes the original datasets and other restricted or large raw files. The exact release commit used for submission should be recorded in the manuscript and Manifest after the release is pushed.
+The repository is the public code and derived-artifact archive for this study. It excludes the original datasets and other restricted or large raw files. The exact release commit used for submission is recorded in the manuscript availability statement and in `results_publication_final/MANIFEST.json` (release `v1.10.0`).
 
 ## Citation
 

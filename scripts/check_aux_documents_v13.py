@@ -45,6 +45,33 @@ def main() -> int:
         print(f"  {name}: {'stamped' if stamped else 'NO STATUS STAMP'}")
         if not stamped:
             problems.append(f"{name} has no status stamp pointing at the current state")
+    print("=== graphical abstract source ===")
+    ga = (ROOT / "scripts" / "build_graphical_abstract_v5.py").read_text("utf-8")
+    for bad in ["dominates model choice", "3,500"]:
+        if bad in ga:
+            problems.append(f"graphical abstract still carries '{bad}'")
+            print(f"  stale text: {bad}")
+    for good in ["aggregation-rule differences", "3,469-5,038"]:
+        if good not in ga:
+            problems.append(f"graphical abstract is missing '{good}'")
+            print(f"  missing text: {good}")
+    print(f"  title/ratio: {'ok' if not any(b in ga for b in ['dominates model choice', '3,500']) else 'stale'}")
+    print("=== public repository metadata ===")
+    readme = (ROOT / "README.md").read_text("utf-8")
+    cff = (ROOT / "CITATION.cff").read_text("utf-8")
+    for name, text in (("README.md", readme), ("CITATION.cff", cff)):
+        found_tags = sorted(set(re.findall(r"v1\.\d+\.\d+", text)))
+        stale_tags = [t for t in found_tags if t != latest]
+        print(f"  {name}: release tags {found_tags or 'none'}")
+        if stale_tags:
+            problems.append(f"{name} still cites {stale_tags}")
+    if "Provenance-Aware" in readme:
+        problems.append("README.md still names a superseded manuscript title")
+    number = latest.lstrip("v")
+    if f'version: "{number}"' not in cff:
+        problems.append(f"CITATION.cff version does not match {latest}")
+    if "Aggregation-Rule Differences" not in readme:
+        problems.append("README.md does not name the current manuscript title")
     print()
     if problems:
         for problem in problems:

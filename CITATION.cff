@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-title: "Leakage-controlled evaluation of conditional ensemble weighting for flow-based network intrusion detection"
+title: "Reproducibility archive for: Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting"
 message: "If you use this code or the released evidence, please cite the accompanying manuscript and this archive."
 type: software
 license: MIT
 repository-code: "https://github.com/linran-muxue/leakage-controlled-nids-study"
-version: "1.2.0"
-date-released: "2026-09-16"
+version: "1.10.0"
+date-released: "2026-09-17"
 abstract: >-
   Reproducibility archive for a leakage-controlled multi-dataset study of sample-conditional
   ensemble weighting in flow-based network intrusion detection. Includes the audited data

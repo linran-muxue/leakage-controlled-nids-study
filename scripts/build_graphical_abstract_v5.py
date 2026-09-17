@@ -33,7 +33,7 @@ def main() -> None:
     fig = plt.figure(figsize=(11.0, 7.6))
     gs = fig.add_gridspec(2, 2, hspace=0.34, wspace=0.24, top=0.86, bottom=0.09,
                           left=0.07, right=0.97)
-    fig.suptitle("Protocol sensitivity dominates model choice in flow-based NIDS",
+    fig.suptitle("Protocol sensitivity dominates aggregation-rule differences in flow-based NIDS",
                  fontsize=13.5, weight="bold")
 
     # ---- A: protocol -------------------------------------------------------
@@ -81,7 +81,7 @@ def main() -> None:
     for b, v in zip(bars, values):
         ax.text(b.get_x() + b.get_width() / 2, v + 3,
                 f"{v:.2f}%" if v > 1 else "0 rows", ha="center", fontsize=8.2)
-    ax.text(0.5, 0.925, "weights collapse to uniform; margins exceed\nthe perturbation bound by about 3,500x",
+    ax.text(0.5, 0.925, "weights collapse to uniform; margins exceed\nthe perturbation bound by 3,469-5,038x",
             transform=ax.transAxes, ha="center", va="top", fontsize=7.6, color="#444444")
     ax.tick_params(axis="x", labelsize=7.8)
     ax.grid(axis="y", alpha=0.2)
@@ -105,10 +105,13 @@ def main() -> None:
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
 
-    out = OUT / "Graphical_Abstract_v4.png"
-    fig.savefig(out, dpi=300)
+    png = OUT / "Graphical_Abstract_v4.png"
+    pdf = OUT / "Graphical_Abstract_v4.pdf"
+    fig.savefig(png, dpi=300)
+    fig.savefig(pdf)
     plt.close(fig)
-    print(f"GRAPHICAL_ABSTRACT={out}")
+    print(f"GRAPHICAL_ABSTRACT={png}")
+    print(f"GRAPHICAL_ABSTRACT_PDF={pdf}")
 
 
 if __name__ == "__main__":

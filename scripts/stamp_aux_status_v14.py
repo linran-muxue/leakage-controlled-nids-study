@@ -25,17 +25,37 @@ STAMP = """> **状态说明（2026-09-17 更新）**
 > 建议阅读顺序：先看自查表结论 → 再看审查报告对应轮次 → 最后把本文档当作历史任务清单与命令参考。
 """
 DOCS = ["研究缺口审计与优先级清单.md", "P0_P1执行手册.md", "论文结构诊断与重构方案.md"]
+DATED_RECORDS = [
+    "final_submission_gate_v2_2026-09-11.md",
+    "final_submission_gate_2026-09-10.md",
+    "content_quality_gap_audit_2026-09-11.md",
+    "public_code_release_plan.md",
+    "jisa_submission_checklist_v1.md",
+]
+RECORD_STAMP = """> **状态说明（2026-09-17 更新）**
+>
+> 本文档是**历史记录**（写作日期见文件名或以正文标注为准），其中的版本号、稿件路径、引用条数与待办清单反映的是当时状态，可能已被后续轮次取代。
+> 当前状态以 `重构版论文_v4_20260915/论文自查表.md`（66 项：62 通过 / 4 部分通过 / 0 缺失）与 `重构版论文_v4_20260915/遗漏问题审查报告.md`（第一至第十一轮）为准。
+> 例如：发布标签已推进到 v1.10.0；正式稿件为 `English_SCI_Manuscript_v4` / `中文SCI论文_v4_重构版`；参考文献为 45 条且 DOI 已核验；补充材料为 `补充材料_S01_S26/`。
+"""
+def stamp(path: Path, stamp_text: str) -> None:
+    text = path.read_text(encoding="utf-8")
+    if MARKER in text:
+        print(f"{path.name}: already stamped")
+        return
+    lines = text.splitlines()
+    insert_at = 1 if lines and lines[0].startswith("#") else 0
+    new = lines[:insert_at] + ["", stamp_text.rstrip()] + lines[insert_at:]
+    path.write_text("\n".join(new) + "\n", encoding="utf-8")
+    print(f"{path.name}: stamped")
 def main() -> None:
     for name in DOCS:
-        path = BASE / name
-        text = path.read_text(encoding="utf-8")
-        if MARKER in text:
-            print(f"{name}: already stamped")
-            continue
-        lines = text.splitlines()
-        insert_at = 1 if lines and lines[0].startswith("#") else 0
-        new = lines[:insert_at] + ["", STAMP.rstrip()] + lines[insert_at:]
-        path.write_text("\n".join(new) + "\n", encoding="utf-8")
-        print(f"{name}: stamped")
+        stamp(BASE / name, STAMP)
+    for name in DATED_RECORDS:
+        path = ROOT / "docs" / name
+        if path.exists():
+            stamp(path, RECORD_STAMP)
+        else:
+            print(f"{name}: missing")
 if __name__ == "__main__":
     main()
