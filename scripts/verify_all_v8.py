@@ -33,6 +33,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
     ("supplementary mirror", ["scripts/sync_supplementary_mirror_v16.py", "--check"],
      ("SUPPLEMENTARY_MIRROR_MISMATCH",)),
+    ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
 ]
 
 
