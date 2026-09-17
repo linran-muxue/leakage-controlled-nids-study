@@ -1,0 +1,11 @@
+﻿model,condition,mean,std,count,relative_drop_pct
+equal_rf_chi2,clean,0.891717,0.000575,3,0.0
+equal_rf_chi2,label_noise_10pct,0.882831,0.001792,3,0.997
+equal_rf_chi2,label_noise_5pct,0.88488,0.002451,3,0.767
+equal_rf_chi2,missing_10pct,0.85385,0.002121,3,4.247
+equal_rf_chi2,offset_drift,0.729088,0.007588,3,18.238
+rccf,clean,0.889955,0.001193,3,0.0
+rccf,label_noise_10pct,0.881348,0.003362,3,0.967
+rccf,label_noise_5pct,0.884903,0.000866,3,0.568
+rccf,missing_10pct,0.852524,0.004639,3,4.206
+rccf,offset_drift,0.736608,0.001009,3,17.231

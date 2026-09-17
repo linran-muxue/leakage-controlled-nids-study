@@ -1,0 +1,17 @@
+{
+  "protocol": "natural-prior population, single seed, whole test batch",
+  "test_rows": 7986,
+  "summary": {
+    "rccf": {
+      "rows_per_second": 43064.33,
+      "peak_rss_mb": 37.0,
+      "model_size_mb": 9.09
+    },
+    "equal_rf_chi2": {
+      "rows_per_second": 200275.86,
+      "peak_rss_mb": 78.31,
+      "model_size_mb": 2.21
+    }
+  },
+  "note": "peak_rss_mb is the increment over the interpreter baseline after fitting; throughput is a single-machine measurement"
+}

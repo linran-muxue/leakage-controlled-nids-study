@@ -31,6 +31,8 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
+    ("supplementary mirror", ["scripts/sync_supplementary_mirror_v16.py", "--check"],
+     ("SUPPLEMENTARY_MIRROR_MISMATCH",)),
 ]
 
 
