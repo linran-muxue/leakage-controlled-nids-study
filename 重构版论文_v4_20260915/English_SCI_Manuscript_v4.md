@@ -206,6 +206,8 @@ Four feature views, rather than four different algorithms, are used deliberately
 
 External controls are an equal-weight random forest (RF) on each view, extremely randomised trees, XGBoost and a multilayer perceptron (MLP). Tree-ensemble and boosting references are [1-8]. All controls share the feature budget and the seed set.
 
+Per-file processing counts, class support and the training-side feature scores of all four views are provided in Supplementary S01-S04.
+
 ### 4.2 Sample-conditional weighting
 
 The mechanism under test is RCCF (Risk-Calibrated Conformal Forest). In the released code the implementation is named `cfrg_forest` for historical reasons; the two names refer to the same object.
@@ -278,6 +280,8 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x),  (5)$$
 which approaches 1 in that limit.
 
 Together the conditions yield a falsifiable prediction: on data where experts are highly correlated and the risk models are nearly constant, the hard-label gain of conditional weighting should be zero or near zero, the weight entropy should approach 1, and the expert disagreement rate should approach 0. Section 5.3 tests this prediction directly.
+
+The row-wise margin bound and the quantification of Condition 3 are provided in Supplementary S17 and S25.
 
 ### 4.4 Complexity
 
@@ -369,6 +373,8 @@ Three entries deserve comment. **Power.** With ten seeds and the observed standa
 
 **Fifth, a neural baseline shows how badly accuracy can mislead.** A multilayer perceptron given the same feature budget and a full training budget (128 hidden units, hyper-parameters selected on the validation partition) reaches 0.97679 accuracy, essentially the same as RCCF's 0.97792 over the three seeds common to both runs, but only 0.797654 Macro-F1, 0.092 below RCCF. Its balanced accuracy is 0.79666 against 0.94920, and its Brier score is 0.036701 against 0.006312. Notably, a paired McNemar test on overall correctness is not significant (pooled p = 0.383 over 23,958 rows; per-seed 1.000 / 0.768 / 0.261), because the two models make a similar **number** of errors and differ in **which classes** those errors fall on. This yields two methodological consequences: on imbalanced intrusion-detection benchmarks, accuracy can conceal a Macro-F1 gap of nearly 0.1; and McNemar's test is insensitive to the class distribution of errors, so it cannot stand alone and must be reported alongside class-level metrics.
 
+Per-seed metrics, per-class reports, normalised confusion matrices and the equivalence tests are provided in Supplementary S05-S07 and S20.
+
 ### 5.3 Mechanism diagnostics: why the gate changes nothing, and when it can
 
 The conditions in Section 4.3 make falsifiable predictions. This section tests them with six independent measurements.
@@ -403,6 +409,8 @@ The conditions in Section 4.3 make falsifiable predictions. This section tests t
 
 The relationship between disagreement and gain is monotone and dose-dependent: a linear regression over the 15 observations gives a slope of 0.0646 with Pearson r = 0.749. The two low-diversity expert sets (0.20% and 0.36%) gain **exactly zero** in all six runs and change no predictions, whereas the three decorrelated sets (1.76% to 6.44%) gain **positively in all nine runs**, changing between 9 and 36 rows. This yields the most important mechanistic conclusion of the study: **the gain of conditional weighting is governed by expert diversity.** On flow-feature data, "multi-view" experts built from different filter selectors disagree on only 0.2%-0.4% of samples, so the gate is structurally incapable of producing a gain. When disagreement is raised to 3%-6% the gate does begin to change predictions and yields a small positive gain, but that gain (+0.003 to +0.004 Macro-F1) remains below the split-to-split variation (standard deviation about 0.011).
 
+The gate search, the row-wise weight records and the expert-diversity suite are provided in Supplementary S08-S09, S16 and S18.
+
 ### 5.4 RQ3: Protocol effects exceed aggregation-rule differences by an order of magnitude
 
 This section places four sources of protocol variation side by side (Figure 8).
@@ -419,6 +427,8 @@ This section places four sources of protocol variation side by side (Figure 8).
 
 Placing the five magnitudes side by side: aggregation 0.0005, feature view +0.0021, deduplication order +0.0014 (maximum 0.0060), tuning budget +0.0078 and class prior +0.0725. **H3 is falsified: protocols are not interchangeable, and protocol effects far outweigh the difference between aggregation rules.** The ordering concerns the aggregation rule specifically. Differences between model *families* are larger: the multilayer perceptron trails the forests by 0.0916 Macro-F1 and extremely randomised trees by 0.0318, both of which exceed the class-prior effect of 0.0725 in the first case. The defensible statement is therefore that aggregation-rule differences are dominated by protocol choices, whereas model-family differences are not.
 
+The protocol-sensitivity runs and the nested cross-validation fold metrics are provided in Supplementary S10-S11.
+
 ### 5.5 RQ4: External validity and file-level extrapolation
 
 ![Figure 9. Class-level F1 on the independent native-label benchmarks](figures_en/fig9_external_class_f1.png)
@@ -430,6 +440,8 @@ Placing the five magnitudes side by side: aggregation 0.0005, feature view +0.00
 **File-level extrapolation.** Under a cross-file stress test in which the model is trained on the remaining files and tested on a target file, Macro-F1 ranges from **0.3325 to 0.9997**: Wednesday (DoS/DDoS) 0.3325, Thursday Morning (Web Attack) 0.4314, Friday Afternoon (DDoS) 0.4949 and Tuesday 0.5229, against Monday 0.9975, Thursday Afternoon 0.9975, Friday Morning 0.9997 and Friday Afternoon PortScan 0.9945. The span approaches 0.67. **The same model is therefore not stably transferable even between files of a single dataset**, so file-level experiments cannot be described as successful temporal generalisation; they support coverage and risk analysis only.
 
 Together the three experiments give a negative answer to RQ4: the conclusions of this study do not extend beyond the CIC-IDS2017 research populations, and within CIC-IDS2017 there is no single extrapolable distribution. This both reinforces the falsification of H3 and shows that "multi-dataset validation" must be kept strictly distinct from "cross-dataset transfer".
+
+The external benchmarks, the file-level extrapolation and the neural baseline comparison are provided in Supplementary S12-S14 and S19.
 
 ### 5.6 Secondary metrics: calibration, robustness, latency and open-set behaviour
 
@@ -452,6 +464,8 @@ Together the three experiments give a negative answer to RQ4: the conclusions of
 **Open-set behaviour.** With PortScan, Infiltration and Heartbleed held out as unknown families, the conditional branch reaches an area under the ROC curve (AUROC) of 0.643 to 0.694 with an unknown-class recall of 0.0015 to 0.0088, whereas the equal-weight forest reaches an AUROC of 0.919 to 0.940 with a recall of 0.057 to 0.128. The risk gate therefore **reduces** the separability of known from unknown traffic: it pushes probability mass towards confident regions and discards the uncertainty signal that rejection depends on. This is the least favourable evidence in the study for the conditional mechanism, and it indicates that binding risk calibration and open-set rejection into a single gate is ill-advised.
 
 ---
+
+Calibration, robustness, latency, resource, cost-sensitive and near-duplicate results are provided in Supplementary S15 and S21-S23, S26.
 
 ## 6. Discussion
 
@@ -570,7 +584,7 @@ To be completed by the author according to actual contributions: conceptualisati
 
 ## References
 
-Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not assign Crossref DOIs (PMLR, NeurIPS, JMLR, USENIX) are marked as such rather than left pending.
+Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not assign Crossref DOIs (PMLR, NeurIPS, JMLR, USENIX) are marked as such rather than left pending.The individual checks are recorded in Supplementary S24.
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
 2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.

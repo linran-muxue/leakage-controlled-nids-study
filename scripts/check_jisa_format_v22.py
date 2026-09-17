@@ -59,6 +59,17 @@ def main() -> int:
     print(f"graphical abstract: {width} x {height} px (minimum width 1328, height 531)")
     if width < 1328 or height < 531:
         problems.append(f"graphical abstract is {width}x{height}")
+    for label, text, heading in (("EN", EN, "## Supplementary material"),
+                                 ("ZH", ZH, "## 补充材料清单")):
+        body = text.split(heading)[0]
+        cited: set[int] = set()
+        for first, last in re.findall(r"S(\d{2})\s*[-–]\s*S?(\d{2})", body):
+            cited.update(range(int(first), int(last) + 1))
+        cited.update(int(m) for m in re.findall(r"S(\d{2})", body))
+        missing = [n for n in range(1, 27) if n not in cited]
+        print(f"supplementary items cited in the {label} text: {len(cited & set(range(1, 27)))}/26")
+        if missing:
+            problems.append(f"{label} text never cites supplementary {missing}")
     print()
     if problems:
         for problem in problems:
