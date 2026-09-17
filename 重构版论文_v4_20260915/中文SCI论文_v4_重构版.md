@@ -2,7 +2,9 @@
 
 ## 摘要
 
-公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用、却缺少受控验证的假设：依据样本估计的可靠性权重对多个随机森林专家进行条件加权融合，能够稳定优于等权投票。我们在统一的泄漏受控协议下，于 CIC-IDS2017 上构造两个显式总体——保留观测类别先验的 53 237 条自然先验总体，与每类 673 条的 3 365 条平衡控制总体——并以 NSL-KDD 与 UNSW-NB15 作为独立原生标签基准，在十个种子上比较（平衡控制为三个种子）全特征、卡方、互信息与方差分析四种特征视图，以及风险校准保形森林（Risk-Calibrated Conformal Forest，RCCF）、等权随机森林、极端随机树与 XGBoost。结果表明：在自然先验主协议下，在十个种子上，RCCF 与等权卡方随机森林的 Macro-F1 平均差为 −0.00046，逐种子方向五正五负；种子级 90% 区间 [−0.00112, +0.00021] 与测试行级配对 Bootstrap 区间 [−0.00425, +0.00338] 都落在 SESOI = 0.005 与 0.01 Macro-F1 的等价边界之内，四个专家在测试集上没有任何一条预测分歧；所学权重的归一化熵为 0.99998，几乎退化为均匀权重。作为对照，类别先验由自然改为平衡使 Macro-F1 变化约 +0.072，去重顺序改变带来至多 +0.0060 的差异，而文件级外推使同一模型的 Macro-F1 落在 0.33 至 1.00 之间。我们进一步给出三个可辨识性命题，其中命题 2 被改写为可逐行计算的显式判据：在 23 958 条测试样本上，99.91% 的样本可被证明不受权重影响，实际改判 0 条，决策边距是权重扰动上界的 3469 至 5038 倍。对门控全部 108 种超参数配置的搜索只产生 6 个不同的验证集 Macro-F1 取值（全距 0.00117），排除了调参不足的解释；反向实验表明增益受专家多样性支配：分歧率 0.20% 至 0.36% 的两类专家集合在 6 次运行中增益恰好为零，而分歧率 1.76% 至 6.44% 的三类去相关集合在 9 次运行中增益全部为正，剂量—反应回归斜率 0.0646（Pearson r = 0.749）。结论是：在本研究覆盖的协议与数据范围内，**协议设计而非聚合策略主导了报告差异**；RCCF 的推理延迟约为等权随机森林的 4.9 倍，其可靠性增益未获证据支持。条件加权机制的模型体积是单个等权森林的 4.1 倍、单行吞吐约为其五分之一，而在误报漏报代价比 1 至 100 的区间内其代价敏感表现与等权森林相同。贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与聚合策略差异分开量化的失效地图。
+
+
+公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用却缺少受控验证的假设：按样本估计的可靠性权重对多个随机森林专家做条件加权融合（RCCF），能否稳定优于等权投票。在统一的泄漏受控协议下，我们用 CIC-IDS2017 构造 53 237 条自然先验总体与 3 365 条平衡控制总体，并以 NSL-KDD 与 UNSW-NB15 作为独立原生标签基准，在十个种子上比较四种特征视图。自然先验协议上，二者 Macro-F1 平均差为 −0.00046，逐种子方向五正五负；种子级 90% 区间 [−0.00112, +0.00021] 与测试行级配对 Bootstrap 区间 [−0.00425, +0.00338] 均落在 0.005 与 0.01 的等价边界内。四个专家在测试集上无任何预测分歧，权重归一化熵为 0.99998；类别先验与去重顺序分别带来 +0.072 与至多 +0.0060 的变化。我们给出三个可辨识性条件，并把其中之一化为可逐行计算的判据：23 958 条测试样本中 99.91% 可证明不受权重影响，决策边距中位数为扰动上界的 3469 至 5038 倍。108 种门控配置只产生 6 个不同的验证集取值，排除了调参不足；增益受专家多样性支配（斜率 0.0646，r = 0.749）。该机制体积是单个等权森林的 4.1 倍、单行慢 4.6 倍，在 1:1 至 100:1 的代价比下没有代价敏感优势。本文的贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与聚合规则差异分开量化的地图；证据不支持算法优越性或生产可用性的主张。
 
 **关键词：** 网络入侵检测；集成学习；条件加权；数据泄漏；可辨识性；可复现性；CIC-IDS2017
 
@@ -214,9 +216,9 @@ Macro-F1 被选为主要指标，原因是自然先验总体中 Web Attack 仅�
 
 **第二步，拟合风险模型。** 对每个专家 e，用其袋外概率与描述子拟合一个逻辑回归风险模型 r_e(x)。风险值越高，表示该专家在类似样本上越不可靠。
 
-**第三步，条件加权与校准。** 融合权重按下式给出：
+**第三步，条件加权与校准。** 融合权重与融合后验由式(1)给出：
 
-$$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).$$
+$$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).  (1)$$
 
 融合概率随后在验证集上做温度缩放 [27]，并用蒙德里安保形预测给出可选的 `unknown` 输出（显著性水平 α = 0.1） [30-33]。需要强调：机制先改变概率，只有在融合后的 argmax 发生改变时，硬标签才会改变。因此"概率变了"与"分类结果变了"是两件事，本文在 5.2 与 5.3 节分别报告。
 
@@ -255,9 +257,9 @@ $$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\su
 
 该命题给出一个极端情形：专家完全一致时，任何加权都是无效操作。实际数据中专家不会完全相同，因此需要下面更弱的条件。
 
-**命题 2（边距支配）** 设等权融合概率为 $\bar p(x)=\frac{1}{Q}\sum_e p_e(y\mid x)$，门控融合概率为 $p_w(x)=\sum_e w_e(x)\,p_e(y\mid x)$，其中 $w(x)$ 为概率权重向量。由于每个专家的后验位于概率单纯形上（$\|p_e\|_1=1$），有
+**命题 2（边距支配）** 设等权融合概率为 $\bar p(x)=\frac{1}{Q}\sum_e p_e(y\mid x)$，门控融合概率为 $p_w(x)=\sum_e w_e(x)\,p_e(y\mid x)$，其中 $w(x)$ 为概率权重向量。由于每个专家的后验位于概率单纯形上（$\|p_e\|_1=1$），融合后验的位移不超过式(2)的上界：
 
-$$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ =:\ \Delta(x).$$
+$$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ =:\ \Delta(x).  (2)$$
 
 令 $m(x)$ 为等权融合概率的 top-1 与 top-2 之差。若 $2\Delta(x)<m(x)$，则 $p_w$ 与 $\bar p$ 的 argmax 相同，即无论权重如何取值都不能改变该样本的硬标签。该判据只需逐行计算，因此命题 2 是可验证的，而不是存在性陈述。该上界在温度缩放之前的融合概率上计算；温度缩放是 log 概率的单调变换，保持 argmax 不变，因此不变性结论同样适用于最终报告的预测。
 
@@ -267,15 +269,15 @@ $$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ 
 
 **命题 3（权重坍缩，定量形式）** 记 r_e(x) = r̄(x) + δ_e(x)。由于 log w_e = −r_e + 常数，有 Var(log w) = Var(δ)。将归一化熵在均匀点附近展开，可得二阶恒等式
 
-$$1-H_{norm}(w)=\frac{Q}{2\log Q}\left\|w-\frac{1}{Q}\mathbf{1}\right\|_2^2,$$
+$$1-H_{norm}(w)=\frac{Q}{2\log Q}\left\|w-\frac{1}{Q}\mathbf{1}\right\|_2^2,  (3)$$
 
 以及对 softmax 做一阶展开得到的更简关系
 
-$$1-H_{norm}(w)\ \approx\ \frac{\mathrm{Var}(\delta)}{2\log Q}.$$
+$$1-H_{norm}(w)\ \approx\ \frac{\mathrm{Var}(\delta)}{2\log Q}.  (4)$$
 
-两者都可直接检验。在 7 986 条测试样本上，实测平均熵亏缺为 3.24 × 10⁻⁵；二阶恒等式预测 3.19 × 10⁻⁵（相对误差 1.5%），一阶关系预测 3.36 × 10⁻⁵（相对误差 4.0%）。真正有信息量的是底层量：四个专家的风险偏移标准差中位数仅 0.00022（log-odds），说明几乎每一行上各专家被赋予的可靠性几乎相同。对应的可观测判据是归一化权重熵：
+式(3)与式(4)都可直接检验。在 7 986 条测试样本上，实测平均熵亏缺为 3.24 × 10⁻⁵；二阶恒等式预测 3.19 × 10⁻⁵（相对误差 1.5%），一阶关系预测 3.36 × 10⁻⁵（相对误差 4.0%）。真正有信息量的是底层量：四个专家的风险偏移标准差中位数仅 0.00022（log-odds），说明几乎每一行上各专家被赋予的可靠性几乎相同。对应的可观测判据是归一化权重熵（式(5)）：
 
-$$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
+$$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 这三个命题共同给出一个可证伪的预测：**在专家高度相关、风险模型输出接近常数的数据集上，条件加权的硬标签增益应当为零或接近零，而权重熵应当接近 1、专家预测分歧率应当接近 0。** 第 5.3 节用实测数据检验该预测。
 
@@ -575,83 +577,50 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).$$
 说明：全部 DOI 已于 2026-09-16 通过 Crossref 核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
-
 2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.
-
 3. Geurts P, Ernst D, Wehenkel L. Extremely randomized trees. Machine Learning, 2006, 63(1): 3-42. DOI:10.1007/s10994-006-6226-1.
-
 4. Chen T, Guestrin C. XGBoost: A scalable tree boosting system. KDD 2016: 785-794. DOI:10.1145/2939672.2939785.
-
 5. Ke G, Meng Q, Finley T, et al. LightGBM: A highly efficient gradient boosting decision tree. NeurIPS 2017: 3146-3154. [无 DOI；NeurIPS 会议论文集]
 6. Freund Y, Schapire R E. A decision-theoretic generalization of on-line learning and an application to boosting. Journal of Computer and System Sciences, 1997, 55(1): 119-139. DOI:10.1006/jcss.1997.1504.
-
 7. Friedman J H. Greedy function approximation: A gradient boosting machine. The Annals of Statistics, 2001, 29(5): 1189-1232. DOI:10.1214/aos/1013203451.
-
 8. Dietterich T G. Ensemble methods in machine learning. MCS 2000: 1-15. DOI:10.1007/3-540-45014-9_1.
-
 9. Kuncheva L I. Combining Pattern Classifiers: Methods and Algorithms. Wiley, 2004. DOI:10.1002/0471660264.
-
 10. Wolpert D H. Stacked generalization. Neural Networks, 1992, 5(2): 241-259. DOI:10.1016/S0893-6080(05)80023-1.
-
 11. Ting K M, Witten I H. Issues in stacked generalization. Journal of Artificial Intelligence Research, 1999, 10: 271-289. DOI:10.1613/jair.594.
-
 12. Liu H, Setiono R. Chi2: Feature selection and discretization of numeric attributes. ICTAI 1995: 388-391. DOI:10.1109/TAI.1995.479783.
-
 13. Guyon I, Elisseeff A. An introduction to variable and feature selection. JMLR, 2003, 3: 1157-1182. [无 DOI；JMLR]
 14. Sharafaldin I, Lashkari A H, Ghorbani A A. Toward generating a new intrusion detection dataset and intrusion traffic characterization. ICISSP 2018: 108-116. DOI:10.5220/0006639801080116.
-
 15. Tavallaee M, Bagheri E, Lu W, Ghorbani A A. A detailed analysis of the KDD CUP 99 data set. CISDA 2009: 1-6. DOI:10.1109/CISDA.2009.5356528.
-
 16. Moustafa N, Slay J. UNSW-NB15: A comprehensive data set for network intrusion detection systems. MilCIS 2015: 1-6. DOI:10.1109/MilCIS.2015.7348942.
-
 17. Ring M, Wunderlich S, Scheuring D, et al. A survey of network-based intrusion detection data sets. Computers & Security, 2019, 86: 147-167. DOI:10.1016/j.cose.2019.06.005.
-
 18. Engelen G, Timmerman J. Troubleshooting an intrusion detection dataset: The CICIDS2017 case study. IEEE S&P Workshops 2021: 7-12. DOI:10.1109/SPW53761.2021.00009.
-
-19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. DOI:10.1109/CNS56114.2022.9947235。
+19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. DOI:10.1109/CNS56114.2022.9947235.
 20. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [无 DOI；USENIX Security 会议论文集]
 21. Sommer R, Paxson V. Outside the closed world: On using machine learning for network intrusion detection. IEEE S&P 2010: 305-316. DOI:10.1109/SP.2010.25.
-
 22. Buczak A L, Guven E. A survey of data mining and machine learning methods for cyber security intrusion detection. IEEE Communications Surveys & Tutorials, 2016, 18(2): 1153-1176. DOI:10.1109/COMST.2015.2494502.
-
 23. Khraisat A, Gondal I, Vamplew P, Kamruzzaman J. Survey of intrusion detection systems: Techniques, datasets and challenges. Cybersecurity, 2019, 2: 20. DOI:10.1186/s42400-019-0038-7.
-
 24. Apruzzese G, Laskov P, Montgomery E, et al. The role of machine learning in cybersecurity. ACM Digital Threats: Research and Practice, 2023, 4(1): 1-38. DOI:10.1145/3545574.
-
 25. Geng C, Huang S J, Chen S. Recent advances in open set recognition: A survey. IEEE TPAMI, 2021, 43(10): 3614-3631. DOI:10.1109/TPAMI.2020.2981604.
-
 26. Bendale A, Boult T E. Towards open set deep networks. CVPR 2016: 1563-1572. DOI:10.1109/CVPR.2016.173.
-
 27. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [无 DOI；PMLR]
 28. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [无 DOI；NeurIPS 会议论文集]
 29. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [无 DOI；NeurIPS 会议论文集]
 30. Angelopoulos A N, Bates S. Conformal prediction: A gentle introduction. Foundations and Trends in Machine Learning, 2023, 16(4): 494-591. DOI:10.1561/2200000101.
-
 31. Vovk V, Gammerman A, Shafer G. Algorithmic Learning in a Random World. Springer, 2005. DOI:10.1007/b106715.
-
 32. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [无 DOI；JMLR]
 33. Lei J, G'Sell M, Rinaldo A, et al. Distribution-free predictive inference for regression. JASA, 2018, 113(523): 1094-1111. DOI:10.1080/01621459.2017.1307116.
-
 34. McNemar Q. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika, 1947, 12(2): 153-157. DOI:10.1007/BF02295996.
-
 35. Dietterich T G. Approximate statistical tests for comparing supervised classification learning algorithms. Neural Computation, 1998, 10(7): 1895-1923. DOI:10.1162/089976698300017197.
-
 36. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [无 DOI；JMLR]
 37. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [无 DOI；JSTOR 稳定记录 4615733]
 38. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. ISBN 978-0-412-04231-7。
 39. Lakens D. Equivalence tests: A practical primer for t tests, correlations, and meta-analyses. Social Psychological and Personality Science, 2017, 8(4): 355-362. DOI:10.1177/1948550617697177.
-
 40. Han S, Kim Y, Lee S. Improvement of the classification performance of an intrusion detection model for rare and unknown attack traffic. Electronics, 2021, 10(18): 2268. DOI:10.3390/electronics10182268.
-
 41. Guolou P, Ye X. Open-set intrusion detection with MinMax autoencoder and pseudo extreme value machine. IJCNN 2022. DOI:10.1109/IJCNN55064.2022.9892858.
-
 42. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [无 DOI；JMLR]
 43. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
-
 44. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
-
 45. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
-
 ---
 
 ## 补充材料清单

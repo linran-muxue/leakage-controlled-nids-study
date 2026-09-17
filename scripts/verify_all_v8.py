@@ -34,6 +34,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("supplementary mirror", ["scripts/sync_supplementary_mirror_v16.py", "--check"],
      ("SUPPLEMENTARY_MIRROR_MISMATCH",)),
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
+    ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
 ]
 
 

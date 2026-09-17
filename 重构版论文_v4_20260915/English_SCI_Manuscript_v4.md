@@ -2,7 +2,9 @@
 
 ## Abstract
 
-Reported performance differences between machine-learning intrusion-detection models are highly sensitive to duplicate flows, conflicting labels, feature-selection leakage and class priors. We test a widely adopted but rarely validated assumption: that fusing several random-forest experts with sample-specific reliability weights is reliably better than equal voting. Under a single leakage-controlled protocol we construct two explicit populations from CIC-IDS2017 - a 53,237-flow natural-prior population that retains observed class proportions and a 3,365-flow balanced control - and add NSL-KDD and UNSW-NB15 as independent native-label benchmarks, comparing full, chi-square, mutual-information and ANOVA feature views across conditional weighting (RCCF), equal-weight forests, extremely randomised trees, XGBoost and a multilayer perceptron over ten seeds, with a three-seed balanced control. Across ten seeds on the natural-prior protocol the two models differ by -0.00046 Macro-F1 with the per-seed sign split five to five; both the seed-level 90% interval [-0.00112, +0.00021] and the test-row paired bootstrap interval [-0.00425, +0.00338] lie inside equivalence margins of 0.005 and 0.01 Macro-F1. The four experts disagree on none of the test rows and the learned weights have a normalised entropy of 0.99998. By contrast, class prior changes Macro-F1 by +0.072, deduplication order by up to +0.0060, and file-level extrapolation moves the same model between 0.33 and 1.00 Macro-F1. Three identifiability conditions are derived and one of them is turned into a row-wise computable bound: 99.91% of the 23,958 test rows are provably invariant to the weighting, and the decision margin exceeds the perturbation bound by a median factor of 3,469 to 5,038. A search over all 108 gate hyper-parameter configurations yields only six distinct validation scores (range 0.00117), excluding insufficient tuning as an explanation. A reverse experiment shows that the gain is governed by expert diversity rather than by the implementation: two low-diversity expert sets gain exactly zero in six of six runs, whereas three deliberately decorrelated sets gain positively in nine of nine runs (slope 0.0646, Pearson r = 0.749). A neural baseline matches RCCF in accuracy (0.97679 versus 0.97792) while trailing by 0.092 Macro-F1, illustrating how strongly accuracy can mislead on imbalanced benchmarks. The conditional mechanism is 4.1 times larger and 4.6 times slower per row than a single equal-weight forest, and its cost-sensitive behaviour matches that forest across false-negative to false-positive cost ratios from 1 to 100. The contribution is a reusable leakage-controlled protocol, an identifiability boundary and a quantitative map that separates protocol effects from aggregation-rule effects; the evidence does not support claims of algorithmic superiority or production readiness.
+
+
+Reported performance differences between intrusion-detection models are highly sensitive to duplicate flows, conflicting labels, feature leakage and class priors. We test a widely adopted but rarely validated assumption: that fusing random-forest experts with sample-specific reliability weights (RCCF) beats equal voting. Under one leakage-controlled protocol we build a 53,237-flow natural-prior population and a 3,365-flow balanced control from CIC-IDS2017, add NSL-KDD and UNSW-NB15 as independent benchmarks, and compare four feature views over ten seeds. On the natural-prior protocol the two models differ by -0.00046 Macro-F1, with five seeds up and five down; the seed-level 90% interval [-0.00112, +0.00021] and the test-row paired bootstrap interval [-0.00425, +0.00338] both lie inside equivalence margins of 0.005 and 0.01. The four experts disagree on no test row and the learned weights have a normalised entropy of 0.99998, while class prior and deduplication order move Macro-F1 by +0.072 and up to +0.0060. Three identifiability conditions are derived; one becomes a row-wise bound: 99.91% of the 23,958 test rows are provably invariant, with a median decision margin 3,469 to 5,038 times that bound. All 108 gate configurations yield six distinct validation scores, excluding insufficient tuning; the gain is governed by expert diversity (slope 0.0646, r = 0.749). The mechanism is 4.1 times larger and 4.6 times slower per row than one forest, with no cost-sensitive advantage from 1:1 to 100:1. We contribute a reusable leakage-controlled protocol, an identifiability boundary and a quantitative map separating protocol effects from aggregation-rule differences; the evidence supports neither superiority nor production readiness.
 
 **Keywords:** network intrusion detection; ensemble learning; conditional weighting; data leakage; identifiability; reproducibility; CIC-IDS2017
 
@@ -214,9 +216,9 @@ Let p_e(y|x) be the probability output of expert e in {full, chi-square, MI, ANO
 
 **Step 2, risk models.** For each expert e a logistic regression r_e(x) is fitted on its out-of-fold probabilities and descriptors. A larger value indicates that the expert is less reliable on similar samples.
 
-**Step 3, conditional weights and calibration.** The fusion weights are
+**Step 3, conditional weights and calibration.** The fusion weights and the fused posterior are given by Eq. (1):
 
-$$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).$$
+$$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).  (1)$$
 
 Fused probabilities are then temperature-scaled on the validation partition [27], and a Mondrian (class-conditional) conformal predictor provides an optional `unknown` output at significance level alpha = 0.1. [30-33] Note that the mechanism changes probabilities first; a hard label changes only if the fused argmax changes. "The probabilities moved" and "the prediction changed" are therefore distinct statements, and Sections 5.2 and 5.3 report them separately.
 
@@ -255,23 +257,23 @@ Section 5 reports that gated fusion and equal voting agree on every test row. To
 
 This is the degenerate case. Real experts are not identical, so a weaker condition is required.
 
-**Condition 2 (margin dominance).** Let the equal-weight fused probability be p_bar(x) = (1/Q) sum_e p_e(y|x) and the gated fused probability be p_w(x) = sum_e w_e(x) p_e(y|x), with w(x) a probability vector. Because every expert posterior lies on the simplex (||p_e||_1 = 1),
+**Condition 2 (margin dominance).** Let the equal-weight fused probability be p_bar(x) = (1/Q) sum_e p_e(y|x) and the gated fused probability be p_w(x) = sum_e w_e(x) p_e(y|x), with w(x) a probability vector. Because every expert posterior lies on the simplex (||p_e||_1 = 1), the fused posterior moves by at most the bound of Eq. (2):
 
-$$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ =:\ \Delta(x).$$
+$$\left\|p_w-\bar p\right\|_1\ \le\ \sum_{e=1}^{Q}\left|w_e-\frac{1}{Q}\right|\ =:\ \Delta(x).  (2)$$
 
 Let m(x) be the difference between the top-1 and top-2 entries of the equal-weight fused probability. If 2 Delta(x) < m(x), then p_w and p_bar have the same argmax, so no choice of weights can change the hard label of that row. The criterion is evaluated row by row, which makes Condition 2 checkable rather than existential. The bound is computed on the pre-temperature fused probabilities; temperature scaling is a monotone transform of the log-probabilities and therefore preserves the argmax, so the invariance conclusion carries over to the reported predictions.
 
 **Condition 3 (weight collapse, quantified).** Write r_e(x) = r_bar(x) + delta_e(x). Since log w_e = -r_e + const, we have Var(log w) = Var(delta). Expanding the normalised entropy around the uniform point gives, to second order,
 
-$$1-H_{norm}(w)=\frac{Q}{2\log Q}\left\|w-\frac{1}{Q}\mathbf{1}\right\|_2^2,$$
+$$1-H_{norm}(w)=\frac{Q}{2\log Q}\left\|w-\frac{1}{Q}\mathbf{1}\right\|_2^2,  (3)$$
 
 and a first-order expansion of the softmax gives the simpler relation
 
-$$1-H_{norm}(w)\ \approx\ \frac{\mathrm{Var}(\delta)}{2\log Q}.$$
+$$1-H_{norm}(w)\ \approx\ \frac{\mathrm{Var}(\delta)}{2\log Q}.  (4)$$
 
-Both are directly checkable. Over the 7,986 test rows the observed mean entropy deficiency is 3.24 x 10^-5; the second-order identity predicts 3.19 x 10^-5 (1.5% relative error) and the first-order relation predicts 3.36 x 10^-5 (4.0% relative error). The underlying quantity is the informative part: the median standard deviation of the risk offsets across the four experts is 0.00022 in log-odds, so the experts receive almost identical reliability on almost every row. The corresponding observable is the normalised weight entropy
+Equations (3) and (4) are both directly checkable. Over the 7,986 test rows the observed mean entropy deficiency is 3.24 x 10^-5; the second-order identity predicts 3.19 x 10^-5 (1.5% relative error) and the first-order relation predicts 3.36 x 10^-5 (4.0% relative error). The underlying quantity is the informative part: the median standard deviation of the risk offsets across the four experts is 0.00022 in log-odds, so the experts receive almost identical reliability on almost every row. The corresponding observable is the normalised weight entropy, Eq. (5)
 
-$$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x),$$
+$$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x),  (5)$$
 
 which approaches 1 in that limit.
 
@@ -615,7 +617,6 @@ Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not 
 43. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
 44. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
 45. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
-
 ---
 
 ## Supplementary material
