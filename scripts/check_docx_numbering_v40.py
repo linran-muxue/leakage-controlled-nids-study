@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from docx import Document
 from docx.oxml.ns import qn
+import zipfile
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
@@ -55,6 +56,17 @@ def main() -> int:
         print(f"  {name}: {len(blocks)} list(s), numIds {used[:8]}{' ...' if len(used) > 8 else ''}, "
               f"all with start override: {not missing_override}")
     print()
+    for name in ("English_SCI_Manuscript_v4.docx", "中文SCI论文_v4_重构版.docx"):
+        path = BASE / name
+        with zipfile.ZipFile(path) as archive:
+            xml = archive.read("word/document.xml").decode("utf-8", "replace")
+        native = xml.count("<m:oMath>")
+        latex = xml.count("\\frac")
+        print(f"  {name}: native equations {native}, leftover LaTeX fragments {latex}")
+        if native < 5:
+            problems.append(f"{name} has only {native} native equation(s): run convert_equations_word_v41.py")
+        if latex:
+            problems.append(f"{name} still contains LaTeX source ({latex} fragment(s))")
     if problems:
         for problem in problems:
             print(f"ISSUE {problem}")

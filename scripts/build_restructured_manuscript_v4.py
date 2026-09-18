@@ -108,13 +108,15 @@ def style_base(doc: Document) -> None:
 
 
 def add_runs(paragraph, text: str, base_bold: bool = False) -> None:
-    """Render **bold**, `code` and $math$ spans without leaking delimiters."""
-    tokens = re.split(r"(\*\*[^*]+\*\*|`[^`]+`|\$[^$]+\$)", text)
+    """Render **bold**, *italic*, `code` and $math$ spans without leaking delimiters."""
+    tokens = re.split(r"(\*\*[^*]+\*\*|\*[^*\s][^*]*\*|`[^`]+`|\$[^$]+\$)", text)
     for token in tokens:
         if not token:
             continue
         if token.startswith("**") and token.endswith("**"):
             run = paragraph.add_run(token[2:-2]); run.bold = True
+        elif token.startswith("*") and token.endswith("*") and len(token) > 2:
+            run = paragraph.add_run(token[1:-1]); run.italic = True
         elif token.startswith("`") and token.endswith("`"):
             run = paragraph.add_run(token[1:-1]); run.font.name = "Consolas"
         elif token.startswith("$") and token.endswith("$") and len(token) > 1:
@@ -138,6 +140,7 @@ def add_markdown_table(doc: Document, rows: list[list[str]]) -> None:
     cols = max(len(r) for r in rows)
     table = doc.add_table(rows=0, cols=cols)
     table.style = "Table Grid"
+    three_line_table(table)
     for r_index, row in enumerate(rows):
         cells = table.add_row().cells
         for c_index in range(cols):
@@ -149,6 +152,29 @@ def add_markdown_table(doc: Document, rows: list[list[str]]) -> None:
             for run in para.runs:
                 run.font.size = Pt(8)
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
+
+
+BORDER_EDGES = ("top", "bottom", "insideH")
+def three_line_table(table) -> None:
+    """Horizontal rules only: JISA asks to avoid vertical lines and shading."""
+    tblPr = table._tbl.tblPr
+    for existing in tblPr.findall(qn("w:tblBorders")):
+        tblPr.remove(existing)
+    borders = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        element = OxmlElement(f"w:{edge}")
+        if edge in BORDER_EDGES:
+            element.set(qn("w:val"), "single")
+            element.set(qn("w:sz"), "6")
+            element.set(qn("w:space"), "0")
+            element.set(qn("w:color"), "000000")
+        else:
+            element.set(qn("w:val"), "none")
+            element.set(qn("w:sz"), "0")
+            element.set(qn("w:space"), "0")
+            element.set(qn("w:color"), "auto")
+        borders.append(element)
+    tblPr.append(borders)
 
 
 def render(doc: Document, source: Path, numbered_ids: dict[int, str] | None = None) -> None:
