@@ -84,7 +84,7 @@ def main() -> None:
         if after <= before:
             shutil.copy2(backup, path)
             print(f"   reverted: no native equation was produced")
-        else:
+        if backup.exists():
             backup.unlink()
 
 
