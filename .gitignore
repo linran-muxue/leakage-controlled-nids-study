@@ -13,6 +13,7 @@ __pycache__/
 *.pyc
 *.tmp
 _release_stage_v3b_20260912/
+.review_render/
 *.tar.gz
 RCCF_*.zip
 results_publication_stage2/

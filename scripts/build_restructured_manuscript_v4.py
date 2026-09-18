@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from docx import Document
+from docx.oxml import OxmlElement
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
@@ -17,6 +18,70 @@ IMAGE_RE = re.compile(r"^!\[(?P<caption>[^\]]*)\]\((?P<path>[^)]+)\)\s*$")
 TABLE_ROW_RE = re.compile(r"^\|.*\|\s*$")
 MATH_BLOCK_RE = re.compile(r"^\$\$.+\$\$\s*$")
 LIST_RE = re.compile(r"^(?P<indent>\s*)(?P<marker>[-*]|\d+\.)\s+(?P<text>.*)$")
+
+# Word restarts numbering per numId, so every numbered list needs its own. The
+# default template defines decimal abstract numbering; we clone a new num per
+# list, otherwise Word counts 1..N across the whole document and the fifth
+# list starts at 10 (observed in the rendered PDF before this fix).
+DECIMAL_ABSTRACT_ID = "7"
+
+
+def next_num_id(doc: Document) -> str:
+    numbering = doc.part.numbering_part.element
+    ids = [int(n.get(qn("w:numId"))) for n in numbering.findall(qn("w:num"))]
+    return str(max(ids, default=0) + 1)
+
+
+def start_new_numbering(doc: Document) -> str:
+    """Create a fresh numId that restarts at 1 and return it."""
+    numbering = doc.part.numbering_part.element
+    num_id = next_num_id(doc)
+    num = OxmlElement("w:num")
+    num.set(qn("w:numId"), num_id)
+    abstract = OxmlElement("w:abstractNumId")
+    abstract.set(qn("w:val"), DECIMAL_ABSTRACT_ID)
+    num.append(abstract)
+    # Word keys counters by abstract definition, so a shared abstractNum alone
+    # keeps counting across lists; the start override is what restarts it.
+    override = OxmlElement("w:lvlOverride")
+    override.set(qn("w:ilvl"), "0")
+    start = OxmlElement("w:startOverride")
+    start.set(qn("w:val"), "1")
+    override.append(start)
+    num.append(override)
+    numbering.append(num)
+    return num_id
+
+
+def apply_numbering(paragraph, num_id: str) -> None:
+    pPr = paragraph._p.get_or_add_pPr()
+    numPr = OxmlElement("w:numPr")
+    level = OxmlElement("w:ilvl")
+    level.set(qn("w:val"), "0")
+    num = OxmlElement("w:numId")
+    num.set(qn("w:val"), num_id)
+    numPr.append(level)
+    numPr.append(num)
+    pPr.append(numPr)
+
+
+def plan_numbered_lists(doc: Document, lines: list[str]) -> dict[int, str]:
+    """Map each line of a numbered list to the numId that owns it.
+
+    Consecutive numbered items share one numId; a blank line, a heading or any
+    other content closes the list, so the next one restarts at 1.
+    """
+    mapping: dict[int, str] = {}
+    current: str | None = None
+    for index, raw in enumerate(lines):
+        match = LIST_RE.match(raw)
+        if match and match.group("marker") not in {"-", "*"}:
+            if current is None:
+                current = start_new_numbering(doc)
+            mapping[index] = current
+        else:
+            current = None
+    return mapping
 
 
 def style_base(doc: Document) -> None:
@@ -86,7 +151,8 @@ def add_markdown_table(doc: Document, rows: list[list[str]]) -> None:
     doc.add_paragraph().paragraph_format.space_after = Pt(2)
 
 
-def render(doc: Document, source: Path) -> None:
+def render(doc: Document, source: Path, numbered_ids: dict[int, str] | None = None) -> None:
+    numbered_ids = numbered_ids or {}
     lines = source.read_text(encoding="utf-8").splitlines()
     i = 0
     while i < len(lines):
@@ -165,9 +231,12 @@ def render(doc: Document, source: Path) -> None:
 
         checklist = LIST_RE.match(line)
         if checklist:
-            style = "List Bullet" if checklist.group("marker") in {"-", "*"} else "List Number"
+            bullet = checklist.group("marker") in {"-", "*"}
+            style = "List Bullet" if bullet else "List Number"
             p = doc.add_paragraph(style=style)
             add_runs(p, checklist.group("text"))
+            if not bullet and i in numbered_ids:
+                apply_numbering(p, numbered_ids[i])
             i += 1
             continue
 
@@ -179,7 +248,8 @@ def render(doc: Document, source: Path) -> None:
 def build(source: Path, output: Path) -> Path:
     doc = Document()
     style_base(doc)
-    render(doc, source)
+    numbered_ids = plan_numbered_lists(doc, source.read_text(encoding="utf-8").splitlines())
+    render(doc, source, numbered_ids)
     output.parent.mkdir(parents=True, exist_ok=True)
     doc.save(output)
     return output

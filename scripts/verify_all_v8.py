@@ -38,6 +38,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),
     ("section and equation refs", ["scripts/check_section_refs_v32.py"], ("SECTION_REF_MISMATCH",)),
     ("character-level proofing", ["scripts/proofread_char_level_v33.py"], ("CHAR_LEVEL_FINDINGS",)),
+    ("docx list numbering", ["scripts/check_docx_numbering_v40.py"], ("DOCX_NUMBERING_BROKEN",)),
 ]
 
 
