@@ -19,11 +19,18 @@ EQ = re.compile(r"(equal|rf_all|rf_chi2|chi2|base)", re.I)
 METRIC = re.compile(r"(macro_f1|f1)", re.I)
 
 
+SKIPPED: list[str] = []
 def find_frames():
     for path in ROOT.rglob("*.csv"):
         if any(part.startswith(".") for part in path.parts):
             continue
         if "_release_stage" in str(path):
+            continue
+        # superseded/ holds tables from an earlier robustness protocol that no
+        # manuscript number comes from; scanning them mixes retired evidence
+        # into a check whose whole purpose is to compare like with like
+        if "superseded" in path.parts:
+            SKIPPED.append(str(path.relative_to(ROOT)))
             continue
         try:
             df = pd.read_csv(path, low_memory=False, nrows=400)
@@ -65,6 +72,9 @@ def main() -> None:
             "delta": round(float(best_cond - best_eq), 5),
         })
     out = pd.DataFrame(rows).drop_duplicates(subset=["file", "metric"])
+    if SKIPPED:
+        print(f"skipped {len(SKIPPED)} retired table(s) under superseded/: they come from an "
+              "earlier robustness protocol and no manuscript number uses them")
     target = ROOT / "results_review_v5"
     target.mkdir(exist_ok=True)
     out.to_csv(target / "conditional_vs_equal_scan.csv", index=False, encoding="utf-8-sig")

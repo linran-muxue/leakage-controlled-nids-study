@@ -36,6 +36,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
     ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),
+    ("section and equation refs", ["scripts/check_section_refs_v32.py"], ("SECTION_REF_MISMATCH",)),
 ]
 
 
