@@ -64,7 +64,7 @@ def main() -> None:
     ax.set_xlabel("RCCF - equal-weight forest (Macro-F1)", fontsize=8.6)
     ax.text(0.5, 0.88, "equivalence margin +/-0.005", transform=ax.transAxes,
             ha="center", fontsize=8.0, color="#3d7a52")
-    ax.text(0.5, 0.12, f"mean {mean:+.5f}; five seeds up, five down",
+    ax.text(0.5, 0.12, f"mean {mean:+.6f}; five seeds up, five down",
             transform=ax.transAxes, ha="center", fontsize=8.2, color="#b5525b")
     ax.tick_params(axis="x", labelsize=8)
     for s in ("top", "right", "left"):
