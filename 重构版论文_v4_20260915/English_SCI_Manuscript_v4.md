@@ -235,7 +235,7 @@ Input: training matrix X_tr and labels y_tr; validation matrix X_va and labels y
        feature budget k; forest size T; number of cross-fitting folds K; conformal level alpha.
 
 1. Split (X_tr, y_tr) into K stratified folds.
-2. For each fold and each expert view q in {full, chi2, MI, ANOVA}:
+2. For each fold and each expert view q in {full, chi-square, MI, ANOVA}:
        fit the scaler and selector on the fold's training rows;
        fit a T-tree forest;
        predict the held-out fold and store out-of-fold probabilities and descriptors.
