@@ -19,6 +19,8 @@ EXPECTED = {
     "论文结构诊断与重构方案.docx": ["状态说明"],
     "研究缺口审计与优先级清单.docx": ["状态说明"],
     "P0_P1执行手册.docx": ["状态说明"],
+    "Highlights_v4.docx": ["0.005", "0.0725"],
+    "Cover_Letter_JISA_v4.docx": ["v1.10.0", "0.000456"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))
