@@ -23,20 +23,27 @@ def digest(data: bytes) -> str:
 def main() -> int:
     problems: list[str] = []
     for script, folder in BUILDERS:
-        before = snapshot(folder)
+        patterns = ("*.png", "*.pdf")
+        before = {pattern: snapshot(folder, pattern) for pattern in patterns}
         proc = subprocess.run([PY, script], capture_output=True, text=True, cwd=ROOT, timeout=900,
                               encoding="utf-8", errors="replace")
-        after = snapshot(folder)
+        after = {pattern: snapshot(folder, pattern) for pattern in patterns}
         restored = False
-        for name, data in before.items():
-            if name not in after or after[name] != data:
-                (folder / name).write_bytes(data)
-                restored = True
-        changed = [n for n in before if n in after and after[n] != before[n]]
-        missing = [n for n in before if n not in after]
-        new = [n for n in after if n not in before]
+        changed, missing, new = [], [], []
+        for pattern in patterns:
+            for name, data in before[pattern].items():
+                if name not in after[pattern]:
+                    missing.append(name)
+                elif after[pattern][name] != data:
+                    # PDFs embed a creation timestamp, so only PNGs are compared
+                    if pattern == "*.png":
+                        changed.append(name)
+                    (folder / name).write_bytes(data)
+                    restored = True
+            new.extend(n for n in after[pattern] if n not in before[pattern])
         status = "identical" if not (changed or missing or new) else "DIFFERS"
-        print(f"  {script}: {len(before)} figure(s) {status}"
+        total = sum(len(files) for files in before.values())
+        print(f"  {script}: {total} output(s) {status}"
               + (f" (changed {changed}, missing {missing}, new {new})" if status == "DIFFERS" else ""))
         if restored:
             print("     originals restored; worktree unchanged")
