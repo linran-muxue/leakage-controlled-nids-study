@@ -15,6 +15,11 @@ __pycache__/
 _release_stage_v3b_20260912/
 .review_render/
 *.latex.docx
+# third-party material that appeared in the workspace; not part of the paper
+research-skills-vault/
+research-repo-search.json
+学术科研Skills使用说明.md
+这是本地快照*
 *.tar.gz
 RCCF_*.zip
 results_publication_stage2/

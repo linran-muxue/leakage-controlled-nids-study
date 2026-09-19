@@ -39,6 +39,8 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("section and equation refs", ["scripts/check_section_refs_v32.py"], ("SECTION_REF_MISMATCH",)),
     ("character-level proofing", ["scripts/proofread_char_level_v33.py"], ("CHAR_LEVEL_FINDINGS",)),
     ("docx list numbering", ["scripts/check_docx_numbering_v40.py"], ("DOCX_NUMBERING_BROKEN",)),
+    ("figure annotations", ["scripts/check_figure_annotations_v44.py"], ("FIGURE_ANNOTATION_MISMATCH",)),
+    ("figure reproducibility", ["scripts/check_figure_reproducibility_v45.py"], ("FIGURE_REPRODUCIBILITY_FAILED",)),
 ]
 
 
