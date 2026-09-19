@@ -1,0 +1,16 @@
+Source record: N-BaIoT
+Dataset page : https://archive.ics.uci.edu/dataset/442/detecting-iot-botnets
+Download used : https://archive.ics.uci.edu/static/public/442/detection+of+iot+botnet+attacks+n+baiot.zip
+Retrieved    : 2026-09-19 (local file timestamp 17:02:05)
+Size         : 1,772,922,927 bytes (1.77 GB)
+SHA-256      : 64929678b081d8e579a8d7c488cf11cc588403f282d5fb065b4156edbd55de9b
+Licence      : CC BY 4.0, stated on the dataset page (checked 2026-09-19)
+Citation     : Meidan Y, Bohadana M, Mathov Y, Mirsky Y, Breitenbacher D, Shabtai A,
+               Elovici Y. N-BaIoT - Network-based detection of IoT botnet attacks using
+               deep autoencoders. IEEE Pervasive Computing, 2018, 17(3): 12-22.
+               DOI:10.1109/MPRV.2018.03367731 (verified via Crossref)
+Dataset DOI  : 10.24432/C5RC8J
+Archive shape: 9 device folders; benign_traffic.csv per device; mirai_attacks.rar and
+               gafgyt_attacks.rar extracted to *_csv folders (unrar 7.30, MSYS2 build)
+Audit        : 7,062,606 raw rows; 4,784,430 exact duplicates removed (67.8%);
+               180,000 rows retained (60,000 per class, Benign/Mirai/Gafgyt)

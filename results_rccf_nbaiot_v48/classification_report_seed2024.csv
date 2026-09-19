@@ -1,0 +1,7 @@
+﻿,precision,recall,f1-score,support
+Benign,1.0,1.0,1.0,9000.0
+Gafgyt,1.0,1.0,1.0,9000.0
+Mirai,1.0,1.0,1.0,9000.0
+accuracy,1.0,1.0,1.0,1.0
+macro avg,1.0,1.0,1.0,27000.0
+weighted avg,1.0,1.0,1.0,27000.0

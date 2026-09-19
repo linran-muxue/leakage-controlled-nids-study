@@ -31,7 +31,7 @@ def main() -> None:
         path = BASE / name
         have = cited(path, token)
         missing = sorted(set(range(1, 46)) - have)
-        print(f"{label}: cited {len(have)}/45, uncited = {missing}")
+        print(f"{label}: cited {len(have)}/47, uncited = {missing}")
 
 
 if __name__ == "__main__":

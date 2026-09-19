@@ -14,7 +14,7 @@ BASE = ROOT / "重构版论文_v4_20260915"
 EXPECTED = {
     "English_SCI_Manuscript_v4.docx": ["v1.10.0", "3,469", "aggregation-rule differences"],
     "中文SCI论文_v4_重构版.docx": ["v1.10.0", "3469", "聚合规则差异"],
-    "论文自查表.docx": ["E9", "补充材料_S01_S26"],
+    "论文自查表.docx": ["E9", "补充材料_S01_S28"],
     "遗漏问题审查报告.docx": ["第十一轮"],
     "论文结构诊断与重构方案.docx": ["状态说明"],
     "研究缺口审计与优先级清单.docx": ["状态说明"],

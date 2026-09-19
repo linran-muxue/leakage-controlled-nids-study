@@ -1,0 +1,66 @@
+{
+  "dataset": "CIC-IDS2017",
+  "protocol_name": "deduplicated capped observed-prior population",
+  "observed_prior_population_rows": 413209,
+  "train_rows": 289246,
+  "validation_rows": 61981,
+  "test_rows": 61982,
+  "calibration_rows": 61981,
+  "class_counts": {
+    "train": {
+      "Bot": 1364,
+      "Brute Force": 7434,
+      "DoS/DDoS": 139983,
+      "Normal": 139994,
+      "Web Attack": 471
+    },
+    "validation": {
+      "Bot": 292,
+      "Brute Force": 1593,
+      "DoS/DDoS": 29996,
+      "Normal": 29999,
+      "Web Attack": 101
+    },
+    "test": {
+      "Bot": 292,
+      "Brute Force": 1593,
+      "DoS/DDoS": 29997,
+      "Normal": 29999,
+      "Web Attack": 101
+    }
+  },
+  "native_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "feature_count_before_selection": 78,
+  "feature_count_after_selection": 60,
+  "deduplication_before_split": true,
+  "deduplication_audit": "data_processed_cic_natural_v4_scale200k\\dedup_audit.json",
+  "split_rule": "fixed stratified 70/15/15 split; seed-specific model fitting",
+  "seeds": [
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "n_estimators": 100,
+  "cv": 5,
+  "alpha": 0.1,
+  "feature_selection_fit_on": "training partition only",
+  "risk_fit_on": "training cross-fitted predictions only",
+  "calibration_fit_on": "validation partition only",
+  "test_labels_used_for_fitting": false,
+  "cross_dataset_transfer": false,
+  "processed_hashes": {
+    "train": "4cda21758db83f0c2b59db54613c4d15bffd49cc6e8f0e537ebc839e85228a56",
+    "validation": "747ed68cf758138938be78bc8d35a3a5be8031d475220b9c43004b9a53228d34",
+    "test": "15d588ccddd901d7b07ae8b47c310a465f274f58bda065e4fd91195438e824aa"
+  }
+}

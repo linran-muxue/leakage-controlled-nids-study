@@ -42,7 +42,7 @@ check("prop-3 relative errors quoted",
 
 print()
 print("=== 2. supplementary list parity ===")
-with (BASE / "补充材料_S01_S26" / "README.md").open(encoding="utf-8") as handle:
+with (BASE / "补充材料_S01_S28" / "README.md").open(encoding="utf-8") as handle:
     bundle = sorted({m for m in re.findall(r"^\| (S\d+) \|", handle.read(), flags=re.M)})
 en_list = sorted(set(re.findall(r"^\| (S\d+) \|", EN, flags=re.M)))
 zh_list = sorted(set(re.findall(r"^\| (S\d+) \|", ZH, flags=re.M)))

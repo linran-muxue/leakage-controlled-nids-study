@@ -90,7 +90,7 @@ if claimed:
 EN = (BASE / "English_SCI_Manuscript_v4.md").read_text("utf-8")
 print()
 print("manuscript supplementary ids:", re.findall(r"^\| (S\d+) \|", EN, flags=re.M)[:6])
-bundle_dir = BASE / "补充材料_S01_S26"
+bundle_dir = BASE / "补充材料_S01_S28"
 if not bundle_dir.exists():
     problems.append(f"supplementary bundle directory missing: {bundle_dir.name}")
 else:

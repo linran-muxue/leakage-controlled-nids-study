@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S26"
+OUT = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S28"
 
 ITEMS: dict[str, tuple[str, list[str]]] = {
     "S01": ("数据集来源、检索日期与 SHA-256 校验",
@@ -95,6 +95,19 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
             ["results_robustness_extended_v5/robustness_extended_summary.csv",
              "results_robustness_extended_v5/robustness_extended_all_seeds.csv",
              "results_robustness_extended_v5/robustness_extended_summary_3seeds.csv"]),
+    "S27": ("规模敏感性：413 209 条总体与十种子配对比较",
+            ["results_scale_sensitivity_v46/metrics_by_seed.csv",
+             "results_scale_sensitivity_v46/metrics_aggregate.csv",
+             "results_scale_sensitivity_v46/paired_by_seed.csv",
+             "results_scale_sensitivity_v46/scale_sensitivity_summary.json",
+             "results_rccf_cic_natural_v4_scale200k/metrics_aggregate.csv"]),
+    "S28": ("N-BaIoT 基准：审计、类别支持度、逐种子指标与配对比较",
+            ["data_processed_nbaiot_v48/dataset_summary.csv",
+             "data_processed_nbaiot_v48/preprocess_config.json",
+             "results_nbaiot_baselines_v48/metrics_by_seed.csv",
+             "results_nbaiot_baselines_v48/paired_by_seed.csv",
+             "results_nbaiot_baselines_v48/scale_sensitivity_summary.json",
+             "results_rccf_nbaiot_v48/metrics_by_seed.csv"]),
 }
 
 

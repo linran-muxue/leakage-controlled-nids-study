@@ -2,9 +2,7 @@
 
 ## 摘要
 
-
-
-公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用却缺少受控验证的假设：按样本估计的可靠性权重对多个随机森林专家做条件加权融合（RCCF），能否稳定优于等权投票。在统一的泄漏受控协议下，我们用 CIC-IDS2017 构造 53 237 条自然先验总体与 3 365 条平衡控制总体，并以 NSL-KDD 与 UNSW-NB15 作为独立原生标签基准，在十个种子上比较四种特征视图。自然先验协议上，二者 Macro-F1 平均差为 −0.000456，逐种子方向五正五负；种子级 90% 区间 [−0.00112, +0.00021] 与测试行级配对 Bootstrap 区间 [−0.00425, +0.00338] 均落在 0.005 与 0.01 的等价边界内。四个专家在测试集上无任何预测分歧，权重归一化熵为 0.99998；类别先验与去重顺序分别带来 +0.0725 与至多 +0.0060 的变化。我们给出三个可辨识性条件，并把其中之一化为可逐行计算的判据：23 958 条测试样本中 99.91% 可证明不受权重影响，决策边距中位数为扰动上界的 3469 至 5038 倍。108 种门控配置只产生 6 个不同的验证集取值，排除了调参不足；增益受专家多样性支配（斜率 0.0646，r = 0.749）。该机制体积是单个等权森林的 4.1 倍、吞吐低 4.6 倍，在 1:1 至 100:1 的代价比下没有代价敏感优势。本文的贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与聚合规则差异分开量化的地图；证据不支持算法优越性或生产可用性的主张。
+公开入侵检测数据集上报告的模型性能差异，对重复样本、标签冲突、特征选择泄漏与类别先验高度敏感。本文检验一个被广泛采用却缺少受控验证的假设：按样本估计的可靠性权重对多个随机森林专家做条件加权融合（RCCF），能否稳定优于等权投票。在统一的泄漏受控协议下，我们用 CIC-IDS2017 构造 53 237 条自然先验总体与 3 365 条平衡控制总体，并以 NSL-KDD、UNSW-NB15 与一个物联网僵尸网络语料作为独立基准，在十个种子上比较四种特征视图。二者 Macro-F1 平均差为 −0.000456（五正五负），种子级 90% 区间与测试行级配对 Bootstrap 区间均落在 0.005 与 0.01 的等价边界内。四个专家在测试集上无任何预测分歧，权重归一化熵为 0.99998；类别先验与去重顺序分别带来 +0.0725 与至多 +0.0060 的变化。我们给出三个可辨识性条件，并把其中之一化为可逐行计算的判据：23 958 条测试样本中 99.91% 可证明不受权重影响，决策边距中位数为扰动上界的 3469 至 5038 倍。108 种门控配置只产生 6 个不同的验证集取值，增益受专家多样性支配（斜率 0.0646，r = 0.749）。该等价性在总体扩大 7.8 倍与物联网语料上同样成立，后者所有模型的 Macro-F1 均超过 0.9998。该机制体积是单个等权森林的 4.1 倍、吞吐低 4.6 倍，没有代价敏感优势。本文的贡献在于一套可复用的泄漏受控协议、一组可辨识性边界，以及一张把协议效应与聚合规则差异分开量化的地图；证据不支持算法优越性或生产可用性的主张。
 
 **关键词：** 网络入侵检测；集成学习；条件加权；数据泄漏；可辨识性；可复现性；CIC-IDS2017
 
@@ -14,11 +12,11 @@
 
 ### 1.1 研究背景与动机
 
-基于流特征的机器学习入侵检测系统（IDS）是当前公开研究中最常见的形式：把一条网络流转换为上百维统计量，再用分类器判别正常与攻击。CIC-IDS2017、NSL-KDD 与 UNSW-NB15 是这一方向使用最广的三个公开数据集 [14-16]，围绕它们已经积累了数千篇论文 [22,23]和大量"某模型优于某模型"的结论。
+基于流特征的机器学习入侵检测系统（IDS）是当前公开研究中最常见的形式：把一条网络流转换为上百维统计量，再用分类器判别正常与攻击。CIC-IDS2017、NSL-KDD 与 UNSW-NB15 是这一方向使用最广的三个公开数据集 [14-16]，围绕它们已经积累了数千篇论文 [24,25]和大量"某模型优于某模型"的结论。
 
 然而这些结论的可比性存在系统性疑问。公开流量数据集普遍存在三类问题。第一，**重复与近重复样本**：同一段攻击流量在特征空间中被重复记录，若在划分之后才发现，训练集与测试集之间就会存在实质重叠。第二，**标签冲突**：完全相同的特征向量被赋予不同标签，模型被迫在矛盾的监督信号上拟合。第三，**变换泄漏**：标准化、特征选择或过采样如果在划分之前执行，测试集信息会通过变换参数渗入训练过程。
 
-当这些因素未被控制时，模型之间的比较就不再是对算法能力的比较，而是对数据划分偶然性的比较。近年多个工作表明，泄漏与预处理顺序足以改变入侵检测研究中的结论方向 [18-20]。因此，一个自然的科学问题是：**在把上述因素全部控制住之后，那些被广泛汇报的性能提升还剩下多少？**
+当这些因素未被控制时，模型之间的比较就不再是对算法能力的比较，而是对数据划分偶然性的比较。近年多个工作表明，泄漏与预处理顺序足以改变入侵检测研究中的结论方向 [20-22]。因此，一个自然的科学问题是：**在把上述因素全部控制住之后，那些被广泛汇报的性能提升还剩下多少？**
 
 ### 1.2 三个未经检验的假设
 
@@ -50,7 +48,7 @@ H3 尤其关键，因为在文献中它从未被显式声明：它从不被显�
 
 1. **一套可复用的泄漏受控协议与审计记录**。从 2 830 743 条原始记录出发，逐阶段记录标签映射、非有限值剔除、物理范围筛查、全局去重、跨标签冲突处理与类别截断，得到 53 237 条自然先验总体，并给出每一条的判定准则。全部处理脚本、中间计数与逐样本预测均随论文发布。
 2. **一组条件加权的可辨识性命题**。我们证明三个条件，在这些条件下样本条件加权无论权重如何取值都不会改变硬标签，并给出可观测的判据（归一化权重熵、专家预测分歧率）。这把"加权为什么无效"从观察提升为可验证的机制解释。
-3. **一张把协议效应与聚合规则差异分离的定量地图**。我们在同一批数据上测量五类差异来源并给出量级：聚合规则（0.0005）、特征视图（+0.0021）、去重顺序（至多 +0.0060）、调参预算（+0.0078）与类别先验（+0.0725）；文件外推跨度为 0.33–1.00。结论是协议效应比聚合规则差异高出一个数量级。
+3. **一张把协议效应与聚合规则差异分离的定量地图**。我们在同一批数据上测量五类差异来源并给出量级：聚合规则（0.0005）、特征视图（+0.0021）、去重顺序（至多 +0.0060）、调参预算（+0.0078）与类别先验（+0.0725）；文件外推跨度为 0.33–1.00。结论是协议效应比聚合规则差异高出一个数量级，且该等价性在总体扩大 7.8 倍与第四个物联网领域数据集上都可复现。
 4. **一个诚实的代价核算**。报告条件加权相对等权投票的训练与推理开销、概率质量变化、开放集拒绝能力与延迟分布，说明在缺少判别增益的前提下这些代价不具可交换价值。
 
 本文的贡献刻意不是增量式的。在既有基准上再增加一个分类器不会回答任何开放问题——文献中此类比较已经很多，而且彼此矛盾。这个领域真正缺少的是判断「一个被报告的差异究竟来自方法还是来自协议」的手段。本文从三部分给出这一判断程序：一套固定信息边界的可审计协议；一组预测「聚合机制何时根本无法起作用」的可辨识性条件；以及为每一类变异来源测出的量级，使读者能看出究竟哪些选择在真正改变数字。该结论是可证伪的——条件 1 预测本文所用专家集合的增益为零，而反向实验证实了这一预测——并且无论其他作者偏好哪种分类器，都可直接使用。
@@ -69,25 +67,25 @@ H3 尤其关键，因为在文献中它从未被显式声明：它从不被显�
 
 CIC-IDS2017 由 Sharafaldin 等人在 2018 年发布 [14]，包含五天的正常流量与多种攻击流量，经 CICFlowMeter 提取为 78 维流特征，是当前使用最广的公开入侵检测数据集之一。NSL-KDD 是 KDD CUP 99 的改进版本 [15]，移除了部分冗余记录，使用 Normal、DoS、Probe、R2L、U2R 五类原生标签。UNSW-NB15 由 Moustafa 与 Slay 在 2015 年发布 [16]，提供官方训练/测试划分与九类攻击的分类标签。
 
-围绕这些数据集，文献已经识别出多项结构性缺陷 [17]：类别极度不平衡（CIC-IDS2017 中 Web Attack 与 Infiltration 的样本量比 BENIGN 低三到五个数量级）、特征中包含数据集特有的恒定列与采集伪影、部分攻击类别的流量由同一工具在同一时段生成因而高度同质、以及训练集与测试集之间可能存在重复。Engelen 等人与 Liu 等人分别指出 [18,19]，预处理顺序与数据划分方式足以显著改变入侵检测模型的报告性能。这些工作构成本文 H3 假设的直接动因：如果协议可以改变结论方向，那么协议本身就必须成为被报告、被检验的对象。 这一立场属于对安全领域机器学习方法更广泛的方法学批评的一部分 [20,21,24]。
+围绕这些数据集，文献已经识别出多项结构性缺陷 [19]：类别极度不平衡（CIC-IDS2017 中 Web Attack 与 Infiltration 的样本量比 BENIGN 低三到五个数量级）、特征中包含数据集特有的恒定列与采集伪影、部分攻击类别的流量由同一工具在同一时段生成因而高度同质、以及训练集与测试集之间可能存在重复。Engelen 等人与 Liu 等人分别指出 [20,21]，预处理顺序与数据划分方式足以显著改变入侵检测模型的报告性能。这些工作构成本文 H3 假设的直接动因：如果协议可以改变结论方向，那么协议本身就必须成为被报告、被检验的对象。 这一立场属于对安全领域机器学习方法更广泛的方法学批评的一部分 [22,23,26]。
 
 ### 2.2 特征选择与泄漏
 
 过滤式特征选择（filter selection）因为计算代价低、可解释性好，被广泛用于降低流特征维度。卡方检验衡量特征与标签的统计相关性，互信息刻画非线性依赖，方差分析比较类间与类内方差之比 [12,13]。三者都是本文采用的对照。
 
-问题在于，这些统计量的估计依赖于标签分布，若在划分之前拟合选择器，测试集标签信息会通过特征排序渗入训练过程。这类泄漏在入侵检测文献中并不罕见 [20]，且往往难以从论文的方法描述中察觉。本文的协议要求所有选择器在训练分区内拟合，并在交叉拟合的每一折内重新拟合，从而把选择器也纳入信息边界的约束。
+问题在于，这些统计量的估计依赖于标签分布，若在划分之前拟合选择器，测试集标签信息会通过特征排序渗入训练过程。这类泄漏在入侵检测文献中并不罕见 [22]，且往往难以从论文的方法描述中察觉。本文的协议要求所有选择器在训练分区内拟合，并在交叉拟合的每一折内重新拟合，从而把选择器也纳入信息边界的约束。
 
 ### 2.3 集成聚合与自适应加权
 
 Breiman 的随机森林通过自助采样与随机特征子空间构造多棵决策树，以等权投票或概率平均聚合 [1,2,8,9]。等权聚合的理论依据是方差抵消：只要各树错误不完全相关，平均就能降低方差。由此产生的一个自然推广是**不等权聚合**：若能够估计每一棵树或每一个专家在给定样本上的可靠性，就按可靠性加权。
 
-这一思路在文献中有多种实现形式： [8-11,29]按验证集准确率为树赋权、按袋外误差赋权、用元学习器学习样本相关的权重、以概率校准后的置信度作为权重、以及用深度集成中的不确定性估计驱动加权。这类方法通常报告在特定数据集上的提升，但很少同时满足三个条件：（i）加权所用信息完全来自训练与验证分区；（ii）在等权对照上使用相同的特征视图与调参预算；（iii）报告配对显著性检验与多次划分稳定性。缺少这三条时，"加权带来提升"与"某一划分带来了提升"无法区分。
+这一思路在文献中有多种实现形式： [8-11,31]按验证集准确率为树赋权、按袋外误差赋权、用元学习器学习样本相关的权重、以概率校准后的置信度作为权重、以及用深度集成中的不确定性估计驱动加权。这类方法通常报告在特定数据集上的提升，但很少同时满足三个条件：（i）加权所用信息完全来自训练与验证分区；（ii）在等权对照上使用相同的特征视图与调参预算；（iii）报告配对显著性检验与多次划分稳定性。缺少这三条时，"加权带来提升"与"某一划分带来了提升"无法区分。
 
-近期面向开放集的入侵检测工作进一步引入了极值理论、原型学习与自编码器重构误差来构造拒绝机制 [25,26,40,41]。这类方法把已知类判别与未知类拒绝作为两个目标，因而其成本结构也更复杂。本文把开放集拒绝作为诊断性指标单独报告，不并入主结论。
+近期面向开放集的入侵检测工作进一步引入了极值理论、原型学习与自编码器重构误差来构造拒绝机制 [27,28,42,43]。这类方法把已知类判别与未知类拒绝作为两个目标，因而其成本结构也更复杂。本文把开放集拒绝作为诊断性指标单独报告，不并入主结论。
 
 ### 2.4 概率质量、开放集与部署约束
 
-硬标签指标（准确率、Macro-F1）无法反映概率质量。对于告警排序、风险打分与人机协同审计等下游任务，Log Loss、Brier 分数与期望校准误差（ECE）更重要 [27]。硬标签相同的两个模型可以有显著不同的校准表现 [28,29]，因此把判别指标与概率指标分开报告是必要的。
+硬标签指标（准确率、Macro-F1）无法反映概率质量。对于告警排序、风险打分与人机协同审计等下游任务，Log Loss、Brier 分数与期望校准误差（ECE）更重要 [29]。硬标签相同的两个模型可以有显著不同的校准表现 [30,31]，因此把判别指标与概率指标分开报告是必要的。
 
 部署约束构成另一条独立的评价轴。同一条流在网关侧可能只允许毫秒级预算，且特征提取之外的分类器推理时间必须可预测。一个在离线 Macro-F1 上持平但推理延迟高出数倍的方案，在真实部署中没有交换价值。本文报告 P50、P95 与 P99 单条推理延迟，并明确区分单线程与库默认线程设置。
 
@@ -115,7 +113,7 @@ Breiman 的随机森林通过自助采样与随机特征子空间构造多棵决
 
 ### 3.1 数据集、来源与许可
 
-本文使用三个公开数据集，全部通过官方或公开镜像获取 [14-16]，不使用任何扫描、探测或真实攻击流量。表 2 记录来源、版本、检索日期、许可状态与文件哈希。三个数据集均未在本文中重新分发，仅发布处理脚本与派生统计量的生成方式。
+本文使用四个公开数据集，全部通过官方或公开镜像获取 [14-18]，不使用任何扫描、探测或真实攻击流量。表 2 记录来源、版本、检索日期、许可状态与文件哈希。三个数据集均未在本文中重新分发，仅发布处理脚本与派生统计量的生成方式。
 
 需要特别说明许可状态：CIC-IDS2017 与 UNSW-NB15 的发布页面未给出标准 SPDX 许可标识，本文按发布页面条款使用并引用原始论文；NSL-KDD 使用的是公开镜像快照，未核验到明确的标准化许可，因此不作任何许可推断。这一处理是**保守的**：在无法确认许可时，本文只报告来源与哈希，不主张再分发权利。
 
@@ -126,6 +124,7 @@ Breiman 的随机森林通过自助采样与随机特征子空间构造多棵决
 | CIC-IDS2017 | 加拿大网络安全研究所官方页面 | MachineLearningCSV 归档（8 个 CSV） | 2026-09-02 | 页面未给出 SPDX 标识，按页面条款使用并引用原始论文 | SHA-256 见补充材料 S01；MD5 亦记录 |
 | NSL-KDD | 公开 GitHub 镜像 KDDTrain+/KDDTest+ | 镜像快照，未记录 commit | 2026-09-03 | 未核验到标准许可标识，不作推断 | 两个文件的 SHA-256 均记录 |
 | UNSW-NB15 | 新南威尔士大学官方项目页 | 官方训练/测试 CSV | 2026-09-04 | 页面要求引用原始论文，未给出 SPDX 标识 | 两个文件的 SHA-256 均记录 |
+| N-BaIoT | UCI 机器学习库第 442 号数据集 | 九种消费级物联网设备的 Mirai/Gafgyt 攻击与正常流量，115 维流特征 | 2026-09-19 | 数据集页面明确标注 CC BY 4.0 | 1.77 GB 归档的 SHA-256 已记录（表 S1） |
 
 ### 3.2 CIC-IDS2017 的审计与两个总体
 
@@ -164,7 +163,7 @@ CIC-IDS2017 的本地归档包含 8 个 CSV 文件、2 830 743 条原始记录�
 
 NSL-KDD 使用官方 KDDTrain+ 与 KDDTest+ 文件，保留原生五类标签 Normal、DoS、Probe、R2L、U2R，不做标签重映射，因此它是**独立原生标签基准**而不是跨数据集迁移实验。UNSW-NB15 使用官方训练与测试 CSV，标签取 `attack_cat` 十类，剔除二值标签与标识列，分类变量仅用训练侧信息编码。
 
-三个数据集是刻意互补而非可互相替代的：它们跨越三个采集时期（NSL-KDD 承自 1998 年的数据脉络、UNSW-NB15 为 2015 年合成测试床、CIC-IDS2017 为 2017 年类企业测试床）、三种特征提取方式（41 维连接记录、49 维 Argus/Bro 派生特征、78 维 CICFlowMeter 特征）与三套标签体系（5 类、10 类与 5 类保留标签）。三者的已知缺陷也各不相同：NSL-KDD 带有 KDD 谱系的冗余，UNSW-NB15 的攻击多为人工合成且存在跨划分特征重叠，CIC-IDS2017 则存在重复流、跨标签冲突与恒定列。如果要引入第四个数据集，其最大价值在于覆盖三者都未代表的场景——物联网或工业控制环境、不同的采集观测点，或同一测试床上时间分离的采集。覆盖矩阵见补充材料。
+四个数据集是刻意互补而非可互相替代的：它们覆盖四种采集场景（NSL-KDD 承自 1998 年的数据脉络、UNSW-NB15 为 2015 年合成测试床、CIC-IDS2017 为 2017 年类企业测试床、N-BaIoT 为 2018 年消费级物联网测试床）、四种特征提取方式（41 维连接记录、49 维 Argus/Bro 派生特征、78 维 CICFlowMeter 特征、115 维物联网流特征）与四套标签体系（5 类、10 类、5 类保留标签与 3 类原生标签）。它们的已知缺陷也各不相同：NSL-KDD 带有 KDD 谱系的冗余，UNSW-NB15 的攻击多为人工合成且存在跨划分特征重叠，CIC-IDS2017 存在重复流、跨标签冲突与恒定列，而 N-BaIoT 有 67.8% 的行是完全重复的。四者合起来覆盖了此前指出的缺失场景——消费级物联网部署；但没有一个是同一测试床上时间分离的采集。覆盖矩阵见补充材料。
 
 由于标签体系互不相容，三者的分数在本文中从不合并或平均，也从不被解释为迁移成功的证据。它们的作用是压力测试：如果某个结论只在 CIC-IDS2017 上成立，它就不应被写作普遍规律。
 
@@ -186,7 +185,7 @@ NSL-KDD 使用官方 KDDTrain+ 与 KDDTest+ 文件，保留原生五类标签 No
 
 本文区分两类估计对象。**主估计对象**是自然先验总体 P_nat 上的测试 Macro-F1，在一组预先固定的十个随机种子（42、2024、3407、7、13、101、202、303、404、505）上取平均。**次估计对象**是平衡控制总体 P_bal 上的同一指标，以及概率质量、选择性风险、开放集拒绝、扰动退化与延迟等诊断指标。
 
-统计流程包含五项，全部针对同一测试行上的配对比较：（i）精确 McNemar 检验，用于硬标签分歧 [34]；（ii）种子级符号翻转检验，用于方向稳定性 [35,36]；（iii）分层配对 Bootstrap，用于 Macro-F1 差的区间估计 [38]；（iv）Holm 校正，用于对 RCCF 的三项对照这一比较族 [37]，结果以校正后的符号翻转 p 值列于表 5；（v）等价性检验（TOST） [39]，将配对 Bootstrap 的 90% 区间与预先声明的最小有意义效应量（SESOI）比较，用于支持「差异小于给定边界」这一主张，而不是仅凭 p > 0.05 断言无差异。任何 p 值都必须与效应量同时报告；小而不稳定的点估计不被解释为算法优势。本文的等价边界在查看主结果之前确定：主要边界为 Macro-F1 = 0.01，严格边界为 0.005。主要边界约相当于自然先验总体 Macro-F1 的 1.1%，取为在工程上足以否定该机制成本的最小差异。
+统计流程包含五项，全部针对同一测试行上的配对比较：（i）精确 McNemar 检验，用于硬标签分歧 [36]；（ii）种子级符号翻转检验，用于方向稳定性 [37,38]；（iii）分层配对 Bootstrap，用于 Macro-F1 差的区间估计 [40]；（iv）Holm 校正，用于对 RCCF 的三项对照这一比较族 [39]，结果以校正后的符号翻转 p 值列于表 5；（v）等价性检验（TOST） [41]，将配对 Bootstrap 的 90% 区间与预先声明的最小有意义效应量（SESOI）比较，用于支持「差异小于给定边界」这一主张，而不是仅凭 p > 0.05 断言无差异。任何 p 值都必须与效应量同时报告；小而不稳定的点估计不被解释为算法优势。本文的等价边界在查看主结果之前确定：主要边界为 Macro-F1 = 0.01，严格边界为 0.005。主要边界约相当于自然先验总体 Macro-F1 的 1.1%，取为在工程上足以否定该机制成本的最小差异。
 
 Macro-F1 被选为主要指标，原因是自然先验总体中 Web Attack 仅占 1.26%，准确率会被多数类主导。类别级报告、平衡准确率与归一化混淆矩阵作为必要补充一并给出。
 
@@ -222,7 +221,7 @@ Macro-F1 被选为主要指标，原因是自然先验总体中 Web Attack 仅�
 
 $$w_e(x)=\frac{\exp[-r_e(x)]}{\sum_{j=1}^{Q}\exp[-r_j(x)]},\qquad p(y\mid x)=\sum_{e=1}^{Q} w_e(x)\,p_e(y\mid x).  (1)$$
 
-融合概率随后在验证集上做温度缩放 [27]，并用蒙德里安保形预测给出可选的 `unknown` 输出（显著性水平 α = 0.1） [30-33]。需要强调：机制先改变概率，只有在融合后的 argmax 发生改变时，硬标签才会改变。因此"概率变了"与"分类结果变了"是两件事，本文在 5.2 与 5.3 节分别报告。
+融合概率随后在验证集上做温度缩放 [29]，并用蒙德里安保形预测给出可选的 `unknown` 输出（显著性水平 α = 0.1） [32-35]。需要强调：机制先改变概率，只有在融合后的 argmax 发生改变时，硬标签才会改变。因此"概率变了"与"分类结果变了"是两件事，本文在 5.2 与 5.3 节分别报告。
 
 ![图 3 条件加权机制结构与三个可辨识性命题](figures/fig3_rccf_mechanism.png)
 
@@ -287,7 +286,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 ### 4.4 复杂度
 
-设 n 为训练行数，d 为原始特征维度，k 为选中特征维度，T 为树数，K 为交叉拟合折数，Q = 4 为专家数。交叉拟合阶段的主导代价约为 O(QK·T·n log n)，最终重拟合阶段为 O(QT·n log n)，过滤式特征选择贡献 O(Qnd)。推理阶段需要对 Q 个森林各做一次树遍历并计算风险模型，每条约 O(QT log n)。因此 RCCF 在训练与推理两端都显著贵于单个等权森林，这一代价在 5.6 节被定量报告。全部实验在单台工作站上完成：8 个物理核心（16 逻辑核心）、35.8 GB 内存、Windows 10（内部版本 10.0.26200），软件为 Python 3.11.4、scikit-learn 1.9.0、XGBoost 3.2.0、NumPy 2.4.6、pandas 3.0.5 与 Matplotlib 3.11.1。报告的时间为单机测量值，不构成跨平台可移植性主张。 软件栈见 [42-45]。
+设 n 为训练行数，d 为原始特征维度，k 为选中特征维度，T 为树数，K 为交叉拟合折数，Q = 4 为专家数。交叉拟合阶段的主导代价约为 O(QK·T·n log n)，最终重拟合阶段为 O(QT·n log n)，过滤式特征选择贡献 O(Qnd)。推理阶段需要对 Q 个森林各做一次树遍历并计算风险模型，每条约 O(QT log n)。因此 RCCF 在训练与推理两端都显著贵于单个等权森林，这一代价在 5.6 节被定量报告。全部实验在单台工作站上完成：8 个物理核心（16 逻辑核心）、35.8 GB 内存、Windows 10（内部版本 10.0.26200），软件为 Python 3.11.4、scikit-learn 1.9.0、XGBoost 3.2.0、NumPy 2.4.6、pandas 3.0.5 与 Matplotlib 3.11.1。报告的时间为单机测量值，不构成跨平台可移植性主张。 软件栈见 [44-47]。
 
 ### 4.5 对照与消融设计
 
@@ -471,6 +470,16 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 校准、鲁棒性、延迟、资源、代价敏感与近重复结果见补充材料 S15 与 S21–S23、S26。
 
+### 5.7 规模与领域敏感性
+
+主研究总体是带截断的子集，因此上文报告的等价性原则上可能是该截断造成的。以下两组实验直接回答这一质疑。
+
+**总体扩大 7.8 倍。** 用完全相同的审计流程、仅把每类上限提高到 200 000 条，重建 CIC-IDS2017 总体得到 413 209 条（训练 289 246 / 验证 61 982 / 测试 61 982）。少数类无法增长，因此扩大后的总体反而更不平衡：Brute Force 贡献 10 620 条、Bot 1 948 条、Web Attack 673 条。头条对照按完整的十个种子重跑：RCCF 平均 Macro-F1 为 0.856065，等权卡方森林为 0.857202，平均配对差 −0.001137（标准差 0.003156；种子级 90% 区间 [−0.002966, +0.000692]）。TOST 在两个预设边界上均显著（0.005 边界 p = 0.0019，0.01 边界 p = 4.8e-6），即等价性结论在总体扩大 7.8 倍后依然成立；此时点估计略微偏向等权森林而非 RCCF。两个分支每个种子在 61 982 条测试样本中仅有 20 至 29 条分歧（0.03%–0.05%），与主总体同量级。其余基线的表现与之前一致：XGBoost 为 0.827656、极端随机树为 0.783747、全特征等权森林为 0.852953、限深决策树为 0.809695。
+
+**不同领域的第四个数据集。** N-BaIoT 记录了九种消费级物联网设备上的正常流量与 Mirai/Gafgyt 僵尸网络流量，含 115 维流统计特征 [17,18]。去重剔除了 7 062 606 行中的 4 784 430 行（67.8%），重复比例高于本研究的其他任何数据集，最终得到 180 000 条、三分类的基准（每类 60 000；训练 126 000 / 验证 27 000 / 测试 27 000）。所有模型的 Macro-F1 都在 0.99983 以上：RCCF 与等权卡方森林在机器精度上完全一致（平均差 −3.7e-17，27 000 条测试样本中分歧 0 至 2 条）。该基准对流量特征分类器已经饱和，而这正是命题 1 预言"任何加权都无法起作用"的情形：它在新领域确认了机制的惰性，但并未检验判别难度。
+
+两组实验从两侧界定了结论：等价性既不是 53 237 条截断造成的，也会在类别高度可分的领域重现。
+
 ## 6 讨论
 
 ### 6.1 条件加权失效的三类条件
@@ -487,7 +496,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 ### 6.2 如何解释文献中报告的"加权提升"
 
-本文的结果并不意味着所有已发表的加权方法都是错的。它给出的是**归因约束**：在不控制重复样本、变换泄漏、类别先验与调参预算的情况下 [18-20]，观察到的"加权提升"至少有四种替代解释，而且四种解释在本文的对照实验中都有对应的量级。
+本文的结果并不意味着所有已发表的加权方法都是错的。它给出的是**归因约束**：在不控制重复样本、变换泄漏、类别先验与调参预算的情况下 [20-22]，观察到的"加权提升"至少有四种替代解释，而且四种解释在本文的对照实验中都有对应的量级。
 
 1. **划分噪声**：十次重复划分会让 Macro-F1 波动约 0.011，超过本文测得的聚合规则差异与调参预算差异（最大 0.0078）；只有模型族差距（0.0318 与 0.0916）更大。
 2. **协议选择**：把类别先验从平衡改为自然，Macro-F1 变化 +0.0725；把去重顺序反过来，至多 +0.0060。
@@ -538,7 +547,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 **近重复只按精确形式剔除。** 引言把「重复与近重复样本」列为公开数据集的危害之一，而审计只删除了完全相同的特征向量。把所有特征四舍五入到四位有效数字后做哈希，发现研究总体中另有 0.36% 的行在该分辨率下构成近重复组，其中 104 条测试行（占测试集 0.21%）与训练行共享同一个舍入后特征向量。剔除这些行后，三个模型的 Macro-F1 变化均不超过 0.00057，因此该重叠不足以解释本文报告的差异；更粗分辨率的结果见补充材料。
 
-**只评测了三个数据集，未引入第四个。** 本文结论以 CIC-IDS2017、NSL-KDD 与 UNSW-NB15 为条件。若要检验所报告的协议敏感性与条件加权的失效是否越出这三个来源，需要引入一个真正独立的新数据集。
+**评测了四个数据集，但最大总体仍是语料子集。** 本文结论以 CIC-IDS2017、NSL-KDD、UNSW-NB15 与 N-BaIoT 为条件。5.7 节的规模实验在 2 429 503 条去重后的 CIC 记录中训练了 413 209 条（17%），因此全语料训练仍未验证；而 N-BaIoT 对流量特征分类器已经饱和（所有模型 Macro-F1 均在 0.9998 以上），它检验的是聚合环节的机制而非判别难度。四个数据集都不代表生产流量。
 
 **未评估对抗鲁棒性。** 本文只施加了随机扰动与特征屏蔽，没有构造规避攻击或基于梯度的攻击，报告的退化数字不构成对自适应对手的鲁棒性保证。
 
@@ -606,35 +615,37 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 14. Sharafaldin I, Lashkari A H, Ghorbani A A. Toward generating a new intrusion detection dataset and intrusion traffic characterization. ICISSP 2018: 108-116. DOI:10.5220/0006639801080116.
 15. Tavallaee M, Bagheri E, Lu W, Ghorbani A A. A detailed analysis of the KDD CUP 99 data set. CISDA 2009: 1-6. DOI:10.1109/CISDA.2009.5356528.
 16. Moustafa N, Slay J. UNSW-NB15: A comprehensive data set for network intrusion detection systems. MilCIS 2015: 1-6. DOI:10.1109/MilCIS.2015.7348942.
-17. Ring M, Wunderlich S, Scheuring D, et al. A survey of network-based intrusion detection data sets. Computers & Security, 2019, 86: 147-167. DOI:10.1016/j.cose.2019.06.005.
-18. Engelen G, Timmerman J. Troubleshooting an intrusion detection dataset: The CICIDS2017 case study. IEEE S&P Workshops 2021: 7-12. DOI:10.1109/SPW53761.2021.00009.
-19. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. DOI:10.1109/CNS56114.2022.9947235.
-20. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [无 DOI；USENIX Security 会议论文集]
-21. Sommer R, Paxson V. Outside the closed world: On using machine learning for network intrusion detection. IEEE S&P 2010: 305-316. DOI:10.1109/SP.2010.25.
-22. Buczak A L, Guven E. A survey of data mining and machine learning methods for cyber security intrusion detection. IEEE Communications Surveys & Tutorials, 2016, 18(2): 1153-1176. DOI:10.1109/COMST.2015.2494502.
-23. Khraisat A, Gondal I, Vamplew P, Kamruzzaman J. Survey of intrusion detection systems: Techniques, datasets and challenges. Cybersecurity, 2019, 2: 20. DOI:10.1186/s42400-019-0038-7.
-24. Apruzzese G, Laskov P, Montgomery E, et al. The role of machine learning in cybersecurity. ACM Digital Threats: Research and Practice, 2023, 4(1): 1-38. DOI:10.1145/3545574.
-25. Geng C, Huang S J, Chen S. Recent advances in open set recognition: A survey. IEEE TPAMI, 2021, 43(10): 3614-3631. DOI:10.1109/TPAMI.2020.2981604.
-26. Bendale A, Boult T E. Towards open set deep networks. CVPR 2016: 1563-1572. DOI:10.1109/CVPR.2016.173.
-27. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [无 DOI；PMLR]
-28. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [无 DOI；NeurIPS 会议论文集]
-29. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [无 DOI；NeurIPS 会议论文集]
-30. Angelopoulos A N, Bates S. Conformal prediction: A gentle introduction. Foundations and Trends in Machine Learning, 2023, 16(4): 494-591. DOI:10.1561/2200000101.
-31. Vovk V, Gammerman A, Shafer G. Algorithmic Learning in a Random World. Springer, 2005. DOI:10.1007/b106715.
-32. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [无 DOI；JMLR]
-33. Lei J, G'Sell M, Rinaldo A, et al. Distribution-free predictive inference for regression. JASA, 2018, 113(523): 1094-1111. DOI:10.1080/01621459.2017.1307116.
-34. McNemar Q. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika, 1947, 12(2): 153-157. DOI:10.1007/BF02295996.
-35. Dietterich T G. Approximate statistical tests for comparing supervised classification learning algorithms. Neural Computation, 1998, 10(7): 1895-1923. DOI:10.1162/089976698300017197.
-36. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [无 DOI；JMLR]
-37. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [无 DOI；JSTOR 稳定记录 4615733]
-38. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. ISBN 978-0-412-04231-7。
-39. Lakens D. Equivalence tests: A practical primer for t tests, correlations, and meta-analyses. Social Psychological and Personality Science, 2017, 8(4): 355-362. DOI:10.1177/1948550617697177.
-40. Han S, Kim Y, Lee S. Improvement of the classification performance of an intrusion detection model for rare and unknown attack traffic. Electronics, 2021, 10(18): 2268. DOI:10.3390/electronics10182268.
-41. Guolou P, Ye X. Open-set intrusion detection with MinMax autoencoder and pseudo extreme value machine. IJCNN 2022. DOI:10.1109/IJCNN55064.2022.9892858.
-42. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [无 DOI；JMLR]
-43. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
-44. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
-45. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
+17. Meidan Y, Bohadana M, Mathov Y, et al. N-BaIoT - Network-based detection of IoT botnet attacks using deep autoencoders. IEEE Pervasive Computing, 2018, 17(3): 12-22. DOI:10.1109/MPRV.2018.03367731.
+18. UCI Machine Learning Repository. Detection of IoT botnet attacks N-BaIoT [dataset]. 2018. DOI:10.24432/C5RC8J.
+19. Ring M, Wunderlich S, Scheuring D, et al. A survey of network-based intrusion detection data sets. Computers & Security, 2019, 86: 147-167. DOI:10.1016/j.cose.2019.06.005.
+20. Engelen G, Timmerman J. Troubleshooting an intrusion detection dataset: The CICIDS2017 case study. IEEE S&P Workshops 2021: 7-12. DOI:10.1109/SPW53761.2021.00009.
+21. Liu L, Engelen G, Timmerman J, et al. Error prevalence in NIDS datasets: A case study on CIC-IDS-2017 and CSE-CIC-IDS-2018. IEEE CNS 2022. DOI:10.1109/CNS56114.2022.9947235.
+22. Arp D, Quiring E, Pendlebury F, et al. Dos and don'ts of machine learning in computer security. USENIX Security 2022: 3971-3988. [无 DOI；USENIX Security 会议论文集]
+23. Sommer R, Paxson V. Outside the closed world: On using machine learning for network intrusion detection. IEEE S&P 2010: 305-316. DOI:10.1109/SP.2010.25.
+24. Buczak A L, Guven E. A survey of data mining and machine learning methods for cyber security intrusion detection. IEEE Communications Surveys & Tutorials, 2016, 18(2): 1153-1176. DOI:10.1109/COMST.2015.2494502.
+25. Khraisat A, Gondal I, Vamplew P, Kamruzzaman J. Survey of intrusion detection systems: Techniques, datasets and challenges. Cybersecurity, 2019, 2: 20. DOI:10.1186/s42400-019-0038-7.
+26. Apruzzese G, Laskov P, Montgomery E, et al. The role of machine learning in cybersecurity. ACM Digital Threats: Research and Practice, 2023, 4(1): 1-38. DOI:10.1145/3545574.
+27. Geng C, Huang S J, Chen S. Recent advances in open set recognition: A survey. IEEE TPAMI, 2021, 43(10): 3614-3631. DOI:10.1109/TPAMI.2020.2981604.
+28. Bendale A, Boult T E. Towards open set deep networks. CVPR 2016: 1563-1572. DOI:10.1109/CVPR.2016.173.
+29. Guo C, Pleiss G, Sun Y, Weinberger K Q. On calibration of modern neural networks. ICML 2017: 1321-1330. [无 DOI；PMLR]
+30. Ovadia Y, Fertig E, Ren J, et al. Can you trust your model's uncertainty? Evaluating predictive uncertainty under dataset shift. NeurIPS 2019: 13991-14002. [无 DOI；NeurIPS 会议论文集]
+31. Lakshminarayanan B, Pritzel A, Blundell C. Simple and scalable predictive uncertainty estimation using deep ensembles. NeurIPS 2017: 6402-6413. [无 DOI；NeurIPS 会议论文集]
+32. Angelopoulos A N, Bates S. Conformal prediction: A gentle introduction. Foundations and Trends in Machine Learning, 2023, 16(4): 494-591. DOI:10.1561/2200000101.
+33. Vovk V, Gammerman A, Shafer G. Algorithmic Learning in a Random World. Springer, 2005. DOI:10.1007/b106715.
+34. Shafer G, Vovk V. A tutorial on conformal prediction. JMLR, 2008, 9: 371-421. [无 DOI；JMLR]
+35. Lei J, G'Sell M, Rinaldo A, et al. Distribution-free predictive inference for regression. JASA, 2018, 113(523): 1094-1111. DOI:10.1080/01621459.2017.1307116.
+36. McNemar Q. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika, 1947, 12(2): 153-157. DOI:10.1007/BF02295996.
+37. Dietterich T G. Approximate statistical tests for comparing supervised classification learning algorithms. Neural Computation, 1998, 10(7): 1895-1923. DOI:10.1162/089976698300017197.
+38. Demsar J. Statistical comparisons of classifiers over multiple data sets. JMLR, 2006, 7: 1-30. [无 DOI；JMLR]
+39. Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 1979, 6(2): 65-70. [无 DOI；JSTOR 稳定记录 4615733]
+40. Efron B, Tibshirani R J. An Introduction to the Bootstrap. Chapman & Hall/CRC, 1993. ISBN 978-0-412-04231-7。
+41. Lakens D. Equivalence tests: A practical primer for t tests, correlations, and meta-analyses. Social Psychological and Personality Science, 2017, 8(4): 355-362. DOI:10.1177/1948550617697177.
+42. Han S, Kim Y, Lee S. Improvement of the classification performance of an intrusion detection model for rare and unknown attack traffic. Electronics, 2021, 10(18): 2268. DOI:10.3390/electronics10182268.
+43. Guolou P, Ye X. Open-set intrusion detection with MinMax autoencoder and pseudo extreme value machine. IJCNN 2022. DOI:10.1109/IJCNN55064.2022.9892858.
+44. Pedregosa F, Varoquaux G, Gramfort A, et al. Scikit-learn: Machine learning in Python. JMLR, 2011, 12: 2825-2830. [无 DOI；JMLR]
+45. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
+46. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
+47. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
 ---
 
 ## 补充材料清单
@@ -667,3 +678,5 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 | S24 | 参考文献 DOI 核验记录 |
 | S25 | 数据集覆盖矩阵与命题 3 定量验证 |
 | S26 | 扩展鲁棒性：标签噪声、缺失值与标定漂移 |
+| S27 | 规模敏感性：413 209 条总体与十种子配对比较 |
+| S28 | N-BaIoT 基准：审计、类别支持度、逐种子指标与配对比较 |

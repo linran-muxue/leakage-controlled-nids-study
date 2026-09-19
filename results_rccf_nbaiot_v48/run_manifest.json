@@ -1,0 +1,54 @@
+{
+  "dataset": "CIC-IDS2017",
+  "protocol_name": "deduplicated capped observed-prior population",
+  "observed_prior_population_rows": 180000,
+  "train_rows": 126000,
+  "validation_rows": 27000,
+  "test_rows": 27000,
+  "calibration_rows": 27000,
+  "class_counts": {
+    "train": {
+      "Benign": 42000,
+      "Gafgyt": 42000,
+      "Mirai": 42000
+    },
+    "validation": {
+      "Benign": 9000,
+      "Gafgyt": 9000,
+      "Mirai": 9000
+    },
+    "test": {
+      "Benign": 9000,
+      "Gafgyt": 9000,
+      "Mirai": 9000
+    }
+  },
+  "native_labels": [
+    "Benign",
+    "Gafgyt",
+    "Mirai"
+  ],
+  "feature_count_before_selection": 115,
+  "feature_count_after_selection": 60,
+  "deduplication_before_split": true,
+  "deduplication_audit": "data_processed_nbaiot_v48\\dedup_audit.json",
+  "split_rule": "fixed stratified 70/15/15 split; seed-specific model fitting",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "n_estimators": 100,
+  "cv": 5,
+  "alpha": 0.1,
+  "feature_selection_fit_on": "training partition only",
+  "risk_fit_on": "training cross-fitted predictions only",
+  "calibration_fit_on": "validation partition only",
+  "test_labels_used_for_fitting": false,
+  "cross_dataset_transfer": false,
+  "processed_hashes": {
+    "train": "b8e8e1787c172365d7b9232917ef3d3b25661e747a1e501b044e6bd78e240236",
+    "validation": "7757fdee77582b7be5bfa4d56e6e7c41dc2e5213acec15d14a0bdae38c57e127",
+    "test": "9910602bf6e8b6ea865adf97718fc7c2e1460fe5c07eea3f324b9eb1886d7273"
+  }
+}

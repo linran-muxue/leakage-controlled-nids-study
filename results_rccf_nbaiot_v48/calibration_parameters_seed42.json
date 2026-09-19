@@ -1,0 +1,10 @@
+{
+  "temperature": 0.5,
+  "alpha": 0.1,
+  "classes": [
+    "Benign",
+    "Gafgyt",
+    "Mirai"
+  ],
+  "calibration_rows": 27000
+}

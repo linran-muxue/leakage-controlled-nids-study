@@ -1,0 +1,2 @@
+﻿accuracy,balanced_accuracy,macro_precision,macro_recall,macro_f1,log_loss,brier,ece,mce,aurc,risk_at_90,risk_at_95,model,seed,train_seconds,predict_seconds,test_samples,rejected_count,coverage
+1.0,1.0,1.0,1.0,1.0,0.000185371029039723,3.0123170259927914e-05,0.00014628112096470413,0.5669410184475948,0.0,0.0,0.0,rccf,2024,312.940248699997,0.2468974999974307,27000,525,0.9805555555555555

@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S26"
+SOURCE = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S28"
 TARGET = ROOT / "results_publication_final" / "supplementary"
 def digest(path: Path) -> str:
     h = hashlib.sha256()
