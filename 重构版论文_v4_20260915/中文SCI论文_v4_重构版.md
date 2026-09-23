@@ -618,7 +618,7 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 ## 参考文献
 
-说明：全部 DOI 已于 2026-09-16 通过 Crossref 核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。逐条核验记录见补充材料 S24。
+说明：全部 DOI 已于 2026-09-23 通过 Crossref 或 DataCite 核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。逐条核验记录见补充材料 S24。
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
 2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.

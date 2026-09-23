@@ -614,7 +614,7 @@ To be completed by the author according to actual contributions: conceptualisati
 
 ## References
 
-Note: all DOIs were verified against Crossref on 2026-09-16. Venues that do not assign Crossref DOIs (PMLR, NeurIPS, JMLR, USENIX) are marked as such rather than left pending.The individual checks are recorded in Supplementary S24.
+Note: all DOIs were verified against Crossref or DataCite on 2026-09-23. Venues that do not assign Crossref DOIs (PMLR, NeurIPS, JMLR, USENIX) are marked as such rather than left pending. The individual checks are recorded in Supplementary S24.
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
 2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.

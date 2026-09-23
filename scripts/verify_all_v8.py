@@ -64,6 +64,11 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # promised; this ties the index, the bundle and checksums.sha256 together.
     ("supplementary index", ["scripts/check_supplementary_index_v1.py"],
      ("SUPPLEMENTARY_INDEX_FAILED",)),
+    # Supplementary S24 shipped a DOI record generated for the previous 45-item
+    # reference list (two-off numbering plus six DOIs of unrelated works); this
+    # ties the record to the list parsed from both manuscripts.
+    ("reference DOI record", ["scripts/check_reference_doi_v1.py"],
+     ("REFERENCE_DOI_FAILED",)),
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
     ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),
