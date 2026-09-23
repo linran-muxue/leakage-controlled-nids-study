@@ -494,14 +494,15 @@ The three conditions yield an operational diagnostic sequence: **first measure t
 
 ### 6.2 Interpreting reported weighting gains
 
-Our results do not imply that every published weighting method is wrong. They impose an **attribution constraint**: without controlling duplicates, transform leakage, class priors and tuning budgets, an observed "weighting gain" has at least four competing explanations [20-22], each of which has a measured magnitude in this study.
+Our results do not imply that every published weighting method is wrong. They impose an **attribution constraint**: without controlling duplicates, transform leakage, class priors and tuning budgets, an observed "weighting gain" has at least five competing explanations [20-22], each of which has a measured magnitude in this study.
 
 1. **Split noise.** Repeating the split ten times moves Macro-F1 by about 0.011. That exceeds the aggregation-rule and tuning-budget differences measured here (at most 0.0078); only the model-family gaps (0.0318 and 0.0916) are larger.
 2. **Protocol choice.** Changing the class prior from balanced to natural moves Macro-F1 by +0.0725, and reversing the deduplication order moves it by up to +0.0060.
 3. **Unequal tuning budgets.** Under a 5x3 nested cross-validation, an equally tuned XGBoost exceeds random forest by 0.0078 - more than most reported "improvements".
 4. **Metric selection.** Here RCCF has a better Log Loss but a worse ECE than the equal-weight forest; reporting either metric alone supports the opposite conclusion.
+5. **Population construction.** The identical comparison is an equivalence on the 53,237-flow capped population and a consistent deficit on the fully uncapped 2,429,503-flow corpus. Neither result is wrong; the population decides which one a study reports.
 
-The contribution to the literature is therefore a threshold rather than a refutation: **any claim that an aggregation rule helps should survive control of these four factors, otherwise it should be described as a protocol effect.**
+The contribution to the literature is therefore a threshold rather than a refutation: **any claim that an aggregation rule helps should survive control of these five factors, otherwise it should be described as a protocol effect.**
 
 ### 6.3 Practical decision matrix
 
@@ -517,6 +518,7 @@ Table 7 converts the evidence of this study into engineering guidance. Each reco
 | Unknown-attack rejection | Equal-weight forest with an independent conformal threshold | AUROC 0.92-0.94 against 0.64-0.69 | Higher false-rejection rate on known classes; the operating point must be recalibrated |
 | Cross-file or cross-scenario evaluation | Avoid single-file training; report a file-by-label coverage matrix | File-level Macro-F1 spans 0.3325-0.9997 | Additional data-coverage auditing effort |
 | Reproducibility of results | Adopt this protocol and release per-row predictions | All aggregate metrics can be recomputed from released probabilities | Extra storage and version management |
+| Decide whether to deploy conditional weighting | Equal voting on capped populations; do not deploy on strongly imbalanced corpora | Equivalence at 53,237 flows against a deficit of -0.005533 on the uncapped 2,429,503-flow corpus, all ten seeds | Forgoes a mechanism whose training cost is 175 times that of one forest |
 
 ### 6.4 Reporting recommendations for intrusion-detection evaluation
 
@@ -525,7 +527,7 @@ Based on the measurements above, we recommend that studies on public intrusion-d
 1. **A raw-to-final counting chain**: records remaining and removed at each processing stage, from the raw archive to the final research population.
 2. **Deduplication position and conflict rules**: whether deduplication precedes or follows the split, and how identical feature vectors with different labels are handled.
 3. **Fitting boundaries for every transform**: which partition fits the scaler, the feature selector, any resampler and the hyper-parameter search.
-4. **A clear separation of research population and target population**: how the study subset was constructed and how it differs from the full corpus and from production priors.
+4. **A clear separation of research population and target population**: how the study subset was constructed and how it differs from the full corpus and from production priors. Where a headline comparison is sensitive to that construction - as it is here - report it on both the capped and the uncapped population, or state explicitly which one the claim is conditioned on.
 5. **An explicitly designated primary metric**: under class imbalance, state in advance whether Macro-F1 or balanced accuracy is primary, with accuracy reported only as a reference.
 6. **Paired statistics and effect sizes**: at minimum a paired difference, an interval estimate and a multiple-comparison correction; a single point estimate is not evidence.
 7. **Secondary costs reported separately**: probability quality, open-set behaviour, robustness and latency should be reported independently and never merged into a single composite score.
