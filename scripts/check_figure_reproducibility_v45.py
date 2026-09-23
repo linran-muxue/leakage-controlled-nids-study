@@ -4,6 +4,7 @@ differs, so the check never leaves the worktree modified.
 """
 from __future__ import annotations
 import hashlib
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -20,6 +21,14 @@ def snapshot(folder: Path, pattern: str = "*.png") -> dict[str, bytes]:
     return {p.name: p.read_bytes() for p in sorted(folder.glob(pattern))}
 def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()[:12]
+def declared_outputs(script: Path) -> set[str]:
+    """File names a builder writes, so a frozen figure cannot hide.
+
+    figures/fig6_margin_bound.png and figures/fig7_diversity_dose_response.png
+    were 2026-09-15 copies that no builder produced; the byte comparison above
+    cannot see that, because it only compares files that already exist.
+    """
+    return set(re.findall(r'"([^"\n]+\.(?:png|pdf))"', script.read_text(encoding="utf-8")))
 def main() -> int:
     problems: list[str] = []
     for script, folder in BUILDERS:
@@ -28,6 +37,9 @@ def main() -> int:
         proc = subprocess.run([PY, script], capture_output=True, text=True, cwd=ROOT, timeout=900,
                               encoding="utf-8", errors="replace")
         after = {pattern: snapshot(folder, pattern) for pattern in patterns}
+        declared = declared_outputs(ROOT / script)
+        orphans = sorted(name for name in set(before["*.png"]) | set(before["*.pdf"])
+                         if name not in declared)
         restored = False
         changed, missing, new = [], [], []
         for pattern in patterns:
@@ -47,10 +59,14 @@ def main() -> int:
               + (f" (changed {changed}, missing {missing}, new {new})" if status == "DIFFERS" else ""))
         if restored:
             print("     originals restored; worktree unchanged")
+        print(f"     builder declares {len(declared)} output(s)"
+              + (f"; not produced by it: {orphans}" if orphans else ""))
         if proc.returncode != 0:
             problems.append(f"{script} exited {proc.returncode}: {proc.stderr.strip()[:120]}")
         if changed or missing or new:
             problems.append(f"{script} output is not what is committed: {changed + missing + new}")
+        if orphans:
+            problems.append(f"{script} does not write {orphans}")
     print()
     if problems:
         for problem in problems:
