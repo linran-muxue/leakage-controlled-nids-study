@@ -44,11 +44,14 @@
   "seeds": [
     7,
     13,
+    42,
     101,
     202,
     303,
     404,
-    505
+    505,
+    2024,
+    3407
   ],
   "n_estimators": 100,
   "cv": 5,
@@ -62,5 +65,6 @@
     "train": "4cda21758db83f0c2b59db54613c4d15bffd49cc6e8f0e537ebc839e85228a56",
     "validation": "747ed68cf758138938be78bc8d35a3a5be8031d475220b9c43004b9a53228d34",
     "test": "15d588ccddd901d7b07ae8b47c310a465f274f58bda065e4fd91195438e824aa"
-  }
+  },
+  "consolidated_from_per_seed_files": true
 }

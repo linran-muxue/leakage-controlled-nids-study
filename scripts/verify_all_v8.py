@@ -27,6 +27,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # plus split integrity and ten-seed test-set identity. Added after an
     # off-by-one in the quoted train/validation sizes survived every other check.
     ("full-corpus data audit", ["scripts/audit_full_corpus_data_v1.py"], ("DATA_AUDIT_FAILED",)),
+    # A resumed batch rewrites metrics_by_seed.csv with only its own seeds; this
+    # catches an aggregate that describes fewer seeds than the run produced.
+    ("metrics aggregation", ["scripts/check_metrics_aggregation_v1.py"],
+     ("METRICS_AGGREGATION_FAILED",)),
     ("reference annotations", ["scripts/check_noDOI_notes_v5.py"], ("CHECK",)),
     ("cross-document audit", ["scripts/fresh_audit_v7.py"], ("ISSUE",)),
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),
