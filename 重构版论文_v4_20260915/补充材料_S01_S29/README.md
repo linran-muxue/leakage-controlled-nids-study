@@ -28,6 +28,6 @@
 | S24 | 参考文献 DOI 核验记录 | doi_verification.json |
 | S25 | 数据集覆盖矩阵与命题 3 定量验证 | dataset_coverage_matrix.csv; proposition3_quantification.csv; proposition3_quantification.json |
 | S26 | 扩展鲁棒性：标签噪声、缺失值与标定漂移 | robustness_extended_summary.csv; robustness_extended_all_seeds.csv; robustness_extended_summary_3seeds.csv |
-| S27 | 规模敏感性：413 209 条总体与十种子配对比较 | metrics_by_seed.csv; metrics_aggregate.csv; paired_by_seed.csv; scale_sensitivity_summary.json; metrics_aggregate.csv |
-| S28 | N-BaIoT 基准：审计、类别支持度、逐种子指标与配对比较 | dataset_summary.csv; preprocess_config.json; metrics_by_seed.csv; paired_by_seed.csv; scale_sensitivity_summary.json; metrics_by_seed.csv |
-| S29 | 全语料规模运行：2 429 503 条、逐种子指标与配对比较 | full_corpus_paired_by_seed.csv; full_corpus_summary.json; metrics_by_seed.csv; metrics_by_seed.csv |
+| S27 | 规模敏感性：413 209 条总体与十种子配对比较 | metrics_by_seed.csv; metrics_aggregate__results_scale_sensitivity_v46.csv; paired_by_seed.csv; scale_sensitivity_summary.json; metrics_aggregate__results_rccf_cic_natural_v4_scale200k.csv |
+| S28 | N-BaIoT 基准：审计、类别支持度、逐种子指标与配对比较 | dataset_summary.csv; preprocess_config.json; metrics_by_seed__results_nbaiot_baselines_v48.csv; paired_by_seed.csv; scale_sensitivity_summary.json; metrics_by_seed__results_rccf_nbaiot_v48.csv |
+| S29 | 全语料规模运行：2 429 503 条、逐种子指标与配对比较 | full_corpus_paired_by_seed.csv; full_corpus_summary.json; metrics_by_seed__results_full_corpus_v49.csv; metrics_by_seed__results_rccf_cic_natural_v4_full.csv |

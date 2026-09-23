@@ -59,6 +59,11 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
     ("supplementary mirror", ["scripts/sync_supplementary_mirror_v16.py", "--check"],
      ("SUPPLEMENTARY_MIRROR_MISMATCH",)),
+    # S27/S28/S29 listed two same-named sources per section, so the second copy
+    # overwrote the first and the bundle shipped fewer files than the index
+    # promised; this ties the index, the bundle and checksums.sha256 together.
+    ("supplementary index", ["scripts/check_supplementary_index_v1.py"],
+     ("SUPPLEMENTARY_INDEX_FAILED",)),
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
     ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),

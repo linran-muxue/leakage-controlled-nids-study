@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import shutil
 import sys
+from collections import Counter
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -128,6 +129,27 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def target_names(sources: list[str]) -> list[str]:
+    """File names for the copies, with same-named sources kept apart.
+
+    S27, S28 and S29 each list two sources whose file names collide; the second
+    copy silently overwrote the first, so the bundle shipped one file less than
+    the index promised and checksums.sha256 carried two different hashes for
+    one path. Every file that shares its name with another file in the same
+    section is qualified with its source directory, so both copies survive.
+    """
+    names = [Path(src).name for src in sources]
+    counts = Counter(names)
+    qualified = []
+    for src, name in zip(sources, names):
+        if counts[name] > 1:
+            parent = Path(src).parent.name
+            qualified.append(f"{Path(name).stem}__{parent}{Path(name).suffix}")
+        else:
+            qualified.append(name)
+    return qualified
+
+
 def main() -> None:
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -140,15 +162,15 @@ def main() -> None:
         folder = OUT / key
         folder.mkdir()
         names = []
-        for src in sources:
+        for src, name in zip(sources, target_names(sources)):
             path = ROOT / src
             if not path.exists():
                 missing.append(src)
                 continue
-            target = folder / path.name
+            target = folder / name
             shutil.copy2(path, target)
-            names.append(f"{key}/{path.name}")
-            checksums.append(f"{sha256(target)}  {key}/{path.name}")
+            names.append(f"{key}/{name}")
+            checksums.append(f"{sha256(target)}  {key}/{name}")
         lines.append(f"| {key} | {title} | {'; '.join(Path(n).name for n in names) or '缺失'} |")
     (OUT / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     (OUT / "checksums.sha256").write_text("\n".join(checksums) + "\n", encoding="utf-8")
