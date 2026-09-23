@@ -61,13 +61,18 @@ def main() -> int:
         problems.append(f"graphical abstract is {width}x{height}")
     for label, text, heading in (("EN", EN, "## Supplementary material"),
                                  ("ZH", ZH, "## 补充材料清单")):
-        body = text.split(heading)[0]
+        # Derive the required range from the manuscript's own list instead of
+        # hard-coding it: the check silently stopped at S26 when S27-S29 were
+        # added, so three items were never verified to be cited from the text.
+        body, _, listing = text.partition(heading)
+        listed = [int(m) for m in re.findall(r"^\| S(\d{2}) \|", listing, flags=re.M)]
         cited: set[int] = set()
         for first, last in re.findall(r"S(\d{2})\s*[-–]\s*S?(\d{2})", body):
             cited.update(range(int(first), int(last) + 1))
         cited.update(int(m) for m in re.findall(r"S(\d{2})", body))
-        missing = [n for n in range(1, 27) if n not in cited]
-        print(f"supplementary items cited in the {label} text: {len(cited & set(range(1, 27)))}/26")
+        missing = [n for n in listed if n not in cited]
+        print(f"supplementary items cited in the {label} text: "
+              f"{len(listed) - len(missing)}/{len(listed)}")
         if missing:
             problems.append(f"{label} text never cites supplementary {missing}")
     print()

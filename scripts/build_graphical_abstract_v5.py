@@ -52,7 +52,7 @@ def main() -> None:
 
     # ---- B: main result ----------------------------------------------------
     ax = fig.add_subplot(gs[0, 1])
-    ax.set_title("B  Ten seeds: no gain over equal voting", fontsize=10.5, weight="bold", loc="left")
+    ax.set_title("B  Ten seeds: no gain on capped data", fontsize=10.5, weight="bold", loc="left")
     mean, lo, hi = float(chi2["mean_difference"]), float(chi2["ci90_low"]), float(chi2["ci90_high"])
     ax.axvspan(-0.005, 0.005, color="#eaf5ee", zorder=0)
     ax.axvline(0, color="#444444", lw=1.0, ls="--")
@@ -66,6 +66,8 @@ def main() -> None:
             ha="center", fontsize=8.0, color="#3d7a52")
     ax.text(0.5, 0.12, f"mean {mean:+.6f}; five seeds up, five down",
             transform=ax.transAxes, ha="center", fontsize=8.2, color="#b5525b")
+    ax.text(0.5, 0.04, "full 2.4M corpus: no margin holds (-0.005533)",
+            transform=ax.transAxes, ha="center", fontsize=7.4, color="#8a6d1f")
     ax.tick_params(axis="x", labelsize=8)
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
