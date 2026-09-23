@@ -26,7 +26,7 @@ We focus this question on one concrete object. A common recipe in the literature
 
 **H2 (weighting gain).** Experts differ in reliability across samples; therefore, weighting them by a sample-specific reliability estimate should be reliably better than equal voting. Even if the experts are individually comparable, the gate should help whenever their errors occur on different samples.
 
-**H3 (protocol independence).** These conclusions are insensitive to deduplication order, class priors and split construction, so results can be compared across papers.
+**H3 (protocol independence).** These conclusions are insensitive to deduplication order, class priors, split construction and population size, so results can be compared across papers.
 
 H3 is the most consequential because, in the literature, it is never stated explicitly, yet it underpins every cross-paper comparison of the form "model X reaches 99% on CIC-IDS2017".
 
@@ -38,7 +38,7 @@ Four research questions structure the paper. Each maps to exactly one results su
 
 **RQ2 (weighting gain).** Does sample-conditional fusion outperform equal voting under the same feature view? If the two produce identical predictions, why is the mechanism inert?
 
-**RQ3 (protocol robustness).** Are the conclusions robust to deduplication order, class priors, repeated splits and tuning budgets?
+**RQ3 (protocol robustness).** Are the conclusions robust to deduplication order, class priors, repeated splits, tuning budgets and population size?
 
 **RQ4 (external validity).** Do the conclusions survive beyond CIC-IDS2017, on NSL-KDD, UNSW-NB15 and file-level stress tests?
 
@@ -468,7 +468,15 @@ Calibration, robustness, latency, resource, cost-sensitive and near-duplicate re
 
 ### 5.7 Scale and domain sensitivity
 
-The primary population is a capped subset, so the equivalence reported above could in principle be an artefact of that cap. Three further runs address the question directly.
+The primary population is a capped subset, so the equivalence reported above could in principle be an artefact of that cap. Three further runs address the question directly, and Table 7 shows that the verdict depends on the population.
+
+**Table 7. The CIC-IDS2017 scale ladder: the verdict depends on the population**
+
+| Population | Flows | Test rows | RCCF | Equal RF (chi-square) | Difference | TOST 0.005 | TOST 0.01 |
+|---|---:|---:|---:|---:|---:|---|---|
+| Capped, 20,000 per class | 53,237 | 7,986 | 0.889278 | 0.889734 | -0.000456 | equivalent | equivalent |
+| Capped, 200,000 per class | 413,209 | 61,982 | 0.856065 | 0.857202 | -0.001137 | equivalent | equivalent |
+| Uncapped (full deduplicated corpus) | 2,429,503 | 364,426 | 0.754007 | 0.759540 | -0.005533 | **not equivalent** | equivalent |
 
 **A population 7.8 times larger.** Rebuilding the CIC-IDS2017 population with the identical audit but a 200,000-per-class cap yields 413,209 flows (train 289,246 / validation 61,982 / test 61,982). The minority classes cannot grow, so the enlarged population is more imbalanced than the primary one: Brute Force contributes 10,620 rows, Bot 1,948 and Web Attack 673. The headline pair was re-run over the full ten seeds. RCCF averages 0.856065 Macro-F1 against 0.857202 for the equal-weight chi-square forest, a mean paired difference of -0.001137 (SD 0.003156; seed-level 90% interval [-0.002966, +0.000692]). TOST is significant at both pre-specified margins (p = 0.0019 at 0.005, p = 4.8e-6 at 0.01), so the equivalence statement survives a 7.8-fold increase in population size; the point estimate now favours the control slightly rather than RCCF. The two arms disagree on 20-29 of the 61,982 test rows per seed (0.03%-0.05%), the same order as on the primary population. The context baselines behave as before: XGBoost reaches 0.827656 Macro-F1, extremely randomised trees 0.783747, an equal-weight full-feature forest 0.852953 and a depth-limited decision tree 0.809695.
 
@@ -506,9 +514,9 @@ The contribution to the literature is therefore a threshold rather than a refuta
 
 ### 6.3 Practical decision matrix
 
-Table 7 converts the evidence of this study into engineering guidance. Each recommendation carries an explicit cost; no option dominates across all objectives.
+Table 8 converts the evidence of this study into engineering guidance. Each recommendation carries an explicit cost; no option dominates across all objectives.
 
-**Table 7. Decision matrix for practical objectives**
+**Table 8. Decision matrix for practical objectives**
 
 | Objective | Recommended option | Evidence | Cost |
 |---|---|---|---|
