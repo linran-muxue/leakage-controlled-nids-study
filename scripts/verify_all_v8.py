@@ -23,6 +23,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
       "references marked DOI to verify: 1")),
     ("citation coverage", ["scripts/check_citation_coverage_v5.py"], ("uncited = [1", "uncited = [2")),
     ("number traceability", ["scripts/audit_number_traceability_v5.py"], ("mismatches: 1", "mismatches: 2")),
+    # Verifies the processed files against the counts the manuscript quotes,
+    # plus split integrity and ten-seed test-set identity. Added after an
+    # off-by-one in the quoted train/validation sizes survived every other check.
+    ("full-corpus data audit", ["scripts/audit_full_corpus_data_v1.py"], ("DATA_AUDIT_FAILED",)),
     ("reference annotations", ["scripts/check_noDOI_notes_v5.py"], ("CHECK",)),
     ("cross-document audit", ["scripts/fresh_audit_v7.py"], ("ISSUE",)),
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),

@@ -91,7 +91,7 @@ def record(summary: dict) -> str:
 
 ### 一、做法
 
-用完全相同的审计与协议，只把每类上限彻底取消（`data_processed_cic_natural_v4_full`）：**{rows_text} 条**去重后 CIC-IDS2017 记录，训练 1 700 651 / 验证 364 426 / 测试 364 426；Web Attack 仅占 0.028%，比 413 209 条的规模实验更不平衡。单次 RCCF 拟合约 2.3 小时（seed 42 记录 `train_seconds = 8139`），因此十个种子分批运行、每完成一个种子落盘一次预测。
+用完全相同的审计与协议，只把每类上限彻底取消（`data_processed_cic_natural_v4_full`）：**{rows_text} 条**去重后 CIC-IDS2017 记录，训练 1 700 652 / 验证 364 425 / 测试 364 426；Web Attack 仅占 0.028%，比 413 209 条的规模实验更不平衡。单次 RCCF 拟合约 2.3 小时（seed 42 记录 `train_seconds = 8139`），因此十个种子分批运行、每完成一个种子落盘一次预测。
 
 ### 二、结果
 

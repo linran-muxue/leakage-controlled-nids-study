@@ -132,7 +132,7 @@ def paragraph_en(s: dict) -> str:
                 f"({s['train_slowdown']:.0f}x), at a quality difference of {s['mean_difference']:.6f}.")
     return (
         "**The full deduplicated corpus.** Removing the per-class cap entirely yields 2,429,503 flows "
-        "(train 1,700,651 / validation 364,426 / test 364,426) - the complete deduplicated CIC-IDS2017 "
+        "(train 1,700,652 / validation 364,425 / test 364,426) - the complete deduplicated CIC-IDS2017 "
         "corpus, in which Web Attack contributes 0.028% of the rows. A single RCCF fit takes about 2.3 "
         f"hours at this scale, so the comparison was run as a batch over the same ten seeds: RCCF averages "
         f"{s['rccf_mean_macro_f1']:.6f} Macro-F1 against {s['control_mean_macro_f1']:.6f} for the equal-weight "
@@ -161,7 +161,7 @@ def paragraph_zh(s: dict) -> str:
                 f"等权森林仅需 {s['control_mean_train_seconds']:.0f} 秒（{s['train_slowdown']:.0f} 倍），"
                 f"而质量差为 {s['mean_difference']:.6f}。")
     return (
-        "**完整去重语料。** 完全取消每类上限后得到 2 429 503 条（训练 1 700 651 / 验证 364 426 / 测试 364 426），"
+        "**完整去重语料。** 完全取消每类上限后得到 2 429 503 条（训练 1 700 652 / 验证 364 425 / 测试 364 426），"
         "即去重后的 CIC-IDS2017 全语料，其中 Web Attack 仅占 0.028%。该规模下单次 RCCF 训练约需 2.3 小时，"
         f"因此按同样的十个种子批量运行：RCCF 平均 Macro-F1 为 {s['rccf_mean_macro_f1']:.6f}，等权卡方森林为 "
         f"{s['control_mean_macro_f1']:.6f}，平均配对差 {s['mean_difference']:.6f}（标准差 {s['sd']:.6f}；"
