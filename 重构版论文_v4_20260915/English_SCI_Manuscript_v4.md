@@ -490,9 +490,9 @@ Per-seed paired statistics, per-class reports and the scale summaries for all th
 
 ## 6. Discussion
 
-### 6.1 Three failure conditions for conditional weighting
+### 6.1 Four failure conditions for conditional weighting
 
-The conditions of Section 4.3 and the measurements of Section 5.3 together characterise three failure modes. They are not mutually exclusive but form a hierarchy from strongest to weakest.
+The conditions of Section 4.3 and the measurements of Section 5.3 together characterise four failure modes. The first three describe an inert gate, whose weights cannot move a label; the fourth describes a combination that is harmful at any weights. They are not mutually exclusive but form a hierarchy from strongest to weakest.
 
 **Condition A: identical expert output.** When forests trained on different feature views return the same posterior for a given input, no convex weighting can change the output (Condition 1). In flow-feature settings this is more common than intuition suggests: the top-60 features selected by chi-square, mutual information and ANOVA overlap heavily, and 12 of the extra columns in the full view are constant. Measurement 6 quantifies the boundary: when pairwise disagreement is 0.20%-0.36%, the gate gains exactly zero in six of six runs; only when disagreement rises to 3%-6% does the gain become consistently positive. Condition A is therefore not the idealised case of "identical experts" but a loose condition that real flow-feature data satisfies easily.
 
@@ -500,7 +500,9 @@ The conditions of Section 4.3 and the measurements of Section 5.3 together chara
 
 **Condition C: risk-output collapse.** When the risk models return nearly equal values across experts, the weights degenerate to uniform (Condition 3) and the mechanism becomes numerically equivalent to equal averaging. The measured normalised weight entropy is 0.99998, squarely inside this regime.
 
-The three conditions yield an operational diagnostic sequence: **first measure the weight entropy, then the prediction-disagreement rate, and only then look at the performance difference.** If entropy is close to 1 and the disagreement count is 0, further tuning of the gate will not help, because the problem does not lie in the gate.
+**Condition D: heterogeneous members.** The three conditions above describe an inert gate. The fourth is different in kind. When the members of a fusion differ in quality, the combination is bounded by the weighted mean of its members plus whatever diversity gain they contribute [9], so it cannot be repaired by re-weighting: the bound is a property of the member set, not of the gate. On the capped populations the four feature views score within 0.002 of one another (Table 4a) and the bound is slack. On the uncapped corpus the full-feature view falls 0.021397 behind the chi-square view, and one such member inside a four-way average accounts for the whole measured deficit: 0.021397/4 = 0.005349 predicted against -0.005533 observed. The corresponding diagnostic is therefore a comparison of member scores, not of weights.
+
+The four conditions yield an operational diagnostic sequence: **first measure the weight entropy, then the prediction-disagreement rate, then the spread across member scores, and only then look at the performance difference.** If entropy is close to 1 and the disagreement count is 0, further tuning of the gate will not help, because the problem does not lie in the gate. If the member scores span more than the difference you care about, the fusion is bounded by its weakest member and no weighting scheme will recover it.
 
 ### 6.2 Interpreting reported weighting gains
 
@@ -532,7 +534,7 @@ Table 8 converts the evidence of this study into engineering guidance. Each reco
 
 ### 6.4 Reporting recommendations for intrusion-detection evaluation
 
-Based on the measurements above, we recommend that studies on public intrusion-detection datasets report at least the following eight items. They concern the minimum requirement that a conclusion be reproducible by others, not additional methodological sophistication.
+Based on the measurements above, we recommend that studies on public intrusion-detection datasets report at least the following nine items. They concern the minimum requirement that a conclusion be reproducible by others, not additional methodological sophistication.
 
 1. **A raw-to-final counting chain**: records remaining and removed at each processing stage, from the raw archive to the final research population.
 2. **Deduplication position and conflict rules**: whether deduplication precedes or follows the split, and how identical feature vectors with different labels are handled.
@@ -542,6 +544,7 @@ Based on the measurements above, we recommend that studies on public intrusion-d
 6. **Paired statistics and effect sizes**: at minimum a paired difference, an interval estimate and a multiple-comparison correction; a single point estimate is not evidence.
 7. **Secondary costs reported separately**: probability quality, open-set behaviour, robustness and latency should be reported independently and never merged into a single composite score.
 8. **Release of per-row predictions**: publishing the prediction and probability for every test row lets third parties recompute every aggregate.
+9. **Member-level scores for every fusion**: report the score of each member alongside the fused result. An equal-weight fusion is bounded by its members, so a fusion reported without them cannot be checked for the dilution failure of Condition D.
 
 ### 6.5 Limitations and validity threats
 
