@@ -49,3 +49,18 @@ def flatten_aggregate_columns(table: pd.DataFrame):
     if "index" in table.columns:
         table = table.drop(columns=["index"])
     return table
+
+
+def feature_row_hashes(frame: pd.DataFrame, features: list[str]) -> list[int]:
+    """Exact float64-bit fingerprints of the feature columns.
+
+    The raw values are hashed on purpose: rounding first merges rows that differ
+    beyond the rounding step, which once produced 735 phantom train/test
+    overlaps in the full-corpus audit.
+    """
+    return pd.util.hash_pandas_object(frame[features], index=False).tolist()
+
+
+def count_shared_rows(left: set[int], right: list[int]) -> int:
+    """How many rows of ``right`` also appear in ``left``."""
+    return sum(1 for value in right if value in left)

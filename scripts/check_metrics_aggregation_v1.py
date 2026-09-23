@@ -19,39 +19,54 @@ import pandas as pd
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-problems: list[str] = []
 
-print(f"{'directory':<46}{'per-seed':>9}{'by_seed':>9}  status")
-for directory in sorted(ROOT.glob("results_*")):
-    if not directory.is_dir():
-        continue
-    per_seed = sorted(
-        int(match.group(1))
-        for match in (re.match(r"metrics_seed(\d+)\.csv$", path.name)
-                      for path in directory.glob("metrics_seed*.csv"))
-        if match
-    )
-    if not per_seed:
-        continue
-    aggregate = directory / "metrics_by_seed.csv"
-    if not aggregate.exists():
-        status = "MISSING AGGREGATE"
-        rows = -1
-    else:
-        try:
-            rows = len(pd.read_csv(aggregate))
-        except Exception:
-            rows = -1
-        status = "ok" if rows == len(per_seed) else "TRUNCATED"
-    if status != "ok":
-        problems.append(f"{directory.name}: {len(per_seed)} per-seed files but "
-                        f"metrics_by_seed.csv has {rows} row(s)")
-    print(f"{directory.name:<46}{len(per_seed):>9}{rows:>9}  {status}")
 
-print()
-if problems:
-    for problem in problems:
-        print(f"ISSUE {problem}")
-    print("METRICS_AGGREGATION_FAILED")
-    raise SystemExit(1)
-print("METRICS_AGGREGATION_OK")
+def scan(root: Path) -> tuple[list[tuple[str, int, int, str]], list[str]]:
+    """Compare every results directory with its own per-seed metric files."""
+    rows: list[tuple[str, int, int, str]] = []
+    problems: list[str] = []
+    for directory in sorted(root.glob("results_*")):
+        if not directory.is_dir():
+            continue
+        per_seed = sorted(
+            int(match.group(1))
+            for match in (re.match(r"metrics_seed(\d+)\.csv$", path.name)
+                          for path in directory.glob("metrics_seed*.csv"))
+            if match
+        )
+        if not per_seed:
+            continue
+        aggregate = directory / "metrics_by_seed.csv"
+        if not aggregate.exists():
+            status = "MISSING AGGREGATE"
+            count = -1
+        else:
+            try:
+                count = len(pd.read_csv(aggregate))
+            except Exception:
+                count = -1
+            status = "ok" if count == len(per_seed) else "TRUNCATED"
+        if status != "ok":
+            problems.append(f"{directory.name}: {len(per_seed)} per-seed files but "
+                            f"metrics_by_seed.csv has {count} row(s)")
+        rows.append((directory.name, len(per_seed), count, status))
+    return rows, problems
+
+
+def main() -> int:
+    rows, problems = scan(ROOT)
+    print(f"{'directory':<46}{'per-seed':>9}{'by_seed':>9}  status")
+    for name, per_seed, count, status in rows:
+        print(f"{name:<46}{per_seed:>9}{count:>9}  {status}")
+    print()
+    if problems:
+        for problem in problems:
+            print(f"ISSUE {problem}")
+        print("METRICS_AGGREGATION_FAILED")
+        return 1
+    print("METRICS_AGGREGATION_OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

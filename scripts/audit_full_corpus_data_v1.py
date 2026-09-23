@@ -20,6 +20,9 @@ from sklearn.metrics import f1_score
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from src.audit_utils import count_shared_rows, feature_row_hashes  # noqa: E402
+
 DATA = ROOT / "data_processed_cic_natural_v4_full"
 RCCF = ROOT / "results_rccf_cic_natural_v4_full"
 CONTROL = ROOT / "results_full_corpus_v49"
@@ -84,17 +87,11 @@ print("\n=== 3. split integrity ===")
 features = [c for c in pd.read_csv(DATA / "test.csv", nrows=1).columns if c != "target"]
 
 
-def fingerprint(frame: pd.DataFrame) -> pd.Series:
-    # Hash the exact float64 bits: rounding first merges rows that differ
-    # beyond the rounding step and reported 735 phantom train/test overlaps.
-    return pd.util.hash_pandas_object(frame[features], index=False)
-
-
 tr = pd.read_csv(DATA / "train.csv")
 te = pd.read_csv(DATA / "test.csv")
-tr_hashes = set(fingerprint(tr).tolist())
-te_hashes = fingerprint(te).tolist()
-overlap = sum(1 for h in te_hashes if h in tr_hashes)
+tr_hashes = set(feature_row_hashes(tr, features))
+te_hashes = feature_row_hashes(te, features)
+overlap = count_shared_rows(tr_hashes, te_hashes)
 check("no test feature vector appears in training", overlap == 0, f"{overlap} overlapping rows")
 check("test rows are unique", len(set(te_hashes)) == len(te_hashes),
       f"{len(te_hashes) - len(set(te_hashes))} duplicates")
