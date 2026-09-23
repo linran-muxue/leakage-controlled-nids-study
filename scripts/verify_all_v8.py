@@ -40,6 +40,9 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),
     ("body hygiene", ["scripts/body_hygiene_check_v9.py"], ("ISSUE", "BODY_HYGIENE_FAILED")),
     ("cross-language numbers", ["scripts/cross_language_number_diff_v10.py"], ("MISMATCH",)),
+    # The abstract is the most-quoted part of the paper and was the one
+    # front-matter document never checked for numbers it does not support.
+    ("abstract numbers", ["scripts/check_abstract_numbers_v1.py"], ("ABSTRACT_NUMBERS_FAILED",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
