@@ -132,21 +132,28 @@ def fig3():
 
 
 def fig4():
-    nat = pd.read_csv(ROOT / "results_rccf_evidence_v3b" / "model_metrics.csv")
-    piv = nat.pivot(index="seed", columns="model", values="macro_f1")
-    base = pd.read_csv(ROOT / "results_cic_natural_baselines_v3b" / "metrics_aggregate_flat.csv")
+    # Panel (a) shows the ten-seed primary protocol, the same run as Table 4(a).
+    # The neural baseline was trained on the three seeds common to both runs and
+    # is labelled as such on the axis.
+    ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv").set_index("model")
+    per_seed = pd.read_csv(ROOT / "results_seeds10_v5" / "metrics_by_seed.csv")
+
+    def ten_seed(model):
+        sub = per_seed[per_seed.model == model]
+        return float(ten.loc[model, "macro_f1"]), float(sub["macro_f1"].std(ddof=0))
+
     nat_rows = {
-        "RCCF": (piv["rccf"].mean(), piv["rccf"].std(ddof=0)),
-        "Equal RF (chi2)": (piv["equal_rf_chi2"].mean(), piv["equal_rf_chi2"].std(ddof=0)),
-        "Equal RF (all)": (float(base.loc[base.model == "equal_rf_all", "macro_f1_mean"].iloc[0]), 0.0),
-        "ExtraTrees (chi2)": (piv["extra_trees_chi2"].mean(), piv["extra_trees_chi2"].std(ddof=0)),
+        "RCCF": ten_seed("rccf"),
+        "Equal RF (chi2)": ten_seed("equal_rf_chi2"),
+        "Equal RF (all)": ten_seed("equal_rf_all"),
+        "ExtraTrees (chi2)": ten_seed("extra_trees_chi2"),
     }
     bal = pd.read_csv(ROOT / "results_cic_balanced_baselines_v3b" / "metrics_aggregate_flat.csv")
     bal_rccf = pd.read_csv(ROOT / "results_rccf_cic_balanced_v3b" / "metrics_aggregate.csv")
     strong = pd.read_csv(ROOT / "results_cfrg_strong_baselines_v2_verified" / "summary.csv", header=[0, 1])
     strong.columns = ["_".join(str(c) for c in col if "Unnamed" not in str(c)).strip("_") for col in strong.columns]
     mlp = pd.read_csv(ROOT / "results_mlp_final_v5" / "metrics_aggregate.csv")
-    names = list(nat_rows.keys()) + ["MLP", "XGBoost"]
+    names = list(nat_rows.keys()) + ["MLP (3 seeds)", "XGBoost"]
     nat_vals = [nat_rows[n][0] for n in nat_rows] + [float(mlp["macro_f1_mean"].iloc[0])] + [np.nan]
     nat_err = [nat_rows[n][1] for n in nat_rows] + [float(mlp["macro_f1_std"].iloc[0])] + [np.nan]
     bal_vals = [float(bal_rccf["macro_f1_mean"].iloc[0]),
@@ -163,13 +170,14 @@ def fig4():
     ax.bar(x + w / 2, bal_vals, w, color="#e07b39", label="Balanced control population")
     ax.set_xticks(x); ax.set_xticklabels(names, rotation=18, ha="right", fontsize=8.8)
     ax.set_ylim(0.75, 0.99); ax.set_ylabel("Macro-F1")
-    ax.set_title("Macro-F1 on both populations (mean of seeds)", fontsize=10.5, weight="bold")
+    ax.set_title("Macro-F1 on both populations (natural prior: 10 seeds; balanced control: 3 seeds)",
+                 fontsize=10.5, weight="bold")
     ax.legend(fontsize=8.4); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     ax = axes[1]
-    bs = pd.read_csv(ROOT / "results_rccf_evidence_v3b" / "paired_bootstrap_macro_f1.csv")
-    est = bs["estimate"].values; lo = bs["lower"].values; hi = bs["upper"].values
+    bs = pd.read_csv(ROOT / "results_equivalence_10seeds_v5" / "tost_results.csv")
+    est = bs["delta"].values; lo = bs["ci95_low"].values; hi = bs["ci95_high"].values
     ypos = np.arange(len(est))
     ax.errorbar(est, ypos, xerr=[est - lo, hi - est], fmt="o", color="#b5525b",
                 ecolor="#b5525b", capsize=4, ms=6)

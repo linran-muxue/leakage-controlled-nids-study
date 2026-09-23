@@ -324,7 +324,7 @@ Table 4 gives the main results on both populations. Panel (a) is averaged over t
 
 **Table 4. Main results on the two populations**
 
-(a) Natural-prior population P_nat, 7,986 test rows, mean of ten seeds
+(a) Natural-prior population P_nat, 7,986 test rows, mean of ten seeds (MLP row: three seeds common to both runs)
 
 | Model | Accuracy | Balanced accuracy | Macro-F1 | Log Loss | Brier | ECE | Train (s) | Predict (s) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -348,7 +348,7 @@ Five readings follow.
 
 **First, the headline result is a near-zero difference.** Averaged over ten seeds on the natural-prior population, RCCF reaches 0.889278 Macro-F1 against 0.889734 for the equal-weight chi-square forest, a mean difference of **-0.000456**, with five seeds favouring RCCF and five favouring the equal forest. On the three-seed balanced control RCCF reaches 0.961807 against 0.963215, trailing by -0.001408. Both magnitudes are below one thousandth and the sign is not stable across settings. One baseline is stronger on a different metric: extremely randomised trees obtain the highest balanced accuracy (0.96215 against 0.94820 for RCCF) while obtaining the lowest Macro-F1 (0.857490), because they spread predictions more evenly across rare classes.
 
-![Figure 4. Main results on both populations (ten seeds for the natural-prior panel) and paired bootstrap intervals](figures_en/fig4_main_results.png)
+![Figure 4. Main results on both populations (ten seeds for the natural-prior panel; the MLP bar uses the three seeds common to both runs) and paired bootstrap intervals](figures_en/fig4_main_results.png)
 
 The left panel of Figure 4 starts at 0.75 to display differences of one thousandth; the right panel shows that those differences are statistically indistinguishable. The two panels must be read together, not by bar height alone.
 
@@ -370,7 +370,7 @@ Two entries in Table 5 deserve comment. **Power.** With ten seeds and the observ
 
 **Fourth, the cost is certain while the gain is not.** On the natural-prior protocol, averaged over the ten seeds of Table 4(a), RCCF takes 93.3 s to train against 1.16 s for the equal-weight forest, and 0.244 s to predict against 0.046 s on a whole test batch - about 5.3 times slower at inference. That batch ratio must not be conflated with the single-row latency ratio of 4.9 reported in Section 5.6 (14.62 ms against 2.96 ms): one measures throughput on 7,986 rows, the other a single call. The gap widens on the balanced control, where training takes 9.13 s against 0.45 s. The most favourable summary of what these costs buy is that Macro-F1 moves within +/- 0.01.
 
-**Fifth, a neural baseline shows how badly accuracy can mislead.** A multilayer perceptron given the same feature budget and a full training budget (128 hidden units, hyper-parameters selected on the validation partition) reaches 0.97679 accuracy, essentially the same as RCCF's 0.97792 over the three seeds common to both runs, but only 0.797654 Macro-F1, 0.092 below RCCF. Its balanced accuracy is 0.79666 against 0.94920, and its Brier score is 0.036701 against 0.006312. Notably, a paired McNemar test on overall correctness is not significant (pooled p = 0.383 over 23,958 rows; per-seed 1.000 / 0.768 / 0.261), because the two models make a similar **number** of errors and differ in **which classes** those errors fall on. This yields two methodological consequences: on imbalanced intrusion-detection benchmarks, accuracy can conceal a Macro-F1 gap of nearly 0.1; and McNemar's test is insensitive to the class distribution of errors, so it cannot stand alone and must be reported alongside class-level metrics.
+**Fifth, a neural baseline shows how badly accuracy can mislead.** A multilayer perceptron given the same feature budget and a full training budget (128 hidden units, hyper-parameters selected on the validation partition) reaches 0.97679 accuracy against RCCF's 0.97792, but only 0.797654 Macro-F1 against 0.889955, i.e. 0.092 lower. Its balanced accuracy is 0.79666 against 0.94920 and its Brier score is 0.036701 against 0.006312. Every comparison in this paragraph is computed on the three seeds common to both runs (42, 2024, 3407), the seeds on which the neural baseline was trained; Table 4(a) gives the corresponding ten-seed RCCF values. Notably, a paired McNemar test on overall correctness is not significant (pooled p = 0.383 over 23,958 rows; per-seed 1.000 / 0.768 / 0.261), because the two models make a similar **number** of errors and differ in **which classes** those errors fall on. This yields two methodological consequences: on imbalanced intrusion-detection benchmarks, accuracy can conceal a Macro-F1 gap of nearly 0.1; and McNemar's test is insensitive to the class distribution of errors, so it cannot stand alone and must be reported alongside class-level metrics.
 
 Per-seed metrics, per-class reports, normalised confusion matrices and the equivalence tests are provided in Supplementary S05-S07 and S20.
 

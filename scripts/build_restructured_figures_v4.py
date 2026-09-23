@@ -160,20 +160,25 @@ def fig3():
 
 # ---------------------------------------------------------------- figure 4
 def _natural_table():
-    natural = pd.read_csv(ROOT / "results_rccf_evidence_v3b" / "model_metrics.csv")
-    piv = natural.pivot(index="seed", columns="model", values="macro_f1")
-    base = pd.read_csv(ROOT / "results_cic_natural_baselines_v3b" / "metrics_aggregate_flat.csv")
+    # 面板 (a) 与表 4(a) 使用同一批十种子结果；神经基线只在两次运行共有的三个种子上训练。
+    ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv").set_index("model")
+    per_seed = pd.read_csv(ROOT / "results_seeds10_v5" / "metrics_by_seed.csv")
+
+    def ten_seed(model):
+        sub = per_seed[per_seed.model == model]
+        return float(ten.loc[model, "macro_f1"]), float(sub["macro_f1"].std(ddof=0))
+
     rows = {
-        "RCCF": (piv["rccf"].mean(), piv["rccf"].std(ddof=0)),
-        "Equal RF (χ²)": (piv["equal_rf_chi2"].mean(), piv["equal_rf_chi2"].std(ddof=0)),
-        "Equal RF (all)": (float(base.loc[base.model == "equal_rf_all", "macro_f1_mean"].iloc[0]), 0.0),
-        "ExtraTrees (χ²)": (piv["extra_trees_chi2"].mean(), piv["extra_trees_chi2"].std(ddof=0)),
+        "RCCF": ten_seed("rccf"),
+        "Equal RF (χ²)": ten_seed("equal_rf_chi2"),
+        "Equal RF (all)": ten_seed("equal_rf_all"),
+        "ExtraTrees (χ²)": ten_seed("extra_trees_chi2"),
     }
-    return rows, piv
+    return rows, per_seed
 
 
 def fig4():
-    nat, piv = _natural_table()
+    nat, per_seed = _natural_table()
     bal = pd.read_csv(ROOT / "results_cic_balanced_baselines_v3b" / "metrics_aggregate_flat.csv")
     bal_rccf = pd.read_csv(ROOT / "results_rccf_cic_balanced_v3b" / "metrics_aggregate.csv")
     bal_rows = {
@@ -186,10 +191,12 @@ def fig4():
     strong.columns = ["_".join(str(c) for c in col if "Unnamed" not in str(c)).strip("_") for col in strong.columns]
     bal_rows["XGBoost"] = float(strong.loc[strong["model"] == "xgboost", "macro_f1_mean"].iloc[0])
 
-    names = list(nat.keys()) + ["XGBoost"]
-    nat_vals = [nat[n][0] for n in nat] + [np.nan]
-    nat_err = [nat[n][1] for n in nat] + [np.nan]
-    bal_vals = [bal_rows[n] for n in names]
+    mlp = pd.read_csv(ROOT / "results_mlp_final_v5" / "metrics_aggregate.csv")
+    names = list(nat.keys()) + ["MLP（三种子）", "XGBoost"]
+    nat_vals = [nat[n][0] for n in nat] + [float(mlp["macro_f1_mean"].iloc[0])] + [np.nan]
+    nat_err = [nat[n][1] for n in nat] + [float(mlp["macro_f1_std"].iloc[0])] + [np.nan]
+    bal_vals = [bal_rows["RCCF"], bal_rows["Equal RF (χ²)"], bal_rows["Equal RF (all)"],
+                bal_rows["ExtraTrees (χ²)"], np.nan, bal_rows["XGBoost"]]
 
     fig, axes = plt.subplots(1, 2, figsize=(12.4, 4.8), gridspec_kw={"width_ratios": [1.55, 1]})
     ax = axes[0]
@@ -198,15 +205,15 @@ def fig4():
     ax.bar(x + w / 2, bal_vals, w, color="#e07b39", label="平衡控制总体")
     ax.set_xticks(x); ax.set_xticklabels(names, rotation=18, ha="right", fontsize=8.8)
     ax.set_ylim(0.75, 0.99); ax.set_ylabel("Macro-F1")
-    ax.set_title("两个总体上的 Macro-F1（三种子均值）", fontsize=10.5, weight="bold")
+    ax.set_title("两个总体上的 Macro-F1（自然先验：十种子；平衡控制：三种子）", fontsize=10.5, weight="bold")
     ax.legend(fontsize=8.5); ax.grid(axis="y", alpha=0.25)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
 
     ax2 = axes[1]
-    bs = pd.read_csv(ROOT / "results_rccf_evidence_v3b" / "paired_bootstrap_macro_f1.csv")
+    bs = pd.read_csv(ROOT / "results_equivalence_10seeds_v5" / "tost_results.csv")
     labels = [f"seed {int(s)}" for s in bs["seed"]]
-    est = bs["estimate"].values; lo = bs["lower"].values; hi = bs["upper"].values
+    est = bs["delta"].values; lo = bs["ci95_low"].values; hi = bs["ci95_high"].values
     ypos = np.arange(len(labels))
     ax2.errorbar(est, ypos, xerr=[est - lo, hi - est], fmt="o", color="#b5525b",
                  ecolor="#b5525b", capsize=4, ms=6)

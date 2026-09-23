@@ -50,6 +50,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # per-row predictions of both models.
     ("McNemar recomputation", ["scripts/check_mcnemar_recomputation_v1.py"],
      ("MCNEMAR_RECOMPUTATION_FAILED",)),
+    # The ten-seed upgrade left the neural-baseline row, its paragraph and
+    # Figure 4 on the three-seed run while the captions said ten seeds; this
+    # re-derives both scopes from their source files and guards the wording.
+    ("seed scope", ["scripts/check_seed_scope_v5.py"], ("SEED_SCOPE_FAILED",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
