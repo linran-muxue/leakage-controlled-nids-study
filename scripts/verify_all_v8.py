@@ -31,6 +31,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # catches an aggregate that describes fewer seeds than the run produced.
     ("metrics aggregation", ["scripts/check_metrics_aggregation_v1.py"],
      ("METRICS_AGGREGATION_FAILED",)),
+    # Recomputes every released metric from the released per-row predictions,
+    # over the directories the supplementary bundle ships.
+    ("released evidence", ["scripts/audit_released_evidence_v1.py"],
+     ("RELEASED_EVIDENCE_FAILED",)),
     ("reference annotations", ["scripts/check_noDOI_notes_v5.py"], ("CHECK",)),
     ("cross-document audit", ["scripts/fresh_audit_v7.py"], ("ISSUE",)),
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),
