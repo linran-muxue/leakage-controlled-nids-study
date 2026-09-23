@@ -46,6 +46,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # Table 3, Figure 2 and the graphical abstract all render the audit chain;
     # this ties every stage count to the audit records and the split files.
     ("audit chain numbers", ["scripts/check_audit_chain_numbers_v1.py"], ("AUDIT_CHAIN_FAILED",)),
+    # Recomputes the paper's only concrete McNemar result from the raw
+    # per-row predictions of both models.
+    ("McNemar recomputation", ["scripts/check_mcnemar_recomputation_v1.py"],
+     ("MCNEMAR_RECOMPUTATION_FAILED",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
