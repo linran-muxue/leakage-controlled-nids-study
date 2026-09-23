@@ -2,7 +2,7 @@
 
 | 编号 | 内容 | 文件 |
 |---|---|---|
-| S01 | 数据集来源、检索日期与 SHA-256 校验 | table_data_source_provenance_v1.csv |
+| S01 | 数据集来源、检索日期与 SHA-256 校验 | table_data_source_provenance_v1.csv; cic_ids2017_csv_sha256_v1.csv |
 | S02 | CIC-IDS2017 逐原始文件的处理阶段计数 | raw_file_stage_counts.csv; source_file_split_label_counts.csv |
 | S03 | 自然先验总体与平衡控制总体的类别支持数 | processed_split_summary.csv |
 | S04 | 训练侧卡方/互信息/ANOVA 得分与入选特征 | feature_scores_training_only.csv; selected_features.json |

@@ -141,6 +141,8 @@ TARGETS = [
     ROOT / "scripts" / "audit_full_corpus_data_v1.py",
     ROOT / "scripts" / "check_metrics_aggregation_v1.py",
     ROOT / "scripts" / "audit_released_evidence_v1.py",
+    ROOT / "results_paper_materials_v3" / "tables" / "cic_ids2017_csv_sha256_v1.csv",
+    ROOT / "scripts" / "record_cic_csv_hashes_v1.py",
 ]
 
 

@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 ITEMS: dict[str, tuple[str, list[str]]] = {
     "S01": ("数据集来源、检索日期与 SHA-256 校验",
-            ["results_paper_materials_v3/tables/table_data_source_provenance_v1.csv"]),
+            ["results_paper_materials_v3/tables/table_data_source_provenance_v1.csv",
+             "results_paper_materials_v3/tables/cic_ids2017_csv_sha256_v1.csv"]),
     "S02": ("CIC-IDS2017 逐原始文件的处理阶段计数",
             ["results_data_audit_cic_natural_v3b/raw_file_stage_counts.csv",
              "results_data_audit_cic_natural_v3b/source_file_split_label_counts.csv"]),
