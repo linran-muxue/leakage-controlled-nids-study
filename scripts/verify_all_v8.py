@@ -43,6 +43,9 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # The abstract is the most-quoted part of the paper and was the one
     # front-matter document never checked for numbers it does not support.
     ("abstract numbers", ["scripts/check_abstract_numbers_v1.py"], ("ABSTRACT_NUMBERS_FAILED",)),
+    # Table 3, Figure 2 and the graphical abstract all render the audit chain;
+    # this ties every stage count to the audit records and the split files.
+    ("audit chain numbers", ["scripts/check_audit_chain_numbers_v1.py"], ("AUDIT_CHAIN_FAILED",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
