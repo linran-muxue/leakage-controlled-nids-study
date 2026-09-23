@@ -27,8 +27,16 @@ COVER_OLD = ("Because that population is a capped subset, we also rebuild it 7.8
              "margins, with the point estimate now slightly favouring the control.")
 
 
-def tost_sentence(summary: dict) -> str:
+def tost_sentence(summary: dict, english: bool = False) -> str:
     tost = summary.get("tost") or {}
+    if english:
+        if tost and all(v.get("equivalent") for v in tost.values()):
+            return "equivalent at both pre-specified margins"
+        parts = []
+        for margin in sorted(tost):
+            verdict = "equivalent" if tost[margin].get("equivalent") else "not equivalent"
+            parts.append(f"{verdict} at {margin}")
+        return ", ".join(parts) if parts else "not evaluable"
     if tost and all(v.get("equivalent") for v in tost.values()):
         return "TOST 在两个预设边界（0.005 与 0.01）上均成立"
     parts = []
@@ -140,12 +148,16 @@ def main(argv: list[str] | None = None) -> int:
 
     cover = COVER.read_text(encoding="utf-8")
     if COVER_OLD in cover and not args.dry_run:
-        addition = (f" Removing the cap entirely ({summary['test_rows'] * 3:,} deduplicated flows, "
+        # Use the audited corpus size, not test_rows * 3: the splits are
+        # 70/15/15, so tripling the test split understates the corpus.
+        total_rows = json.loads(DEDUP.read_text(encoding="utf-8"))["unique_rows_after_conflict"]
+        tost_en = tost_sentence(summary, english=True)
+        addition = (f" Removing the cap entirely ({total_rows:,} deduplicated flows, "
                     f"ten seeds) reproduces the same picture: "
                     f"{summary['mean_difference']:+.6f} Macro-F1, "
                     f"90% interval [{summary['seed_level_90_interval'][0]:+.6f}, "
                     f"{summary['seed_level_90_interval'][1]:+.6f}], "
-                    f"{tost_sentence(summary)}, at a {summary['train_slowdown']:.0f}x training-cost penalty.")
+                    f"{tost_en}, at a {summary['train_slowdown']:.0f}x training-cost penalty.")
         COVER.write_text(cover.replace(COVER_OLD, COVER_OLD + addition, 1), encoding="utf-8")
         print("cover letter updated")
     return 0
