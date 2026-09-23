@@ -1,4 +1,8 @@
 ﻿check,claimed,recomputed,tolerance
+P_bal constant features,12.0,12.0,0.0
+P_bal near-zero-variance features,18.0,18.0,0.0
+P_nat constant features,10.0,10.0,0.0
+P_nat near-zero-variance features,20.0,20.0,0.0
 RCCF natural Macro-F1,0.889955,0.8899550295993232,5e-06
 RCCF natural accuracy,0.97792,0.9779196927957258,5e-06
 RCCF natural log loss,0.051477,0.051476508784982,5e-06

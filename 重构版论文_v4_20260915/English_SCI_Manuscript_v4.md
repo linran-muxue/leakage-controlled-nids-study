@@ -304,7 +304,7 @@ The chapter follows RQ1 to RQ4. Section 5.1 answers the feature-selection questi
 
 ### 5.1 RQ1: Training-side feature selection preserves discriminative power
 
-The feature-quality audit shows that 12 of the 78 CIC-IDS2017 features are constant (a single value across all rows) and 18 are near-zero-variance. The constant columns include Bwd PSH Flags, Fwd URG Flags, Bwd URG Flags, RST Flag Count, CWE Flag Count, ECE Flag Count and six bulk-rate fields. H1's premise of redundancy is therefore correct in itself.
+The feature-quality audit of the balanced control corpus P_bal (2,355 training rows) shows that 12 of the 78 CIC-IDS2017 features are constant (a single value across all rows) and 18 are near-zero-variance; the primary natural-prior split shows 10 constant and 20 near-zero-variance features, so the degeneracy belongs to the feature representation rather than to one population. The constant columns include Bwd PSH Flags, Fwd URG Flags, Bwd URG Flags, RST Flag Count, CWE Flag Count, ECE Flag Count and six bulk-rate fields. H1's premise of redundancy is therefore correct in itself.
 
 The chi-square budget k was fixed at 60 on the validation partition from a pre-specified candidate set: validation Macro-F1 was 0.9175 at k = 10, 0.9314 at k = 20, 0.9379 at both k = 30 and k = 40, and 0.9413 at k = 60, flattening between k = 30 and k = 40. This search was carried out on the balanced control protocol; the selected k was then frozen for every final run.
 
@@ -316,7 +316,7 @@ With k = 60 fixed, the chi-square and full-feature views compare as follows.
 | Balanced control population (three seeds) | 0.960997 | 0.963215 | **+0.00222** |
 | Ten repeated splits (mean +/- s.d.) | 0.957028 +/- 0.010481 | 0.957177 +/- 0.011111 | +0.000148 (sign-flip p = 0.969) |
 
-All three protocols agree: **reducing dimensionality from 78 to 60 costs no discriminative power**, and in two protocols it produces a small positive difference. Under ten repeated splits that difference (+0.00015) is nevertheless two orders of magnitude smaller than the split-to-split standard deviation (about 0.011). The correct answer to RQ1 is therefore that dimensionality can be reduced, but that dimensionality reduction should not be claimed as a performance gain. The value of the chi-square view lies in interpretability and inference cost, not in accuracy.
+All three protocols agree: **reducing dimensionality from 78 to 60 costs no discriminative power**, The two fixed-split protocols show a small positive difference (+0.00207 and +0.00222); under ten repeated splits the difference shrinks to +0.00015, two orders of magnitude smaller than the split-to-split standard deviation (about 0.011). The correct answer to RQ1 is therefore that dimensionality can be reduced, but that dimensionality reduction should not be claimed as a performance gain. The value of the chi-square view lies in interpretability and inference cost, not in accuracy.
 
 ### 5.2 RQ2: Conditional weighting does not beat equal voting
 

@@ -20,6 +20,20 @@ def add(label: str, claimed: float, recomputed: float, tol: float = 5e-6) -> Non
 
 
 def main() -> None:
+    # --- feature degeneracy (Section 5.1) ----------------------------------
+    # The counts belong to different corpora: the balanced control corpus gives
+    # 12 constant and 18 near-zero-variance features, the primary natural-prior
+    # corpus gives 10 and 20. Both sets are quoted in Section 5.1.
+    for label, claimed, corpus, key in (
+        ("P_bal constant features", 12, "cic_balanced_v3b", "constant_features"),
+        ("P_bal near-zero-variance features", 18, "cic_balanced_v3b", "near_zero_variance_features"),
+        ("P_nat constant features", 10, "cic_natural_v3b", "constant_features"),
+        ("P_nat near-zero-variance features", 20, "cic_natural_v3b", "near_zero_variance_features"),
+    ):
+        quality = json.loads((ROOT / f"results_data_audit_{corpus}" /
+                              "data_processing_audit.json").read_text(encoding="utf-8"))
+        add(label, claimed, float(len(quality["processed"]["train_feature_quality"][key])), 0)
+
     # --- CIC natural prior -------------------------------------------------
     nat = pd.read_csv(ROOT / "results_rccf_cic_natural_v3b" / "metrics_aggregate.csv")
     add("RCCF natural Macro-F1", 0.889955, nat["macro_f1_mean"].iloc[0])
