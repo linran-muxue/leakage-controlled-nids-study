@@ -1,0 +1,41 @@
+{
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "n_seeds": 10,
+  "test_rows": 364426,
+  "rccf_mean_macro_f1": 0.754007215816262,
+  "control_mean_macro_f1": 0.7595400208860045,
+  "mean_difference": -0.005532805069742508,
+  "sd": 0.002840158428692069,
+  "seed_level_90_interval": [
+    -0.007179191537321332,
+    -0.0038864186021636835
+  ],
+  "tost": {
+    "0.005": {
+      "p_low": 0.7161842600995237,
+      "p_high": 4.6812248835436164e-07,
+      "equivalent": false
+    },
+    "0.01": {
+      "p_low": 0.00038293053629064505,
+      "p_high": 1.629266437944136e-08,
+      "equivalent": true
+    }
+  },
+  "mean_disagreements": 216.0,
+  "max_disagreements": 392,
+  "rccf_mean_train_seconds": 14935.876705629998,
+  "control_mean_train_seconds": 85.30465867999956,
+  "train_slowdown": 175.08864037142965
+}

@@ -9,6 +9,8 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from supplementary_paths_v1 import supplementary_bundle
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,7 +92,7 @@ if claimed:
 EN = (BASE / "English_SCI_Manuscript_v4.md").read_text("utf-8")
 print()
 print("manuscript supplementary ids:", re.findall(r"^\| (S\d+) \|", EN, flags=re.M)[:6])
-bundle_dir = BASE / "补充材料_S01_S28"
+bundle_dir = supplementary_bundle(BASE)
 if not bundle_dir.exists():
     problems.append(f"supplementary bundle directory missing: {bundle_dir.name}")
 else:

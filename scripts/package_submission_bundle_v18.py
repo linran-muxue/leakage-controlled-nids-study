@@ -10,13 +10,15 @@ import sys
 import zipfile
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from supplementary_paths_v1 import supplementary_bundle
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 BUILD = ROOT / "submission_package"
-TAG = "v1.10.0"
+TAG = "v1.11.0"
 NAME = f"论文投稿包_{TAG}"
 # each entry is (folder inside the archive, root used to derive relative paths, files)
-SUPPLEMENTARY = BASE / "补充材料_S01_S26"
+SUPPLEMENTARY = supplementary_bundle(BASE)
 LAYOUT: list[tuple[str, Path, list[Path]]] = [
     ("01_正式稿件", BASE, [BASE / "English_SCI_Manuscript_v4.docx",
                            BASE / "English_SCI_Manuscript_v4.md",
@@ -40,10 +42,29 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
                            ROOT / "README.md", ROOT / "CITATION.cff",
                            ROOT / "requirements-lock.txt"]),
 ]
+
+# The README inside the archive quotes the self-check totals and the figure
+# count; both drift every round, so derive them instead of hard-coding.
+def _selfcheck_totals() -> str:
+    import re
+    text = (BASE / "论文自查表.md").read_text(encoding="utf-8")
+    match = re.search(r"\| \*\*合计\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \| \*\*(\d+)\*\* \|", text)
+    if not match:
+        return "未知"
+    total, passed, partial, missing = match.groups()
+    return f"{total} 项：{passed} 通过 / {partial} 部分通过 / {missing} 缺失"
+
+
+def _figure_count() -> int:
+    return len(sorted((BASE / "figures_en").glob("*.png")))
+
+
+_SUPP_RANGE = SUPPLEMENTARY.name.replace("补充材料_S01_", "S01–")
+
 README = f"""# 论文投稿包 {TAG}
 
 本包由 `scripts/package_submission_bundle_v18.py` 从仓库中的规范化位置直接复制生成，
-内容与《论文自查表》（66 项：62 通过 / 4 部分通过 / 0 缺失）及 `MANIFEST.json` 一致。
+内容与《论文自查表》（{_selfcheck_totals()}）及 `MANIFEST.json` 一致。
 
 ## 目录
 
@@ -51,8 +72,8 @@ README = f"""# 论文投稿包 {TAG}
 |---|---|
 | 01_正式稿件 | 英文稿与中文稿（可编辑 Word + Markdown 源文件） |
 | 02_投稿文件 | Highlights、投稿信（JISA）、图形摘要（PNG/PDF） |
-| 03_图片 | 正文插图（英文版与中文版，各 11 张） |
-| 04_补充材料 | S01–S26，含索引 README 与 SHA-256 校验清单 |
+| 03_图片 | 正文插图（英文版与中文版，各 {_figure_count()} 张） |
+| 04_补充材料 | {_SUPP_RANGE}，含索引 README 与 SHA-256 校验清单 |
 | 05_自查与审查 | 论文自查表、遗漏问题审查报告（第一至第十一轮） |
 | 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照） |
 | 07_复现材料 | 发布清单、仓库说明、CITATION、依赖锁定文件 |

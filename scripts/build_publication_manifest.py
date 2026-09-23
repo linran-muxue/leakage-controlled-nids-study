@@ -114,6 +114,27 @@ TARGETS = [
     ROOT / "requirements-lock.txt",
     MANUSCRIPT_DIR / "English_SCI_Manuscript_v4.docx",
     MANUSCRIPT_DIR / "中文SCI论文_v4_重构版.docx",
+    # Round 18: the 7.8x scale population and the fourth (IoT) dataset.
+    ROOT / "results_scale_sensitivity_v46" / "scale_sensitivity_summary.json",
+    ROOT / "results_scale_sensitivity_v46" / "paired_by_seed.csv",
+    ROOT / "results_scale_sensitivity_v46" / "metrics_by_seed.csv",
+    ROOT / "data_processed_nbaiot_v48" / "dataset_summary.csv",
+    ROOT / "data_processed_nbaiot_v48" / "preprocess_config.json",
+    ROOT / "results_nbaiot_baselines_v48" / "metrics_by_seed.csv",
+    ROOT / "results_nbaiot_baselines_v48" / "paired_by_seed.csv",
+    ROOT / "results_nbaiot_baselines_v48" / "scale_sensitivity_summary.json",
+    ROOT / "results_rccf_nbaiot_v48" / "metrics_by_seed.csv",
+    # Round 19: the full deduplicated corpus (2,429,503 flows, ten seeds).
+    ROOT / "data_processed_cic_natural_v4_full" / "dedup_audit.json",
+    ROOT / "data_processed_cic_natural_v4_full" / "preprocess_config.json",
+    ROOT / "data_processed_cic_natural_v4_full" / "dataset_summary.csv",
+    ROOT / "results_full_corpus_v49" / "metrics_by_seed.csv",
+    ROOT / "results_full_corpus_v49" / "metrics_aggregate.csv",
+    ROOT / "results_full_corpus_v49" / "full_corpus_summary.json",
+    ROOT / "results_full_corpus_v49" / "full_corpus_paired_by_seed.csv",
+    ROOT / "results_rccf_cic_natural_v4_full" / "metrics_by_seed.csv",
+    ROOT / "results_rccf_cic_natural_v4_full" / "metrics_aggregate.csv",
+    ROOT / "results_rccf_cic_natural_v4_full" / "run_manifest.json",
 ]
 
 

@@ -10,7 +10,7 @@ from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
-TAG = "v1.10.0"
+TAG = "v1.11.0"
 EDITS: dict[str, list[tuple[str, str]]] = {
     "Highlights_v4.md": [
         ("- Protocol choices move Macro-F1 by 0.073, against 0.0005 for the aggregation rule.",

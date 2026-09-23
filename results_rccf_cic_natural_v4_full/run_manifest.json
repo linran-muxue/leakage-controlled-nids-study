@@ -1,0 +1,70 @@
+{
+  "dataset": "CIC-IDS2017",
+  "protocol_name": "deduplicated capped observed-prior population",
+  "observed_prior_population_rows": 2429503,
+  "train_rows": 1700652,
+  "validation_rows": 364425,
+  "test_rows": 364426,
+  "calibration_rows": 364425,
+  "class_counts": {
+    "train": {
+      "Bot": 1364,
+      "Brute Force": 7434,
+      "DoS/DDoS": 225117,
+      "Normal": 1466266,
+      "Web Attack": 471
+    },
+    "validation": {
+      "Bot": 292,
+      "Brute Force": 1593,
+      "DoS/DDoS": 48239,
+      "Normal": 314200,
+      "Web Attack": 101
+    },
+    "test": {
+      "Bot": 292,
+      "Brute Force": 1593,
+      "DoS/DDoS": 48240,
+      "Normal": 314200,
+      "Web Attack": 101
+    }
+  },
+  "native_labels": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "feature_count_before_selection": 78,
+  "feature_count_after_selection": 60,
+  "deduplication_before_split": true,
+  "deduplication_audit": "C:\\Users\\27677\\Documents\\ChatGPT\\论文\\data_processed_cic_natural_v4_full\\dedup_audit.json",
+  "split_rule": "fixed stratified 70/15/15 split; seed-specific model fitting",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "n_estimators": 100,
+  "cv": 5,
+  "alpha": 0.1,
+  "feature_selection_fit_on": "training partition only",
+  "risk_fit_on": "training cross-fitted predictions only",
+  "calibration_fit_on": "validation partition only",
+  "test_labels_used_for_fitting": false,
+  "cross_dataset_transfer": false,
+  "processed_hashes": {
+    "train": "f18396d42bc925afe9f6d9e7b2f9c8b4ea4f2f81fea713eb0a7f271409c000af",
+    "validation": "b9ed9e97910ce3086649dfc88bd47d3ad97194c72a812fed24b3b7cc0a928f45",
+    "test": "11aac2be731c77af3527e43a66c415763758302c7b1a73d86d55c367f0b70f9c"
+  },
+  "consolidated_from_per_seed_files": true
+}

@@ -19,7 +19,7 @@ SC_PATH = BASE / "论文自查表.md"
 EN = (BASE / "English_SCI_Manuscript_v4.md").read_text("utf-8")
 ZH = (BASE / "中文SCI论文_v4_重构版.md").read_text("utf-8")
 
-TAG = "v1.10.0"
+TAG = "v1.11.0"
 
 
 def set_row(text: str, item_id: str, result: str, evidence: str) -> tuple[str, bool]:

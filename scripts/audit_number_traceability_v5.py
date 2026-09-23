@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import f1_score
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
@@ -154,6 +155,31 @@ def main() -> None:
                        "equivalence_summary.json").read_text("utf-8"))["pooled"]
     add("10-seed row-level 90% low", -0.004251, eq10["pooled_ci_low"], 1e-5)
     add("10-seed row-level 90% high", 0.003382, eq10["pooled_ci_high"], 1e-5)
+
+    # --- full corpus (ten seeds) --------------------------------------------
+    # Recompute the paired Macro-F1 difference from the per-row predictions
+    # instead of re-reading the summary, so the chain from raw predictions to
+    # the paragraph quoted in Section 5.7 is verified end to end.
+    rccf_dir = ROOT / "results_rccf_cic_natural_v4_full"
+    control_dir = ROOT / "results_full_corpus_v49"
+    summary_path = control_dir / "full_corpus_summary.json"
+    if summary_path.exists():
+        summary = json.loads(summary_path.read_text("utf-8"))
+        diffs = []
+        for seed in summary.get("seeds", []):
+            left = rccf_dir / f"predictions_seed{seed}.csv"
+            right = control_dir / f"predictions_equal_rf_chi2_seed{seed}.csv"
+            if not (left.exists() and right.exists()):
+                continue
+            frame = pd.read_csv(left, usecols=["true_label", "predicted_label"])
+            control = pd.read_csv(right, usecols=["y_pred"])
+            y = frame["true_label"].to_numpy()
+            diffs.append(f1_score(y, frame["predicted_label"], average="macro", zero_division=0)
+                         - f1_score(y, control["y_pred"], average="macro", zero_division=0))
+        add("full-corpus seeds recomputed", float(summary["n_seeds"]), float(len(diffs)), 0)
+        if diffs:
+            add("full-corpus mean paired difference", summary["mean_difference"],
+                float(np.mean(diffs)), 1e-9)
 
     failures = 0
     print(f"{'check':<42}{'claimed':>14}{'recomputed':>16}{'status':>10}")

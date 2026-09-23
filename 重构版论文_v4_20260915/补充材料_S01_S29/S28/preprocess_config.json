@@ -1,0 +1,14 @@
+{
+  "dataset": "N-BaIoT",
+  "source": "UCI Machine Learning Repository, dataset 442 (detection of IoT botnet attacks)",
+  "per_class_cap": 60000,
+  "seed": 42,
+  "dedup": "global exact row hashing before splitting",
+  "split": "stratified 70/15/15",
+  "features": 115,
+  "labels": [
+    "Benign",
+    "Gafgyt",
+    "Mirai"
+  ]
+}

@@ -5,6 +5,8 @@ import json
 import re
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from supplementary_paths_v1 import supplementary_bundle
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,8 +30,9 @@ def main() -> None:
     line("cover letter", cl.exists(),
          "Cover_Letter_JISA_v4.md present" if cl.exists() else "missing")
     line("journal template", False, "no JISA/Elsevier template applied")
-    line("supplementary bundle", (BASE / "补充材料_S01_S28" / "README.md").exists(),
-         f"{len(list((BASE / '补充材料_S01_S28').rglob('*')))} entries")
+    bundle = supplementary_bundle(BASE)
+    line("supplementary bundle", (bundle / "README.md").exists(),
+         f"{bundle.name}: {len(list(bundle.rglob('*')))} entries")
 
     print()
     print("=== B. references ===")

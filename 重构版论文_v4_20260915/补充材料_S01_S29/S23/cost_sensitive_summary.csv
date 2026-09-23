@@ -1,0 +1,16 @@
+﻿model,cost_ratio_fn_fp,nec,threshold
+equal_rf_chi2,1,0.00867,0.55743
+equal_rf_chi2,5,0.01357,0.40863
+equal_rf_chi2,10,0.01737,0.40235
+equal_rf_chi2,50,0.04417,0.38862
+equal_rf_chi2,100,0.06753,0.20493
+extra_trees_chi2,1,0.01917,0.75814
+extra_trees_chi2,5,0.03577,0.60892
+extra_trees_chi2,10,0.04373,0.57652
+extra_trees_chi2,50,0.0618,0.25323
+extra_trees_chi2,100,0.0618,0.25323
+rccf,1,0.00913,0.581
+rccf,5,0.01383,0.40946
+rccf,10,0.01813,0.35221
+rccf,50,0.04503,0.3279
+rccf,100,0.0726,0.13433

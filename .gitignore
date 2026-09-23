@@ -25,3 +25,14 @@ RCCF_*.zip
 results_publication_stage2/
 results_recheck_unified_v4/
 results_unified_final/
+
+# Local run-time artefacts: heartbeats, watchdog logs and the helper binaries
+# used to inspect long experiments.  None of this belongs in the release.
+logs/
+.tools/
+*.err.log
+*.out.log
+.cross-thread-repair*.log
+inspect_rollout_calls.py
+repair_cross_thread_message.py
+repair_current_cross_thread_message.py

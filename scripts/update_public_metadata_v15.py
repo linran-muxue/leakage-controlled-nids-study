@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-TAG = "v1.10.0"
+TAG = "v1.11.0"
 TITLE_EN = ("Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based "
             "Network Intrusion Detection: A Leakage-Controlled Study of Conditional "
             "Ensemble Weighting")

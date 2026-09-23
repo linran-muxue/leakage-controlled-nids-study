@@ -9,6 +9,8 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from supplementary_paths_v1 import supplementary_bundle
 BASE = ROOT / "重构版论文_v4_20260915"
 EN = (BASE / "English_SCI_Manuscript_v4.md").read_text("utf-8")
 ZH = (BASE / "中文SCI论文_v4_重构版.md").read_text("utf-8")
@@ -42,7 +44,7 @@ check("prop-3 relative errors quoted",
 
 print()
 print("=== 2. supplementary list parity ===")
-with (BASE / "补充材料_S01_S28" / "README.md").open(encoding="utf-8") as handle:
+with (supplementary_bundle(BASE) / "README.md").open(encoding="utf-8") as handle:
     bundle = sorted({m for m in re.findall(r"^\| (S\d+) \|", handle.read(), flags=re.M)})
 en_list = sorted(set(re.findall(r"^\| (S\d+) \|", EN, flags=re.M)))
 zh_list = sorted(set(re.findall(r"^\| (S\d+) \|", ZH, flags=re.M)))

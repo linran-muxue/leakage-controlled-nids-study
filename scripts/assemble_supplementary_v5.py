@@ -8,7 +8,6 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "重构版论文_v4_20260915" / "补充材料_S01_S28"
 
 ITEMS: dict[str, tuple[str, list[str]]] = {
     "S01": ("数据集来源、检索日期与 SHA-256 校验",
@@ -108,7 +107,16 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_nbaiot_baselines_v48/paired_by_seed.csv",
              "results_nbaiot_baselines_v48/scale_sensitivity_summary.json",
              "results_rccf_nbaiot_v48/metrics_by_seed.csv"]),
+    "S29": ("全语料规模运行：2 429 503 条、逐种子指标与配对比较",
+            ["results_full_corpus_v49/full_corpus_paired_by_seed.csv",
+             "results_full_corpus_v49/full_corpus_summary.json",
+             "results_full_corpus_v49/metrics_by_seed.csv",
+             "results_rccf_cic_natural_v4_full/metrics_by_seed.csv"]),
 }
+
+# The folder name follows the highest registered item, so registering a new
+# item is the only edit needed to rename the bundle.
+OUT = ROOT / "重构版论文_v4_20260915" / f"补充材料_S01_S{max(int(k[1:]) for k in ITEMS):02d}"
 
 
 def sha256(path: Path) -> str:

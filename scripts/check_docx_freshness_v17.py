@@ -10,17 +10,19 @@ from pathlib import Path
 from docx import Document
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from supplementary_paths_v1 import latest_bundle_name
 BASE = ROOT / "重构版论文_v4_20260915"
 EXPECTED = {
-    "English_SCI_Manuscript_v4.docx": ["v1.10.0", "3,469", "aggregation-rule differences"],
-    "中文SCI论文_v4_重构版.docx": ["v1.10.0", "3469", "聚合规则差异"],
-    "论文自查表.docx": ["E9", "补充材料_S01_S28"],
+    "English_SCI_Manuscript_v4.docx": ["v1.11.0", "3,469", "aggregation-rule differences"],
+    "中文SCI论文_v4_重构版.docx": ["v1.11.0", "3469", "聚合规则差异"],
+    "论文自查表.docx": ["E9", latest_bundle_name()],
     "遗漏问题审查报告.docx": ["第十一轮"],
     "论文结构诊断与重构方案.docx": ["状态说明"],
     "研究缺口审计与优先级清单.docx": ["状态说明"],
     "P0_P1执行手册.docx": ["状态说明"],
     "Highlights_v4.docx": ["0.005", "0.0725"],
-    "Cover_Letter_JISA_v4.docx": ["v1.10.0", "0.000456"],
+    "Cover_Letter_JISA_v4.docx": ["v1.11.0", "0.000456"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))
