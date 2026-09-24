@@ -15,29 +15,31 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "16",
-    "last_item": "16",
-    "last_item_title": "Section 5.6 open-set ranges understated the released spread",
+    "round": "17",
+    "last_item": "17",
+    "last_item_title": "Section 7 of the English manuscript stated one claim twice",
     "last_result": "fixed",
-    "note": ("finished the protocol and secondary-metric audit (99 assertions over Sections 5.4 "
-             "and 5.6): every protocol-sensitivity comparison, the nested-CV deltas, the "
-             "calibration and robustness numbers, all twelve latency percentiles, the resource "
-             "figures and the cost-sensitive table reproduce their sources exactly. The open-set "
-             "sentence did not. From results_cfrg_open_set_v5_verified/open_set_metrics.csv the "
-             "conditional branch spans AUROC 0.643513-0.693891 and unknown-class recall "
-             "0.001466-0.039570 over three seeds and its two exported probability variants, and "
-             "the equal-weight forest spans 0.919140-0.947932 and 0.056668-0.373718; the printed "
-             "ceilings (0.0088, 0.940, 0.128) described two of the three released seeds, and the "
-             "conditional recall ceiling only the seed-42 export, so both spreads were "
-             "understated. Following the author's use-the-real-data decision "
-             "scripts/fix_open_set_endpoints_v1.py re-derives all eight endpoints from the suite "
-             "and rewrites Section 5.6, Table 8 and self-check E8 in both manuscripts; the "
-             "sentence now names the scope the ranges span. The new gate check reads every "
-             "printed endpoint back out of the deliverables, so an edit that is not re-derived "
-             "from the suite fails. Open-set metrics still have no supplementary item of their "
-             "own (S15 covers calibration, robustness and latency only) - the next candidate "
-             "round. The two newest audits also still lack unit tests."),
-    "timestamp": "2026-09-25T03:05:00+08:00",
+    "note": ("restarted the rotation at item 1 (cross-document numbers) and went after the region "
+             "no assertion covered: Sections 6 and 7. The conclusion of the English manuscript "
+             "carried the same claim twice inside one paragraph - the uncapped-corpus deficit of "
+             "-0.005533 and its 175-fold training cost, first as a result and again after a "
+             "rewrite that kept 47 characters verbatim (54 including the opening claim). "
+             "check_duplicate_sentences_v27.py compares sentences exactly, so it could not see "
+             "it, and self-check E11 claimed that no paragraph repeats a set of decimals while "
+             "this one repeated -0.005533 three times. scripts/fix_conclusion_duplication_v1.py "
+             "asserts the deficit, the ten seeds, both TOST verdicts and the 175.09x slowdown "
+             "against results_full_corpus_v49/full_corpus_summary.json, folds the TOST verdict "
+             "into the surviving sentence so nothing is lost, and drops the duplicate; the "
+             "Chinese conclusion already stated it once. The new gate check "
+             "scripts/check_repeated_claims_v1.py flags any two sentences of one paragraph that "
+             "share a run of 40 characters - the accident shared 54 and 47, the longest "
+             "legitimate pair in either body shares 35 (a repeated model name) and the Section "
+             "5.2 contrast shares 22 - with three unit tests pinning both sides of the "
+             "threshold. Gate 38 checks green; docx, manifest, bundle and desktop rebuilt. Note "
+             "for the next round: Sections 6 and 7 still carry ~35 decimals with no assertion "
+             "(the coverage audit now points at them), and the open-set metrics still have no "
+             "supplementary item."),
+    "timestamp": "2026-09-25T03:45:00+08:00",
 }
 
 
