@@ -23,6 +23,11 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
       "references marked DOI to verify: 1")),
     ("citation coverage", ["scripts/check_citation_coverage_v5.py"], ("uncited = [1", "uncited = [2")),
     ("number traceability", ["scripts/audit_number_traceability_v5.py"], ("mismatches: 1", "mismatches: 2")),
+    # The coverage audit showed that only 54 of the 338 decimals in the body were
+    # matched by a headline assertion; this closes the gap for the Section 5.5
+    # external benchmarks and the Section 5.7 scale ladder (37 more values).
+    ("external and scale numbers", ["scripts/audit_calibration_and_external_numbers_v1.py"],
+     ("mismatches 1", "mismatches 2", "ISSUE ")),
     # Verifies the processed files against the counts the manuscript quotes,
     # plus split integrity and ten-seed test-set identity. Added after an
     # off-by-one in the quoted train/validation sizes survived every other check.

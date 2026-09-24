@@ -15,24 +15,28 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "12",
-    "last_item": "12",
-    "last_item_title": "Self-check table and gap report vs the artifacts they quote",
+    "round": "13",
+    "last_item": "13",
+    "last_item_title": "Verification gate on a fresh clone: document and handle its data prerequisites",
     "last_result": "fixed",
-    "note": ("two stale counts in documents that ship to the reviewer. (1) Both the self-check "
-             "table (A1) and the gap report quote the number of assertions run by "
-             "audit_number_traceability_v5.py; they still said 50 while the script now runs 69 "
-             "(four were added in round 20h for the Section 5.1 feature-degeneracy counts). "
-             "(2) A3 of the self-check table still said 47 DOIs all verified via Crossref, which "
-             "counts record rows rather than DOIs: after the round-20f rebuild the record has 36 "
-             "cited DOIs verified against Crossref or DataCite and 11 entries explicitly marked "
-             "as having no DOI. Both documents corrected, the self-check date now records the "
-             "latest revision, and check_selfcheck_claims_v1 re-derives all four figures from "
-             "number_traceability.csv and doi_verification.json so they cannot drift again. Also "
-             "noted (no defect): the gap report stops at its seventh review round; rounds 18-20 "
-             "are recorded in git history and in this counter file. Gate now 34 checks, all "
-             "green; docx, manifest and bundle rebuilt; desktop copies refreshed."),
-    "timestamp": "2026-09-24T23:58:00+08:00",
+    "note": ("reviewed the archive as a reader would receive it. Three of the 34 gate checks "
+             "(audit chain numbers, full-corpus data audit, selection reproducibility) recompute "
+             "from the derived populations data_processed_cic_natural_v3b / "
+             "data_processed_cic_balanced_v3b / data_processed_cic_natural_v4_full, which the "
+             "archive deliberately does not redistribute (DATA_CARD says so). On a fresh clone "
+             "they therefore died with FileNotFoundError tracebacks and a reader would conclude "
+             "the package was broken. verify_all_v8.py now declares those inputs, prints SKIP with "
+             "the missing folder and names the skipped checks in the summary instead of a "
+             "traceback; locally all 34 still run (verified: nothing skipped). "
+             "audit_released_evidence_v1.py now also prints which supplementary source folders "
+             "were absent, so its 320-value coverage claim stays honest on a partial checkout. "
+             "README documents the prerequisite (and check_release_hygiene_v1 fails if that "
+             "documentation disappears). Also verified in this round: the CI workflow installs "
+             "requirements-direct.txt and runs pytest + compileall, and no unit test reads the "
+             "non-redistributed data, so CI is green on a fresh clone; requirements-direct.txt "
+             "pins the eleven direct dependencies. Gate 34 checks green; bundle rebuilt and "
+             "desktop synced."),
+    "timestamp": "2026-09-25T00:30:00+08:00",
 }
 
 
