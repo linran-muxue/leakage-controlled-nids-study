@@ -172,6 +172,21 @@ def main() -> None:
             names.append(f"{key}/{name}")
             checksums.append(f"{sha256(target)}  {key}/{name}")
         lines.append(f"| {key} | {title} | {'; '.join(Path(n).name for n in names) or '缺失'} |")
+    # Two released runs contain an "equal RF (chi-square, k = 60)" arm whose
+    # numbers differ by 0.00094 Macro-F1 for the same seed, because they build
+    # the design matrix in different column orders.  Nothing in the bundle said
+    # so, and S04-S07 (three seeds) sit next to S20 (ten seeds); a reader could
+    # mistake the gap for an effect.  See docs/reproducibility_notes_v1.md.
+    lines += ["",
+              "> **关于两套基线数值的说明。** S04–S07 来自三种子运行 "
+              "(results_cic_natural_baselines_v3b，特征列按卡方得分降序排列)，"
+              "S20 来自十种子运行 (results_seeds10_v5，特征列保持原始顺序)。"
+              "随机森林按列索引抽样分裂特征，因此列序不同即拟合出不同的树："
+              "同一种子 42 的等权卡方森林 Macro-F1 在两套结果中分别为 0.890773 与 0.891714，"
+              "7 986 条测试样本中有 11 条预测不同。两套结果各自内部一致，"
+              "正文中的每个数字都取自同一次运行、未混用；但两套结果之间不可直接相减。"
+              "详见 docs/reproducibility_notes_v1.md 与 "
+              "results_review_v5/baseline_reproduction_v1.json。"]
     (OUT / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     (OUT / "checksums.sha256").write_text("\n".join(checksums) + "\n", encoding="utf-8")
     print(f"SUPPLEMENTARY_ASSEMBLED items={len(ITEMS)} files={len(checksums)}")

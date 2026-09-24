@@ -73,6 +73,12 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # MODEL_CARD and DATA_CARD still described three datasets and one
     # population; this ties the released metadata to the paper's actual scope.
     ("release hygiene", ["scripts/check_release_hygiene_v1.py"], ("RELEASE_HYGIENE_FAILED",)),
+    # The three-seed and ten-seed releases both contain an "equal RF (chi-square)"
+    # arm and disagree for the same seed, because one sorts the selected columns
+    # by score and the other keeps the feature order; this keeps the explanation,
+    # the canonical selector and both audit records honest.
+    ("selection reproducibility", ["scripts/check_selection_reproducibility_v1.py"],
+     ("SELECTION_REPRODUCIBILITY_FAILED",)),
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
     ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),

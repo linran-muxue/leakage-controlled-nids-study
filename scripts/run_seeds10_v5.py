@@ -23,10 +23,10 @@ if __package__ in (None, ""):
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
-from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score, log_loss
 from sklearn.preprocessing import MinMaxScaler
 
+from src.feature_selection import chi2_top_k
 from src.rccf_forest import RCCFForest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,19 +117,27 @@ def main() -> None:
         # ---- equal-weight controls -----------------------------------------
         scaler = MinMaxScaler().fit(Xtr)
         Xtr_s, Xte_s = scaler.transform(Xtr), scaler.transform(Xte)
-        selector = SelectKBest(chi2, k=args.feature_k).fit(Xtr_s, ytr)
+        # Canonical selection: ascending feature order and a reported tie at the
+        # k-th boundary.  The historical runner sorted the columns by descending
+        # score instead, which fits different trees for the same seed; see
+        # src/feature_selection.py.
+        selection = chi2_top_k(Xtr_s, ytr, args.feature_k)
+        Xtr_chi2, Xte_chi2 = selection.select(Xtr_s), selection.select(Xte_s)
+        if selection.tied_at_boundary:
+            print(f"seed={seed} chi-square tie at k={selection.k}: "
+                  f"{selection.tied_at_boundary}", flush=True)
         views = {
             "equal_rf_all": (Xtr_s, Xte_s,
                              RandomForestClassifier(n_estimators=args.n_estimators,
                                                     min_samples_leaf=2, n_jobs=-1,
                                                     class_weight="balanced_subsample",
                                                     random_state=seed)),
-            "equal_rf_chi2": (selector.transform(Xtr_s), selector.transform(Xte_s),
+            "equal_rf_chi2": (Xtr_chi2, Xte_chi2,
                               RandomForestClassifier(n_estimators=args.n_estimators,
                                                      min_samples_leaf=2, n_jobs=-1,
                                                      class_weight="balanced_subsample",
                                                      random_state=seed)),
-            "extra_trees_chi2": (selector.transform(Xtr_s), selector.transform(Xte_s),
+            "extra_trees_chi2": (Xtr_chi2, Xte_chi2,
                                  ExtraTreesClassifier(n_estimators=args.n_estimators,
                                                       min_samples_leaf=2, n_jobs=-1,
                                                       class_weight="balanced",

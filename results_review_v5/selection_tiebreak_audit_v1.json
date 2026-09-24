@@ -1,0 +1,56 @@
+{
+  "boundary_rank": 60,
+  "boundary_score": 9.971855132511884,
+  "features_tied_at_boundary": [
+    "RST Flag Count",
+    "ECE Flag Count"
+  ],
+  "ranks_around_boundary": [
+    {
+      "rank": 57,
+      "score": 12.763932104849768,
+      "feature": "Flow Bytes/s"
+    },
+    {
+      "rank": 58,
+      "score": 10.815387656737379,
+      "feature": "Total Backward Packets"
+    },
+    {
+      "rank": 59,
+      "score": 10.815387656737379,
+      "feature": "Subflow Bwd Packets"
+    },
+    {
+      "rank": 60,
+      "score": 9.971855132511884,
+      "feature": "RST Flag Count"
+    },
+    {
+      "rank": 61,
+      "score": 9.971855132511884,
+      "feature": "ECE Flag Count"
+    },
+    {
+      "rank": 62,
+      "score": 8.557428922715701,
+      "feature": "act_data_pkt_fwd"
+    },
+    {
+      "rank": 63,
+      "score": 5.615449475433827,
+      "feature": "Fwd Header Length.1"
+    }
+  ],
+  "run_cfrg_cic_v1_selection_matches_record": false,
+  "selectkbest_selection_matches_record": true,
+  "tied_features_identical_on_train": true,
+  "tied_features_identical_on_test": true,
+  "only_in_three_seed_run": [
+    "RST Flag Count"
+  ],
+  "only_in_ten_seed_run": [
+    "ECE Flag Count"
+  ],
+  "conclusion": "the two released baseline runs differ because the chi-square score ties at the k-th boundary and the two runners break the tie differently"
+}

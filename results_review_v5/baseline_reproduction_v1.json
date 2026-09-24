@@ -1,0 +1,34 @@
+{
+  "protocol": "natural-prior population, seed 42, equal-weight chi-square forest",
+  "note": "the released three-seed and ten-seed baseline files use different feature orderings and different tie-breaks for the chi-square tie at rank 60, so they are two different forests under one name",
+  "combinations": {
+    "three-seed set, score order": {
+      "macro_f1_seed42": 0.8907734985806057,
+      "agreement_with": {
+        "three_seed_run": 7986,
+        "ten_seed_run": 7975
+      }
+    },
+    "three-seed set, feature order": {
+      "macro_f1_seed42": 0.8919447551943509,
+      "agreement_with": {
+        "three_seed_run": 7977,
+        "ten_seed_run": 7976
+      }
+    },
+    "ten-seed set, score order": {
+      "macro_f1_seed42": 0.8907734985806057,
+      "agreement_with": {
+        "three_seed_run": 7986,
+        "ten_seed_run": 7975
+      }
+    },
+    "ten-seed set, feature order": {
+      "macro_f1_seed42": 0.8917144123681334,
+      "agreement_with": {
+        "three_seed_run": 7975,
+        "ten_seed_run": 7986
+      }
+    }
+  }
+}

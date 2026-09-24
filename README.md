@@ -24,6 +24,16 @@ This repository contains source code, configuration files, audit summaries, deri
 
 The tested environment is recorded in `requirements-lock.txt`. The project was validated with Python 3.11, scikit-learn, pandas, NumPy, SciPy, matplotlib, seaborn, joblib, openpyxl, python-docx, xgboost, and pytest.
 
+Two released directories contain an arm with the same name but different
+numbers: the three-seed baseline (`results_cic_natural_baselines_v3b/`) sorts the
+selected columns by descending chi-square score, while the ten-seed baseline
+(`results_seeds10_v5/`) keeps the original feature order, and a random forest
+subsamples columns by index. Seed 42 therefore reads 0.890773 in one and
+0.891714 in the other. Each run is internally consistent and the manuscript
+never mixes them, but the two must not be subtracted from one another. The full
+evidence is in `docs/reproducibility_notes_v1.md`; `src/feature_selection.py`
+defines the canonical selection used by the current runner.
+
 ## Main artifacts
 
 - `src/`: reusable data and experiment components.
