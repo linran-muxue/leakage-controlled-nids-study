@@ -55,6 +55,11 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # re-derives both scopes from their source files and guards the wording.
     ("seed scope", ["scripts/check_seed_scope_v5.py"], ("SEED_SCOPE_FAILED",)),
     ("self-check counts", ["scripts/verify_selfcheck_counts_v7.py"], ("SELFCHECK_MISMATCH",)),
+    # The self-check table and the gap report quote the number of traceability
+    # assertions and of verified DOIs; both had drifted (50 vs 69 assertions,
+    # "47 DOIs" against 36 DOIs plus 11 entries with no DOI). This re-derives
+    # those figures from the artifacts.
+    ("self-check claims", ["scripts/check_selfcheck_claims_v1.py"], ("SELFCHECK_CLAIMS_FAILED",)),
     ("publication manifest", ["scripts/check_publication_manifest_v12.py"], ("MANIFEST_MISMATCH",)),
     ("submission front matter", ["scripts/check_aux_documents_v13.py"], ("AUX_MISMATCH",)),
     ("supplementary mirror", ["scripts/sync_supplementary_mirror_v16.py", "--check"],
