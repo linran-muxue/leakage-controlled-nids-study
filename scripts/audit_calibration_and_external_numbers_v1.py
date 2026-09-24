@@ -52,10 +52,17 @@ def external() -> None:
     check("NSL macro-F1", 0.514697, nsl.macro_f1_mean)
     check("NSL log loss", 1.6802, nsl.log_loss_mean, 5e-5)
     check("NSL coverage", 0.6198, nsl.coverage_mean, 5e-5)
-    check("NSL MCE (the value the manuscript prints as ECE)", 0.4819, nsl.mce_mean, 5e-5)
-    if abs(nsl.mce_mean - 0.4819) < 5e-5 and abs(nsl.ece_mean - 0.4819) > 1e-3:
-        notices.append("NSL-KDD: the manuscript's 'ECE of 0.4819' is the source MCE "
-                       f"({nsl.mce_mean:.6f}); the source ECE is {nsl.ece_mean:.6f}")
+    # Section 5.5 reported 0.4819 as "ECE"; that value is the source MCE.  The
+    # authors chose to keep the label and print the real ECE, so both metrics are
+    # asserted separately and the manuscripts are checked to quote the right one.
+    check("NSL ECE (as printed in Section 5.5)", 0.209651, nsl.ece_mean)
+    check("NSL MCE (kept separate)", 0.481856, nsl.mce_mean)
+    for name in ("English_SCI_Manuscript_v4.md", "中文SCI论文_v4_重构版.md"):
+        text = (ROOT / "重构版论文_v4_20260915" / name).read_text(encoding="utf-8")
+        if "0.209651" not in text:
+            notices.append(f"{name} does not quote the NSL-KDD ECE (0.209651)")
+        if "ECE of 0.4819" in text or "ECE 0.4819" in text:
+            notices.append(f"{name} again quotes the MCE value under the ECE label")
 
     unsw = aggregates("results_rccf_unsw_v2_final")
     check("UNSW accuracy", 0.715340, unsw.accuracy_mean)

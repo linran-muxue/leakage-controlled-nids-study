@@ -432,7 +432,7 @@ The protocol-sensitivity runs and the nested cross-validation fold metrics are p
 
 ![Figure 9. Class-level F1 on the independent native-label benchmarks](figures_en/fig9_external_class_f1.png)
 
-**NSL-KDD.** Averaged over three seeds, RCCF reaches 0.747960 accuracy, 0.492837 balanced accuracy and 0.514697 Macro-F1, with a Log Loss of 1.6802, ECE of 0.4819 and coverage of 0.6198. The coverage figure means that roughly 38% of samples are rejected as `unknown`, which is the direct source of the high Log Loss and ECE. At class level (seed 42) R2L recall is 0.106 with an F1 of 0.191, and U2R recall is 0.035 with an F1 of 0.064; the two minority families are essentially undetected.
+**NSL-KDD.** Averaged over three seeds, RCCF reaches 0.747960 accuracy, 0.492837 balanced accuracy and 0.514697 Macro-F1, with a Log Loss of 1.6802, ECE of 0.209651 and coverage of 0.6198. The coverage figure means that roughly 38% of samples are rejected as `unknown`, which is the direct source of the high Log Loss and ECE. At class level (seed 42) R2L recall is 0.106 with an F1 of 0.191, and U2R recall is 0.035 with an F1 of 0.064; the two minority families are essentially undetected.
 
 **UNSW-NB15.** Averaged over three seeds, RCCF reaches 0.715340 accuracy, 0.566753 balanced accuracy and 0.493310 Macro-F1, with a Log Loss of 0.649577, ECE of 0.073441 and coverage of 0.8957. At class level (seed 42) Analysis has an F1 of 0.015, Backdoor 0.067 and DoS 0.261, while Generic reaches 0.981 and Normal 0.805. Aggregate accuracy is dominated by the majority classes, which is precisely why Macro-F1 is the primary metric here.
 
