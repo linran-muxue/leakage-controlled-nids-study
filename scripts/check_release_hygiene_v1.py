@@ -77,6 +77,8 @@ def main() -> int:
         ("README names the 413,209-flow population", readme, "413,209"),
         ("README names the full corpus", readme, "2,429,503"),
         ("README marks the old layout as superseded", readme, "superseded manuscripts"),
+        ("README documents that three gate checks need the derived populations",
+         readme, "data_processed_cic_natural_v4_full"),
         ("MODEL_CARD counts four datasets", model, "four public research datasets"),
         ("MODEL_CARD names N-BaIoT", model, "N-BaIoT"),
         ("MODEL_CARD attributes 4.6 to batch throughput", model,

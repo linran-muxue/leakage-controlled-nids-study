@@ -94,6 +94,24 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("figure reproducibility", ["scripts/check_figure_reproducibility_v45.py"], ("FIGURE_REPRODUCIBILITY_FAILED",)),
 ]
 
+# Three checks recompute from the *derived* populations (the capping and
+# de-duplication step).  The archive deliberately does not redistribute those
+# files - DATA_CARD says so and ships the scripts that rebuild them - so on a
+# fresh clone the checks cannot run.  Rather than printing three tracebacks,
+# they are reported as skipped with the input that is missing, and the summary
+# names them.  Locally, where the processed folders exist, nothing is skipped.
+LOCAL_INPUTS: dict[str, tuple[str, ...]] = {
+    "audit chain numbers": ("data_processed_cic_natural_v3b",
+                            "data_processed_cic_balanced_v3b",
+                            "data_processed_cic_natural_v4_full"),
+    "full-corpus data audit": ("data_processed_cic_natural_v4_full",),
+    "selection reproducibility": ("data_processed_cic_natural_v3b",),
+}
+
+
+def missing_inputs(label: str) -> list[str]:
+    return [name for name in LOCAL_INPUTS.get(label, ()) if not (ROOT / name).is_dir()]
+
 
 def run(label: str, args: list[str]) -> tuple[str, str]:
     try:
@@ -106,7 +124,13 @@ def run(label: str, args: list[str]) -> tuple[str, str]:
 
 def main() -> int:
     failures = []
+    skipped: list[tuple[str, list[str]]] = []
     for label, args, markers in CHECKS:
+        absent = missing_inputs(label)
+        if absent:
+            skipped.append((label, absent))
+            print(f"SKIP  {label:<26} needs {', '.join(absent)} (not redistributed)")
+            continue
         out, err = run(label, args)
         combined = out + err
         problems = [m for m in markers if m in combined]
@@ -136,7 +160,13 @@ def main() -> int:
             print(f"\n--- {label} ---")
             print(output.strip()[:1200])
         return 1
-    print("GATE_PASSED  all checks green")
+    if skipped:
+        print(f"GATE_PASSED  all runnable checks green; {len(skipped)} skipped for missing "
+              f"local input(s): {', '.join(label for label, _ in skipped)}")
+        print("Rebuild them with the scripts in scripts/ (see DATA_CARD.md) to run the "
+              "skipped checks.")
+    else:
+        print("GATE_PASSED  all checks green")
     return 0
 
 

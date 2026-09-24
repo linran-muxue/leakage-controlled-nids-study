@@ -63,6 +63,16 @@ The current project validation reports the passing-test count printed by the
 locked checkout and successful Python byte-compilation. Exact file hashes and
 the artifact inventory are recorded in `results_publication_final/MANIFEST.json`.
 
+The full verification gate is `scripts/verify_all_v8.py` (34 checks: the unit
+suite, the number-traceability audit, the released-evidence recomputation, the
+figure and document checks). Three of its checks recompute from the **derived**
+populations - `data_processed_cic_natural_v3b`, `data_processed_cic_balanced_v3b`
+and `data_processed_cic_natural_v4_full` - which this archive deliberately does
+not redistribute. On a fresh clone those three are reported as skipped, with the
+missing folder named; every other check runs from the committed artifacts.
+Rebuild the processed populations with the scripts in `scripts/` (see
+`DATA_CARD.md` for their provenance) to run the skipped checks as well.
+
 ## Data provenance
 
 See `results_publication_final/external_data_metadata_template.json` and `docs/source_records/`. The metadata deliberately does not infer a standard SPDX license when the provider or mirror does not state one.

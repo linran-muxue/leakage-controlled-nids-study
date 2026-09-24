@@ -94,6 +94,7 @@ def main() -> int:
     spec.loader.exec_module(module)
     directories = sorted({ROOT / Path(source).parent
                           for _, sources in module.ITEMS.values() for source in sources})
+    absent = [d.name for d in directories if not d.is_dir()]
     for directory in directories:
         if not directory.is_dir():
             continue
@@ -103,6 +104,11 @@ def main() -> int:
         print("  %-46s%s" % (directory.name, "ok" if len(problems) == before else "MISMATCH"))
     print()
     print("recomputed %d metric value(s) from the released predictions" % checked)
+    if absent:
+        # Say what was not covered: three of the supplementary sources live in the
+        # processed populations, which the archive does not redistribute, so a
+        # fresh clone verifies fewer values than a full checkout does.
+        print("not covered (folder absent, not redistributed): %s" % ", ".join(absent))
     if problems:
         for problem in problems:
             print("ISSUE " + problem)
