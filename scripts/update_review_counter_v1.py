@@ -15,28 +15,26 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "13",
-    "last_item": "13",
-    "last_item_title": "Verification gate on a fresh clone: document and handle its data prerequisites",
+    "round": "14",
+    "last_item": "14",
+    "last_item_title": "NSL-KDD calibration figure: the printed ECE was the source MCE",
     "last_result": "fixed",
-    "note": ("reviewed the archive as a reader would receive it. Three of the 34 gate checks "
-             "(audit chain numbers, full-corpus data audit, selection reproducibility) recompute "
-             "from the derived populations data_processed_cic_natural_v3b / "
-             "data_processed_cic_balanced_v3b / data_processed_cic_natural_v4_full, which the "
-             "archive deliberately does not redistribute (DATA_CARD says so). On a fresh clone "
-             "they therefore died with FileNotFoundError tracebacks and a reader would conclude "
-             "the package was broken. verify_all_v8.py now declares those inputs, prints SKIP with "
-             "the missing folder and names the skipped checks in the summary instead of a "
-             "traceback; locally all 34 still run (verified: nothing skipped). "
-             "audit_released_evidence_v1.py now also prints which supplementary source folders "
-             "were absent, so its 320-value coverage claim stays honest on a partial checkout. "
-             "README documents the prerequisite (and check_release_hygiene_v1 fails if that "
-             "documentation disappears). Also verified in this round: the CI workflow installs "
-             "requirements-direct.txt and runs pytest + compileall, and no unit test reads the "
-             "non-redistributed data, so CI is green on a fresh clone; requirements-direct.txt "
-             "pins the eleven direct dependencies. Gate 34 checks green; bundle rebuilt and "
-             "desktop synced."),
-    "timestamp": "2026-09-25T00:30:00+08:00",
+    "note": ("found by the decimal-coverage audit and confirmed against the source: Section 5.5 "
+             "reported ECE of 0.4819 for NSL-KDD, but metrics_aggregate.csv gives ece_mean "
+             "0.209651 and mce_mean 0.481856, so the printed value was the maximum calibration "
+             "error under the ECE label (per-seed ECE 0.2089/0.2103/0.2097, MCE "
+             "0.5314/0.4306/0.4835). UNSW ECE 0.073441 was correct, so only NSL was affected. The "
+             "author asked for the real data, so both manuscripts now read ECE of 0.209651 with "
+             "the label unchanged; the surrounding argument still holds and 0.209651 remains an "
+             "order of magnitude above the CIC figure 0.006849. Applied by "
+             "scripts/fix_nsl_ece_v1.py, which asserts both source values before editing. The "
+             "audit_calibration_and_external_numbers_v1 gate check now asserts ECE and MCE "
+             "separately and fails if either manuscript stops quoting 0.209651 or quotes 0.4819 "
+             "as ECE again. Same round: extended number coverage from 54 to 93 decimals in the "
+             "body (38 new assertions over Sections 5.5 and 5.7, all matching) and documented the "
+             "coverage boundary itself in scripts/audit_number_coverage_v1.py. Gate 35 checks "
+             "green; docx, manifest, bundle and desktop rebuilt."),
+    "timestamp": "2026-09-25T01:45:00+08:00",
 }
 
 

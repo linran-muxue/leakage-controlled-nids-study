@@ -398,11 +398,11 @@ The conditions in Section 4.3 make falsifiable predictions. This section tests t
 
 | Expert set | Pairwise disagreement | Mean confidence correlation | Normalised weight entropy | Gate gain (Macro-F1) | Rows changed |
 |---|---:|---:|---:|---:|---:|
-| Same view, different seeds | 0.20% | 0.978 | 0.99995 | 0.00000 | 0 |
+| Same view, different seeds | 0.20% | 0.979 | 0.99995 | 0.00000 | 0 |
 | Four views, k = 60 | 0.36% | 0.967 | 0.99995 | 0.00000 | 0 |
 | Four views, k = 20 | 1.76% | 0.791 | 0.99905 | +0.00271 | 9.3 |
 | Heterogeneous families (RF / ExtraTrees / XGBoost / kNN) | 2.81% | 0.493 | 0.99842 | +0.00332 | 11.7 |
-| Disjoint feature blocks | 6.44% | 0.506 | 0.99548 | +0.00401 | 33.7 |
+| Disjoint feature blocks | 6.44% | 0.507 | 0.99549 | +0.00401 | 33.7 |
 
 ![Figure 7. Dose-response between expert diversity and gate gain](figures_en/fig7_diversity_dose_response.png)
 

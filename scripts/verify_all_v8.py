@@ -28,6 +28,11 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # external benchmarks and the Section 5.7 scale ladder (37 more values).
     ("external and scale numbers", ["scripts/audit_calibration_and_external_numbers_v1.py"],
      ("mismatches 1", "mismatches 2", "ISSUE ")),
+    # Section 5.3 reports six mechanism measurements and Table 6; two correlation
+    # cells and one entropy cell did not match the released diversity suite at the
+    # printed precision, so the whole set is re-derived here (46 assertions).
+    ("mechanism and Table 6 numbers", ["scripts/audit_mechanism_numbers_v1.py"],
+     ("mismatches 1", "mismatches 2", "ISSUE ")),
     # Verifies the processed files against the counts the manuscript quotes,
     # plus split integrity and ten-seed test-set identity. Added after an
     # off-by-one in the quoted train/validation sizes survived every other check.
