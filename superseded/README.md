@@ -18,3 +18,15 @@ not be mixed.
 | results_publication_stage2/deployment/robustness_metrics.csv | superseded robustness protocol |
 | results_recheck_unified_v4/deployment/robustness_metrics.csv | superseded robustness protocol |
 | results_paper_materials_v2/tables/table_v2_robustness.csv | superseded robustness protocol |
+
+## Unrelated material removed from the release
+
+The public repository also tracked 46 scratch files that are unrelated to
+this study: 22 saved journal, article and search pages, the full text of
+three unrelated papers together with their previews (6 files),
+7 scratch scripts or outputs, and 11 run logs. They no
+longer belong to the release, because the README states that the archive does not
+redistribute third-party material. The files were moved to the gitignored
+`.quarantine/unrelated_material/` folder and are listed, with sizes and SHA-256
+digests, in `unrelated_material_manifest_v1.json`.
+`scripts/check_release_hygiene_v1.py` fails if any of them is tracked again.

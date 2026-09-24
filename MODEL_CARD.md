@@ -24,7 +24,7 @@ manuscript.
 
 - **Not** a production intrusion-detection system. Latency measurements exclude packet capture,
   flow construction and feature extraction.
-- **Not** validated on live traffic. All experiments use three public research datasets.
+- **Not** validated on live traffic. All experiments use four public research datasets: CIC-IDS2017, NSL-KDD, UNSW-NB15 and N-BaIoT.
 - **Not** an adversarial-robustness claim. Only random perturbations and feature masking were
   evaluated.
 
@@ -44,7 +44,7 @@ of 53,237 CIC-IDS2017 flows split 70/15/15, with a 3,365-flow balanced control.
 
 Across ten seeds the conditional mechanism and the equal-weight chi-square forest differ by
 -0.00046 Macro-F1 with the per-seed sign split five to five, which is equivalent within both
-margins. The mechanism is 4.1 times larger and 4.6 times slower per row than a single forest,
+margins. The mechanism is 4.1 times larger than a single equal-weight forest, and its whole-batch throughput is 4.6 times lower; the single-row P50 latency ratio is 4.9, a different quantity that must not be conflated with it,
 and shows no cost-sensitive advantage across false-negative to false-positive cost ratios from
 1 to 100. The gain it can deliver is bounded by expert diversity: expert sets with 0.20-0.36%
 pairwise disagreement gain exactly zero, while deliberately decorrelated sets gain positively.

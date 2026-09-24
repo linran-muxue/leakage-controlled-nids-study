@@ -5,7 +5,11 @@ Submission release: `v1.11.0` (pushed to the remote; the archive cited in the ma
 
 The locked CIC-IDS2017 publication protocol is **v3b**.  `data_processed_cic_natural_v3b`
 is the primary capped natural-prior research population, while
-`data_processed_cic_balanced_v3b` is a secondary balanced control subset.  The
+`data_processed_cic_balanced_v3b` is a secondary balanced control subset.  The same
+audit is then re-run with a 200,000-per-class cap (`data_processed_cic_natural_v4_scale200k`,
+413,209 flows) and with the cap removed entirely (`data_processed_cic_natural_v4_full`,
+2,429,503 flows); those two populations are reported in Section 5.7 and in supplementary
+S27 and S29, and they are where the aggregation-rule difference stops being equivalent.  The
 older `audit_v1`--`audit_v6`, `data_processed_cic_natural_v1`--`v3`, and
 `results_*_v1`/`v2` directories are historical artifacts and must not be used
 to reproduce the manuscript tables.
@@ -14,7 +18,7 @@ Reproducibility materials for the manuscript *Protocol Sensitivity Dominates Agg
 
 ## Scope
 
-This repository contains source code, configuration files, audit summaries, derived metrics, prediction outputs, figures, and manuscript-supporting tables. It does **not** redistribute the original CIC-IDS2017, NSL-KDD, or UNSW-NB15 files. Users must obtain those datasets from their respective providers and comply with the providers' terms.
+This repository contains source code, configuration files, audit summaries, derived metrics, prediction outputs, figures, and manuscript-supporting tables. It does **not** redistribute the original CIC-IDS2017, NSL-KDD, UNSW-NB15 or N-BaIoT files. Users must obtain those datasets from their respective providers and comply with the providers' terms.
 
 ## Reproduction environment
 
@@ -32,7 +36,10 @@ The tested environment is recorded in `requirements-lock.txt`. The project was v
 - `results_cfrg_open_set_v5_verified/`: verified open-set metrics using conformal anomaly scores.
 - `results_cfrg_calibration_v2_verified/`: validation-only temperature-scaling diagnostics after the probability-alignment fix.
 - Older `v1`/`v2` CFRG directories are historical artifacts and are not the canonical evidence for the final manuscript.
-- `results_paper_materials_v3/`: manuscript, figures, Highlights, Graphical Abstract, and supplementary index.
+- `重构版论文_v4_20260915/`: **the current manuscript** (English and Chinese), its figures, the `S01-S29` supplementary bundle, the cover letter and the Highlights.
+- `results_paper_materials_v3/`: the earlier JISA-layout materials (superseded manuscripts, `Highlights_JISA`, `Graphical_Abstract_JISA` and the provenance tables). The submitted manuscript is the one under `重构版论文_v4_20260915/`; nothing here should be quoted as the final text.
+- `data_processed_cic_natural_v4_scale200k/`, `data_processed_cic_natural_v4_full/`: the 413,209-flow and 2,429,503-flow populations behind the scale-sensitivity analyses (supplementary S27 and S29).
+- `superseded/`: files kept only for provenance; they are not the source of any number in the manuscript.
 - `docs/`: journal requirements, data provenance, and reproducibility notes.
 
 The file-level experiment is a **coverage-aware leave-one-file-out pressure

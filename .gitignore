@@ -36,3 +36,21 @@ logs/
 inspect_rollout_calls.py
 repair_cross_thread_message.py
 repair_current_cross_thread_message.py
+
+# Scratch material and third-party documents that are unrelated to the paper.
+# They are kept locally under .quarantine/ but must never be shipped in the
+# public repository: the README states that it does not redistribute
+# third-party material.
+.quarantine/
+article*.html
+csa_*.html
+j_*.html
+paper[0-9]_*.txt
+parse_output.txt
+print_rows.py
+extract_papers.py
+fetch_csa.py
+parse_csa.py
+post_search.py
+make_word_scaffold.py
+results_*.log

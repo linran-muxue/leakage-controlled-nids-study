@@ -69,6 +69,10 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # ties the record to the list parsed from both manuscripts.
     ("reference DOI record", ["scripts/check_reference_doi_v1.py"],
      ("REFERENCE_DOI_FAILED",)),
+    # The public repository tracked 46 scratch/third-party files and its README,
+    # MODEL_CARD and DATA_CARD still described three datasets and one
+    # population; this ties the released metadata to the paper's actual scope.
+    ("release hygiene", ["scripts/check_release_hygiene_v1.py"], ("RELEASE_HYGIENE_FAILED",)),
     ("docx freshness", ["scripts/check_docx_freshness_v17.py"], ("DOCX_STALE",)),
     ("JISA format limits", ["scripts/check_jisa_format_v22.py"], ("JISA_FORMAT_MISMATCH",)),
     ("duplicate sentences", ["scripts/check_duplicate_sentences_v27.py"], ("SENTENCE_DUPLICATION_FOUND",)),

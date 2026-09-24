@@ -1,0 +1,328 @@
+{
+  "note": "Files moved out of the release tree; kept locally under .quarantine/.",
+  "count": 46,
+  "files": [
+    {
+      "file": "article9821.html",
+      "bytes": 52083,
+      "sha256": "8c0a15653c71577743dd9ad434f59b89cb34a1e0d6f760ca06df2cbefc50c314",
+      "reason": "scraped article page",
+      "quarantined_to": ".quarantine\\unrelated_material\\article9821.html"
+    },
+    {
+      "file": "article_10162.html",
+      "bytes": 53202,
+      "sha256": "da20e11d48a39aa5a51440b673b942518245b46d78019d929304f04094785a6e",
+      "reason": "scraped article page",
+      "quarantined_to": ".quarantine\\unrelated_material\\article_10162.html"
+    },
+    {
+      "file": "article_20031125.html",
+      "bytes": 48599,
+      "sha256": "e9b87f722eb7b8a37ea9fb609525ea0b57b81f37fe401e3f3c2bb56c36ef22e2",
+      "reason": "scraped article page",
+      "quarantined_to": ".quarantine\\unrelated_material\\article_20031125.html"
+    },
+    {
+      "file": "article_8661.html",
+      "bytes": 51519,
+      "sha256": "f6320753b422019d07fd02fc463e1631fe3daed8a7a6d7aab14162a65dca3999",
+      "reason": "scraped article page",
+      "quarantined_to": ".quarantine\\unrelated_material\\article_8661.html"
+    },
+    {
+      "file": "csa_10278.html",
+      "bytes": 50941,
+      "sha256": "0acbc6656e17c03942fdfe83117d4840065dece0fe816a2bdb2a5164420d47e7",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\csa_10278.html"
+    },
+    {
+      "file": "csa_10310.html",
+      "bytes": 51650,
+      "sha256": "3c38ab46f11a97604a009c6966e6707311622b399e83fd543eb7e3c0a1c84eef",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\csa_10310.html"
+    },
+    {
+      "file": "csa_20170605.html",
+      "bytes": 50807,
+      "sha256": "976f7b0341cfeb714745238c6d05b81942061cc2b85283c6e70d8924d476ac41",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\csa_20170605.html"
+    },
+    {
+      "file": "csa_9702.html",
+      "bytes": 50992,
+      "sha256": "4f605f70d1f4540d2c7a808ccc6d998f1bcb5c65978af2142d1c16fa0d85d509",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\csa_9702.html"
+    },
+    {
+      "file": "csa_intro_utf8.html",
+      "bytes": 67262,
+      "sha256": "0c5c34e908cb89c8ae974db953da4edc7482f4beded58afcff08a92fa2b740ce",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\csa_intro_utf8.html"
+    },
+    {
+      "file": "extract_papers.py",
+      "bytes": 351,
+      "sha256": "35447c57871f81426fa63a53d28b3d4bd4d3480e48d4441e6160eb79376c3e77",
+      "reason": "scratch scraping helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\extract_papers.py"
+    },
+    {
+      "file": "fetch_csa.py",
+      "bytes": 652,
+      "sha256": "c79eb01f952c5d136b2f3b5db566896e1e5402ee57649fe080dce2327f1a8277",
+      "reason": "scratch scraping helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\fetch_csa.py"
+    },
+    {
+      "file": "j_applied-soft-computing.html",
+      "bytes": 832870,
+      "sha256": "a0352dc1a112d0a62a0379ea5d7f121c91b7d823472c00aed65ca2f471828ba6",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\j_applied-soft-computing.html"
+    },
+    {
+      "file": "j_computers-and-security.html",
+      "bytes": 832870,
+      "sha256": "22a6a23871d590e45c31952bfe96bf8f485b4ea56d72c265257065a8fed455dc",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\j_computers-and-security.html"
+    },
+    {
+      "file": "j_expert-systems-with-applications.html",
+      "bytes": 832870,
+      "sha256": "1593b7f8a25dfcec5ce552c4ffc119dd6621c3b84405ce8202f0f4bb5ae4ce26",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\j_expert-systems-with-applications.html"
+    },
+    {
+      "file": "j_journal-of-information-security-and-applications.html",
+      "bytes": 832870,
+      "sha256": "eac9155247afb5a8adf3fd9d90127ff812e780369230719cf05e0bfdd0d909c9",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\j_journal-of-information-security-and-applications.html"
+    },
+    {
+      "file": "make_word_scaffold.py",
+      "bytes": 3543,
+      "sha256": "85d22d0ab5cdeb325240f6c9aa440b8f7a2076d15b7153a0dbdf893703f7366b",
+      "reason": "scratch document helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\make_word_scaffold.py"
+    },
+    {
+      "file": "paper1_en.txt",
+      "bytes": 64748,
+      "sha256": "9904cda90b91ae628b675bf386950f8a9a7839f493b12166b0afd09536ad7081",
+      "reason": "full text of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper1_en.txt"
+    },
+    {
+      "file": "paper1_preview.txt",
+      "bytes": 6764,
+      "sha256": "3d93c93fddd19acdef51782ce21364899b617163c84e071782bbf6449ad51872",
+      "reason": "excerpt of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper1_preview.txt"
+    },
+    {
+      "file": "paper2_en.txt",
+      "bytes": 155826,
+      "sha256": "47f44a99d86aa2b60f5d57a33f8d6db88606af8627591f6d74ea492446046035",
+      "reason": "full text of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper2_en.txt"
+    },
+    {
+      "file": "paper2_preview.txt",
+      "bytes": 30234,
+      "sha256": "ec6b4c3f4fd1a1bca4cdaefe0a4e803d655c524a1b9fb06ce86d73e73d5acd43",
+      "reason": "excerpt of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper2_preview.txt"
+    },
+    {
+      "file": "paper3_en.txt",
+      "bytes": 68942,
+      "sha256": "cace086fe8f1a677d8a6845e4a52ad594571ffbfe40f2ee9959dfce88cdaa9a0",
+      "reason": "full text of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper3_en.txt"
+    },
+    {
+      "file": "paper3_preview.txt",
+      "bytes": 7915,
+      "sha256": "425f5ffaf210a6b28e458118ae52371c8396337e5047b8b35fedeaacfe165297",
+      "reason": "excerpt of an unrelated third-party paper",
+      "quarantined_to": ".quarantine\\unrelated_material\\paper3_preview.txt"
+    },
+    {
+      "file": "parse_csa.py",
+      "bytes": 923,
+      "sha256": "316fd86e00ca9ca36da4dac7339d838f16506b9e99dbeadc4e504cbe99eb4236",
+      "reason": "scratch scraping helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\parse_csa.py"
+    },
+    {
+      "file": "parse_output.txt",
+      "bytes": 20829,
+      "sha256": "30a67f00d9cf2ab766fb6d52df7d955a41bc9611050c33c834d5a37d1f617387",
+      "reason": "scratch output",
+      "quarantined_to": ".quarantine\\unrelated_material\\parse_output.txt"
+    },
+    {
+      "file": "post_search.py",
+      "bytes": 566,
+      "sha256": "4c87b2e756da5dbdfd2cfea2267a6aa8923c062b546a6827f225347015a01b65",
+      "reason": "scratch scraping helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\post_search.py"
+    },
+    {
+      "file": "print_rows.py",
+      "bytes": 266,
+      "sha256": "0bd1fe7201c1cdb115346d45da3a4ed11e3eb89c799dda6f06ca3c63b4af219c",
+      "reason": "scratch helper",
+      "quarantined_to": ".quarantine\\unrelated_material\\print_rows.py"
+    },
+    {
+      "file": "results_diversity_v5.log",
+      "bytes": 975,
+      "sha256": "e87dcb72dc371a1e78c6f7d92a5d46f95b1d6375b533f5984661af9385abb919",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_diversity_v5.log"
+    },
+    {
+      "file": "results_equivalence_10seeds_v5.log",
+      "bytes": 1217,
+      "sha256": "02a19d491505ae89a813a7446e5f3e3198af98f20a644fa8c388f9b2a35786a2",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_equivalence_10seeds_v5.log"
+    },
+    {
+      "file": "results_gate_tuning_v5.log",
+      "bytes": 1307,
+      "sha256": "2f5c9f18759ca158e78b4d4f825344e434e8c7c7749d74edff4b61730fb78e1a",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_gate_tuning_v5.log"
+    },
+    {
+      "file": "results_mlp_final_v5.log",
+      "bytes": 641,
+      "sha256": "d035843867bee2ddfeeefbe9f981aa98cca90dd150e70af3a55d58a4e606a638",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_mlp_final_v5.log"
+    },
+    {
+      "file": "results_mlp_long_v5.log",
+      "bytes": 499,
+      "sha256": "7586132ffe41a8df231c8ec1843da863c189fe6aaf5425b6817120deeae371d0",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_mlp_long_v5.log"
+    },
+    {
+      "file": "results_mlp_v5.log",
+      "bytes": 555,
+      "sha256": "d8e89a7eafe9e1df192b2250eefc2ccaae4554759aba29f7eafc10b22872bc57",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_mlp_v5.log"
+    },
+    {
+      "file": "results_resources_v5.log",
+      "bytes": 959,
+      "sha256": "891f31b13d0e58a07683beb34896c98026891462a8634be7d22725b0a8276e1a",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_resources_v5.log"
+    },
+    {
+      "file": "results_robustness_extended_v5.log",
+      "bytes": 740,
+      "sha256": "c8b713765d5c885a7066f7168e14749e357907d589062ccc914405b7e5ec5cf8",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_robustness_extended_v5.log"
+    },
+    {
+      "file": "results_robustness_extended_v5_seeds.log",
+      "bytes": 802,
+      "sha256": "12047151fccac7e3239c0976db8b21cde1d6270b357ce71aac0eea4254c6cd4e",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_robustness_extended_v5_seeds.log"
+    },
+    {
+      "file": "results_seeds10_v5.log",
+      "bytes": 1815,
+      "sha256": "46849d89e0e9d90d5ec6d584f7b5dffbe0dcd2878ba3737a2157006eccbdae3a",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_seeds10_v5.log"
+    },
+    {
+      "file": "results_tuned_gate_test_v5.log",
+      "bytes": 1282,
+      "sha256": "5b8528df50cb5e9af190a7de3d2154755cc76fab7d0b008a53593e2cfc0ca8c6",
+      "reason": "run log, not a released artifact",
+      "quarantined_to": ".quarantine\\unrelated_material\\results_tuned_gate_test_v5.log"
+    },
+    {
+      "file": "search_ids.html",
+      "bytes": 46607,
+      "sha256": "13478e724017536c2cb06bb14aa26a8c9f262f85c9a9848a131efc89dd5b3bbf",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\search_ids.html"
+    },
+    {
+      "file": "src_applied-soft-computing.html",
+      "bytes": 832870,
+      "sha256": "e9b91f6e1eef093a053091bef181ef18d426a6bb3a3d45952c50bc6f0863bbba",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\src_applied-soft-computing.html"
+    },
+    {
+      "file": "src_computers-and-security.html",
+      "bytes": 832870,
+      "sha256": "0d40b512eea897aec86cd91c27634df2aec223fbb101a20292f0e3f212bcd64a",
+      "reason": "saved journal landing page",
+      "quarantined_to": ".quarantine\\unrelated_material\\src_computers-and-security.html"
+    },
+    {
+      "file": "tmp_csa.html",
+      "bytes": 501226,
+      "sha256": "0acc4fc7783b0b62cad160c8c4beb5b79faada595b06f2a0b1e0ff2a8cb264d2",
+      "reason": "scraped search page",
+      "quarantined_to": ".quarantine\\unrelated_material\\tmp_csa.html"
+    },
+    {
+      "file": "tmp_page_3844686675673330626.html",
+      "bytes": 67262,
+      "sha256": "0c5c34e908cb89c8ae974db953da4edc7482f4beded58afcff08a92fa2b740ce",
+      "reason": "scraped journal page",
+      "quarantined_to": ".quarantine\\unrelated_material\\tmp_page_3844686675673330626.html"
+    },
+    {
+      "file": "tmp_page_3860765524720389898.html",
+      "bytes": 84437,
+      "sha256": "2c26d3f9268a1b2e9edac141a90b27c7415fe2adaa56645af16f65593bdf36ba",
+      "reason": "scraped journal page",
+      "quarantined_to": ".quarantine\\unrelated_material\\tmp_page_3860765524720389898.html"
+    },
+    {
+      "file": "web_3647369443213981488.html",
+      "bytes": 100435,
+      "sha256": "c3af066d56ae9ba6fa5e9664378b7d2917e35148d7c86c2f2bbed195b6113b39",
+      "reason": "scraped journal page",
+      "quarantined_to": ".quarantine\\unrelated_material\\web_3647369443213981488.html"
+    },
+    {
+      "file": "web_4861238045800853825.html",
+      "bytes": 99842,
+      "sha256": "aaf12cef7157344d00c8b9adeb96e88e34ce09f674db2804ad350b1b9689c060",
+      "reason": "scraped journal page",
+      "quarantined_to": ".quarantine\\unrelated_material\\web_4861238045800853825.html"
+    },
+    {
+      "file": "web_4893981334794878482.html",
+      "bytes": 100001,
+      "sha256": "7814922ca2f977692199936c99ef5dbae9e87a3ceb4387ab5ad82610ab498b31",
+      "reason": "scraped journal page",
+      "quarantined_to": ".quarantine\\unrelated_material\\web_4893981334794878482.html"
+    }
+  ]
+}

@@ -1,9 +1,0 @@
-hidden=(64,) alpha=0.0001 val_f1=0.77615
-hidden=(128,) alpha=0.0001 val_f1=0.78389
-hidden=(128, 64) alpha=0.0001 val_f1=0.78282
-hidden=(128,) alpha=0.001 val_f1=0.77550
-hidden=(128, 64) alpha=0.001 val_f1=0.77733
-hidden=(128,) alpha=0.01 val_f1=0.76780
-seed=42 macro_f1=0.79932
-model  macro_f1_mean  macro_f1_std  accuracy_mean  accuracy_std  train_seconds_mean  predict_seconds_mean
-  mlp       0.799319           NaN       0.977711           NaN            28.07738              0.011915
