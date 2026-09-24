@@ -33,6 +33,14 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # printed precision, so the whole set is re-derived here (46 assertions).
     ("mechanism and Table 6 numbers", ["scripts/audit_mechanism_numbers_v1.py"],
      ("mismatches 1", "mismatches 2", "ISSUE ")),
+    # Sections 5.4 and 5.6: the protocol-sensitivity comparisons, the secondary
+    # metrics and the open-set ranges.  The open-set sentence quoted two of the
+    # three released seeds (and, for the conditional arm, one of its two
+    # probability exports), so both spreads were understated; the check reads
+    # every printed endpoint back out of the manuscripts, Table 8 and the
+    # self-check table and re-renders it from the released suite (99 assertions).
+    ("protocol and secondary numbers", ["scripts/audit_protocol_and_secondary_numbers_v1.py"],
+     ("mismatches 1", "mismatches 2", "ISSUE ")),
     # Verifies the processed files against the counts the manuscript quotes,
     # plus split integrity and ten-seed test-set identity. Added after an
     # off-by-one in the quoted train/validation sizes survived every other check.

@@ -15,26 +15,29 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "14",
-    "last_item": "14",
-    "last_item_title": "NSL-KDD calibration figure: the printed ECE was the source MCE",
+    "round": "16",
+    "last_item": "16",
+    "last_item_title": "Section 5.6 open-set ranges understated the released spread",
     "last_result": "fixed",
-    "note": ("found by the decimal-coverage audit and confirmed against the source: Section 5.5 "
-             "reported ECE of 0.4819 for NSL-KDD, but metrics_aggregate.csv gives ece_mean "
-             "0.209651 and mce_mean 0.481856, so the printed value was the maximum calibration "
-             "error under the ECE label (per-seed ECE 0.2089/0.2103/0.2097, MCE "
-             "0.5314/0.4306/0.4835). UNSW ECE 0.073441 was correct, so only NSL was affected. The "
-             "author asked for the real data, so both manuscripts now read ECE of 0.209651 with "
-             "the label unchanged; the surrounding argument still holds and 0.209651 remains an "
-             "order of magnitude above the CIC figure 0.006849. Applied by "
-             "scripts/fix_nsl_ece_v1.py, which asserts both source values before editing. The "
-             "audit_calibration_and_external_numbers_v1 gate check now asserts ECE and MCE "
-             "separately and fails if either manuscript stops quoting 0.209651 or quotes 0.4819 "
-             "as ECE again. Same round: extended number coverage from 54 to 93 decimals in the "
-             "body (38 new assertions over Sections 5.5 and 5.7, all matching) and documented the "
-             "coverage boundary itself in scripts/audit_number_coverage_v1.py. Gate 35 checks "
-             "green; docx, manifest, bundle and desktop rebuilt."),
-    "timestamp": "2026-09-25T01:45:00+08:00",
+    "note": ("finished the protocol and secondary-metric audit (99 assertions over Sections 5.4 "
+             "and 5.6): every protocol-sensitivity comparison, the nested-CV deltas, the "
+             "calibration and robustness numbers, all twelve latency percentiles, the resource "
+             "figures and the cost-sensitive table reproduce their sources exactly. The open-set "
+             "sentence did not. From results_cfrg_open_set_v5_verified/open_set_metrics.csv the "
+             "conditional branch spans AUROC 0.643513-0.693891 and unknown-class recall "
+             "0.001466-0.039570 over three seeds and its two exported probability variants, and "
+             "the equal-weight forest spans 0.919140-0.947932 and 0.056668-0.373718; the printed "
+             "ceilings (0.0088, 0.940, 0.128) described two of the three released seeds, and the "
+             "conditional recall ceiling only the seed-42 export, so both spreads were "
+             "understated. Following the author's use-the-real-data decision "
+             "scripts/fix_open_set_endpoints_v1.py re-derives all eight endpoints from the suite "
+             "and rewrites Section 5.6, Table 8 and self-check E8 in both manuscripts; the "
+             "sentence now names the scope the ranges span. The new gate check reads every "
+             "printed endpoint back out of the deliverables, so an edit that is not re-derived "
+             "from the suite fails. Open-set metrics still have no supplementary item of their "
+             "own (S15 covers calibration, robustness and latency only) - the next candidate "
+             "round. The two newest audits also still lack unit tests."),
+    "timestamp": "2026-09-25T03:05:00+08:00",
 }
 
 
