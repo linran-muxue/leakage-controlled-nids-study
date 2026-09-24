@@ -4,6 +4,14 @@ The number-traceability check re-derives 69 headline numbers.  The manuscript
 contains many more decimals than that, so this script lists the decimals that no
 assertion covers, grouped by the section they appear in, so a reviewer can see
 exactly where the safety net ends.
+
+Four further audits cover sections the traceability check never touched, and
+this report predates them: ``audit_calibration_and_external_numbers_v1.py``
+(Sections 5.5 and 5.7), ``audit_mechanism_numbers_v1.py`` (Section 5.3 and
+Table 6), ``audit_protocol_and_secondary_numbers_v1.py`` (Sections 5.4 and 5.6)
+and ``audit_discussion_numbers_v1.py`` (Sections 6 and 7, which asserts every
+decimal those two sections print).  What is left below is therefore the gap for
+the remaining sections, not for the document as a whole.
 """
 from __future__ import annotations
 

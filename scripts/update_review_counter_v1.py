@@ -15,31 +15,34 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "17",
-    "last_item": "17",
-    "last_item_title": "Section 7 of the English manuscript stated one claim twice",
+    "round": "18",
+    "last_item": "18",
+    "last_item_title": "Sections 6 and 7: two numbers described the wrong artifact",
     "last_result": "fixed",
-    "note": ("restarted the rotation at item 1 (cross-document numbers) and went after the region "
-             "no assertion covered: Sections 6 and 7. The conclusion of the English manuscript "
-             "carried the same claim twice inside one paragraph - the uncapped-corpus deficit of "
-             "-0.005533 and its 175-fold training cost, first as a result and again after a "
-             "rewrite that kept 47 characters verbatim (54 including the opening claim). "
-             "check_duplicate_sentences_v27.py compares sentences exactly, so it could not see "
-             "it, and self-check E11 claimed that no paragraph repeats a set of decimals while "
-             "this one repeated -0.005533 three times. scripts/fix_conclusion_duplication_v1.py "
-             "asserts the deficit, the ten seeds, both TOST verdicts and the 175.09x slowdown "
-             "against results_full_corpus_v49/full_corpus_summary.json, folds the TOST verdict "
-             "into the surviving sentence so nothing is lost, and drops the duplicate; the "
-             "Chinese conclusion already stated it once. The new gate check "
-             "scripts/check_repeated_claims_v1.py flags any two sentences of one paragraph that "
-             "share a run of 40 characters - the accident shared 54 and 47, the longest "
-             "legitimate pair in either body shares 35 (a repeated model name) and the Section "
-             "5.2 contrast shares 22 - with three unit tests pinning both sides of the "
-             "threshold. Gate 38 checks green; docx, manifest, bundle and desktop rebuilt. Note "
-             "for the next round: Sections 6 and 7 still carry ~35 decimals with no assertion "
-             "(the coverage audit now points at them), and the open-set metrics still have no "
-             "supplementary item."),
-    "timestamp": "2026-09-25T03:45:00+08:00",
+    "note": ("finished the cross-document pass by closing Sections 6 and 7, the last region no "
+             "audit covered. Two numbers there described the wrong artifact. (1) The decision "
+             "matrix row for probability quality read 'Log Loss 0.0515 against 0.0528, but ECE "
+             "is worse': the ECE half is the ten-seed result from Section 5.6 (0.006849 against "
+             "0.004493) while the Log Loss pair came from the three-seed runs "
+             "(results_rccf_cic_natural_v3b 0.051477, results_cic_natural_baselines_v3b "
+             "0.052828), and the supplementary bundle explicitly warns that those two sets must "
+             "not be subtracted. The row now uses the ten-seed pair 0.051826 / 0.052201, the run "
+             "its ECE clause already came from. (2) The limitations paragraph said '104 test "
+             "rows (0.21% of the test set) share a rounded feature vector with a training row'. "
+             "The near-duplicate audit records 104 rows in near-duplicate groups spanning the "
+             "partitions and 17 test rows overlapping training (17/7986 = 0.2129%); 104 test "
+             "rows would be 1.3%. The sentence now carries both counts with the right labels. "
+             "scripts/fix_discussion_numbers_v1.py asserts both runs' Log Loss values, both "
+             "ECE values and every near-duplicate count before editing. The new check "
+             "scripts/audit_discussion_numbers_v1.py adds 73 assertions and, more importantly, "
+             "fails if any of the 33 decimals printed in Sections 6 and 7 is not asserted here - "
+             "the coverage gap cannot reopen. It also re-derives the three-population dilution "
+             "chain (0.002068/0.000517/-0.000456, 0.004249/0.001062/-0.001137, "
+             "0.021397/0.005349/-0.005533), the 80.5x and 5.25x cost multiples, the equivalence "
+             "bounds and the dose-response regression. Gate 39 checks green; docx, manifest, "
+             "bundle and desktop rebuilt. Remaining for a later round: the open-set metrics "
+             "still have no supplementary item of their own."),
+    "timestamp": "2026-09-25T04:30:00+08:00",
 }
 
 

@@ -110,6 +110,15 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # the uncapped-corpus claim twice that way (47- and 54-character runs) while
     # self-check E11 claimed no paragraph repeats a set of decimals.
     ("repeated claims", ["scripts/check_repeated_claims_v1.py"], ("REPEATED_CLAIM_FOUND",)),
+    # Sections 6 and 7 were the last region no audit covered, and they held two
+    # defects: the decision matrix quoted a Log Loss pair from the three-seed runs
+    # beside an ECE clause from the ten-seed run (the bundle warns those two sets
+    # must not be mixed), and the limitations called 104 cross-split rows "104
+    # test rows" (17 test rows is 0.21% of the test set).  The check re-derives
+    # all 33 decimals these two sections print and fails if any of them is not
+    # asserted, so the coverage gap cannot reopen.
+    ("discussion and conclusion numbers", ["scripts/audit_discussion_numbers_v1.py"],
+     ("mismatches 1", "mismatches 2", "ISSUE ")),
     ("section and equation refs", ["scripts/check_section_refs_v32.py"], ("SECTION_REF_MISMATCH",)),
     ("character-level proofing", ["scripts/proofread_char_level_v33.py"], ("CHAR_LEVEL_FINDINGS",)),
     ("docx list numbering", ["scripts/check_docx_numbering_v40.py"], ("DOCX_NUMBERING_BROKEN",)),
