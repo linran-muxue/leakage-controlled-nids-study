@@ -15,11 +15,28 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "20",
-    "last_item": "20",
-    "last_item_title": "Nine self-descriptions in the deliverables had drifted",
+    "round": "21",
+    "last_item": "21",
+    "last_item_title": "The cover letter claimed a 118-test suite; the suite collects 138",
     "last_result": "fixed",
-    "note": ("global sweep for statements the deliverables make about themselves. Nine had "
+    "note": ("front-matter pass. The cover letter claimed 'A 118-test suite runs in continuous "
+             "integration' while the suite collects 138. The front-matter check could not see it "
+             "for two reasons, both now closed in check_aux_documents_v13.py: it compared the "
+             "auxiliary documents against the whole manuscript, so reference page ranges "
+             "(1189-1232, 1157-1182) vouched for any three-digit number; and its token patterns "
+             "matched only decimals and integers of four digits or more, so suite sizes, "
+             "search-grid sizes and table counts were never compared at all. The comparison now "
+             "uses the body without the reference list and requires every three-digit integer to "
+             "appear there - it flagged the 118 immediately - and the suite size is additionally "
+             "recomputed from pytest collection by check_deliverable_counts_v1.py, which now "
+             "covers the cover letter as well. Fixed by fix_deliverable_counts_v1.py to 138. The "
+             "rest of the cover letter was verified against source this round and reproduces: "
+             "N-BaIoT 180,000 flows (three 60,000-row classes in dataset_summary.csv), the "
+             "53,237 of 2,668,729 physically valid records (data_processing_audit.json), the "
+             "7.8x scale-up, the 4.1x model size and 4.6x throughput, the 175x training penalty, "
+             "and both TOST verdicts. The old note about the earlier deliverable-count sweep is "
+             "kept below. "
+             "PREVIOUS: global sweep for statements the deliverables make about themselves. Nine had "
              "drifted, all invisible to the existing gate because nothing recomputed them: the "
              "self-check table still said 118 unit tests (138 collect), 12,761 English words and "
              "35,338 Chinese characters (14,563 and 39,816), 507 numeric tokens per manuscript "

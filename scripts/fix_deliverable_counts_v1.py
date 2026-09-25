@@ -34,6 +34,9 @@ def main() -> None:
     snapshot_new = (f"{counts['sc_items']} 项检查，{counts['sc_passed']} 项通过、"
                     f"{counts['sc_partial']} 项部分通过、0 项缺失")
     edits: dict[Path, list[tuple[str, str]]] = {
+        BASE / "Cover_Letter_JISA_v4.md": [
+            ("A 118-test suite", f"A {counts['tests']}-test suite"),
+        ],
         BASE / "论文自查表.md": [
             (f"{counts['figures']} 图 7 表", f"{counts['figures']} 图 {counts['tables']} 表"),
             ("英文 12,761 词（整篇含参考文献）、11 图、7 主表；中文 35,338 字",

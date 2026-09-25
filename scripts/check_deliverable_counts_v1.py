@@ -76,6 +76,11 @@ def declarations(counts: dict[str, int]) -> list[tuple[str, Path, str]]:
          f"正文数值 token 英文 {counts['tokens_en']} : 中文 {counts['tokens_zh']}"),
         ("self-check F5 test count", table, f"{counts['tests']} 项单元测试通过"),
         ("self-check F7 test count", table, f"运行 {counts['tests']} 项测试"),
+        # The cover letter quotes the suite size too, and the front-matter check
+        # could not see it: the number is three digits and the reference list was
+        # part of the comparison, so "1189-1232" vouched for "118-test suite".
+        ("cover letter test count", BASE / "Cover_Letter_JISA_v4.md",
+         f"A {counts['tests']}-test suite runs in continuous integration"),
         ("README gate-check count", ROOT / "README.md", f"({counts['gate_checks']} checks"),
         ("gap audit state snapshot", BASE / "研究缺口审计与优先级清单.md", header),
         ("gap audit manuscript length", BASE / "研究缺口审计与优先级清单.md",

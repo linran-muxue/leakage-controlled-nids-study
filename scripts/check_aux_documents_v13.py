@@ -2,6 +2,15 @@
 Highlights and the cover letter are read by the editor before the manuscript is
 opened. If they quote a number the manuscript no longer contains - or a release
 tag that has moved on - the first impression is of a stale submission.
+
+Two blind spots were found and closed.  The comparison used the whole
+manuscript, so reference page ranges ("1189-1232", "1157-1182") vouched for any
+three-digit number the cover letter quoted - which is how "A 118-test suite"
+survived while the suite had grown to 138.  And the token patterns only matched
+decimals and integers of four digits or more, so suite sizes, search-grid sizes
+and table counts were never compared at all.  The comparison now uses the body
+without the reference list and also requires every three-digit integer to appear
+there.
 """
 from __future__ import annotations
 import re
@@ -16,14 +25,25 @@ ZH = (BASE / "中文SCI论文_v4_重构版.md").read_text("utf-8")
 AUX = ["Highlights_v4.md", "Cover_Letter_JISA_v4.md"]
 DECIMAL = re.compile(r"\d+\.\d{2,6}")
 INTEGER = re.compile(r"\b\d{1,3}(?:[, ]\d{3})+\b|\b\d{4,7}\b")
+THREE = re.compile(r"(?<![\d.,])\d{3}(?![\d.,])")
+# The suite size describes the release, not the research, so it legitimately
+# appears only in the cover letter.  It is not exempt from checking - it is
+# recomputed from pytest collection by check_deliverable_counts_v1.py, which
+# owns every statement of that kind.
+RELEASE_ONLY = re.compile(r"\d{3}(?=-test suite)")
 def tokens(text: str) -> set[str]:
     return {f.replace(" ", "").replace(",", "") for f in DECIMAL.findall(text) + INTEGER.findall(text)}
+def small_integers(text: str) -> set[str]:
+    """Three-digit integers: suite size, search-grid size, table count."""
+    return set(THREE.findall(text)) - set(RELEASE_ONLY.findall(text))
 def main() -> int:
     problems: list[str] = []
     tags = subprocess.run(["git", "tag"], capture_output=True, text=True, cwd=ROOT).stdout.split()
     latest = sorted(tags, key=lambda t: [int(x) for x in re.findall(r"\d+", t)])[-1] if tags else ""
-    known = tokens(EN) | tokens(ZH)
-    body = EN.split("## References")[0]
+    body_en = EN.split("## References")[0]
+    body_zh = ZH.split("## 参考文献")[0]
+    known = tokens(body_en) | tokens(body_zh)
+    known_small = small_integers(body_en) | small_integers(body_zh)
     for name in AUX:
         text = (BASE / name).read_text("utf-8")
         extra = sorted(tokens(text) - known)
@@ -31,6 +51,11 @@ def main() -> int:
         print(f"  numeric tokens not present in either manuscript: {extra if extra else 'none'}")
         if extra:
             problems.append(f"{name} quotes numbers the manuscripts do not contain: {extra}")
+        unseen_small = sorted(small_integers(text) - known_small)
+        print(f"  three-digit integers absent from the body: {unseen_small if unseen_small else 'none'}")
+        if unseen_small:
+            problems.append(f"{name} quotes three-digit integers the body never states: "
+                            f"{unseen_small}")
         versions = sorted(set(re.findall(r"v1\.\d+\.\d+", text)))
         print(f"  release tags cited: {versions if versions else 'none'}")
         if versions and versions != [latest]:
