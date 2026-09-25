@@ -15,11 +15,31 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "21",
-    "last_item": "21",
-    "last_item_title": "The cover letter claimed a 118-test suite; the suite collects 138",
+    "round": "22",
+    "last_item": "22",
+    "last_item_title": "Table 4(b) printed three training times that no artefact contains",
     "last_result": "fixed",
-    "note": ("front-matter pass. The cover letter claimed 'A 118-test suite runs in continuous "
+    "note": ("main-table pass. Tables 4, 5 and 7 carry the main result and were the last tables "
+             "whose cells had never been re-derived, so scripts/audit_main_tables_v1.py now "
+             "re-derives all 137 of them from the released runs: Table 4(a) from "
+             "results_seeds10_v5 plus the MLP files, 4(b) from the balanced-control runs, Table "
+             "5 from the power, effect-size and sign-flip files, and Table 7 from the scale "
+             "ladder and the full-corpus summary. The first pass found the Train (s) column of "
+             "Table 4(b) printing 0.451 / 0.299 / 0.494 for the three forest rows while "
+             "results_cic_balanced_baselines_v3b gives 0.249586 / 0.235422 / 0.130834 for the "
+             "same models over the same seeds. No artefact in the repository contains the "
+             "printed values - not the per-seed file, not the aggregate, not an earlier balanced "
+             "run - and they are not a constant multiple of the released times (1.8x, 1.3x, "
+             "3.8x), so they are not a machine-speed difference. Every other cell of those rows "
+             "reproduces the released run exactly, as do the conditional-mechanism row (9.130 s) "
+             "and the XGBoost row (0.398 s). scripts/fix_table4_balanced_train_times_v1.py "
+             "asserts the three source means, rewrites the cells to 0.250 / 0.235 / 0.131 in "
+             "both manuscripts and then requires the audit to pass; the audit joins the gate "
+             "(41 checks) and README's count is recomputed by the deliverable-counts guard. Also "
+             "verified this round: every per-row prediction behind the released runs is tracked "
+             "in the public repository (722 files, including the ten 50 MB full-corpus ones), so "
+             "the availability statement holds. "
+             "PREVIOUS: front-matter pass. The cover letter claimed 'A 118-test suite runs in continuous "
              "integration' while the suite collects 138. The front-matter check could not see it "
              "for two reasons, both now closed in check_aux_documents_v13.py: it compared the "
              "auxiliary documents against the whole manuscript, so reference page ranges "

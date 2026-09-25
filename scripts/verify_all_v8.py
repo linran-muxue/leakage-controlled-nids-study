@@ -94,6 +94,12 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # quoted the pre-Round-18 totals.  All nine are recomputed here.
     ("deliverable counts", ["scripts/check_deliverable_counts_v1.py"],
      ("DELIVERABLE_COUNTS_FAILED", "ISSUE ")),
+    # Tables 4, 5 and 7 carry the main result and were the last tables whose cells
+    # were never re-derived.  The first pass found the Train (s) column of Table
+    # 4(b) printing 0.451 / 0.299 / 0.494 where the released balanced run gives
+    # 0.249586 / 0.235422 / 0.130834 for the same three models and seeds.
+    ("main tables", ["scripts/audit_main_tables_v1.py"],
+     ("mismatches 1", "mismatches 2", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.
