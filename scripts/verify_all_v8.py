@@ -100,6 +100,13 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # 0.249586 / 0.235422 / 0.130834 for the same three models and seeds.
     ("main tables", ["scripts/audit_main_tables_v1.py"],
      ("mismatches 1", "mismatches 2", "ISSUE ")),
+    # Self-check row C1 cited final_config.json, which exists nowhere in the
+    # repository; the gate configuration that ships is S16's
+    # results_gate_tuning_v5/selected_gate_config.json.  Every path a
+    # current-state deliverable cites is now required to exist.  The four dated
+    # snapshots are excluded on purpose: they name scripts that were later built
+    # under other names.
+    ("cited paths", ["scripts/check_cited_paths_v1.py"], ("CITED_PATHS_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.

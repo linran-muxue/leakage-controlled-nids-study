@@ -55,6 +55,11 @@ def main() -> None:
         BASE / "P0_P1执行手册.md": [(snapshot_old, snapshot_new)],
         BASE / "论文结构诊断与重构方案.md": [(snapshot_old, snapshot_new)],
     }
+    # the review report's own header block names how many rounds it documents
+    covered_old = "第一至第十一轮"
+    covered_new = checker.report_coverage()
+    for name in ("研究缺口审计与优先级清单.md", "P0_P1执行手册.md", "论文结构诊断与重构方案.md"):
+        edits.setdefault(BASE / name, []).append((covered_old, covered_new))
     for path, pairs in edits.items():
         text = path.read_text(encoding="utf-8")
         for old, new in pairs:

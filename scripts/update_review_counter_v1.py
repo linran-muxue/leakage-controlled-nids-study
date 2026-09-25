@@ -15,11 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "22",
-    "last_item": "22",
-    "last_item_title": "Table 4(b) printed three training times that no artefact contains",
+    "round": "23",
+    "last_item": "23",
+    "last_item_title": "Self-check C1 cited an evidence file that does not exist",
     "last_result": "fixed",
-    "note": ("main-table pass. Tables 4, 5 and 7 carry the main result and were the last tables "
+    "note": ("finer-grained pass over the paths the deliverables cite. Every backticked file "
+             "name in the four current-state deliverables (self-check table, README, DATA_CARD, "
+             "MODEL_CARD) was resolved against the repository: 44 cited paths, one of which does "
+             "not exist - self-check row C1 offered 'final_config.json' as its evidence for "
+             "method reproducibility, and no such file is present anywhere (two retired runners "
+             "used to write it). The configuration that ships is "
+             "results_gate_tuning_v5/selected_gate_config.json, registered as S16 with the "
+             "108-configuration search that produced it, so C1 now cites that. "
+             "scripts/check_cited_paths_v1.py joins the gate and requires every cited path to "
+             "exist; the four dated snapshots (review report, gap audit, P0/P1 manual, structure "
+             "plan) are excluded on purpose because they record what was planned on a particular "
+             "date and name scripts later built under other names. The same sweep found that all "
+             "three snapshots described the review report as covering '第一至第十一轮' while its "
+             "own headings run to 第十九轮; the range is now recomputed from those headings by "
+             "check_deliverable_counts_v1.py and rewritten to 第一至第十九轮. Gate 42 checks "
+             "green; docx, manifest, bundle and desktop rebuilt. "
+             "PREVIOUS: main-table pass. Tables 4, 5 and 7 carry the main result and were the last tables "
              "whose cells had never been re-derived, so scripts/audit_main_tables_v1.py now "
              "re-derives all 137 of them from the released runs: Table 4(a) from "
              "results_seeds10_v5 plus the MLP files, 4(b) from the balanced-control runs, Table "

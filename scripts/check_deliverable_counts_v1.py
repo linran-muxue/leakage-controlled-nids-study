@@ -66,6 +66,7 @@ def declarations(counts: dict[str, int]) -> list[tuple[str, Path, str]]:
     table = BASE / "论文自查表.md"
     header = f"{counts['sc_items']} 项检查，{counts['sc_passed']} 项通过、" \
              f"{counts['sc_partial']} 项部分通过、0 项缺失"
+    covered = report_coverage()
     return [
         ("self-check E3 figure and table count", table,
          f"{counts['figures']} 图 {counts['tables']} 表"),
@@ -88,7 +89,23 @@ def declarations(counts: dict[str, int]) -> list[tuple[str, Path, str]]:
          f"{counts['tables']} 表"),
         ("P0/P1 manual state snapshot", BASE / "P0_P1执行手册.md", header),
         ("structure plan state snapshot", BASE / "论文结构诊断与重构方案.md", header),
+        # The three working documents describe the review report's coverage in
+        # their header block. All three said "第一至第十一轮" while the report
+        # documents nineteen rounds, so the range is recomputed from the report's
+        # own headings.
+        ("gap audit review-report range", BASE / "研究缺口审计与优先级清单.md", covered),
+        ("P0/P1 manual review-report range", BASE / "P0_P1执行手册.md", covered),
+        ("structure plan review-report range", BASE / "论文结构诊断与重构方案.md", covered),
     ]
+
+
+def report_coverage() -> str:
+    """The round range the review report documents, spelled as its last heading does."""
+    text = (BASE / "遗漏问题审查报告.md").read_text(encoding="utf-8")
+    rounds = re.findall(r"^#{2,3} .*?第([一二三四五六七八九十]+)轮", text, flags=re.M)
+    if not rounds:
+        raise SystemExit("the review report carries no round headings")
+    return f"第一至第{rounds[-1]}轮"
 
 
 def main() -> int:
