@@ -15,11 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "23",
-    "last_item": "23",
-    "last_item_title": "Self-check C1 cited an evidence file that does not exist",
-    "last_result": "fixed",
-    "note": ("finer-grained pass over the paths the deliverables cite. Every backticked file "
+    "round": "24",
+    "last_item": "24",
+    "last_item_title": "Data authenticity and completeness: every recorded digest verifies",
+    "last_result": "verified",
+    "note": ("authenticity and completeness pass over the data the study rests on; no defect was "
+             "found, so the round produced a new guard instead. Recorded digests: the eight "
+             "CIC-IDS2017 SHA-256 values in supplementary S01 all match the raw CSVs on disk, and "
+             "their rows sum to 2,830,743, exactly the source_rows the audit record declares; "
+             "NSL-KDD KDDTrain+/KDDTest+ match (19,109,424 and 3,441,513 bytes); UNSW-NB15 "
+             "training/testing match (175,341 and 82,332 rows, the published split); and the "
+             "N-BaIoT archive matches byte for byte (1,772,922,927 bytes) and extracts to the "
+             "recorded nine device folders. Completeness: of 27 per-seed metric files, nine carry "
+             "the full ten-seed set and seventeen the three-seed set, plus one single-seed file "
+             "from an intermediate MLP run that neither the paper nor the bundle cites; and every "
+             "released per-row prediction file covers its population's entire declared test set "
+             "(16 populations sampled, zero mismatches). scripts/audit_data_authenticity_v1.py "
+             "joins the gate (43 checks) and repeats all of it, skipping the digest section "
+             "wherever a raw dataset is absent, since the archives are not redistributed. "
+             "PREVIOUS: finer-grained pass over the paths the deliverables cite. Every backticked file "
              "name in the four current-state deliverables (self-check table, README, DATA_CARD, "
              "MODEL_CARD) was resolved against the repository: 44 cited paths, one of which does "
              "not exist - self-check row C1 offered 'final_config.json' as its evidence for "

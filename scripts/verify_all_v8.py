@@ -107,6 +107,13 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # snapshots are excluded on purpose: they name scripts that were later built
     # under other names.
     ("cited paths", ["scripts/check_cited_paths_v1.py"], ("CITED_PATHS_FAILED", "ISSUE ")),
+    # The paper's data claims: the digests S01 records, the raw row total the
+    # audit fixes, the seed sets each per-seed file carries, and the fact that
+    # every released prediction file covers its population's whole test set.
+    # The digest section skips datasets that are not present locally, because the
+    # raw archives are not redistributed.
+    ("data authenticity", ["scripts/audit_data_authenticity_v1.py"],
+     ("DATA_AUTHENTICITY_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.
