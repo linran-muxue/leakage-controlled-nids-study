@@ -15,34 +15,28 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "18",
-    "last_item": "18",
-    "last_item_title": "Sections 6 and 7: two numbers described the wrong artifact",
+    "round": "19",
+    "last_item": "19",
+    "last_item_title": "Open-set diagnostics had no supplementary item: added S30",
     "last_result": "fixed",
-    "note": ("finished the cross-document pass by closing Sections 6 and 7, the last region no "
-             "audit covered. Two numbers there described the wrong artifact. (1) The decision "
-             "matrix row for probability quality read 'Log Loss 0.0515 against 0.0528, but ECE "
-             "is worse': the ECE half is the ten-seed result from Section 5.6 (0.006849 against "
-             "0.004493) while the Log Loss pair came from the three-seed runs "
-             "(results_rccf_cic_natural_v3b 0.051477, results_cic_natural_baselines_v3b "
-             "0.052828), and the supplementary bundle explicitly warns that those two sets must "
-             "not be subtracted. The row now uses the ten-seed pair 0.051826 / 0.052201, the run "
-             "its ECE clause already came from. (2) The limitations paragraph said '104 test "
-             "rows (0.21% of the test set) share a rounded feature vector with a training row'. "
-             "The near-duplicate audit records 104 rows in near-duplicate groups spanning the "
-             "partitions and 17 test rows overlapping training (17/7986 = 0.2129%); 104 test "
-             "rows would be 1.3%. The sentence now carries both counts with the right labels. "
-             "scripts/fix_discussion_numbers_v1.py asserts both runs' Log Loss values, both "
-             "ECE values and every near-duplicate count before editing. The new check "
-             "scripts/audit_discussion_numbers_v1.py adds 73 assertions and, more importantly, "
-             "fails if any of the 33 decimals printed in Sections 6 and 7 is not asserted here - "
-             "the coverage gap cannot reopen. It also re-derives the three-population dilution "
-             "chain (0.002068/0.000517/-0.000456, 0.004249/0.001062/-0.001137, "
-             "0.021397/0.005349/-0.005533), the 80.5x and 5.25x cost multiples, the equivalence "
-             "bounds and the dose-response regression. Gate 39 checks green; docx, manifest, "
-             "bundle and desktop rebuilt. Remaining for a later round: the open-set metrics "
-             "still have no supplementary item of their own."),
-    "timestamp": "2026-09-25T04:30:00+08:00",
+    "note": ("added the missing supplementary item for the open-set diagnostics. Section 5.6 "
+             "reports the study's most adverse result - the conditional branch reaches "
+             "0.643-0.694 AUROC against 0.919-0.948 for the equal-weight forest - and none of "
+             "S01-S29 contained it: S15 covers calibration, robustness and latency, S18 the "
+             "diversity suite, S20 the ten-seed run. That is how the range came to quote two of "
+             "three seeds for three review rounds without anyone being able to check it from the "
+             "bundle. S30 now ships results_cfrg_open_set_v5_verified/open_set_metrics.csv "
+             "(three seeds x uncalibrated, temperature-scaled and conformal exports for both "
+             "arms) and results_open_set_matrix_v2/open_set_matrix_metrics.csv (the seven "
+             "family combinations Section 6.5 refers to). "
+             "scripts/add_open_set_supplementary_v1.py asserts all eight endpoints Section 5.6 "
+             "prints and the matrix shape before registering the item, adds the index row in "
+             "both manuscripts, cites S30 from Sections 5.6 and 6.5, rebuilds the bundle "
+             "(renaming it to 补充材料_S01_S30 and removing the superseded directories), syncs "
+             "the mirror, and refreshes self-check F4 (30 items, 76 material files). Gate 39 "
+             "checks green, including the supplementary index, mirror and JISA format checks; "
+             "docx, manifest, bundle and desktop rebuilt."),
+    "timestamp": "2026-09-25T05:10:00+08:00",
 }
 
 

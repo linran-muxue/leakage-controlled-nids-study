@@ -1,9 +1,0 @@
-﻿test_file,train_rows,test_rows,known_labels,unseen_test_labels,known_row_fraction,accuracy_known,balanced_accuracy_known,macro_f1_known
-Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv,49136,10000,DoS/DDoS;Normal,,1.0,0.5803,0.5803,0.4948712682218506
-Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv,54136,5000,Normal,,1.0,0.989,0.989,0.9944695827048768
-Friday-WorkingHours-Morning.pcap_ISCX.csv,52180,6956,Normal,Bot,0.718803910293272,0.9994,0.9994,0.9996999099729919
-Monday-WorkingHours.pcap_ISCX.csv,54136,5000,Normal,,1.0,0.995,0.995,0.9974937343358395
-Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv,54136,5000,Normal,,1.0,0.995,0.995,0.9974937343358395
-Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv,51956,7180,Brute Force;Normal,Web Attack,0.9062674094707521,0.7585676963270325,0.4936,0.43139311309211675
-Tuesday-WorkingHours.pcap_ISCX.csv,49136,10000,Brute Force;Normal,,1.0,0.5947,0.5947,0.5228861548098928
-Wednesday-workingHours.pcap_ISCX.csv,49136,10000,DoS/DDoS;Normal,,1.0,0.4977,0.4977,0.3325093532870123

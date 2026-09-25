@@ -46,7 +46,7 @@ defines the canonical selection used by the current runner.
 - `results_cfrg_open_set_v5_verified/`: verified open-set metrics using conformal anomaly scores.
 - `results_cfrg_calibration_v2_verified/`: validation-only temperature-scaling diagnostics after the probability-alignment fix.
 - Older `v1`/`v2` CFRG directories are historical artifacts and are not the canonical evidence for the final manuscript.
-- `重构版论文_v4_20260915/`: **the current manuscript** (English and Chinese), its figures, the `S01-S29` supplementary bundle, the cover letter and the Highlights.
+- `重构版论文_v4_20260915/`: **the current manuscript** (English and Chinese), its figures, the `S01-S30` supplementary bundle, the cover letter and the Highlights.
 - `results_paper_materials_v3/`: the earlier JISA-layout materials (superseded manuscripts, `Highlights_JISA`, `Graphical_Abstract_JISA` and the provenance tables). The submitted manuscript is the one under `重构版论文_v4_20260915/`; nothing here should be quoted as the final text.
 - `data_processed_cic_natural_v4_scale200k/`, `data_processed_cic_natural_v4_full/`: the 413,209-flow and 2,429,503-flow populations behind the scale-sensitivity analyses (supplementary S27 and S29).
 - `superseded/`: files kept only for provenance; they are not the source of any number in the manuscript.

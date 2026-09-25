@@ -1,4 +1,0 @@
-﻿metric,mean_delta_chi2_minus_all,std_delta,positive_splits,equal_splits,negative_splits,paired_sign_flip_p_value
-accuracy,0.0001980198019801982,0.0017338515559820078,4,3,3,1.0
-balanced_accuracy,0.0001980198019801982,0.0017338515559820078,4,3,3,1.0
-macro_f1,0.00014829587364038055,0.0017574522192119234,4,0,6,0.968860311396886

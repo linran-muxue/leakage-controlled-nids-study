@@ -1,2 +1,0 @@
-﻿tree_count,score_mean,score_std,score_min,score_max,weight_min,weight_max,weight_cv,normalized_weight_entropy,mean_probability_l1,max_probability_l1,prediction_disagreement_count,prediction_disagreement_rate,test_samples
-100,0.9059009900990095,0.011432038349885461,0.8792079207920791,0.9386138613861386,0.009705342310046668,0.010361108682346373,0.012619522966437407,0.9999827257100441,0.0002994194092176171,0.003472506592301902,0,0.0,505

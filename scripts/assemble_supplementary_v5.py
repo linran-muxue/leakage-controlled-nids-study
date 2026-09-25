@@ -114,6 +114,11 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_full_corpus_v49/full_corpus_summary.json",
              "results_full_corpus_v49/metrics_by_seed.csv",
              "results_rccf_cic_natural_v4_full/metrics_by_seed.csv"]),
+    # Section 5.6 reports an open-set range that no earlier item carried:
+    # S15 covers calibration, robustness and latency only.
+    "S30": ("开放集诊断：三个留出未知族、逐种子与逐家族组合敏感性",
+            ["results_cfrg_open_set_v5_verified/open_set_metrics.csv",
+             "results_open_set_matrix_v2/open_set_matrix_metrics.csv"]),
 }
 
 # The folder name follows the highest registered item, so registering a new

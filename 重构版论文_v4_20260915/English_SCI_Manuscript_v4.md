@@ -460,7 +460,7 @@ The external benchmarks, the file-level extrapolation and the neural baseline co
 
 **Cost-sensitive behaviour.** Casting the task as attack versus normal and sweeping the decision threshold for cost ratios C_FN / C_FP from 1 to 100, the normalised expected cost of the conditional mechanism tracks the equal-weight chi-square forest to within 0.0005 across the whole range - for example 0.00913 against 0.00867 at ratio 1, and 0.07260 against 0.06753 at ratio 100. Extremely randomised trees are about twice as costly at low ratios (0.01917 at ratio 1) but become cheaper than both forests once false negatives dominate (0.06180 at ratio 100). The conditional gate therefore offers no cost-sensitive advantage either. The operating point was selected on the test partition itself, so these normalised expected costs are optimistic lower bounds; selecting the threshold on the validation partition would raise all three curves by a similar amount without changing their ordering.
 
-**Open-set behaviour.** With PortScan, Infiltration and Heartbleed held out as unknown families, the conditional branch reaches an area under the ROC curve (AUROC) of 0.643 to 0.694 with an unknown-class recall of 0.0015 to 0.0396, whereas the equal-weight forest reaches an AUROC of 0.919 to 0.948 with a recall of 0.057 to 0.374. Both ranges span the three released seeds and the uncalibrated and temperature-scaled probability exports. The risk gate therefore **reduces** the separability of known from unknown traffic: it pushes probability mass towards confident regions and discards the uncertainty signal that rejection depends on. This is the least favourable evidence in the study for the conditional mechanism, and it indicates that binding risk calibration and open-set rejection into a single gate is ill-advised.
+**Open-set behaviour.** With PortScan, Infiltration and Heartbleed held out as unknown families, the conditional branch reaches an area under the ROC curve (AUROC) of 0.643 to 0.694 with an unknown-class recall of 0.0015 to 0.0396, whereas the equal-weight forest reaches an AUROC of 0.919 to 0.948 with a recall of 0.057 to 0.374. Both ranges span the three released seeds and the uncalibrated and temperature-scaled probability exports (Supplementary S30). The risk gate therefore **reduces** the separability of known from unknown traffic: it pushes probability mass towards confident regions and discards the uncertainty signal that rejection depends on. This is the least favourable evidence in the study for the conditional mechanism, and it indicates that binding risk calibration and open-set rejection into a single gate is ill-advised.
 
 ---
 
@@ -566,7 +566,7 @@ The conclusions are bounded as follows, and these bounds should be cited alongsi
 
 **Adversarial robustness was not assessed.** Only random perturbations and feature masking were applied. No evasion or gradient-based attack was constructed, and the reported degradation figures are not robustness guarantees against an adaptive adversary.
 
-**Unknown-family support is uneven.** PortScan contributes 158,930 records while Infiltration contributes 36 and Heartbleed 11. Open-set metrics are highly sensitive to which family is held out, so only per-family results are reported and no pooled open-set conclusion is drawn.
+**Unknown-family support is uneven.** PortScan contributes 158,930 records while Infiltration contributes 36 and Heartbleed 11. Open-set metrics are highly sensitive to which family is held out, so only per-family results are reported and no pooled open-set conclusion is drawn; the family-combination matrix is in Supplementary S30.
 
 **Bootstrap intervals have a limited interpretation.** The paired bootstrap quantifies test-row resampling uncertainty only; it does not capture changes in network environment, temporal drift or traffic composition.
 
@@ -698,3 +698,5 @@ Note: all DOIs were verified against Crossref or DataCite on 2026-09-23. Venues 
 | S27 | Scale sensitivity: 413,209-flow population, ten-seed paired comparison |
 | S28 | N-BaIoT benchmark: audit, class support, per-seed metrics and paired comparison |
 | S29 | Full-corpus run: 2,429,503 flows, per-seed metrics and paired comparison |
+| S30 | Open-set diagnostics: three held-out unknown families, per seed and per probability export |
+| S30 | Open-set diagnostics: three held-out unknown families, per seed and per probability export |
