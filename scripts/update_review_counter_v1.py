@@ -15,27 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "19",
-    "last_item": "19",
-    "last_item_title": "Open-set diagnostics had no supplementary item: added S30",
+    "round": "20",
+    "last_item": "20",
+    "last_item_title": "Nine self-descriptions in the deliverables had drifted",
     "last_result": "fixed",
-    "note": ("added the missing supplementary item for the open-set diagnostics. Section 5.6 "
-             "reports the study's most adverse result - the conditional branch reaches "
-             "0.643-0.694 AUROC against 0.919-0.948 for the equal-weight forest - and none of "
-             "S01-S29 contained it: S15 covers calibration, robustness and latency, S18 the "
-             "diversity suite, S20 the ten-seed run. That is how the range came to quote two of "
-             "three seeds for three review rounds without anyone being able to check it from the "
-             "bundle. S30 now ships results_cfrg_open_set_v5_verified/open_set_metrics.csv "
-             "(three seeds x uncalibrated, temperature-scaled and conformal exports for both "
-             "arms) and results_open_set_matrix_v2/open_set_matrix_metrics.csv (the seven "
-             "family combinations Section 6.5 refers to). "
-             "scripts/add_open_set_supplementary_v1.py asserts all eight endpoints Section 5.6 "
-             "prints and the matrix shape before registering the item, adds the index row in "
-             "both manuscripts, cites S30 from Sections 5.6 and 6.5, rebuilds the bundle "
-             "(renaming it to 补充材料_S01_S30 and removing the superseded directories), syncs "
-             "the mirror, and refreshes self-check F4 (30 items, 76 material files). Gate 39 "
-             "checks green, including the supplementary index, mirror and JISA format checks; "
-             "docx, manifest, bundle and desktop rebuilt."),
+    "note": ("global sweep for statements the deliverables make about themselves. Nine had "
+             "drifted, all invisible to the existing gate because nothing recomputed them: the "
+             "self-check table still said 118 unit tests (138 collect), 12,761 English words and "
+             "35,338 Chinese characters (14,563 and 39,816), 507 numeric tokens per manuscript "
+             "(589), and 7 main tables (8 captions, Table 1-8); README announced a 34-check gate "
+             "(39 before this round, 40 after it); and the three working documents that open "
+             "with a snapshot of the current state - the gap audit, the P0/P1 manual and the "
+             "structure plan - still quoted the pre-Round-18 totals of 66 checks with 62 passing "
+             "instead of 69 with 65. The gap audit's S8 status line also still described the "
+             "English manuscript as 10,800 words with 10 tables. "
+             "scripts/check_deliverable_counts_v1.py recomputes all nine from the artefacts "
+             "(pytest collection, the gate table, the manuscripts, the figures directory and the "
+             "self-check status counts) and fails if a deliverable states a different number; "
+             "scripts/fix_deliverable_counts_v1.py re-measures through that check, rewrites the "
+             "declarations and then requires the check to pass. The guard joins the gate, which "
+             "is why README now says 40 rather than 39. Gate 40 checks green; docx, manifest, "
+             "bundle and desktop rebuilt."),
     "timestamp": "2026-09-25T05:10:00+08:00",
 }
 

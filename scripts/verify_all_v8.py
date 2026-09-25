@@ -87,6 +87,13 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # promised; this ties the index, the bundle and checksums.sha256 together.
     ("supplementary index", ["scripts/check_supplementary_index_v1.py"],
      ("SUPPLEMENTARY_INDEX_FAILED",)),
+    # Nine statements the deliverables make about themselves had drifted: the
+    # self-check table still said 118 tests, 12,761 English words, 35,338
+    # characters, 507 numeric tokens and 7 tables, README announced a 34-check
+    # gate, and the three working documents that open with a state snapshot
+    # quoted the pre-Round-18 totals.  All nine are recomputed here.
+    ("deliverable counts", ["scripts/check_deliverable_counts_v1.py"],
+     ("DELIVERABLE_COUNTS_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.
