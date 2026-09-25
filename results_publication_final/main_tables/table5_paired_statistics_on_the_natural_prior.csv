@@ -1,0 +1,4 @@
+﻿Comparison,Mean difference,SD,Seed-level 95% interval,Seed-level 90% interval,TOST at 0.005,TOST at 0.01,Minimum detectable effect (80% power),Cohen's d_z,Holm-adjusted sign-flip p,Seeds favouring RCCF / baseline
+RCCF - equal RF (chi-square),-0.000456,0.001152,"[-0.001280, +0.000368]","[-0.001124, +0.000212]",equivalent,equivalent,0.001146,-0.40,0.244,5 / 5
+RCCF - equal RF (all features),+0.001613,0.001376,"[+0.000628, +0.002597]","[+0.000815, +0.002410]",equivalent,equivalent,0.001369,+1.17,0.020,9 / 1
+RCCF - ExtraTrees (chi-square),+0.031788,0.001616,"[+0.030632, +0.032944]","[+0.030851, +0.032724]",not equivalent,not equivalent,0.001607,+19.68,0.006,10 / 0

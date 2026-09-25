@@ -6,6 +6,7 @@ disagree with the paper. The archive also carries its own checksum list.
 from __future__ import annotations
 import hashlib
 import shutil
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -41,6 +42,10 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
     ("07_复现材料", ROOT, [ROOT / "results_publication_final" / "MANIFEST.json",
                            ROOT / "README.md", ROOT / "CITATION.cff",
                            ROOT / "requirements-lock.txt"]),
+    ("08_主表", ROOT / "results_publication_final" / "main_tables",
+     sorted((ROOT / "results_publication_final" / "main_tables").glob("*"))),
+    ("09_投稿文本", ROOT / "results_publication_final" / "submission_text",
+     sorted((ROOT / "results_publication_final" / "submission_text").glob("*"))),
 ]
 
 # The README inside the archive quotes the self-check totals and the figure
@@ -59,6 +64,14 @@ def _figure_count() -> int:
     return len(sorted((BASE / "figures_en").glob("*.png")))
 
 
+def _report_range() -> str:
+    """The round range the review report documents, read from its own headings."""
+    import re
+    text = (BASE / "遗漏问题审查报告.md").read_text(encoding="utf-8")
+    rounds = re.findall(r"^#{2,3} .*?第([一二三四五六七八九十]+)轮", text, flags=re.M)
+    return f"第一至第{rounds[-1]}轮" if rounds else "轮次未知"
+
+
 _SUPP_RANGE = SUPPLEMENTARY.name.replace("补充材料_S01_", "S01–")
 
 README = f"""# 论文投稿包 {TAG}
@@ -74,14 +87,17 @@ README = f"""# 论文投稿包 {TAG}
 | 02_投稿文件 | Highlights、投稿信（JISA）、图形摘要（PNG/PDF） |
 | 03_图片 | 正文插图（英文版与中文版，各 {_figure_count()} 张） |
 | 04_补充材料 | {_SUPP_RANGE}，含索引 README 与 SHA-256 校验清单 |
-| 05_自查与审查 | 论文自查表、遗漏问题审查报告（第一至第十一轮） |
+| 05_自查与审查 | 论文自查表、遗漏问题审查报告（{_report_range()}） |
 | 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照） |
 | 07_复现材料 | 发布清单、仓库说明、CITATION、依赖锁定文件 |
+| 08_主表 | 正文 8 张主表（含表 4 的两个面板共 9 个 CSV）与导出索引 |
+| 09_投稿文本 | 中英标题、摘要与关键词（投稿系统字段用的纯文本） |
 
 ## 投稿前仍需作者完成的三件事
 
 1. 按 JISA 官方模板排版（Guide for Authors 获取当天版本）。
-2. 填写署名、单位、通信作者、ORCID、基金与利益冲突声明。
+2. 填写署名、单位、通信作者、ORCID、基金与利益冲突声明，以及 `CITATION.cff` 的
+   `authors` 字段（自查表 A5/A6 行列出全部位置）。
 3. 送一次母语润色（E6）。
 
 代码与逐样本预测公开于 https://github.com/linran-muxue/leakage-controlled-nids-study （标签 {TAG}）。
@@ -94,6 +110,10 @@ def digest(path: Path) -> str:
     return h.hexdigest()
 def main() -> None:
     BUILD.mkdir(parents=True, exist_ok=True)
+    # regenerate the derived exports so the archive cannot ship a stale one
+    for script in ("export_manuscript_tables_v1.py", "export_submission_text_v1.py"):
+        subprocess.run([sys.executable, str(Path(__file__).resolve().parent / script)],
+                       cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
     archive = BUILD / f"{NAME}.zip"
     if archive.exists():
         archive.unlink()

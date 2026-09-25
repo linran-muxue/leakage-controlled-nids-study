@@ -1,0 +1,8 @@
+﻿Objective,Recommended option,Evidence,Cost
+Maximise balanced discriminative performance,XGBoost or a tuned equal forest under an equal budget,"5x3 nested cross-validation (CV): XGBoost minus random forest = +0.0078, interval excludes zero",Requires a tuning budget and longer training
+Minimise inference latency,Equal-weight chi-square forest,P50 2.96 ms against 14.62 ms for the conditional branch,Forgoes probability re-weighting
+Best probability quality,"Conditional weighting plus temperature scaling, reporting Log Loss and ECE together","Log Loss 0.0518 against 0.0522, but ECE is worse",About 5x inference cost; metrics disagree
+Unknown-attack rejection,Equal-weight forest with an independent conformal threshold,AUROC 0.92-0.95 against 0.64-0.69,Higher false-rejection rate on known classes; the operating point must be recalibrated
+Cross-file or cross-scenario evaluation,Avoid single-file training; report a file-by-label coverage matrix,File-level Macro-F1 spans 0.3325-0.9997,Additional data-coverage auditing effort
+Reproducibility of results,Adopt this protocol and release per-row predictions,All aggregate metrics can be recomputed from released probabilities,Extra storage and version management
+Decide whether to deploy conditional weighting,Equal voting on capped populations; do not deploy on strongly imbalanced corpora,"Equivalence at 53,237 flows against a deficit of -0.005533 on the uncapped 2,429,503-flow corpus, all ten seeds",Forgoes a mechanism whose training cost is 175 times that of one forest

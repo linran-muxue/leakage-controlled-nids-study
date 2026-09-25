@@ -1,0 +1,6 @@
+﻿Model,Accuracy,Balanced accuracy,Macro-F1,Log Loss,Brier,ECE,Train (s),Predict (s)
+RCCF,0.96172,0.96172,0.961807,0.12410,0.012751,0.024483,9.130,0.119
+Equal RF (chi-square),0.96304,0.96304,0.963215,0.13569,0.013453,0.026132,0.250,0.0284
+Equal RF (full features),0.96106,0.96106,0.960997,0.12237,0.012542,0.025232,0.235,0.0283
+ExtraTrees (chi-square),0.96106,0.96106,0.960947,0.15179,0.014300,0.036976,0.131,0.0296
+"XGBoost (independently tuned, validation-selected)",0.96304,0.96304,0.963241,0.10375,0.011468,0.011126,0.398,0.0023

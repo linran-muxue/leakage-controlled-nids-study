@@ -1,0 +1,6 @@
+﻿Family,Typical task,Fitting boundary of weighting information,Main claim type,Difference from this study
+Classical IDS classifier comparisons,Closed-set multiclass,No weighting,Accuracy on one dataset,Duplicates and prior effects uncontrolled
+Filter selection plus forest,Dimensionality reduction plus classification,Selector fitting position often unstated,Lower dimension at equal performance,Selector leakage rarely controlled
+Meta-learned or uncertainty-driven weighting,Conditional aggregation,Weight model fitted jointly with predictor,Reported weighting gain,"No equal-weight, equal-budget control or paired tests"
+Open-set and extreme-value rejection,Known plus unknown,Threshold depends on validation data,Unknown-class rejection metrics,Different objective and cost structure
+This study,Controlled test of conditional weighting,"Cross-fitted risk models, validation calibration, test used for diagnostics only","Gain magnitude, identifiability boundary, protocol sensitivity",Protocol is the primary variable; algorithmic superiority is not claimed

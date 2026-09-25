@@ -120,6 +120,12 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # E10 quoted the longest Highlight as 83 characters when it is 84.
     ("submission readiness", ["scripts/check_submission_readiness_v1.py"],
      ("SUBMISSION_READINESS_FAILED", "ISSUE ")),
+    # The archive is what the editor receives: its own checksums, its structure,
+    # the supplementary copy inside it and - the failure mode nothing else could
+    # see - whether the documents in it are the released ones rather than an
+    # earlier revision.  Rebuild it with package_submission_bundle_v18.py.
+    ("submission bundle", ["scripts/check_submission_bundle_v1.py"],
+     ("SUBMISSION_BUNDLE_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.

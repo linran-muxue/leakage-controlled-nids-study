@@ -1,0 +1,5 @@
+﻿Dataset,Source,Version or snapshot,Retrieval date,Licence status,Integrity
+CIC-IDS2017,"Canadian Institute for Cybersecurity, official page",MachineLearningCSV archive (8 CSV files),2026-09-02,No SPDX identifier shown; used under page terms with citation,SHA-256 and MD5 recorded (Table S1)
+NSL-KDD,"Public GitHub mirror, KDDTrain+ / KDDTest+","Mirror snapshot, commit not recorded",2026-09-03,No standard licence identifier verified; none inferred,SHA-256 recorded for both files
+UNSW-NB15,"UNSW Canberra Cyber, official project page",Official training and testing CSV,2026-09-04,Page requires citation of the original paper; no SPDX identifier,SHA-256 recorded for both files
+N-BaIoT,"UCI Machine Learning Repository, dataset 442",Mirai and Gafgyt captures from nine consumer IoT devices; 115 flow features,2026-09-19,"CC BY 4.0, stated on the dataset page",SHA-256 of the 1.77 GB archive recorded (Table S1)

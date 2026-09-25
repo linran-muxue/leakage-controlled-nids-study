@@ -1,0 +1,4 @@
+﻿Population,Flows,Test rows,RCCF,Equal RF (chi-square),Difference,TOST 0.005,TOST 0.01
+"Capped, 20,000 per class","53,237","7,986",0.889278,0.889734,-0.000456,equivalent,equivalent
+"Capped, 200,000 per class","413,209","61,982",0.856065,0.857202,-0.001137,equivalent,equivalent
+Uncapped (full deduplicated corpus),"2,429,503","364,426",0.754007,0.759540,-0.005533,not equivalent,equivalent

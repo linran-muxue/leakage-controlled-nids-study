@@ -15,11 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "25",
-    "last_item": "25",
-    "last_item_title": "Submission readiness: one author-input gap was undeclared",
+    "round": "26",
+    "last_item": "26",
+    "last_item_title": "Submission package reorganised: main tables and submission text added",
     "last_result": "fixed",
-    "note": ("submission-readiness pass. The JISA hard limits all hold - abstract 249 of 250 "
+    "note": ("full packaging pass. Three gaps closed. (1) The archive carried no separate table "
+             "files, which a production editor usually wants: scripts/export_manuscript_tables_v1.py "
+             "now parses the eight numbered tables out of the English manuscript into nine CSVs "
+             "(Table 4 has two panels) with an index, and they ship as 08_主表. (2) The title, "
+             "abstract and keywords were only inside the Word files, so "
+             "scripts/export_submission_text_v1.py writes them as plain text for the submission "
+             "form (09_投稿文本, with the word and keyword counts recorded at the top). (3) The "
+             "archive's own README still said the review report covers 第一至第十一轮 and its "
+             "author checklist did not name the CITATION.cff field; the range is now derived from "
+             "the report's headings and the checklist names all eight author-input locations. The "
+             "archive grows from 124 to 136 files and now holds nine folders. "
+             "scripts/check_submission_bundle_v1.py joins the gate (45 checks) and verifies the "
+             "archive's own checksum list, its structure, that the supplementary copy inside it "
+             "equals the canonical bundle (78 files), and that every packaged document matches "
+             "the working tree byte for byte - the staleness that no other check could see. "
+             "Rebuild the archive before running the gate whenever the manuscripts change. "
+             "PREVIOUS: submission-readiness pass. The JISA hard limits all hold - abstract 249 of 250 "
              "words, seven keywords, five Highlights with the longest at 84 characters, equations "
              "(1)-(5) in order, graphical abstract 3300x2280 - and the content side is complete "
              "(44 gate checks). The open items are the eight places that need author input, and "

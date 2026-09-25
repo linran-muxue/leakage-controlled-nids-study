@@ -1,0 +1,9 @@
+﻿Stage,Records remaining,Removed at this stage,Note
+Raw archive,"2,830,743",-,"8 CSV files, 78 flow features"
+After label mapping,"2,671,766","158,977","Five retained classes; PortScan, Infiltration and Heartbleed reserved for diagnostics"
+After non-finite removal,"2,669,025","2,741",All infinite; no NaNs
+After physical-range screening,"2,668,729",296,"Negative duration, rate, length or segment size"
+After deduplication and conflict resolution,-,"239,093 duplicate occurrences / 133 conflicting vectors",Completed before splitting
+After class capping (natural-prior population),"53,237",-,"20,000 per class, observed proportions retained"
+Train / validation / test,"37,265 / 7,986 / 7,986",-,Stratified 70/15/15
+Balanced control population,"3,365 (673 per class)",-,"2,355 / 505 / 505"
