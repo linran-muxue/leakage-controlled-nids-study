@@ -38,7 +38,10 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
                              BASE / "遗漏问题审查报告.docx", BASE / "遗漏问题审查报告.md"]),
     ("06_研究与写作方案", BASE, [BASE / "论文结构诊断与重构方案.docx", BASE / "论文结构诊断与重构方案.md",
                                  BASE / "研究缺口审计与优先级清单.docx", BASE / "研究缺口审计与优先级清单.md",
-                                 BASE / "P0_P1执行手册.docx", BASE / "P0_P1执行手册.md"]),
+                                 BASE / "P0_P1执行手册.docx", BASE / "P0_P1执行手册.md",
+                                 ]),
+    # the work log lives at the repository root, so it gets its own entry
+    ("06_研究与写作方案", ROOT, [ROOT / "工作日志_论文项目.md"]),
     ("07_复现材料", ROOT, [ROOT / "results_publication_final" / "MANIFEST.json",
                            ROOT / "README.md", ROOT / "CITATION.cff",
                            ROOT / "requirements-lock.txt"]),
@@ -88,7 +91,7 @@ README = f"""# 论文投稿包 {TAG}
 | 03_图片 | 正文插图（英文版与中文版，各 {_figure_count()} 张） |
 | 04_补充材料 | {_SUPP_RANGE}，含索引 README 与 SHA-256 校验清单 |
 | 05_自查与审查 | 论文自查表、遗漏问题审查报告（{_report_range()}） |
-| 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照） |
+| 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照）、项目工作日志 |
 | 07_复现材料 | 发布清单、仓库说明、CITATION、依赖锁定文件 |
 | 08_主表 | 正文 8 张主表（含表 4 的两个面板共 9 个 CSV）与导出索引 |
 | 09_投稿文本 | 中英标题、摘要与关键词（投稿系统字段用的纯文本） |

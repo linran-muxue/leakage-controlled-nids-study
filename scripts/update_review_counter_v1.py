@@ -15,11 +15,21 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "27",
-    "last_item": "27",
-    "last_item_title": "Packaged tables verified against the manuscript; export file names cleaned",
+    "round": "28",
+    "last_item": "28",
+    "last_item_title": "Generated the project work log from the records that track the work",
     "last_result": "fixed",
-    "note": ("second packaging pass, on the exports themselves rather than the manuscripts. Two "
+    "note": ("generated 工作日志_论文项目.md, and made every section of it derived rather than "
+             "typed: the round ledger is read from the review report's own headings (rounds 2-19, "
+             "reproduced verbatim after a first attempt tried to split dates from themes and "
+             "produced a column of dashes) plus all 60 round-labelled commits with their dates; "
+             "the guard list is parsed from the gate's check table (45 entries); the status table "
+             "comes from check_deliverable_counts_v1.measure(); the data baseline is the output of "
+             "the authenticity check; and the open items come from the readiness check. "
+             "scripts/build_work_log_v1.py regenerates it in about fifteen seconds, so it cannot "
+             "go stale silently, and the log now travels inside the submission package under "
+             "06_研究与写作方案 (137 files, 8.48 MB in total). "
+             "PREVIOUS: second packaging pass, on the exports themselves rather than the manuscripts. Two "
              "things. (1) The exported table CSVs had never been compared back to the manuscript "
              "they were parsed from - the gate verified the manuscript cells against the result "
              "files, but not the files handed to a production editor. "
