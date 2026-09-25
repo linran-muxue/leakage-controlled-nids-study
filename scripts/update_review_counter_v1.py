@@ -15,11 +15,24 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "24",
-    "last_item": "24",
-    "last_item_title": "Data authenticity and completeness: every recorded digest verifies",
-    "last_result": "verified",
-    "note": ("authenticity and completeness pass over the data the study rests on; no defect was "
+    "round": "25",
+    "last_item": "25",
+    "last_item_title": "Submission readiness: one author-input gap was undeclared",
+    "last_result": "fixed",
+    "note": ("submission-readiness pass. The JISA hard limits all hold - abstract 249 of 250 "
+             "words, seven keywords, five Highlights with the longest at 84 characters, equations "
+             "(1)-(5) in order, graphical abstract 3300x2280 - and the content side is complete "
+             "(44 gate checks). The open items are the eight places that need author input, and "
+             "one of them was not declared anywhere: CITATION.cff still carries 'name: Author to "
+             "be completed', while the self-check table named only the manuscript CRediT "
+             "placeholder (A5) and the cover-letter signature block (F9). Row A5 and the "
+             "author-action list now name the CFF field too. The same pass found row E10 quoting "
+             "the longest Highlight as 83 characters when it is 84 (inside the 85 limit either "
+             "way). scripts/check_submission_readiness_v1.py joins the gate (44 checks): it "
+             "re-derives the JISA limits from the format checker and requires every remaining "
+             "placeholder to be named by a 部分通过 row, so an author input can never be silently "
+             "missing from the inventory. "
+             "PREVIOUS: authenticity and completeness pass over the data the study rests on; no defect was "
              "found, so the round produced a new guard instead. Recorded digests: the eight "
              "CIC-IDS2017 SHA-256 values in supplementary S01 all match the raw CSVs on disk, and "
              "their rows sum to 2,830,743, exactly the source_rows the audit record declares; "

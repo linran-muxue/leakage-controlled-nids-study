@@ -114,6 +114,12 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # raw archives are not redistributed.
     ("data authenticity", ["scripts/audit_data_authenticity_v1.py"],
      ("DATA_AUTHENTICITY_FAILED", "ISSUE ")),
+    # Submission readiness: the JISA hard limits re-derived, plus every
+    # placeholder still in the package matched against the self-check table.
+    # CITATION.cff's authors field was a placeholder that no row named, and row
+    # E10 quoted the longest Highlight as 83 characters when it is 84.
+    ("submission readiness", ["scripts/check_submission_readiness_v1.py"],
+     ("SUBMISSION_READINESS_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.

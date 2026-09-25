@@ -63,7 +63,7 @@ The current project validation reports the passing-test count printed by the
 locked checkout and successful Python byte-compilation. Exact file hashes and
 the artifact inventory are recorded in `results_publication_final/MANIFEST.json`.
 
-The full verification gate is `scripts/verify_all_v8.py` (43 checks: the unit
+The full verification gate is `scripts/verify_all_v8.py` (44 checks: the unit
 suite, the number-traceability audit, the released-evidence recomputation, the
 figure and document checks). Three of its checks recompute from the **derived**
 populations - `data_processed_cic_natural_v3b`, `data_processed_cic_balanced_v3b`
