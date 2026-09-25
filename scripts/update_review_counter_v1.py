@@ -15,11 +15,24 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "26",
-    "last_item": "26",
-    "last_item_title": "Submission package reorganised: main tables and submission text added",
+    "round": "27",
+    "last_item": "27",
+    "last_item_title": "Packaged tables verified against the manuscript; export file names cleaned",
     "last_result": "fixed",
-    "note": ("full packaging pass. Three gaps closed. (1) The archive carried no separate table "
+    "note": ("second packaging pass, on the exports themselves rather than the manuscripts. Two "
+             "things. (1) The exported table CSVs had never been compared back to the manuscript "
+             "they were parsed from - the gate verified the manuscript cells against the result "
+             "files, but not the files handed to a production editor. "
+             "scripts/check_submission_bundle_v1.py now parses the manuscript tables and requires "
+             "each packaged CSV to equal them cell for cell (nine files); all nine already "
+             "matched. (2) The slug builder truncated captions mechanically, so Table 7 shipped "
+             "as 'table7_the_cic_ids2017_scale_ladder_the.csv'; it now cuts the caption at its "
+             "first colon and drops leading and trailing filler words, giving "
+             "table7_cic_ids2017_scale_ladder.csv. The same check also rejects archive entry "
+             "names carrying characters that some systems refuse and any duplicate entry: 138 "
+             "entries, none with reserved characters, no duplicates. The archive is rebuilt "
+             "(136 files, 8.47 MB) and the desktop copy refreshed. Gate 45 checks green. "
+             "PREVIOUS: full packaging pass. Three gaps closed. (1) The archive carried no separate table "
              "files, which a production editor usually wants: scripts/export_manuscript_tables_v1.py "
              "now parses the eight numbered tables out of the English manuscript into nine CSVs "
              "(Table 4 has two panels) with an index, and they ship as 08_主表. (2) The title, "

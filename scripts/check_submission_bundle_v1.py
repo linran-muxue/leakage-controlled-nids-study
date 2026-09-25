@@ -13,6 +13,8 @@ mismatch.
 from __future__ import annotations
 
 import hashlib
+import io
+import csv
 import re
 import sys
 import zipfile
@@ -20,6 +22,8 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from export_manuscript_tables_v1 import parse_tables  # noqa: E402
 BASE = ROOT / "重构版论文_v4_20260915"
 BUNDLE = BASE / "补充材料_S01_S30"
 TAG = "v1.11.0"
@@ -110,6 +114,33 @@ def main() -> int:
     if tables != 9:
         problems.append(f"the archive holds {tables} exported tables, expected 9")
     print(f"  figures per language {figures}; exported tables {tables}")
+
+    # every exported table must equal the manuscript cells it came from
+    from_slug = {f"table{number}{marker}_": rows for number, marker, _, rows
+                 in parse_tables()}
+    for key, payload in sorted(data.items()):
+        if not key.startswith("08_主表/") or not key.endswith(".csv"):
+            continue
+        name = key.split("/", 1)[1]
+        prefix = next((p for p in from_slug if name.startswith(p)), None)
+        exported = list(csv.reader(io.StringIO(payload.decode("utf-8-sig"))))
+        if prefix is None or exported != from_slug[prefix]:
+            problems.append(f"{name} does not match the manuscript table it was exported from")
+            print(f"  ISSUE {name} differs from the manuscript")
+    print(f"  exported tables compared with the manuscript: "
+          f"{len([k for k in data if k.startswith('08_主表/') and k.endswith('.csv')])} file(s)")
+
+    # entry names must open everywhere the archive might be unpacked
+    forbidden = set('<>:"\\|?*')
+    bad_names = [name for name in names if forbidden & set(name)]
+    duplicates = {name for name in names if names.count(name) > 1}
+    if bad_names:
+        problems.append(f"archive entry names contain characters some systems reject: "
+                        f"{bad_names[:3]}")
+    if duplicates:
+        problems.append(f"archive contains duplicate entries: {sorted(duplicates)[:3]}")
+    print(f"  entry names: {len(names)} entries, {len(bad_names)} with reserved characters, "
+          f"{len(duplicates)} duplicate(s)")
 
     print()
     if problems:

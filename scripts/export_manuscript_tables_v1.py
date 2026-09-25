@@ -26,19 +26,37 @@ CAPTION = re.compile(r"^\*\*Table (\d+)\.\s*(.+?)\*\*\s*$", re.M)
 PANEL = re.compile(r"^\(([ab])\)\s*(.+)$")
 
 
+STOPWORDS = {"the", "a", "an", "on", "of", "for", "and", "in", "to", "with"}
+
+
 def slug(text: str) -> str:
-    cleaned = re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
-    return "_".join(cleaned.split("_")[:6])
+    """A file-name slug that keeps the caption's meaning and drops filler.
+
+    The caption is cut at its first colon (the part after it is a sentence, not
+    a title) and leading/trailing stopwords are removed, so Table 7 becomes
+    "cic_ids2017_scale_ladder" rather than the truncated "..._the".
+    """
+    head = text.split(":")[0]
+    words = [w for w in re.sub(r"[^a-z0-9]+", " ", head.lower()).split() if w]
+    while words and words[0] in STOPWORDS:
+        words.pop(0)
+    while words and words[-1] in STOPWORDS:
+        words.pop()
+    return "_".join(words[:6])
 
 
-def main() -> None:
+def parse_tables() -> list[tuple[str, str, str, list[list[str]]]]:
+    """Every numbered table as (number, panel marker, caption, rows).
+
+    Exposed so the packaged CSVs can be compared back to the manuscript they
+    were exported from without a second parser.
+    """
     lines = EN.splitlines()
     captions = [(index, match) for index, line in enumerate(lines)
                 if (match := CAPTION.match(line))]
     if len(captions) != 8:
         raise SystemExit(f"expected eight numbered tables, found {len(captions)}")
-    OUT.mkdir(parents=True, exist_ok=True)
-    index_rows = []
+    parsed_tables = []
     for position, (start, match) in enumerate(captions):
         number, caption = match.group(1), match.group(2).strip()
         stop = captions[position + 1][0] if position + 1 < len(captions) else len(lines)
@@ -70,14 +88,22 @@ def main() -> None:
         if not panels:
             raise SystemExit(f"table {number} has no rows")
         for marker, rows in panels:
-            suffix = marker or ""
-            name = f"table{number}{suffix}_{slug(caption)}.csv"
             parsed = []
             for row in rows:
                 cells = [c.strip().replace("**", "") for c in row.strip("|").split("|")]
                 if set("".join(cells)) <= set("-: "):
                     continue
                 parsed.append(cells)
+            parsed_tables.append((number, marker, caption, parsed))
+    return parsed_tables
+
+
+def main() -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    index_rows = []
+    for number, marker, caption, parsed in parse_tables():
+            suffix = marker or ""
+            name = f"table{number}{suffix}_{slug(caption)}.csv"
             with (OUT / name).open("w", encoding="utf-8-sig", newline="") as handle:
                 csv.writer(handle).writerows(parsed)
             index_rows.append((number, marker, caption, name, len(parsed) - 1))
