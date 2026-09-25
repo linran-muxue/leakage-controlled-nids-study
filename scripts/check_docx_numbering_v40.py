@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 DOCS = ["English_SCI_Manuscript_v4.docx", "中文SCI论文_v4_重构版.docx",
         "论文自查表.docx", "遗漏问题审查报告.docx", "论文结构诊断与重构方案.docx",
-        "研究缺口审计与优先级清单.docx", "P0_P1执行手册.docx"]
+        "研究缺口审计与优先级清单.docx", "P0_P1执行手册.docx", "工作日志_论文项目.docx"]
 def num_id(paragraph) -> str | None:
     element = paragraph._p.find(".//" + qn("w:numId"))
     return element.get(qn("w:val")) if element is not None else None

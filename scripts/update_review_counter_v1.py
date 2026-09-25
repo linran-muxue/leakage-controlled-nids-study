@@ -15,11 +15,21 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "28",
-    "last_item": "28",
-    "last_item_title": "Generated the project work log from the records that track the work",
+    "round": "29",
+    "last_item": "29",
+    "last_item_title": "Work log now ships as Word too, with the per-round operating procedure",
     "last_result": "fixed",
-    "note": ("generated 工作日志_论文项目.md, and made every section of it derived rather than "
+    "note": ("the work log gained a Word edition. It moved beside the other deliverables in "
+             "重构版论文_v4_20260915/, the builder grew a 'worklog' job (so "
+             "build_restructured_manuscript_v4.py --only all regenerates it with the rest), the "
+             "DOCX freshness check now requires it to carry the current guard count and round "
+             "ledger, and the numbering check covers its numbered list. A new section 八 records "
+             "the fixed seven-step operating procedure each round follows: status check, one "
+             "rotation item, evidence-backed fix written as an assertion-anchored script, "
+             "artefact rebuild, gate, release, and the reporting rule. The log is 225 lines and "
+             "travels in the package as both Markdown and Word under 06_研究与写作方案 (138 "
+             "files, 8.52 MB). Gate 45 checks green. "
+             "PREVIOUS: generated 工作日志_论文项目.md, and made every section of it derived rather than "
              "typed: the round ledger is read from the review report's own headings (rounds 2-19, "
              "reproduced verbatim after a first attempt tried to split dates from themes and "
              "produced a column of dashes) plus all 60 round-labelled commits with their dates; "

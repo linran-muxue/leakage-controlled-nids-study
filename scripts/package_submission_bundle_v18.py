@@ -40,8 +40,9 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
                                  BASE / "研究缺口审计与优先级清单.docx", BASE / "研究缺口审计与优先级清单.md",
                                  BASE / "P0_P1执行手册.docx", BASE / "P0_P1执行手册.md",
                                  ]),
-    # the work log lives at the repository root, so it gets its own entry
-    ("06_研究与写作方案", ROOT, [ROOT / "工作日志_论文项目.md"]),
+    # the work log travels as Markdown and as Word, like the other working docs
+    ("06_研究与写作方案", BASE, [BASE / "工作日志_论文项目.md",
+                                 BASE / "工作日志_论文项目.docx"]),
     ("07_复现材料", ROOT, [ROOT / "results_publication_final" / "MANIFEST.json",
                            ROOT / "README.md", ROOT / "CITATION.cff",
                            ROOT / "requirements-lock.txt"]),

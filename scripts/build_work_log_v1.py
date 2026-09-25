@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from check_deliverable_counts_v1 import measure  # noqa: E402
 
 TAG = "v1.11.0"
-OUT = ROOT / "工作日志_论文项目.md"
+OUT = BASE / "工作日志_论文项目.md"
 
 
 def run(args: list[str]) -> str:
@@ -159,6 +159,28 @@ def main() -> None:
     lines.append("- 正式稿件与辅助文档：`重构版论文_v4_20260915/`")
     lines.append("- 补充材料：`重构版论文_v4_20260915/补充材料_S01_S30/`")
     lines.append("- 逐样本证据与发布清单：`results_publication_final/`")
+    lines.append("")
+    lines.append("## 八、每轮标准操作流程（本全流程固定执行）")
+    lines.append("")
+    lines.append("1. **起点核对**：`git status --short` 确认工作区干净；跑闸门确认起点全绿，"
+                 "若已失败则本轮只做修复。")
+    lines.append("2. **选一项**：按轮转清单取一项（跨文档数字 / 图注 / 统计重算 / 中英对齐 / "
+                 "补充材料索引 / 参考文献 / 测试覆盖 / 措辞体例 / 数据来源 / 交付件一致性），"
+                 "一轮只推进一项。")
+    lines.append("3. **只修有证据的缺陷**：数字或结论与产物不符时，先写脚本断言源值，"
+                 "再改写稿件；不手改 Markdown，不留无出处的数字。")
+    lines.append("4. **重建产物**：`build_restructured_manuscript_v4.py --only all` → "
+                 "`convert_equations_word_v41.py` → `build_publication_manifest.py` → "
+                 "`export_manuscript_tables_v1.py` / `export_submission_text_v1.py` → "
+                 "`package_submission_bundle_v18.py`。")
+    lines.append("5. **过闸门**：45 项检查全绿才提交；不绿则回退本轮改动并报告。")
+    lines.append("6. **发布**：`git add` → commit（Round NN 小步提交）→ 刷新 tag → push 主干与标签 → "
+                 "同步桌面交付目录。")
+    lines.append("7. **汇报**：只在「本轮提交了修复」或「发现需用户决定的问题」时汇报，"
+                 "其余轮次保持安静。")
+    lines.append("")
+    lines.append("> 本日志由 `scripts/build_work_log_v1.py` 生成；Word 版由 "
+                 "`scripts/build_restructured_manuscript_v4.py --only worklog` 生成。")
     lines.append("")
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"WORK_LOG_WRITTEN={OUT}")

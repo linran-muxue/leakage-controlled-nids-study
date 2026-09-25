@@ -23,6 +23,9 @@ EXPECTED = {
     "P0_P1执行手册.docx": ["状态说明"],
     "Highlights_v4.docx": ["0.005", "0.0725"],
     "Cover_Letter_JISA_v4.docx": ["v1.11.0", "0.000456"],
+    # the work log is generated from the records, so it must carry the current
+    # guard count and the round ledger rather than an earlier snapshot
+    "工作日志_论文项目.docx": ["工作日志", "45 项检查", "Round 20"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))
