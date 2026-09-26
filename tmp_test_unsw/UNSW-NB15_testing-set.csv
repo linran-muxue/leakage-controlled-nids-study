@@ -1,3 +1,0 @@
-id,proto,attack_cat
-3,icmp,Normal
-4,tcp,DoS

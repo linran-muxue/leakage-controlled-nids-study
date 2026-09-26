@@ -1,0 +1,223 @@
+{
+  "note": "Second tidy-up pass; files moved out of the release tree and kept locally.",
+  "count": 31,
+  "files": [
+    {
+      "file": "tmp_test_unsw/UNSW-NB15_training-set.csv",
+      "bytes": 46,
+      "sha256": "98f8381be24b62617498b90a40ad51b8ed7a5b3250106d0d19cfc14dcc9a3e6d",
+      "reason": "leftover integration-test fixture (three lines), referenced by no code",
+      "moved_to": ".quarantine\\unrelated_material\\UNSW-NB15_training-set.csv"
+    },
+    {
+      "file": "tmp_test_unsw/UNSW-NB15_testing-set.csv",
+      "bytes": 47,
+      "sha256": "ab377fd7a24284d7353984b19d68d7806dae9964d91661b3521da441741673d4",
+      "reason": "leftover integration-test fixture (three lines), referenced by no code",
+      "moved_to": ".quarantine\\unrelated_material\\UNSW-NB15_testing-set.csv"
+    },
+    {
+      "file": "search_result.json",
+      "bytes": 151435,
+      "sha256": "9e9031889f6806960994f167d3cd23367f08bccd6b1ad40468ae99617d5d8ac6",
+      "reason": "search-engine output unrelated to the study",
+      "moved_to": ".quarantine\\unrelated_material\\search_result.json"
+    },
+    {
+      "file": "translate_papers.py",
+      "bytes": 3925,
+      "sha256": "af70c69b5a71413f81826ec63b4c6a7b7c5e74d5a73be0602808623c94e39422",
+      "reason": "scratch translation helper",
+      "moved_to": ".quarantine\\unrelated_material\\translate_papers.py"
+    },
+    {
+      "file": "tmp_patch_probe.txt",
+      "bytes": 13,
+      "sha256": "9469a45c2d489d5c9506a9a612cda38b3ed321922a72d749a1b704296b80b4a4",
+      "reason": "temporary patch probe",
+      "moved_to": ".quarantine\\unrelated_material\\tmp_patch_probe.txt"
+    },
+    {
+      "file": "results_diversity_v5.err",
+      "bytes": 9552,
+      "sha256": "8a550ef2216ef2abf6ce740f8921519e54d0e2c16edec64f6275366771680a5e",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_diversity_v5.err"
+    },
+    {
+      "file": "results_equivalence_10seeds_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_equivalence_10seeds_v5.err"
+    },
+    {
+      "file": "results_gate_tuning_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_gate_tuning_v5.err"
+    },
+    {
+      "file": "results_mlp_final_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_mlp_final_v5.err"
+    },
+    {
+      "file": "results_mlp_long_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_mlp_long_v5.err"
+    },
+    {
+      "file": "results_mlp_v5.err",
+      "bytes": 888,
+      "sha256": "c471f35c6aeb0cde44181c7735f17bde0383a95f95d1b8c63f38b4d10109a0c7",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_mlp_v5.err"
+    },
+    {
+      "file": "results_resources_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_resources_v5.err"
+    },
+    {
+      "file": "results_robustness_extended_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_robustness_extended_v5.err"
+    },
+    {
+      "file": "results_robustness_extended_v5_seeds.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_robustness_extended_v5_seeds.err"
+    },
+    {
+      "file": "results_seeds10_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_seeds10_v5.err"
+    },
+    {
+      "file": "results_tuned_gate_test_v5.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "loose run log from a finished run",
+      "moved_to": ".quarantine\\unrelated_material\\results_tuned_gate_test_v5.err"
+    },
+    {
+      "file": "论文草稿_基于卡方特征选择与随机森林的CIC-IDS2017入侵检测研究.docx",
+      "bytes": 272366,
+      "sha256": "240134133f169a570f455bbde413e15dcefbcd179ee2551deab3fc9110b6fb93",
+      "reason": "最早期草稿（2026-09-03）",
+      "moved_to": ".quarantine\\local_material\\论文草稿_基于卡方特征选择与随机森林的CIC-IDS2017入侵检测研究.docx"
+    },
+    {
+      "file": "论文投稿草稿_v2_统一无泄漏实验结果.docx",
+      "bytes": 231577,
+      "sha256": "9fafad9932d79da8c043eefb46ca08b9a1e3332d0037d17cebf3b22ed0b360f7",
+      "reason": "早期草稿（2026-09-03）",
+      "moved_to": ".quarantine\\local_material\\论文投稿草稿_v2_统一无泄漏实验结果.docx"
+    },
+    {
+      "file": "论文完整正文_v3_无泄漏实验统一稿.docx",
+      "bytes": 770321,
+      "sha256": "3362cff8c5f5872d4c6557fab1e5fd83dad327e891c01d43b1c67bc5796d6500",
+      "reason": "早期正文版本（2026-09-04）",
+      "moved_to": ".quarantine\\local_material\\论文完整正文_v3_无泄漏实验统一稿.docx"
+    },
+    {
+      "file": "论文完整正文_v4_期刊优化稿.docx",
+      "bytes": 851279,
+      "sha256": "12cdd6484ea35983f5e20ce6d3b40e70536280e6d1eae7b322339cc963e4c0fc",
+      "reason": "早期正文版本（2026-09-04）",
+      "moved_to": ".quarantine\\local_material\\论文完整正文_v4_期刊优化稿.docx"
+    },
+    {
+      "file": "论文完整正文_v5_UNSW类别分析稿.docx",
+      "bytes": 663549,
+      "sha256": "549c54c8cd2b62994eec101fd8bfdaf0caa150b0c2f553cc1eb775f938746500",
+      "reason": "早期正文版本（2026-09-05）",
+      "moved_to": ".quarantine\\local_material\\论文完整正文_v5_UNSW类别分析稿.docx"
+    },
+    {
+      "file": "论文完整正文_v6_数据处理完善稿.docx",
+      "bytes": 670559,
+      "sha256": "163a4c649d538ade6981acee0b3d24f26bd65b50e391e93bf824b7e8bb715e9c",
+      "reason": "早期正文版本（2026-09-05）",
+      "moved_to": ".quarantine\\local_material\\论文完整正文_v6_数据处理完善稿.docx"
+    },
+    {
+      "file": "三篇论文中文翻译.docx",
+      "bytes": 131789,
+      "sha256": "5b5740e193c030ca826b7b81cc2e0f4a87b61784a4732e9cf37ba7af0c8b3d67",
+      "reason": "外部论文翻译草稿",
+      "moved_to": ".quarantine\\local_material\\三篇论文中文翻译.docx"
+    },
+    {
+      "file": "CIC-IDS2017入侵检测论文项目任务单.docx",
+      "bytes": 43830,
+      "sha256": "6345c41e5346f33091585f7e69b6b190f9cebd8e7f08cf7df466bfd73ba31141",
+      "reason": "项目启动任务单",
+      "moved_to": ".quarantine\\local_material\\CIC-IDS2017入侵检测论文项目任务单.docx"
+    },
+    {
+      "file": "inspect_rollout_calls.py",
+      "bytes": 2123,
+      "sha256": "40562fe39bc6f3f10f24698248b51a73cc4d2a6f44c27c065914af6e6d17311f",
+      "reason": "会话排查脚本",
+      "moved_to": ".quarantine\\local_material\\inspect_rollout_calls.py"
+    },
+    {
+      "file": "repair_cross_thread_message.py",
+      "bytes": 8813,
+      "sha256": "ce05e65221da3f42faf64586766a8c215003905e44928532550f7f78b9dea207",
+      "reason": "会话修复脚本",
+      "moved_to": ".quarantine\\local_material\\repair_cross_thread_message.py"
+    },
+    {
+      "file": "repair_current_cross_thread_message.py",
+      "bytes": 6377,
+      "sha256": "aa755612cb526e94a310a2e8364e5fba45900658078c7e1fdbe37927022fa331",
+      "reason": "会话修复脚本",
+      "moved_to": ".quarantine\\local_material\\repair_current_cross_thread_message.py"
+    },
+    {
+      "file": ".cross-thread-repair.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "会话修复日志",
+      "moved_to": ".quarantine\\local_material\\.cross-thread-repair.err.log"
+    },
+    {
+      "file": ".cross-thread-repair.out.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "会话修复日志",
+      "moved_to": ".quarantine\\local_material\\.cross-thread-repair.out.log"
+    },
+    {
+      "file": ".cross-thread-repair-v2.err.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "会话修复日志",
+      "moved_to": ".quarantine\\local_material\\.cross-thread-repair-v2.err.log"
+    },
+    {
+      "file": ".cross-thread-repair-v2.out.log",
+      "bytes": 66,
+      "sha256": "687887bb0fd11fb748991ee18cbe57d301ff68cd96135b4e34bc92f433d92ac7",
+      "reason": "会话修复日志",
+      "moved_to": ".quarantine\\local_material\\.cross-thread-repair-v2.out.log"
+    }
+  ]
+}

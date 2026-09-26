@@ -21,10 +21,15 @@ from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "superseded" / "unrelated_material_manifest_v1.json"
+MANIFEST_V2 = ROOT / "superseded" / "unrelated_material_manifest_v2.json"
 FORBIDDEN_SUFFIXES = (".html",)
 FORBIDDEN_NAMES = {
     "parse_output.txt", "print_rows.py", "extract_papers.py", "fetch_csa.py",
     "parse_csa.py", "post_search.py", "make_word_scaffold.py",
+    # second pass: scratch files that sat at the repository root and the two
+    # leftover test fixtures nothing referenced
+    "search_result.json", "translate_papers.py", "tmp_patch_probe.txt",
+    "tmp_test_unsw/UNSW-NB15_training-set.csv", "tmp_test_unsw/UNSW-NB15_testing-set.csv",
 }
 problems: list[str] = []
 
@@ -38,11 +43,11 @@ def main() -> int:
     tracked = track()
     offenders = []
     for name in sorted(tracked):
-        if "/" in name:
+        if "/" in name and not name.startswith("tmp_test_unsw/"):
             continue
         if name in FORBIDDEN_NAMES or name.endswith(FORBIDDEN_SUFFIXES) \
                 or (name.startswith("paper") and name.endswith(".txt")) \
-                or (name.startswith("results_") and name.endswith(".log")):
+                or (name.startswith("results_") and name.endswith((".log", ".err"))):
             offenders.append(name)
     if offenders:
         problems.append(f"unrelated material is tracked again: {offenders}")
@@ -58,6 +63,18 @@ def main() -> int:
         quarantined = [row["file"] for row in manifest["files"]]
         if len(quarantined) != manifest["count"] or len(quarantined) < 30:
             problems.append(f"manifest covers {len(quarantined)} files, expected {manifest['count']}")
+
+    if not MANIFEST_V2.exists():
+        problems.append(f"missing {MANIFEST_V2.relative_to(ROOT)}")
+    else:
+        second = json.loads(MANIFEST_V2.read_text(encoding="utf-8"))
+        moved = [row["file"] for row in second["files"]]
+        if len(moved) != second["count"] or second["count"] < 25:
+            problems.append(f"the second manifest covers {len(moved)} files, "
+                            f"expected {second['count']}")
+        for row in second["files"]:
+            if not (ROOT / row["moved_to"]).exists():
+                problems.append(f"{row['file']} was moved to {row['moved_to']}, which is absent")
         still_tracked = [name for name in quarantined if name in tracked]
         if still_tracked:
             problems.append(f"quarantined files are tracked again: {still_tracked}")

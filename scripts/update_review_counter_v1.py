@@ -15,11 +15,31 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "29",
-    "last_item": "29",
-    "last_item_title": "Work log now ships as Word too, with the per-round operating procedure",
+    "round": "30",
+    "last_item": "30",
+    "last_item_title": "Second tidy-up pass: 31 leftover files moved out of the release tree",
     "last_result": "fixed",
-    "note": ("the work log gained a Word edition. It moved beside the other deliverables in "
+    "note": ("materials tidy-up. A check of what the repository still carried found 31 leftovers, "
+             "and scripts/quarantine_unrelated_material_v2.py moved all of them out without "
+             "deleting anything. Twenty-four were tracked and are now removed from the release: "
+             "the six early manuscript versions and three other drafts from 2026-09-02 to 09-05 "
+             "(they had been committed on 2026-09-16 in cc70c52, six of them 0.3-0.9 MB each), "
+             "three scratch files at the repository root (search_result.json with 1,922 lines of "
+             "search-engine output, translate_papers.py, tmp_patch_probe.txt), the eleven "
+             "results_*.err run logs the first pass missed - it had only covered .log - and the "
+             "two three-line UNSW-NB15 fixtures under tmp_test_unsw/ that no code referenced "
+             "(the directory is gone). Seven further files were local only and moved out of the "
+             "working root: the session-repair scripts and their logs. Tracked files went to "
+             ".quarantine/unrelated_material/ and local ones to .quarantine/local_material/, each "
+             "recorded with size and SHA-256 in superseded/unrelated_material_manifest_v2.json, "
+             "so every removal is recoverable. "
+             "check_release_hygiene_v1.py now forbids the new names and .err logs and verifies "
+             "that every quarantined file is where the manifest says it is. Link hygiene checked "
+             "at the same time: the UNB CIC page, the UNSW-NB15 project page and the UCI N-BaIoT "
+             "dataset all answer 200; github.com cannot be reached from this shell at all (the "
+             "connection is refused for any GitHub URL), so the repository itself is verified "
+             "through git push and the release tag instead. Gate 45 checks green. "
+             "PREVIOUS: the work log gained a Word edition. It moved beside the other deliverables in "
              "重构版论文_v4_20260915/, the builder grew a 'worklog' job (so "
              "build_restructured_manuscript_v4.py --only all regenerates it with the rest), the "
              "DOCX freshness check now requires it to carry the current guard count and round "
