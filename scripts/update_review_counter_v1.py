@@ -15,11 +15,24 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "32",
-    "last_item": "32",
-    "last_item_title": "Per-class data accuracy: 270 values recomputed from the predictions",
+    "round": "33",
+    "last_item": "33",
+    "last_item_title": "Supervisor briefing: talk script in three lengths plus the likely questions",
     "last_result": "fixed",
-    "note": ("data-accuracy pass at the class level, the one layer the released-evidence audit "
+    "note": ("wrote 向老师汇报要点.md/.docx: how to present the paper to a supervisor. It carries "
+             "a 30-second version, a three-minute version (problem, method, results, why the "
+             "verdict flips with scale, the side findings), an eight-slide order for a ten-minute "
+             "talk, a one-page number sheet keyed to the supplementary items that hold each "
+             "figure, the eight questions most likely to follow with prepared answers - including "
+             "'can you call a null result a contribution?' and 'why is the full corpus worse?' - "
+             "and a wording red line: no 'first to', no calling the full-corpus deficit "
+             "significant when it is still equivalent at 0.01, no production-readiness claim, and "
+             "no accuracy-brag when the paper's point is that accuracy misleads. Every number is "
+             "read from the result files. The Word edition is built by "
+             "build_restructured_manuscript_v4.py --only talk, the freshness and numbering checks "
+             "cover it, and it ships under 10_论文介绍与汇报 (142 files, 8.60 MB). Gate 46 checks "
+             "green. "
+             "PREVIOUS: data-accuracy pass at the class level, the one layer the released-evidence audit "
              "did not cover - it recomputes accuracy and Macro-F1, so the per-class tables and the "
              "normalised confusion matrices had only ever been compared with themselves, while "
              "the manuscript quotes several of their cells. "

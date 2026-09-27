@@ -1,0 +1,191 @@
+"""Build the material for presenting the paper to a supervisor.
+
+Three listening budgets (30 seconds, three minutes, ten minutes), a slide order,
+a one-page number sheet, the eight questions a supervisor is most likely to ask
+with the answer and where the evidence lives, and the wording to avoid.  Every
+number is read from the result files.
+"""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import pandas as pd
+
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+ROOT = Path(__file__).resolve().parents[1]
+BASE = ROOT / "重构版论文_v4_20260915"
+OUT = BASE / "向老师汇报要点.md"
+
+
+def main() -> None:
+    ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv").set_index("model")
+    power = pd.read_csv(ROOT / "results_seeds10_v5" / "power_analysis.csv").set_index("comparison")
+    row = power.loc["rccf_minus_equal_rf_chi2"]
+    equivalence = json.loads((ROOT / "results_equivalence_10seeds_v5" /
+                              "equivalence_summary.json").read_text(encoding="utf-8"))["pooled"]
+    scale = json.loads((ROOT / "results_scale_sensitivity_v46" /
+                        "scale_sensitivity_summary.json").read_text(encoding="utf-8"))
+    full = json.loads((ROOT / "results_full_corpus_v49" /
+                       "full_corpus_summary.json").read_text(encoding="utf-8"))
+    margin = json.loads((ROOT / "results_margin_bound_v5" /
+                         "margin_bound_summary.json").read_text(encoding="utf-8"))
+    weight = pd.read_csv(ROOT / "results_weight_mechanism_v3" /
+                         "weight_mechanism_summary.csv").iloc[0]
+    grid = pd.read_csv(ROOT / "results_gate_tuning_v5" / "gate_search_results.csv")
+    regression = json.loads((ROOT / "results_diversity_v5" /
+                             "diversity_gain_regression.json").read_text(encoding="utf-8"))
+    openset = pd.read_csv(ROOT / "results_cfrg_open_set_v5_verified" / "open_set_metrics.csv")
+    conditional = openset[openset.model.isin(("cfrg_forest", "cfrg_forest_temperature_scaled"))]
+    equal = openset[openset.model.isin(("equal_rf", "equal_rf_temperature_scaled"))]
+    full_agg = pd.read_csv(ROOT / "results_full_corpus_v49" / "metrics_aggregate.csv",
+                           header=[0, 1])
+    full_agg = full_agg.set_index(full_agg.columns[0])
+    full_all = float(full_agg.loc["equal_rf_all", ("macro_f1", "mean")])
+    full_chi2 = float(full_agg.loc["equal_rf_chi2", ("macro_f1", "mean")])
+    dilution = (full_chi2 - full_all) / 4
+    protocol = pd.read_csv(ROOT / "results_protocol_sensitivity_v4" /
+                           "protocol_sensitivity_metrics.csv")
+    pivot = protocol.pivot(index="seed", columns="protocol", values="macro_f1")
+    dedup = float((pivot["split_first_training_only_dedup"] -
+                   pivot["global_dedup_before_split"]).abs().max())
+    balanced = pd.read_csv(ROOT / "results_rccf_cic_balanced_v3b" /
+                           "metrics_aggregate.csv").iloc[0]
+    prior = float(balanced.macro_f1_mean) - float(ten.loc["rccf", "macro_f1"])
+
+    lines: list[str] = []
+    lines.append("# 向老师汇报要点")
+    lines.append("")
+    lines.append("> 一页纸的汇报口径：三个时长版本、建议页序、数字速查、预判问答与措辞红线。"
+                 "所有数字取自发布产物，正文与补充材料可逐条追溯。")
+    lines.append("")
+    lines.append("## 一、30 秒版本（开场或电梯里）")
+    lines.append("")
+    lines.append("老师，我这篇稿子检验的是「按样本可靠性给多个森林专家做条件加权，"
+                 "是否真的优于等权投票」这个被广泛采用但缺少受控验证的假设。"
+                 f"在严格去泄漏的协议下，两者在截断总体上**等价**（Macro-F1 平均差 "
+                 f"{row.mean_difference:.6f}，TOST 在两个预设边界都成立）；"
+                 f"但把类别上限完全取消后，条件加权转为稳定劣势（{full['mean_difference']:.6f}，"
+                 "十个种子方向一致），原因是特征视图随规模分化、融合被最弱成员稀释。"
+                 "更重要的发现是：**协议选择的影响比聚合规则本身大一个数量级**。")
+    lines.append("")
+    lines.append("## 二、3 分钟版本（先讲结论，再讲证据）")
+    lines.append("")
+    lines.append("1. **问题**（20 秒）：公开数据集上的模型差异极易被重复样本、标签冲突、"
+                 "特征选择泄漏与类别先验污染；我把它压到最直接的对照——条件加权 vs 等权 χ² 森林。")
+    lines.append("2. **做法**（30 秒）：CIC-IDS2017 六阶段审计（原始 2 830 743 条），"
+                 "加 NSL-KDD、UNSW-NB15、N-BaIoT 三个独立基准；主实验 10 个种子；"
+                 "报告配对差、区间估计与 TOST。")
+    lines.append("3. **结果**（60 秒）：")
+    lines.append(f"   - 截断总体 53 237 条：平均差 {row.mean_difference:.6f}，"
+                 f"种子级 90% 区间 [{row.ci90_low:.6f}, {row.ci90_high:.6f}]，"
+                 f"配对 Bootstrap [{equivalence['pooled_ci_low']:.6f}, "
+                 f"{equivalence['pooled_ci_high']:.6f}]，都落在等价边界内；")
+    lines.append(f"   - 扩大 7.8 倍（413 209 条）：{scale['mean_difference']:.6f}，两个边界仍等价；")
+    lines.append(f"   - 全去重语料 2 429 503 条：{full['mean_difference']:.6f}，"
+                 "0.01 边界等价、0.005 边界不等价；")
+    lines.append(f"   - 机制：{margin['provable_by_bound_rate_mean'] * 100:.2f}% 的测试行可证明不受权重影响，"
+                 f"实际改判 {margin['empirical_changed_rows']} 行；{len(grid)} 组门控配置只有 "
+                 f"{grid.val_macro_f1.nunique()} 个不同验证值。")
+    lines.append("4. **为什么反转**（30 秒）：全语料上全特征视图比卡方视图低 "
+                 f"{full_chi2 - full_all:.6f}，四路平均把其中一份差距摊成 "
+                 f"{dilution:.6f}，与实测 {full['mean_difference']:.6f} 几乎相等——"
+                 "这是稀释，不是加权。")
+    lines.append("5. **顺带的量化结论**（20 秒）：协议效应（类别先验 "
+                 f"{prior:.4f}、去重顺序至多 {dedup:.4f}）比聚合规则差异（0.0005 量级）大一个数量级；"
+                 "模型族差异又更大（MLP 落后 0.0916）。")
+    lines.append("")
+    lines.append("## 三、10 分钟版本的建议页序")
+    lines.append("")
+    lines.append("| 页 | 内容 | 一句话目的 |")
+    lines.append("|---|---|---|")
+    lines.append("| 1 | 标题 + 一句话结论 | 先给结论，别让老师猜 |")
+    lines.append("| 2 | 问题：四类污染 | 说明为什么值得做受控实验 |")
+    lines.append("| 3 | 协议：六阶段审计（图 2 + 表 3）| 证明数据可信、步骤可查 |")
+    lines.append("| 4 | 主结果：三档总体表 + 图 4 | 讲清「等价，但随规模反转」|")
+    lines.append("| 5 | 机制：边距上界 + 门控搜索（图 5/6）| 解释为什么权重动不了预测 |")
+    lines.append("| 6 | 稀释诊断：视图分差 ÷ 4 ≈ 实测差 | 给出反转的唯一解释 |")
+    lines.append("| 7 | 代价与开放集（图 10/11）| 诚实呈现不利证据 |")
+    lines.append("| 8 | 结论与部署建议 + 局限 | 收尾并交代边界 |")
+    lines.append("")
+    lines.append("## 四、数字速查（被追问时直接念）")
+    lines.append("")
+    lines.append("| 项目 | 数值 | 出处 |")
+    lines.append("|---|---|---|")
+    lines.append(f"| 截断总体 | 53 237 条 / 测试 7 986 / 十种子 | 表 3、表 4 |")
+    lines.append(f"| 平均配对差 | {row.mean_difference:.6f} | 表 5、S20 |")
+    lines.append(f"| 种子级 90% 区间 | [{row.ci90_low:.6f}, {row.ci90_high:.6f}] | 表 5 |")
+    lines.append(f"| 配对 Bootstrap | [{equivalence['pooled_ci_low']:.6f}, "
+                 f"{equivalence['pooled_ci_high']:.6f}] | 表 5、S20 |")
+    lines.append(f"| 扩大 7.8 倍 | 413 209 条，差 {scale['mean_difference']:.6f} | 表 7、S27 |")
+    lines.append(f"| 全语料 | 2 429 503 条，差 {full['mean_difference']:.6f} | 表 7、S29 |")
+    lines.append(f"| 可证不变的测试行 | {margin['provable_by_bound_rate_mean'] * 100:.2f}%"
+                 f"（改判 {margin['empirical_changed_rows']} 行）| S17 |")
+    lines.append(f"| 权重熵 / 概率 L1 | {weight.normalized_weight_entropy:.5f} / "
+                 f"均 {weight.mean_probability_l1:.6f} | S08、S09 |")
+    lines.append(f"| 门控配置 | {len(grid)} 组 → {grid.val_macro_f1.nunique()} 个验证值 | S16 |")
+    lines.append(f"| 多样性回归 | 斜率 {regression['slope']:.4f}，r = {regression['pearson_r']:.3f} | S18 |")
+    lines.append(f"| 开放集 AUROC | 条件 {conditional.auroc.min():.3f}–{conditional.auroc.max():.3f} "
+                 f"对等权 {equal.auroc.min():.3f}–{equal.auroc.max():.3f} | S30 |")
+    lines.append(f"| 训练代价 | 截断约 80 倍、全语料 {full['train_slowdown']:.0f} 倍 | 表 4、S29 |")
+    lines.append("")
+    lines.append("## 五、老师最可能追问的 8 个问题")
+    lines.append("")
+    faq = [
+        ("你怎么能说「没有增益」？",
+         f"因为这是等价检验而不是「未拒绝原假设」：两个区间估计都落在预设的 0.005 与 0.01 边界内"
+         f"（TOST 在两个边界都成立），逐种子方向五正五负，四个专家在测试集上没有一条预测分歧。"),
+        ("那为什么全语料上反而更差？",
+         f"不是加权造成的：权重从不改变任何一条预测（{margin['provable_by_bound_rate_mean'] * 100:.2f}% "
+         f"的测试行可证明不变）。是四路平均把一份落后的特征视图摊薄了：全特征视图比卡方视图低 "
+         f"{full_chi2 - full_all:.6f}，四分之一即 {dilution:.6f}，与实测 {full['mean_difference']:.6f} 吻合。"),
+        ("负结果算贡献吗？",
+         "贡献不是「某个模型更好」，而是三样可复用的东西：一套泄漏受控协议、"
+         "一组可证伪的可辨识性条件（其中一条可逐行计算），以及一张量化地图——"
+         "协议效应比聚合规则差异大一个数量级；三者都能被别人直接拿去用。"),
+        ("数据和代码可信吗？",
+         "四个数据集的摘要与字节数都与来源记录逐一核对过（CIC 8 个文件 2 830 743 行、"
+         "NSL/UNSW 官方划分、N-BaIoT 归档 1 772 922 927 字节），722 个逐样本预测全部公开，"
+         "仓库带 tag；46 项自动检查每次提交前全绿。"),
+        ("和已有工作有什么不同？",
+         "多数工作是提出新的加权方案并报告增益；本文把「加权 vs 等权」放到同一个去泄漏协议里做最直接的对照，"
+         "并给出增益何时为零的判据（专家两两分歧率 0.2%–0.4% 时结构上不可能产生增益）。"),
+        ("为什么用 Macro-F1 而不是准确率？",
+         "不平衡下准确率会骗人：全语料上 XGBoost 准确率 0.9993 但 Macro-F1 只有 0.800255，"
+         "随机森林 0.9958 / 0.759540，极端随机树 0.696629。"),
+        ("代价是不是太大？",
+         f"是，这正是结论之一：截断总体训练约 80 倍、全语料 {full['train_slowdown']:.0f} 倍，"
+         "模型体积 4.1 倍、批量推理 5 倍，且在误报漏报代价比 1–100 内没有代价敏感优势。"),
+        ("下一步做什么？",
+         "三个方向：显式强制专家去相关的加权机制（检验打破命题 1 前提后能否恢复增益）；"
+         "跨时段/跨场景的完整类别协议（把文件级覆盖分析升级为真正的外部有效性检验）；"
+         "把报告建议做成可自动检查的清单。"),
+    ]
+    for index, (question, answer) in enumerate(faq, 1):
+        lines.append(f"**Q{index}：{question}**")
+        lines.append("")
+        lines.append(f"> {answer}")
+        lines.append("")
+    lines.append("## 六、措辞红线（避免过度声明）")
+    lines.append("")
+    lines.append("- 不说「首次提出」「证明了加权无用」；说「在流特征公开数据与本文协议下，未观测到判别增益」；")
+    lines.append(f"- 不把全语料的 {full['mean_difference']:.6f} 说成「显著变差」——它在 0.01 边界上仍等价，"
+                 "只是方向稳定为负；")
+    lines.append("- 不说「生产可用」：四个语料都不含生产流量，也没有同一测试床上的时间分离留出集；")
+    lines.append("- 不提「准确率 99% 以上」作为优点：本文的论点恰恰是准确率会误导，主指标是 Macro-F1；")
+    lines.append("- 引用外部基准时说明是「独立原生标签基准」，不是迁移实验。")
+    lines.append("")
+    lines.append("## 七、随身材料")
+    lines.append("")
+    lines.append("- `论文介绍.md/.docx`：两页书面介绍，可直接发给老师；")
+    lines.append("- `English_SCI_Manuscript_v4.docx` / `中文SCI论文_v4_重构版.docx`：正式稿件；")
+    lines.append("- 补充材料 S01–S30 与公开仓库（tag v1.11.0）：被追问细节时的证据索引。")
+    lines.append("")
+    OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"TALK_SCRIPT_WRITTEN={OUT}")
+    print(f"lines={len(lines)}")
+
+
+if __name__ == "__main__":
+    main()

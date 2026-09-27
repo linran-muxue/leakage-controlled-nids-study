@@ -30,7 +30,7 @@ TAG = "v1.11.0"
 ARCHIVE = ROOT / "submission_package" / f"论文投稿包_{TAG}.zip"
 EXPECTED_FOLDERS = ("01_正式稿件", "02_投稿文件", "03_图片", "04_补充材料",
                     "05_自查与审查", "06_研究与写作方案", "07_复现材料",
-                    "08_主表", "09_投稿文本", "10_论文介绍")
+                    "08_主表", "09_投稿文本", "10_论文介绍与汇报")
 TRACKED = ("English_SCI_Manuscript_v4.docx", "English_SCI_Manuscript_v4.md",
            "中文SCI论文_v4_重构版.docx", "中文SCI论文_v4_重构版.md",
            "Highlights_v4.docx", "Cover_Letter_JISA_v4.docx",
