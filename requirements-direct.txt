@@ -8,4 +8,5 @@ joblib==1.6.0
 openpyxl==3.1.5
 xgboost==3.2.0
 python-docx==1.2.0
+python-pptx==1.0.2
 pytest==9.1.1

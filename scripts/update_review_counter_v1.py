@@ -15,11 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "35",
-    "last_item": "35",
-    "last_item_title": "One consolidated record of every data source",
+    "round": "36",
+    "last_item": "36",
+    "last_item_title": "The sources register now covers software, literature, requirements and archives",
     "last_result": "fixed",
-    "note": ("compiled 数据来源总表.md/.docx: the provenance that lived in three places (S01's "
+    "note": ("the author pointed out that the first sources document covered only the evaluation "
+             "datasets, and it did. 数据与资料来源总表.md/.docx replaces it with nine sections: the "
+             "four evaluation datasets with URL/date/snapshot/licence/checksum and their role; the "
+             "per-file verification of eight CIC-IDS2017 CSVs plus five other files, digests "
+             "recomputed at build time (all 13 verify, and the CIC rows sum to 2 830 743 = the "
+             "audit's source_rows); the six derived populations with split sizes; the software and "
+             "runtime that produced the numbers (12 direct dependencies, 117 locked packages, "
+             "python:3.11-slim, the CI runner, CICFlowMeter upstream, unrar 7.30 for the N-BaIoT "
+             "RARs); the literature (47 references, 36 DOIs verified through Crossref/DataCite, 11 "
+             "no-DOI venues, with the per-entry record); the journal requirements the format "
+             "follows, with the documents that record them; this project's own release archives "
+             "with their checksums; the 77 files deliberately moved out of the release in two "
+             "quarantine passes; and the verification method with its limits.  Building it exposed "
+             "two gaps it then closed: python-pptx (needed by the deck builder) was missing from "
+             "the dependency list, and the retired 数据来源总表 pair is now moved to "
+             ".quarantine/superseded_docs/ rather than deleted. "
+             "PREVIOUS: compiled 数据来源总表.md/.docx: the provenance that lived in three places (S01's "
              "provenance table, the per-file checksum list and the processed-data audits) is now "
              "one document. It carries the four raw sources with URL, retrieval date, snapshot, "
              "licence and checksum; a per-file table for the eight CIC-IDS2017 CSVs and the other "

@@ -83,6 +83,7 @@ pytest==9.1.1
 python-dateutil==2.9.0.post0
 python-docx==1.2.0
 python-json-logger==4.2.0
+python-pptx==1.0.2
 pywinpty==3.0.5
 PyYAML==6.0.3
 pyzmq==27.2.0
@@ -113,3 +114,4 @@ webcolors==25.10.0
 webencodings==0.6.1
 websocket-client==1.9.2
 xgboost==3.2.0
+xlsxwriter==3.2.9
