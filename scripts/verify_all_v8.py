@@ -132,6 +132,14 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # earlier revision.  Rebuild it with package_submission_bundle_v18.py.
     ("submission bundle", ["scripts/check_submission_bundle_v1.py"],
      ("SUBMISSION_BUNDLE_FAILED", "ISSUE ")),
+    # The briefing deck is hand-laid-out in python-pptx, so its geometry is
+    # checked structurally: estimated text height against every frame, shapes
+    # inside the slide, no overlapping text.  Rendered inspection is not
+    # available in this session (Office COM refuses a non-active desktop and no
+    # alternate renderer is installed), so this is a risk filter, not a
+    # substitute for opening the deck once.
+    ("briefing deck fit", ["scripts/check_deck_fit_v1.py"],
+     ("DECK_FIT_FAILED", "ISSUE ")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.

@@ -15,11 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "33",
-    "last_item": "33",
-    "last_item_title": "Supervisor briefing: talk script in three lengths plus the likely questions",
+    "round": "34",
+    "last_item": "34",
+    "last_item_title": "Eight-slide briefing deck with speaker notes, built from the talk script",
     "last_result": "fixed",
-    "note": ("wrote 向老师汇报要点.md/.docx: how to present the paper to a supervisor. It carries "
+    "note": ("built 汇报用_论文介绍.pptx: eight 16:9 slides following the talk script - thesis and "
+             "three key numbers, the four contamination sources, the six-stage protocol, the "
+             "three-population table with Figure 4, the three mechanism evidences with Figure 5, "
+             "the dilution arithmetic with the deployment implication, cost and open-set behaviour "
+             "with Figures 10 and 11, and the conclusion with boundaries and next steps. Every "
+             "slide carries Chinese speaker notes, and every number is read from the result files. "
+             "The work followed the pptx-win skill: design system chosen first (ink/paper/blue/"
+             "amber palette, 28/16/14/12/11pt rhythm, title-thesis + process + matrix + evidence + "
+             "summary patterns), then static OOXML validation (all validations passed) and the "
+             "skill's metadata and text-risk reports. Rendered inspection was not possible in this "
+             "session: the Office COM preflight refuses a non-active desktop session and no "
+             "LibreOffice is installed, so visual QA is replaced by scripts/check_deck_fit_v1.py - "
+             "an estimated-glyph layout of all 103 text frames plus slide-bounds and overlap "
+             "checks, which first caught a heading that would have wrapped onto the block below it "
+             "on slide 7. That check joins the gate (47 checks) and the deck ships under "
+             "10_论文介绍与汇报 (143 files, 9.23 MB). One look in PowerPoint is still worth it. "
+             "PREVIOUS: wrote 向老师汇报要点.md/.docx: how to present the paper to a supervisor. It carries "
              "a 30-second version, a three-minute version (problem, method, results, why the "
              "verdict flips with scale, the side findings), an eight-slide order for a ten-minute "
              "talk, a one-page number sheet keyed to the supplementary items that hold each "
