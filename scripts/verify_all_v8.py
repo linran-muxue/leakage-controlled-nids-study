@@ -53,6 +53,12 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # over the directories the supplementary bundle ships.
     ("released evidence", ["scripts/audit_released_evidence_v1.py"],
      ("RELEASED_EVIDENCE_FAILED",)),
+    # The class-level layer: every per-class precision, recall and F1 and the
+    # normalised confusion matrices recomputed from the released predictions,
+    # plus the nine class-level values the manuscript prints for NSL-KDD and
+    # UNSW-NB15 (270 values).
+    ("per-class metrics", ["scripts/audit_per_class_metrics_v1.py"],
+     ("PER_CLASS_FAILED", "ISSUE ")),
     ("reference annotations", ["scripts/check_noDOI_notes_v5.py"], ("CHECK",)),
     ("cross-document audit", ["scripts/fresh_audit_v7.py"], ("ISSUE",)),
     ("language consistency", ["scripts/language_audit_v6.py"], ("MIXED",)),

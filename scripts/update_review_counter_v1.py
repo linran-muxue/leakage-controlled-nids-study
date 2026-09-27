@@ -15,11 +15,24 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "31",
-    "last_item": "31",
-    "last_item_title": "Standalone paper introduction, in Markdown and Word",
+    "round": "32",
+    "last_item": "32",
+    "last_item_title": "Per-class data accuracy: 270 values recomputed from the predictions",
     "last_result": "fixed",
-    "note": ("generated 论文介绍.md/.docx: a two-page introduction for an advisor or a "
+    "note": ("data-accuracy pass at the class level, the one layer the released-evidence audit "
+             "did not cover - it recomputes accuracy and Macro-F1, so the per-class tables and the "
+             "normalised confusion matrices had only ever been compared with themselves, while "
+             "the manuscript quotes several of their cells. "
+             "scripts/audit_per_class_metrics_v1.py now recomputes every per-class precision, "
+             "recall and F1 from the released predictions and compares them with the stored "
+             "reports: 11 runs (CIC natural for RCCF and the equal forest over three seeds each, "
+             "NSL-KDD over three, UNSW-NB15 over the two seeds whose reports exist) and the "
+             "normalised matrices where they exist - 270 values, all matching. The nine "
+             "class-level values the manuscript prints also reproduce exactly: NSL-KDD R2L recall "
+             "0.106 / F1 0.191 and U2R 0.035 / 0.064, UNSW-NB15 Analysis 0.015, Backdoor 0.067, "
+             "DoS 0.261, Generic 0.981, Normal 0.805. The audit joins the gate (46 checks) and "
+             "reads those nine claims out of the manuscript, so an edited claim fails. "
+             "PREVIOUS: generated 论文介绍.md/.docx: a two-page introduction for an advisor or a "
              "collaborator who does not have the manuscript in front of them. Eight sections - "
              "one-sentence conclusion, problem and gap, protocol and corpora, results (the three "
              "populations, the mechanism, cost and open-set behaviour, the external benchmarks), "
