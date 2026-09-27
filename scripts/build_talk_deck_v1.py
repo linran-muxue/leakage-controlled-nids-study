@@ -79,6 +79,23 @@ def numbers() -> dict[str, float]:
     openset = pd.read_csv(ROOT / "results_cfrg_open_set_v5_verified" / "open_set_metrics.csv")
     conditional = openset[openset.model.isin(("cfrg_forest", "cfrg_forest_temperature_scaled"))]
     equal = openset[openset.model.isin(("equal_rf", "equal_rf_temperature_scaled"))]
+    # the numbers the extra slides carry: per-seed test records, cost profile,
+    # external benchmarks, balance control and the audit's stage counts
+    tost = pd.read_csv(ROOT / "results_equivalence_10seeds_v5" / "tost_results.csv")
+    effect = pd.read_csv(ROOT / "results_seeds10_v5" / "effect_sizes.csv").set_index("comparison")
+    cost = json.loads((ROOT / "results_cost_v5" /
+                       "cost_sensitive_summary.json").read_text(encoding="utf-8"))["summary"]
+    nsl = pd.read_csv(ROOT / "results_rccf_nsl_v2_final" / "metrics_aggregate.csv").iloc[0]
+    unsw = pd.read_csv(ROOT / "results_rccf_unsw_v2_final" / "metrics_aggregate.csv").iloc[0]
+    nbaiot = pd.read_csv(ROOT / "results_rccf_nbaiot_v48" / "metrics_aggregate.csv").iloc[0]
+    file_level = pd.read_csv(ROOT / "results_file_external_generalization_v3b" /
+                             "file_external_results.csv")
+    audit = json.loads((ROOT / "results_data_audit_cic_natural_v3b" /
+                        "data_processing_audit.json").read_text(encoding="utf-8"))["raw_totals"]
+
+    def nec(model: str, ratio: int) -> float:
+        return float(next(row["nec"] for row in cost
+                          if row["model"] == model and row["cost_ratio_fn_fp"] == ratio))
     return {
         "rccf": float(ten.loc["rccf", "macro_f1"]),
         "control": float(ten.loc["equal_rf_chi2", "macro_f1"]),
@@ -112,6 +129,44 @@ def numbers() -> dict[str, float]:
         "auroc_eq_hi": float(equal.auroc.max()),
         "recall_lo": float(conditional.unknown_recall.min()),
         "recall_hi": float(conditional.unknown_recall.max()),
+        "seeds_rccf": float(effect.loc["rccf_minus_equal_rf_chi2", "seeds_favouring_rccf"]),
+        "seeds_base": float(effect.loc["rccf_minus_equal_rf_chi2", "seeds_favouring_baseline"]),
+        "dz": float(effect.loc["rccf_minus_equal_rf_chi2", "cohens_dz"]),
+        "rel_pct": float(effect.loc["rccf_minus_equal_rf_chi2", "relative_difference_pct"]),
+        "tost5": int(tost["tost_equivalent_at_0.005"].sum()),
+        "tost10": int(tost["tost_equivalent_at_0.01"].sum()),
+        "disc_lo": int(tost["discordant"].min()),
+        "disc_hi": int(tost["discordant"].max()),
+        "p_lo": float(tost["mcnemar_p"].min()),
+        "p_hi": float(tost["mcnemar_p"].max()),
+        "mde80": float(row.min_detectable_effect_80pct),
+        "test_rows_primary": int(tost["n_rows"].iloc[0]),
+        "full_disc_mean": float(full["mean_disagreements"]),
+        "full_disc_max": int(full["max_disagreements"]),
+        "throughput": float(profile["rccf"]["rows_per_second"]),
+        "throughput_eq": float(profile["equal_rf_chi2"]["rows_per_second"]),
+        "size_mb": float(profile["rccf"]["model_size_mb"]),
+        "size_mb_eq": float(profile["equal_rf_chi2"]["model_size_mb"]),
+        "train_h": float(full["rccf_mean_train_seconds"]) / 3600,
+        "control_s": float(full["control_mean_train_seconds"]),
+        "nec1": nec("rccf", 1),
+        "nec100": nec("rccf", 100),
+        "nec1_eq": nec("equal_rf_chi2", 1),
+        "nec100_eq": nec("equal_rf_chi2", 100),
+        "balanced": float(balanced.macro_f1_mean),
+        "balanced_cov": float(balanced.coverage_mean),
+        "nsl": float(nsl.macro_f1_mean),
+        "nsl_acc": float(nsl.accuracy_mean),
+        "nsl_bal": float(nsl.balanced_accuracy_mean),
+        "unsw": float(unsw.macro_f1_mean),
+        "unsw_acc": float(unsw.accuracy_mean),
+        "nbaiot": float(nbaiot.macro_f1_mean),
+        "file_lo": float(file_level.macro_f1_known.min()),
+        "file_hi": float(file_level.macro_f1_known.max()),
+        "raw": int(audit["source_rows"]),
+        "mapped": int(audit["mapped_rows"]),
+        "valid": int(audit["valid_rows"]),
+        "physical": int(audit["physical_valid_rows"]),
     }
 
 
@@ -306,7 +361,41 @@ def main() -> None:
                  "完全取消上限后转为稳定劣势。注意措辞：全语料在 0.01 边界上仍然等价，"
                  "只是方向十个种子一致为负。")
 
-    # 5 - mechanism
+    # 5 - statistics and the decision rule
+    slide = deck.slides.add_slide(blank)
+    header(slide, "「等价」是检验结论，不是「没拒绝原假设」", "结果 · 统计判据")
+    stats = [
+        ("逐种子方向", f"{n['seeds_rccf']:.0f} : {n['seeds_base']:.0f}",
+         "支持条件加权 : 支持等权，无并列"),
+        ("逐种子 TOST 等价", f"{n['tost5']}/10（0.005）· {n['tost10']}/10（0.01）",
+         "截断总体十个种子逐一看"),
+        ("测试行不一致", f"{n['disc_lo']}–{n['disc_hi']} 行 / {n['test_rows_primary']:,}",
+         f"占 {n['disc_lo'] / n['test_rows_primary'] * 100:.2f}%–"
+         f"{n['disc_hi'] / n['test_rows_primary'] * 100:.2f}%；McNemar p "
+         f"{n['p_lo']:.3f}–{n['p_hi']:.3f}"),
+        ("效应量", f"dz = {n['dz']:.3f}",
+         f"相对差 {n['rel_pct']:.3f}%"),
+        ("80% 功效可检出的最小差", f"{n['mde80']:.6f}",
+         "大于观测差 —— 所以必须做等价检验"),
+        ("全语料逐种子改判行数", f"均 {n['full_disc_mean']:.0f} · 最多 {n['full_disc_max']}",
+         "测试 364 426 行，方向十次全负"),
+    ]
+    for index, (label, value, note) in enumerate(stats):
+        y = Inches(1.7 + index * 0.8)
+        textbox(slide, Inches(0.6), y, Inches(3.4), Inches(0.4), label, size=13, bold=True,
+                color=GREY)
+        textbox(slide, Inches(4.2), y - Inches(0.03), Inches(4.2), Inches(0.45), value,
+                size=16, bold=True, color=INK)
+        textbox(slide, Inches(8.6), y, Inches(4.0), Inches(0.6), note, size=12, color=GREY)
+    textbox(slide, Inches(0.6), Inches(6.45), Inches(12), Inches(0.35),
+            "两个边界（0.005 / 0.01）事先给定并同时报告；种子级区间与配对 Bootstrap 作为独立佐证。",
+            size=12, bold=True, color=BLUE)
+    footer(slide, 5)
+    notes(slide, "这一页回答「你怎么能说没有增益」：先说明不显著不等于等价，"
+                 "再给四组数字——逐种子方向 5:5、TOST 9/10 与 10/10、逐行不一致 6–21 行、"
+                 "效应量 dz −0.396，最后用最小可检测差说明为什么必须做等价检验。")
+
+    # 6 - mechanism
     slide = deck.slides.add_slide(blank)
     header(slide, "权重动不了预测：三条独立证据", "机制")
     evidence = [
@@ -331,11 +420,11 @@ def main() -> None:
             "刻意去相关的三类集合 9 次运行全为正（斜率 0.0646，r = 0.749）。",
             size=13, color=INK)
     picture(slide, "fig5_gate_diagnostics.png", Inches(8.5), Inches(1.95), Inches(4.3))
-    footer(slide, 5)
+    footer(slide, 6)
     notes(slide, "这三条是独立证据：上界是可证明的、权重结构是可观测的、搜索是穷举的。"
                  "结论：在本数据结构下继续调门控不会带来判别增益。")
 
-    # 6 - dilution arithmetic
+    # 7 - dilution arithmetic
     slide = deck.slides.add_slide(blank)
     header(slide, "全语料上的劣势是「稀释」，不是加权", "机制 · 反转的原因")
     panel(slide, Inches(0.6), Inches(1.9), Inches(7.9), Inches(2.1), PAPER)
@@ -358,11 +447,11 @@ def main() -> None:
             "· 强不平衡语料上不要部署条件加权\n\n"
             "· 融合前先看各成员的分差：\n  差多少，四路平均就摊多少",
             size=13, color=INK, line_spacing=1.25)
-    footer(slide, 6)
+    footer(slide, 7)
     notes(slide, "把反转解释清楚是这轮汇报的关键：不是加权把结果弄坏了，"
                  "而是四路平均把一份落后的特征视图摊进来。三个规模都符合同一个算式。")
 
-    # 7 - cost and open set
+    # 8 - cost and open set
     slide = deck.slides.add_slide(blank)
     header(slide, "代价与开放集：两处不利证据照实说", "次生指标")
     textbox(slide, Inches(0.6), Inches(1.85), Inches(5.6), Inches(0.4),
@@ -395,11 +484,55 @@ def main() -> None:
             f"{counts.gate_checks()} 项自动检查持续复核这些数字；"
             "开放集与代价的每一项都能从公开的逐样本预测重算。",
             size=12, color=GREY)
-    footer(slide, 7)
+    footer(slide, 8)
     notes(slide, "这是本文对条件加权最不利的两组证据，主动讲比被问要好。"
                  "注意不要用「显著变差」的措辞：全语料在 0.01 边界上仍等价。")
 
-    # 8 - conclusion
+    # 9 - prior, external benchmarks and file-level spread
+    slide = deck.slides.add_slide(blank)
+    header(slide, "先验与语料换一遍，结论方向不变", "稳健性")
+    rows = [
+        ("总体 / 基准", "测试行", "Macro-F1", "准确率", "平衡准确率", "读法"),
+        ("平衡控制总体", "505", f"{n['balanced']:.6f}", "—", "—",
+         f"比自然先验高 {n['prior_gap']:.4f}"),
+        ("NSL-KDD（原生标签）", "22 544", f"{n['nsl']:.6f}", f"{n['nsl_acc']:.3f}",
+         f"{n['nsl_bal']:.3f}", "准确率靠多数类"),
+        ("UNSW-NB15（原生标签）", "82 332", f"{n['unsw']:.6f}", f"{n['unsw_acc']:.3f}",
+         "0.567", "独立语料、独立划分"),
+        ("N-BaIoT（IoT 僵尸网络）", "27 000", f"{n['nbaiot']:.6f}", "1.000",
+         "1.000", "已饱和：检验机制惰性"),
+    ]
+    table = slide.shapes.add_table(len(rows), 6, Inches(0.6), Inches(1.85),
+                                   Inches(12.1), Inches(2.3)).table
+    widths = (2.9, 1.3, 1.6, 1.5, 1.6, 3.2)
+    for index, inches in enumerate(widths):
+        table.columns[index].width = Inches(inches)
+    for r, row in enumerate(rows):
+        for c, value in enumerate(row):
+            cell = table.cell(r, c)
+            cell.text = value
+            cell.margin_left = cell.margin_right = Emu(45720)
+            for paragraph in cell.text_frame.paragraphs:
+                paragraph.alignment = PP_ALIGN.LEFT if c in (0, 5) else PP_ALIGN.RIGHT
+                for run in paragraph.runs:
+                    run.font.size = Pt(11)
+                    run.font.bold = (r == 0)
+                    run.font.name = FONT
+                    run.font.color.rgb = INK
+    textbox(slide, Inches(0.6), Inches(4.35), Inches(12.0), Inches(2.4),
+            f"· 类别先验是最大的单一效应：平衡控制 {n['balanced']:.6f} 对自然先验 "
+            f"{n['rccf']:.6f}，差 {n['prior_gap']:.4f}；\n"
+            f"· 文件级外推：把周一到周五的每个原始文件当留出集，已知类 Macro-F1 覆盖 "
+            f"{n['file_lo']:.4f}–{n['file_hi']:.4f}，文件之间的差异比聚合规则差异大两到三个数量级；\n"
+            f"· 三个外部语料用各自原生标签，不重采样、不跨语料迁移，因此只能作为"
+            f"「结论方向不随语料改变」的旁证，不能当作迁移实验。",
+            size=13, color=INK, line_spacing=1.35)
+    footer(slide, 9)
+    notes(slide, "这一页回应两个可能的攻击：结论是不是被某一档类别先验制造出来的、"
+                 "是不是只在 CIC-IDS2017 上成立。平衡控制与三个外部语料给出的方向一致；"
+                 "同时坦白 N-BaIoT 已饱和、文件级差异远大于聚合差异。")
+
+    # 10 - conclusion
     slide = deck.slides.add_slide(blank)
     header(slide, "结论、边界与下一步", "收尾")
     panel(slide, Inches(0.6), Inches(1.9), Inches(7.9), Inches(2.4), PAPER)
@@ -422,13 +555,105 @@ def main() -> None:
             "材料：论文介绍（两页）· 汇报要点 · 正式稿件（中英）· 补充材料 S01–S30 · "
             "公开仓库 tag v1.11.0",
             size=12, color=GREY)
-    footer(slide, 8)
+    footer(slide, 10)
     notes(slide, "收尾三句：没观测到增益；反转来自稀释；协议影响更大。"
                  "然后把边界说清楚，再给三个下一步方向。")
 
+    # 11 - number sheet (backup page)
+    slide = deck.slides.add_slide(blank)
+    header(slide, "数字速查（备用页）", "被追问时直接念")
+    sheet = [
+        ("原始 → 可映射 → 有效 → 物理有效", f"{n['raw']:,} → {n['mapped']:,} → "
+                                              f"{n['valid']:,} → {n['physical']:,}"),
+        ("三档总体流量", "53 237 / 413 209 / 2 429 503"),
+        ("三档平均差（条件加权 − 等权）", f"{n['diff']:+.6f} / {n['scale_diff']:+.6f} / "
+                                          f"{n['full_diff']:+.6f}"),
+        ("截断总体区间与 TOST", f"种子级 90% [{n['ci90'][0]:.6f}, {n['ci90'][1]:.6f}]；"
+                                f"Bootstrap [{n['boot'][0]:.6f}, {n['boot'][1]:.6f}]；"
+                                f"两边界等价"),
+        ("逐种子 TOST 等价", f"{n['tost5']}/10（0.005）、{n['tost10']}/10（0.01）"),
+        ("逐行不一致 / McNemar p", f"{n['disc_lo']}–{n['disc_hi']} 行；"
+                                   f"p {n['p_lo']:.3f}–{n['p_hi']:.3f}"),
+        ("效应量 / 最小可检测差", f"dz {n['dz']:.3f}；{n['mde80']:.6f}"),
+        ("可证不变 / 实际改判", f"{n['provable']:.2f}% / {n['changed']} 行"),
+        ("权重熵 / 门控搜索", f"{n['entropy']:.5f}；{n['configs']} 组 → {n['distinct']} 个验证值"),
+        ("稀释算式（全语料）", f"{n['view_gap']:.6f} ÷ 4 = {n['view_gap'] / 4:.6f} ≈ "
+                              f"{n['full_diff']:.6f}"),
+        ("多样性回归", "斜率 0.0646，r = 0.749"),
+        ("类别先验 / 去重顺序", f"{n['prior_gap']:.4f} / ≤{n['dedup']:.4f}"),
+        ("训练代价", f"截断约 {n['train_multiple']:.0f} 倍；全语料 {n['full_slowdown']:.0f} 倍；"
+                     f"体积 {n['size_multiple']:.1f} 倍"),
+        ("吞吐（条件 / 等权）", f"{n['throughput']:,.0f} 对 {n['throughput_eq']:,.0f} 行/秒"),
+        ("代价敏感 NEC（1 → 100）", f"{n['nec1']:.5f} → {n['nec100']:.5f}（等权 "
+                                    f"{n['nec1_eq']:.5f} → {n['nec100_eq']:.5f}）"),
+        ("开放集 AUROC / 未知类召回", f"{n['auroc_lo']:.3f}–{n['auroc_hi']:.3f}；"
+                                     f"{n['recall_lo']:.4f}–{n['recall_hi']:.4f}"),
+        ("外部基准 Macro-F1", f"NSL {n['nsl']:.6f}；UNSW {n['unsw']:.6f}；"
+                             f"N-BaIoT {n['nbaiot']:.6f}"),
+        ("文件级外推范围", f"{n['file_lo']:.4f}–{n['file_hi']:.4f}"),
+    ]
+    # two side-by-side sheets: eighteen rows in one column would run past the
+    # slide once PowerPoint applies its minimum row height
+    half = (len(sheet) + 1) // 2
+    for column, chunk in enumerate((sheet[:half], sheet[half:])):
+        rows = [("项目", "数值")] + list(chunk)
+        table = slide.shapes.add_table(len(rows), 2,
+                                       Inches(0.6 + column * 6.35), Inches(1.55),
+                                       Inches(6.05), Inches(0.31 * len(rows))).table
+        table.columns[0].width = Inches(2.55)
+        table.columns[1].width = Inches(3.5)
+        for r, row in enumerate(rows):
+            for c, value in enumerate(row):
+                cell = table.cell(r, c)
+                cell.text = value
+                cell.margin_left = cell.margin_right = Emu(45720)
+                cell.margin_top = cell.margin_bottom = Emu(4572)
+                for paragraph in cell.text_frame.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.size = Pt(10 if r else 10.5)
+                        run.font.bold = (r == 0)
+                        run.font.name = FONT
+                        run.font.color.rgb = INK
+    footer(slide, 11)
+    notes(slide, "这一页不主动讲：老师问到任何数字时翻到这里，逐条念。"
+                 "每条都能在补充材料或公开仓库的逐样本预测里重算。")
+
+    # 12 - reproduce and verify (backup page)
+    slide = deck.slides.add_slide(blank)
+    header(slide, "复现与验证（备用页）", "被问「能复现吗」时翻到这页")
+    panel(slide, Inches(0.6), Inches(1.9), Inches(7.9), Inches(3.2), PAPER)
+    textbox(slide, Inches(0.9), Inches(2.1), Inches(7.3), Inches(2.9),
+            "四条命令即可从原始语料走到投稿包：\n"
+            "① scripts/audit_data_processing_v1.py（六阶段计数与产物）\n"
+            "② scripts/run_seeds10_v5.py（十种子主实验）\n"
+            "③ scripts/audit_released_evidence_v1.py（从逐样本预测重算全部指标）\n"
+            "④ scripts/package_submission_bundle_v18.py（重建投稿包）\n\n"
+            f"仓库：{counts.latest_tag()} 标签 · 逐样本预测 722 个 · 补充材料 S01–S30 · "
+            f"投稿包 {counts.bundle_files()} 个文件",
+            size=13, color=INK, line_spacing=1.35)
+    panel(slide, Inches(8.85), Inches(1.9), Inches(3.9), Inches(3.2), PAPER)
+    textbox(slide, Inches(9.1), Inches(2.1), Inches(3.4), Inches(2.9),
+            f"{counts.gate_checks()} 项自动检查覆盖四类风险：\n\n"
+            "· 数字是否与产物一致\n"
+            "· 结构（章节、图表、公式引用）\n"
+            "· 可复现（图逐字节重绘、代码编译）\n"
+            "· 真实性（数据集 SHA-256、行数）\n\n"
+            "每次提交前全绿才推送。",
+            size=13, color=INK, line_spacing=1.3)
+    textbox(slide, Inches(0.6), Inches(5.4), Inches(12.0), Inches(1.3),
+            "证据入口：数据与资料来源总表（URL/日期/许可/SHA-256）· 论文自查表（69 项逐条证据位置）· "
+            "数据处理代码与流程（六阶段与代码片段）· 公式来源与核验（五个公式的出处与复算）· 项目流程图（六阶段总览）。",
+            size=12, color=GREY, line_spacing=1.3)
+    footer(slide, 12)
+    notes(slide, "这一页只在被问到复现性时使用：四条命令、检查覆盖的四类风险、"
+                 "以及五份可以当场打开的证据文档。")
+
     deck.save(OUT)
     print(f"DECK_WRITTEN={OUT}")
-    print(f"slides={len(deck.slides.__iter__.__self__._sldIdLst)}")
+    slides = len(deck.slides._sldIdLst)
+    # ten spoken slides plus the two backup pages the talk script points at
+    assert slides == 12, f"the deck ships twelve slides, built {slides}"
+    print(f"slides={slides}")
 
 
 if __name__ == "__main__":
