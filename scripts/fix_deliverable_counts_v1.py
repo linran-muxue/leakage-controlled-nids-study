@@ -39,9 +39,6 @@ def main() -> None:
         ],
         BASE / "论文自查表.md": [
             (f"{counts['figures']} 图 7 表", f"{counts['figures']} 图 {counts['tables']} 表"),
-            ("英文 12,761 词（整篇含参考文献）、11 图、7 主表；中文 35,338 字",
-             f"英文 {counts['en_words']:,} 词（整篇含参考文献）、{counts['figures']} 图、"
-             f"{counts['tables']} 主表；中文 {counts['zh_chars']:,} 字"),
             ("正文数值 token 英文 507 : 中文 507",
              f"正文数值 token 英文 {counts['tokens_en']} : 中文 {counts['tokens_zh']}"),
             ("118 项单元测试通过", f"{counts['tests']} 项单元测试通过"),
@@ -49,8 +46,6 @@ def main() -> None:
         ],
         BASE / "研究缺口审计与优先级清单.md": [
             (snapshot_old, snapshot_new),
-            ("约 10 800 词、11 图、10 表",
-             f"{spaced_words} 词、{counts['figures']} 图、{counts['tables']} 表"),
         ],
         BASE / "P0_P1执行手册.md": [(snapshot_old, snapshot_new)],
         BASE / "论文结构诊断与重构方案.md": [(snapshot_old, snapshot_new)],
@@ -60,6 +55,28 @@ def main() -> None:
     covered_new = checker.report_coverage()
     for name in ("研究缺口审计与优先级清单.md", "P0_P1执行手册.md", "论文结构诊断与重构方案.md"):
         edits.setdefault(BASE / name, []).append((covered_old, covered_new))
+    # The length statements drift whenever the manuscript is edited, and the
+    # literals above went stale twice; they are rewritten by pattern instead.
+    patterns: dict[Path, list[tuple[str, str]]] = {
+        BASE / "论文自查表.md": [
+            (r"英文 [\d,]+ 词（整篇含参考文献）、\d+ 图、\d+ 主表；中文 [\d,]+ 字",
+             f"英文 {counts['en_words']:,} 词（整篇含参考文献）、{counts['figures']} 图、"
+             f"{counts['tables']} 主表；中文 {counts['zh_chars']:,} 字"),
+        ],
+        BASE / "研究缺口审计与优先级清单.md": [
+            (r"[\d ]+ 词、\d+ 图、\d+ 表",
+             f"{spaced_words} 词、{counts['figures']} 图、{counts['tables']} 表"),
+        ],
+    }
+    for path, pairs in patterns.items():
+        text = path.read_text(encoding="utf-8")
+        for pattern, new in pairs:
+            text, changes = re.subn(pattern, new, text)
+            if changes != 1:
+                raise SystemExit(f"{path.name}: the length statement matches {changes} times, "
+                                 f"expected once ({pattern!r})")
+        path.write_text(text, encoding="utf-8")
+        print(f"rewrote the length statement in {path.name}")
     for path, pairs in edits.items():
         text = path.read_text(encoding="utf-8")
         for old, new in pairs:

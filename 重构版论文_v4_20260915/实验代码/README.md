@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 382 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 383 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -206,7 +206,7 @@
 | `scripts/fix_char_level_v34.py` | `7fc010b1607d6b02` | 41 | 1.7 KB |
 | `scripts/fix_conclusion_duplication_v1.py` | `a8f13c97e6abb846` | 110 | 5.8 KB |
 | `scripts/fix_cover_letter_title_v6.py` | `0540bfdb09e7647b` | 34 | 1.5 KB |
-| `scripts/fix_deliverable_counts_v1.py` | `1b5af3ed3e8d13fb` | 103 | 5.0 KB |
+| `scripts/fix_deliverable_counts_v1.py` | `748a33501cb9e7cd` | 120 | 5.8 KB |
 | `scripts/fix_discussion_numbers_v1.py` | `a36fd50304d00137` | 124 | 6.2 KB |
 | `scripts/fix_doi_punctuation_v19.py` | `86a927dee9d87dcd` | 37 | 1.5 KB |
 | `scripts/fix_figure_order_v5.py` | `c70cd17870164f2e` | 41 | 1.8 KB |
@@ -228,6 +228,7 @@
 | `scripts/fix_seed_scope_v5.py` | `1c92ed17a67f3678` | 99 | 4.6 KB |
 | `scripts/fix_selfcheck_counts_v2.py` | `2c18285b74b0740a` | 75 | 3.4 KB |
 | `scripts/fix_selfcheck_evidence_path_v1.py` | `a508b81e8f44390d` | 57 | 2.4 KB |
+| `scripts/fix_structure_roadmaps_v1.py` | `655e9e84a9ded08c` | 141 | 8.2 KB |
 | `scripts/fix_table4_balanced_train_times_v1.py` | `e70953099a2d95b3` | 96 | 4.3 KB |
 | `scripts/fix_table6_correlation_v1.py` | `7b800abdf2e039db` | 80 | 3.3 KB |
 | `scripts/fix_zh_scale_numbers_v52.py` | `daf38327eb4b267b` | 26 | 1.0 KB |

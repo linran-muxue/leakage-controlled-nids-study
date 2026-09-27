@@ -42,6 +42,8 @@ Four research questions structure the paper. Each maps to exactly one results su
 
 **RQ4 (external validity).** Do the conclusions survive beyond CIC-IDS2017, on NSL-KDD, UNSW-NB15 and file-level stress tests?
 
+The assumptions and the questions form one chain: H1-H3 are tested in order by RQ1-RQ3, and RQ4 asks whether all three survive outside the source corpus. Section 5 answers the questions in that order, and every claim in Sections 5 and 6 is traceable to one of them.
+
 ### 1.4 Contributions
 
 The contributions are ordered by evidential strength.
@@ -62,6 +64,8 @@ Section 2 reviews related work and states the gap. Section 3 describes data sour
 ---
 
 ## 2. Related Work and Positioning
+
+This section reviews the four bodies of work the design draws on - evaluation hazards in public datasets (2.1), feature selection and leakage (2.2), ensemble aggregation and adaptive weighting (2.3), and probability quality, open-set rejection and deployment cost (2.4) - and states in 2.5 the gap that motivates the controlled comparison.
 
 ### 2.1 Public datasets and their evaluation hazards
 
@@ -110,6 +114,8 @@ This paper is therefore positioned as a **protocol and boundary study**. It does
 ## 3. Data, Provenance and Protocol
 
 ![Figure 1. Leakage-controlled research framework and information boundary](figures_en/fig1_protocol_pipeline.png)
+
+The section proceeds from provenance to population: 3.1 records the sources, retrieval dates and licences, 3.2 audits CIC-IDS2017 and defines the two research populations, 3.3 describes the two external corpora, 3.4 fixes the leakage-controlled protocol, 3.5 states the estimands and the statistical procedure, and 3.6 lists the threats the design already excludes, leaving the residual ones to 6.5.
 
 ### 3.1 Datasets, sources and licensing
 
@@ -196,6 +202,8 @@ The protocol excludes three threats by construction: **transform leakage** (all 
 ---
 
 ## 4. Method
+
+The method has five parts: the feature views and base learners (4.1), the sample-conditional weighting rule (4.2), the identifiability conditions that bound when any weighting can act (4.3), the complexity argument (4.4), and the controls and ablations that share one budget (4.5).
 
 ### 4.1 Feature views and base learners
 
@@ -300,7 +308,7 @@ Five control groups are used, all under the same protocol.
 
 ## 5. Results
 
-The chapter follows RQ1 to RQ4. Section 5.1 answers the feature-selection question, Sections 5.2 and 5.3 together answer the weighting question, Section 5.4 addresses protocol robustness, Section 5.5 addresses external validity, and Section 5.6 reports calibration, robustness, latency and open-set behaviour.
+The chapter follows RQ1 to RQ4. RQ1 is answered in 5.1; RQ2 in 5.2, with the mechanism that explains its outcome in 5.3; RQ3 in 5.4 and again at scale in 5.7; RQ4 in 5.5. Section 5.6 reports calibration, robustness, latency and open-set behaviour, which qualify the comparisons without answering a question of their own.
 
 ### 5.1 RQ1: Training-side feature selection preserves discriminative power
 
@@ -490,6 +498,8 @@ Per-seed paired statistics, per-class reports and the scale summaries for all th
 
 ## 6. Discussion
 
+The discussion reads the results in four steps: the failure conditions and their hierarchy (6.1), how to interpret reported weighting gains in that light (6.2), a decision matrix for practitioners (6.3), reporting recommendations for future evaluations (6.4), and the limitations that remain (6.5).
+
 ### 6.1 Four failure conditions for conditional weighting
 
 The conditions of Section 4.3 and the measurements of Section 5.3 together characterise four failure modes. The first three describe an inert gate, whose weights cannot move a label; the fourth describes a combination that is harmful at any weights. They are not mutually exclusive but form a hierarchy from strongest to weakest.
@@ -580,7 +590,7 @@ This study tested the widely adopted assumption that sample-conditional ensemble
 
 **First, relative to the most direct equal-weight control the gain lies inside an equivalence boundary.** Averaged over ten seeds on the natural-prior population of CIC-IDS2017, the Macro-F1 difference between conditional weighting and an equal-weight chi-square forest is -0.000456, with the per-seed sign split five to five. Both the seed-level 90% interval [-0.00112, +0.00021] and the test-row paired bootstrap interval [-0.00425, +0.00338] lie inside equivalence margins of 0.005 and 0.01. The four experts disagree on no test row, and the normalised weight entropy is 0.99998. The cost is about an 80-fold increase in training time and a fivefold increase in batch inference time.
 
-**A qualification on that equivalence.** It is a property of the population, not of the mechanism. On the fully uncapped 2,429,503-flow corpus the same comparison turns into a consistent deficit of -0.005533 across all ten seeds (equivalent at 0.01 but not at 0.005), at a 175-fold training cost. The cause is not the weighting - Section 5.3 shows the weights never move a label - but the price of averaging over feature views whose quality diverges at scale: the full-feature view falls 0.021397 behind the chi-square view, and one such expert inside a four-way average accounts for the whole gap (0.005349 predicted against -0.005533 measured). Against a full-feature equal forest the gate is reliably better over ten seeds, but the magnitude matches that of a feature-view change.
+**A qualification on the first conclusion.** It is a property of the population, not of the mechanism. On the fully uncapped 2,429,503-flow corpus the same comparison turns into a consistent deficit of -0.005533 across all ten seeds (equivalent at 0.01 but not at 0.005), at a 175-fold training cost. The cause is not the weighting - Section 5.3 shows the weights never move a label - but the price of averaging over feature views whose quality diverges at scale: the full-feature view falls 0.021397 behind the chi-square view, and one such expert inside a four-way average accounts for the whole gap (0.005349 predicted against -0.005533 measured). Against a full-feature equal forest the gate is reliably better over ten seeds, but the magnitude matches that of a feature-view change.
 
 **Second, the failure is explainable and quantified.** Three identifiability conditions are derived and one of them is turned into a row-wise computable bound, under which 99.91% of 23,958 test rows are provably invariant to the weighting, with a decision margin 3,469 to 5,038 times the perturbation bound. A search over all 108 gate hyper-parameter configurations yields only six distinct validation scores, excluding insufficient tuning. A reverse experiment shows that the gain is governed by expert diversity: two low-diversity expert sets gain exactly zero in all six runs, whereas three decorrelated sets gain positively in all nine runs (slope 0.0646, Pearson r = 0.749). The inertness of conditional weighting is therefore not an implementation or tuning artefact but a direct consequence of filter-based multi-view experts being too similar on this kind of data.
 
