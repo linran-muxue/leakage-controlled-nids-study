@@ -187,6 +187,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("project flowchart", ["scripts/check_project_flowchart_v1.py"], ("FLOWCHART_FAILED",)),
     ("experiment record", ["scripts/check_experiment_record_v1.py"], ("EXPERIMENT_RECORD_FAILED",)),
     ("material index", ["scripts/check_material_index_v1.py"], ("MATERIAL_INDEX_FAILED",)),
+    ("data products", ["scripts/check_data_products_v1.py"], ("DATA_PRODUCTS_FAILED",)),
 ]
 
 # Three checks recompute from the *derived* populations (the capping and

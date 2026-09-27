@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 380 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 382 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -114,6 +114,7 @@
 | `scripts/build_data_evidence_pack_v1.py` | `d655212657c4eb85` | 153 | 8.6 KB |
 | `scripts/build_data_processing_doc_v1.py` | `6d60070099407be9` | 237 | 12.8 KB |
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
+| `scripts/build_data_products_doc_v1.py` | `af78b86dffa45fe5` | 265 | 12.2 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
 | `scripts/build_data_sources_doc_v1.py` | `0a4f20c46582b785` | 302 | 17.1 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
@@ -133,7 +134,7 @@
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
 | `scripts/build_rccf_figures_v1.py` | `6cf2ffccf07792aa` | 138 | 5.3 KB |
 | `scripts/build_restructured_figures_v4.py` | `2f52c587130338ad` | 529 | 27.9 KB |
-| `scripts/build_restructured_manuscript_v4.py` | `6fbdc08ea1a3ab7a` | 338 | 13.1 KB |
+| `scripts/build_restructured_manuscript_v4.py` | `4a03e4fd3e9920df` | 341 | 13.3 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
 | `scripts/build_talk_deck_v1.py` | `cad3bb81bb2ae495` | 661 | 38.5 KB |
@@ -148,10 +149,11 @@
 | `scripts/check_aux_documents_v13.py` | `883780bd947626be` | 110 | 5.9 KB |
 | `scripts/check_citation_coverage_v5.py` | `e35ab8a51f553695` | 39 | 1.2 KB |
 | `scripts/check_cited_paths_v1.py` | `f483fa8d4941b7bc` | 62 | 2.4 KB |
+| `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
 | `scripts/check_deliverable_counts_v1.py` | `8313d345357cf964` | 153 | 7.5 KB |
-| `scripts/check_docx_freshness_v17.py` | `cf496684bbdea905` | 70 | 3.5 KB |
-| `scripts/check_docx_numbering_v40.py` | `f9cd8ef02d4fb7a2` | 82 | 3.8 KB |
+| `scripts/check_docx_freshness_v17.py` | `7a66b7a728a9ecf1` | 71 | 3.6 KB |
+| `scripts/check_docx_numbering_v40.py` | `cbecd9191879e774` | 82 | 3.8 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
 | `scripts/check_figure_annotations_v44.py` | `da6073372674a04e` | 73 | 3.0 KB |
@@ -253,7 +255,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `8facd3ce2d491c7f` | 194 | 11.9 KB |
+| `scripts/package_submission_bundle_v18.py` | `c0d7e99fd46346f3` | 195 | 12.1 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
@@ -354,7 +356,7 @@
 | `scripts/update_selfcheck_v31.py` | `4621f6652901206c` | 41 | 2.3 KB |
 | `scripts/update_selfcheck_v5b.py` | `0dfbcc974a57de6d` | 80 | 5.0 KB |
 | `scripts/update_selfcheck_v6.py` | `e0970ee1cc76c71e` | 66 | 4.4 KB |
-| `scripts/verify_all_v8.py` | `705d7e8f85711610` | 270 | 16.6 KB |
+| `scripts/verify_all_v8.py` | `55cfc4c44af244d9` | 271 | 16.6 KB |
 | `scripts/verify_dois_v5.py` | `40e971c4c94d3993` | 165 | 7.3 KB |
 | `scripts/verify_paired_counts_v5.py` | `108ee9d3f3b7621b` | 66 | 2.5 KB |
 | `scripts/verify_selfcheck_counts_v7.py` | `2ba3f50ccc7dcfff` | 113 | 4.6 KB |

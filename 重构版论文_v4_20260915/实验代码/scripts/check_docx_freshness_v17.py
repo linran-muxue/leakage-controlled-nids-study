@@ -36,6 +36,7 @@ EXPECTED = {
     "项目流程图.docx": ["项目流程图", "① 数据获取", "⑥ 论文与交付", "flow_project.pdf"],
     "实验代码与运行记录.docx": ["实验代码与运行记录", "非屏幕截图", "exp18"],
     "材料完整性清单.docx": ["材料完整性清单", "本地保留", "docs/source_records"],
+    "数据产物清单.docx": ["数据产物清单", "去重与清洗的阶段计数", "重建命令"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))
