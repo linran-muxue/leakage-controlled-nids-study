@@ -21,8 +21,13 @@ DEST = ROOT / ".quarantine" / "superseded_docs"
 
 def main() -> None:
     DEST.mkdir(parents=True, exist_ok=True)
+    desktop = Path.home() / "Desktop" / "论文_v1.11.0_全语料版"
     for name in ("数据来源总表.md", "数据来源总表.docx"):
         source = BASE / name
+        for location in (desktop / name,):
+            if location.exists():
+                shutil.move(str(location), str(DEST / name))
+                print(f"  moved the desktop copy of {name} aside")
         if not source.exists():
             print(f"  {name}: already retired")
             continue
