@@ -185,6 +185,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("figure annotations", ["scripts/check_figure_annotations_v44.py"], ("FIGURE_ANNOTATION_MISMATCH",)),
     ("figure reproducibility", ["scripts/check_figure_reproducibility_v45.py"], ("FIGURE_REPRODUCIBILITY_FAILED",)),
     ("project flowchart", ["scripts/check_project_flowchart_v1.py"], ("FLOWCHART_FAILED",)),
+    ("experiment record", ["scripts/check_experiment_record_v1.py"], ("EXPERIMENT_RECORD_FAILED",)),
 ]
 
 # Three checks recompute from the *derived* populations (the capping and

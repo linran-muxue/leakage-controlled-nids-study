@@ -1,0 +1,2 @@
+model  seed  macro_f1     aurc  risk_at_90  log_loss  coverage
+ rccf   404  0.755516 0.000026    0.000009  0.009645  0.903196

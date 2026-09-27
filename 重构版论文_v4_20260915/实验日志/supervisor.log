@@ -1,0 +1,5 @@
+[16:32:26] worker 0: seeds [3407, 101, 404]
+[16:32:26] worker 1: seeds [7, 202, 505]
+[16:32:26] worker 2: seeds [13, 303]
+[16:32:26] launched 3 worker(s) for [3407, 7, 13, 101, 202, 303, 404, 505]
+[16:32:26] keep-awake heartbeat stale; starting helper

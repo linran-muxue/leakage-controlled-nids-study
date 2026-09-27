@@ -53,6 +53,15 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
                            BASE / "项目流程图.md", BASE / "项目流程图.docx",
                            BASE / "figures_project" / "flow_project.png",
                            BASE / "figures_project" / "flow_project.pdf"]),
+    # every experiment: the record document, its rendered run-record panels, the
+    # scripts it cites (byte-identical copies) and the run logs that were kept
+    ("07_复现材料", BASE, [BASE / "实验代码与运行记录.md", BASE / "实验代码与运行记录.docx"]),
+    ("07_复现材料/figures_experiments", BASE / "figures_experiments",
+     sorted((BASE / "figures_experiments").glob("*.png"))),
+    ("07_复现材料/实验代码", BASE / "实验代码",
+     sorted(p for p in (BASE / "实验代码").glob("*") if p.is_file())),
+    ("07_复现材料/实验日志", BASE / "实验日志",
+     sorted(p for p in (BASE / "实验日志").glob("*") if p.is_file())),
     ("08_主表", ROOT / "results_publication_final" / "main_tables",
      sorted((ROOT / "results_publication_final" / "main_tables").glob("*"))),
     ("09_投稿文本", ROOT / "results_publication_final" / "submission_text",
@@ -104,7 +113,7 @@ README = f"""# 论文投稿包 {TAG}
 | 04_补充材料 | {_SUPP_RANGE}，含索引 README 与 SHA-256 校验清单 |
 | 05_自查与审查 | 论文自查表、遗漏问题审查报告（{_report_range()}） |
 | 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照）、项目工作日志 |
-| 07_复现材料 | 数据与资料来源总表、公式来源与核验、数据处理代码与流程（含流程与运行记录截图）、项目流程图（六阶段 PNG/PDF + 阶段入口表）、发布清单、仓库说明、CITATION、依赖锁定 |
+| 07_复现材料 | 数据与资料来源总表、公式来源与核验、数据处理代码与流程（含流程与运行记录）、项目流程图（六阶段 PNG/PDF + 阶段入口表）、实验代码与运行记录（18 个实验、18 张运行记录面板、34 个脚本副本、4 份运行日志）、发布清单、仓库说明、CITATION、依赖锁定 |
 | 08_主表 | 正文 8 张主表（含表 4 的两个面板共 9 个 CSV）与导出索引 |
 | 09_投稿文本 | 中英标题、摘要与关键词（投稿系统字段用的纯文本） |
 | 10_论文介绍与汇报 | 论文介绍（背景、判据、完整数字、术语表、读稿路线）、汇报要点（30 秒/3 分钟/10 分钟口径、逐页讲稿、数字速查、22 问预判问答、措辞红线、汇报前检查清单）与 12 页汇报 PPT（含讲稿备注，末尾两页为数字速查与复现入口）|

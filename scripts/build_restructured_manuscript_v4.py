@@ -286,7 +286,7 @@ def main() -> None:
     parser.add_argument("--only", choices=["manuscript", "english", "plan", "audit", "manual", "review",
                                            "selfcheck", "highlights", "coverletter", "worklog",
                                            "intro", "talk", "sources", "equations", "pipeline",
-                                           "flowchart",
+                                           "flowchart", "experiments",
                                            "both", "all"],
                         default="both")
     args = parser.parse_args()
@@ -298,6 +298,7 @@ def main() -> None:
         "equations": (SRC / "公式来源与核验.md", SRC / "公式来源与核验.docx"),
         "pipeline": (SRC / "数据处理代码与流程.md", SRC / "数据处理代码与流程.docx"),
         "flowchart": (SRC / "项目流程图.md", SRC / "项目流程图.docx"),
+        "experiments": (SRC / "实验代码与运行记录.md", SRC / "实验代码与运行记录.docx"),
         "manuscript": (SRC / "中文SCI论文_v4_重构版.md", SRC / "中文SCI论文_v4_重构版.docx"),
         "plan": (SRC / "论文结构诊断与重构方案.md", SRC / "论文结构诊断与重构方案.docx"),
         "audit": (SRC / "研究缺口审计与优先级清单.md", SRC / "研究缺口审计与优先级清单.docx"),
@@ -319,6 +320,7 @@ def main() -> None:
         names.append("equations")
         names.append("pipeline")
         names.append("flowchart")
+        names.append("experiments")
     else:
         names = [args.only]
     for name in names:
