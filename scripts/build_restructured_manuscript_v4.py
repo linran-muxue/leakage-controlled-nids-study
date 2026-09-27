@@ -285,13 +285,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", choices=["manuscript", "english", "plan", "audit", "manual", "review",
                                            "selfcheck", "highlights", "coverletter", "worklog",
-                                           "intro", "talk", "both", "all"],
+                                           "intro", "talk", "sources", "both", "all"],
                         default="both")
     args = parser.parse_args()
     jobs = {
         "worklog": (SRC / "工作日志_论文项目.md", SRC / "工作日志_论文项目.docx"),
         "intro": (SRC / "论文介绍.md", SRC / "论文介绍.docx"),
         "talk": (SRC / "向老师汇报要点.md", SRC / "向老师汇报要点.docx"),
+        "sources": (SRC / "数据来源总表.md", SRC / "数据来源总表.docx"),
         "manuscript": (SRC / "中文SCI论文_v4_重构版.md", SRC / "中文SCI论文_v4_重构版.docx"),
         "plan": (SRC / "论文结构诊断与重构方案.md", SRC / "论文结构诊断与重构方案.docx"),
         "audit": (SRC / "研究缺口审计与优先级清单.md", SRC / "研究缺口审计与优先级清单.docx"),
@@ -309,6 +310,7 @@ def main() -> None:
                  "highlights", "coverletter", "worklog"]
         names.append("intro")
         names.append("talk")
+        names.append("sources")
     else:
         names = [args.only]
     for name in names:

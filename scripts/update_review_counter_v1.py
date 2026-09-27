@@ -15,11 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "34",
-    "last_item": "34",
-    "last_item_title": "Eight-slide briefing deck with speaker notes, built from the talk script",
+    "round": "35",
+    "last_item": "35",
+    "last_item_title": "One consolidated record of every data source",
     "last_result": "fixed",
-    "note": ("built 汇报用_论文介绍.pptx: eight 16:9 slides following the talk script - thesis and "
+    "note": ("compiled 数据来源总表.md/.docx: the provenance that lived in three places (S01's "
+             "provenance table, the per-file checksum list and the processed-data audits) is now "
+             "one document. It carries the four raw sources with URL, retrieval date, snapshot, "
+             "licence and checksum; a per-file table for the eight CIC-IDS2017 CSVs and the other "
+             "five files with rows, bytes and digest verification recomputed at build time; the "
+             "six derived populations with their split sizes and build scripts; the retrieval "
+             "evidence under docs/source_records/; and the verification method with its honest "
+             "limits (files that are not kept locally are marked as such rather than inferred). "
+             "The first build mis-parsed the recorded digests - the provenance cell reads "
+             "'KDDTrain+ SHA-256=…' so a startswith test found nothing and every external file "
+             "was reported as mismatching - and printed a line count for the N-BaIoT archive; "
+             "both fixed. All 13 recorded digests now verify, and the eight CIC files sum to "
+             "2 830 743 rows, the audit's source_rows. The document ships in 07_复现材料 and is "
+             "built by build_restructured_manuscript_v4.py --only sources. "
+             "PREVIOUS: built 汇报用_论文介绍.pptx: eight 16:9 slides following the talk script - thesis and "
              "three key numbers, the four contamination sources, the six-stage protocol, the "
              "three-population table with Figure 4, the three mechanism evidences with Figure 5, "
              "the dilution arithmetic with the deployment implication, cost and open-set behaviour "
