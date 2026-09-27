@@ -26,6 +26,7 @@ EXPECTED = {
     # the work log is generated from the records, so it must carry the current
     # guard count and the round ledger rather than an earlier snapshot
     "工作日志_论文项目.docx": ["工作日志", "45 项检查", "Round 20"],
+    "论文介绍.docx": ["一句话结论", "0.889278", "2 429 503"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))

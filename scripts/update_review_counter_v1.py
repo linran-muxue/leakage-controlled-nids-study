@@ -15,11 +15,24 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "30",
-    "last_item": "30",
-    "last_item_title": "Second tidy-up pass: 31 leftover files moved out of the release tree",
+    "round": "31",
+    "last_item": "31",
+    "last_item_title": "Standalone paper introduction, in Markdown and Word",
     "last_result": "fixed",
-    "note": ("materials tidy-up. A check of what the repository still carried found 31 leftovers, "
+    "note": ("generated 论文介绍.md/.docx: a two-page introduction for an advisor or a "
+             "collaborator who does not have the manuscript in front of them. Eight sections - "
+             "one-sentence conclusion, problem and gap, protocol and corpora, results (the three "
+             "populations, the mechanism, cost and open-set behaviour, the external benchmarks), "
+             "contributions, honest boundaries, reproducibility, and a BibTeX entry. Every number "
+             "is read from the result files: the first draft printed nan twice in the scale row "
+             "because the scale summary does not carry per-model Macro-F1 (it now reads the two "
+             "aggregate files) and hard-coded the cost multiple (it now divides the training times "
+             "from the ten-seed table). The open-set lower bound is truncated rather than rounded "
+             "so the introduction prints 0.643 to 0.694, exactly as Section 5.6 does. The Word "
+             "edition is built by build_restructured_manuscript_v4.py --only intro, the freshness "
+             "and numbering checks cover it, and it ships in the package as 10_论文介绍 (140 "
+             "files, 8.56 MB). Gate 45 checks green. "
+             "PREVIOUS: materials tidy-up. A check of what the repository still carried found 31 leftovers, "
              "and scripts/quarantine_unrelated_material_v2.py moved all of them out without "
              "deleting anything. Twenty-four were tracked and are now removed from the release: "
              "the six early manuscript versions and three other drafts from 2026-09-02 to 09-05 "

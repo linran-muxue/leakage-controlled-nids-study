@@ -50,6 +50,7 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
      sorted((ROOT / "results_publication_final" / "main_tables").glob("*"))),
     ("09_投稿文本", ROOT / "results_publication_final" / "submission_text",
      sorted((ROOT / "results_publication_final" / "submission_text").glob("*"))),
+    ("10_论文介绍", BASE, [BASE / "论文介绍.md", BASE / "论文介绍.docx"]),
 ]
 
 # The README inside the archive quotes the self-check totals and the figure
@@ -96,6 +97,7 @@ README = f"""# 论文投稿包 {TAG}
 | 07_复现材料 | 发布清单、仓库说明、CITATION、依赖锁定文件 |
 | 08_主表 | 正文 8 张主表（含表 4 的两个面板共 9 个 CSV）与导出索引 |
 | 09_投稿文本 | 中英标题、摘要与关键词（投稿系统字段用的纯文本） |
+| 10_论文介绍 | 面向导师/合作者的两页介绍（问题、做法、结果、局限、引用），数字全部取自产物 |
 
 ## 投稿前仍需作者完成的三件事
 
