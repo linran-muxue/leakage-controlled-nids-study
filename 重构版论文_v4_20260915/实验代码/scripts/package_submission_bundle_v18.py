@@ -56,6 +56,36 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
     # every experiment: the record document, its rendered run-record panels, the
     # scripts it cites (byte-identical copies) and the run logs that were kept
     ("07_复现材料", BASE, [BASE / "实验代码与运行记录.md", BASE / "实验代码与运行记录.docx"]),
+    ("07_复现材料", BASE, [BASE / "材料完整性清单.md", BASE / "材料完整性清单.docx"]),
+    # the code base travels with everything needed to rebuild it: image, licence,
+    # data and model cards, dependency lists, the CI definition and the tests
+    ("07_复现材料/元数据", ROOT, [ROOT / "LICENSE", ROOT / "DATA_CARD.md", ROOT / "MODEL_CARD.md",
+                                  ROOT / "Dockerfile", ROOT / "requirements-direct.txt",
+                                  ROOT / "pytest.ini"]),
+    ("07_复现材料/ci", ROOT / ".github",
+     sorted(p for p in (ROOT / ".github").rglob("*") if p.is_file())),
+    ("07_复现材料/docs", ROOT / "docs",
+     sorted(p for p in (ROOT / "docs").rglob("*") if p.is_file())),
+    ("07_复现材料/tests", ROOT / "tests",
+     sorted(p for p in (ROOT / "tests").glob("*.py"))),
+    ("07_复现材料/退役材料/superseded", ROOT / "superseded",
+     sorted(p for p in (ROOT / "superseded").glob("*") if p.is_file())),
+    ("07_复现材料/退役材料/superseded_docs", ROOT / ".quarantine" / "superseded_docs",
+     sorted(p for p in (ROOT / ".quarantine" / "superseded_docs").glob("*") if p.is_file())),
+    ("07_复现材料/发布快照", ROOT / "results_publication_final",
+     sorted(p for p in (ROOT / "results_publication_final").glob("*")
+            if p.is_file() and p.name != "MANIFEST.json")
+     + sorted((ROOT / "results_publication_final" / "figures").glob("*"))
+     + sorted((ROOT / "results_publication_final" / "deployment").glob("*"))),
+    ("07_复现材料/归档索引", ROOT,
+     [ROOT / "FULL_RESEARCH_ARCHIVE_README_20260912.md",
+      ROOT / "RCCF_FULL_RESEARCH_ARCHIVE_20260912.sha256",
+      ROOT / "RCCF_FULL_RESEARCH_ARCHIVE_v2_20260912.tar.gz.sha256",
+      ROOT / "RCCF_FULL_RESEARCH_ARCHIVE_v2_20260912.tar.gz.manifest.json",
+      ROOT / "RCCF_完整研究档案_v2_20260912.tar.gz.sha256",
+      ROOT / "RCCF_完整研究档案_v2_20260912.tar.gz.manifest.json",
+      ROOT / "RCCF_v3b_package_manifest_20260912.json",
+      ROOT / "RCCF_v3b_package_checksums_20260912.txt"]),
     ("07_复现材料/figures_experiments", BASE / "figures_experiments",
      sorted((BASE / "figures_experiments").glob("*.png"))),
     ("07_复现材料/实验代码", BASE / "实验代码",
@@ -113,7 +143,7 @@ README = f"""# 论文投稿包 {TAG}
 | 04_补充材料 | {_SUPP_RANGE}，含索引 README 与 SHA-256 校验清单 |
 | 05_自查与审查 | 论文自查表、遗漏问题审查报告（{_report_range()}） |
 | 06_研究与写作方案 | 结构诊断、缺口审计、P0/P1 执行手册（均标注为历史快照）、项目工作日志 |
-| 07_复现材料 | 数据与资料来源总表、公式来源与核验、数据处理代码与流程（含流程与运行记录）、项目流程图（六阶段 PNG/PDF + 阶段入口表）、实验代码与运行记录（18 个主线实验逐节记录 + 145 个结果目录清点 + 378 个代码文件清单 + 25 张运行记录面板 + 全量代码副本 + 4 份原始运行日志）、发布清单、仓库说明、CITATION、依赖锁定 |
+| 07_复现材料 | 材料完整性清单（工作区每一项材料的去向与理由）、数据与资料来源总表、公式来源与核验、数据处理代码与流程（含流程与运行记录）、项目流程图（六阶段 PNG/PDF + 阶段入口表）、实验代码与运行记录（18 个主线实验 + 145 个结果目录清点 + 378 个代码文件 + 25 张运行记录面板 + 全量代码副本 + 4 份原始运行日志）、元数据（LICENSE / DATA_CARD / MODEL_CARD / Dockerfile / 依赖 / pytest.ini）、CI 定义、docs 来源记录与页面截图、138 项单元测试源码、退役材料清单、发布快照（逐种子报告、部署基准、图）、归档索引、发布清单、仓库说明、CITATION |
 | 08_主表 | 正文 8 张主表（含表 4 的两个面板共 9 个 CSV）与导出索引 |
 | 09_投稿文本 | 中英标题、摘要与关键词（投稿系统字段用的纯文本） |
 | 10_论文介绍与汇报 | 论文介绍（背景、判据、完整数字、术语表、读稿路线）、汇报要点（30 秒/3 分钟/10 分钟口径、逐页讲稿、数字速查、22 问预判问答、措辞红线、汇报前检查清单）与 12 页汇报 PPT（含讲稿备注，末尾两页为数字速查与复现入口）|

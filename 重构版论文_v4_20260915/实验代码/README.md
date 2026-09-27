@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 378 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 380 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -125,6 +125,7 @@
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
 | `scripts/build_jisa_graphical_abstract_v1.py` | `0449bf016c7133e2` | 54 | 2.9 KB |
+| `scripts/build_material_index_v1.py` | `f5a3b7fd613bf203` | 271 | 13.9 KB |
 | `scripts/build_paper_docx.py` | `7b78efe54bdf4a16` | 107 | 4.2 KB |
 | `scripts/build_paper_intro_v1.py` | `eee6df6ef8f6808a` | 403 | 29.4 KB |
 | `scripts/build_probability_and_feature_evidence_v4.py` | `807492413709dd35` | 42 | 4.2 KB |
@@ -132,7 +133,7 @@
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
 | `scripts/build_rccf_figures_v1.py` | `6cf2ffccf07792aa` | 138 | 5.3 KB |
 | `scripts/build_restructured_figures_v4.py` | `2f52c587130338ad` | 529 | 27.9 KB |
-| `scripts/build_restructured_manuscript_v4.py` | `9925f0b2fda0c795` | 335 | 13.0 KB |
+| `scripts/build_restructured_manuscript_v4.py` | `6fbdc08ea1a3ab7a` | 338 | 13.1 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
 | `scripts/build_talk_deck_v1.py` | `cad3bb81bb2ae495` | 661 | 38.5 KB |
@@ -149,14 +150,15 @@
 | `scripts/check_cited_paths_v1.py` | `f483fa8d4941b7bc` | 62 | 2.4 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
 | `scripts/check_deliverable_counts_v1.py` | `8313d345357cf964` | 153 | 7.5 KB |
-| `scripts/check_docx_freshness_v17.py` | `3eca0c433a7115b9` | 69 | 3.4 KB |
-| `scripts/check_docx_numbering_v40.py` | `54888e8f894090b6` | 82 | 3.8 KB |
+| `scripts/check_docx_freshness_v17.py` | `cf496684bbdea905` | 70 | 3.5 KB |
+| `scripts/check_docx_numbering_v40.py` | `f9cd8ef02d4fb7a2` | 82 | 3.8 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
 | `scripts/check_figure_annotations_v44.py` | `da6073372674a04e` | 73 | 3.0 KB |
 | `scripts/check_figure_reproducibility_v45.py` | `6ea15e19dad0e439` | 80 | 3.7 KB |
 | `scripts/check_full_corpus_status_v1.py` | `928fe5120a1065aa` | 108 | 4.6 KB |
 | `scripts/check_jisa_format_v22.py` | `ef6fe47fd62fb21f` | 88 | 4.4 KB |
+| `scripts/check_material_index_v1.py` | `1681e2382ca4bdcb` | 90 | 3.8 KB |
 | `scripts/check_mcnemar_recomputation_v1.py` | `22a68b25c21bc12c` | 90 | 3.8 KB |
 | `scripts/check_metrics_aggregation_v1.py` | `0165bec60d92a5c0` | 73 | 2.5 KB |
 | `scripts/check_noDOI_notes_v5.py` | `bdd1591f98dcb430` | 29 | 1.3 KB |
@@ -251,7 +253,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `664efaddde3153c4` | 164 | 9.6 KB |
+| `scripts/package_submission_bundle_v18.py` | `8facd3ce2d491c7f` | 194 | 11.9 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
@@ -352,7 +354,7 @@
 | `scripts/update_selfcheck_v31.py` | `4621f6652901206c` | 41 | 2.3 KB |
 | `scripts/update_selfcheck_v5b.py` | `0dfbcc974a57de6d` | 80 | 5.0 KB |
 | `scripts/update_selfcheck_v6.py` | `e0970ee1cc76c71e` | 66 | 4.4 KB |
-| `scripts/verify_all_v8.py` | `cf928f1f057a54e8` | 269 | 16.5 KB |
+| `scripts/verify_all_v8.py` | `705d7e8f85711610` | 270 | 16.6 KB |
 | `scripts/verify_dois_v5.py` | `40e971c4c94d3993` | 165 | 7.3 KB |
 | `scripts/verify_paired_counts_v5.py` | `108ee9d3f3b7621b` | 66 | 2.5 KB |
 | `scripts/verify_selfcheck_counts_v7.py` | `2ba3f50ccc7dcfff` | 113 | 4.6 KB |
