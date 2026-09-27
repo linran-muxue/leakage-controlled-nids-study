@@ -15,11 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "37",
-    "last_item": "37",
-    "last_item_title": "Provenance and verification for each of the five equations",
+    "round": "38",
+    "last_item": "38",
+    "last_item_title": "Data-processing code and flow, with figures and a run record",
     "last_result": "fixed",
-    "note": ("wrote 公式来源与核验.md/.docx: what each numbered equation is, where it comes from "
+    "note": ("wrote 数据处理代码与流程.md/.docx: the six-stage pipeline mapped to the code that "
+             "implements it (src/data_pipeline.py for label mapping and the physical-range mask, "
+             "src/prepare_dataset.py for chunked reading, deduplication, the per-class cap, "
+             "balancing and the stratified split, src/feature_selection.py for training-side "
+             "selection, scripts/audit_data_processing_v1.py for the non-mutating audit), each "
+             "stage's input and output counts taken from the audit JSON, the six code files with "
+             "their SHA-256 prefixes, five real code excerpts read from the repository, how one "
+             "code path produces all four CIC populations, and the reproduction commands. It "
+             "embeds the two pipeline figures from the manuscript plus a new run-record image "
+             "rendered from the audit's own numbers (figures_pipeline/fig_pipeline_run.png, "
+             "labelled as a rendering, not a screen capture). The docx carries all three images. "
+             "Data acquisition itself has no script - the four corpora were downloaded by hand and "
+             "recorded in S01 and the sources register - and the document says so rather than "
+             "implying an automated fetch. "
+             "PREVIOUS: wrote 公式来源与核验.md/.docx: what each numbered equation is, where it comes from "
              "and whether the numbers printed beside it reproduce.  Equation (1) is the paper's own "
              "mechanism specification (a weighted average of posteriors, the family Breiman's "
              "averaging belongs to, with the literature's variants listed in Section 2 and "

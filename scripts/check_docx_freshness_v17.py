@@ -30,6 +30,8 @@ EXPECTED = {
     "向老师汇报要点.docx": ["30 秒版本", "0.005533", "Q8"],
     "数据与资料来源总表.docx": ["数据与资料来源总表", "2 830 743", "CC BY 4.0", "python-pptx"],
     "公式来源与核验.docx": ["公式来源与核验", "二阶展开", "3.19"],
+    "数据处理代码与流程.docx": ["数据处理代码与流程", "2,830,743", "prepare_dataset",
+                                "audit_data_processing_v1"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))
