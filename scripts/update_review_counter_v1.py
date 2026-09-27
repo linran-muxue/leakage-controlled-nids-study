@@ -15,11 +15,27 @@ ROOT = Path(__file__).resolve().parents[1]
 COUNTER = ROOT / "logs" / "review_round_counter.txt"
 
 FIELDS = {
-    "round": "36",
-    "last_item": "36",
-    "last_item_title": "The sources register now covers software, literature, requirements and archives",
+    "round": "37",
+    "last_item": "37",
+    "last_item_title": "Provenance and verification for each of the five equations",
     "last_result": "fixed",
-    "note": ("the author pointed out that the first sources document covered only the evaluation "
+    "note": ("wrote 公式来源与核验.md/.docx: what each numbered equation is, where it comes from "
+             "and whether the numbers printed beside it reproduce.  Equation (1) is the paper's own "
+             "mechanism specification (a weighted average of posteriors, the family Breiman's "
+             "averaging belongs to, with the literature's variants listed in Section 2 and "
+             "temperature scaling and Mondrian conformal prediction cited as the steps after it); "
+             "Equation (2) is derived here from the triangle inequality and the experts' standing on "
+             "the simplex, and its coverage reproduces (99.91% of rows provably immune, "
+             "margin-to-bound ratio 3,469-5,038, zero labels changed); Equations (3) and (4) are "
+             "second- and first-order expansions rather than identities, which the text says, and "
+             "their four printed numbers all reproduce from the released per-row file: observed "
+             "entropy deficiency 3.237e-05 against 3.187e-05 predicted (1.5%) and 3.365e-05 (4.0%), "
+             "with a median risk-offset standard deviation of 0.000220; Equation (5) is the standard "
+             "normalised Shannon entropy, with the measured weight entropy 0.99998. "
+             "scripts/build_equation_sources_doc_v1.py verifies all of it and joins the gate in "
+             "--check mode (48 checks), so a printed value that stops matching its artefact fails "
+             "the gate without rewriting the deliverable. The document ships in 07_复现材料. "
+             "PREVIOUS: the author pointed out that the first sources document covered only the evaluation "
              "datasets, and it did. 数据与资料来源总表.md/.docx replaces it with nine sections: the "
              "four evaluation datasets with URL/date/snapshot/licence/checksum and their role; the "
              "per-file verification of eight CIC-IDS2017 CSVs plus five other files, digests "

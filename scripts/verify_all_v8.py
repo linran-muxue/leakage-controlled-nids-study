@@ -140,6 +140,13 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     # substitute for opening the deck once.
     ("briefing deck fit", ["scripts/check_deck_fit_v1.py"],
      ("DECK_FIT_FAILED", "ISSUE ")),
+    # Where each numbered equation comes from and whether the numbers printed
+    # beside it reproduce: the four values around Equations (3) and (4), the
+    # coverage and margin-to-bound ratio behind Equation (2), and the weight
+    # entropy behind Equation (5).  Runs in --check mode so it never rewrites
+    # the deliverable.
+    ("equation sources", ["scripts/build_equation_sources_doc_v1.py", "--check"],
+     ("ISSUE ", "equation verification failed", "Traceback")),
     # Supplementary S24 shipped a DOI record generated for the previous 45-item
     # reference list (two-off numbering plus six DOIs of unrelated works); this
     # ties the record to the list parsed from both manuscripts.
