@@ -28,6 +28,8 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 PY = sys.executable
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artifact_counts_v1 as repo_counts  # noqa: E402
 
 
 def run(args: list[str]) -> str:
@@ -41,7 +43,6 @@ def measure() -> dict[str, int]:
     chinese = (BASE / "中文SCI论文_v4_重构版.md").read_text(encoding="utf-8")
     selfcheck = (BASE / "论文自查表.md").read_text(encoding="utf-8")
     head = selfcheck.split("## 自查结论与行动清单")[0]
-    gate = (ROOT / "scripts" / "verify_all_v8.py").read_text(encoding="utf-8")
     tests = re.search(r"(\d+) tests collected", run(["-m", "pytest", "--collect-only", "-q"]))
     tokens = re.search(r"numeric tokens: en=(\d+) zh=(\d+)",
                        run([str(ROOT / "scripts" / "cross_language_number_diff_v10.py")]))
@@ -50,10 +51,13 @@ def measure() -> dict[str, int]:
     return {
         "en_words": len(english.split()),
         "zh_chars": len(re.sub(r"\s", "", chinese)),
-        "figures": len(list((BASE / "figures_en").glob("*.png"))),
-        "tables": len(re.findall(r"^\*\*Table \d+", english, flags=re.M)),
+        # shared with the document generators, so a document that quotes one of
+        # these numbers cannot disagree with the gate that recomputes it
+        "figures": repo_counts.figures(),
+        "tables": repo_counts.tables(),
         "tests": int(tests.group(1)),
-        "gate_checks": len(re.findall(r'^\s{4}\("', gate, flags=re.M)),
+        "gate_checks": repo_counts.gate_checks(),
+        "bundle_files": repo_counts.bundle_files(),
         "sc_items": len(re.findall(r"^\| [A-G]\d+ \|", head, flags=re.M)),
         "sc_passed": len(re.findall(r"^\| [A-G]\d+ \|.*\*\*通过\*\*", head, flags=re.M)),
         "sc_partial": len(re.findall(r"^\| [A-G]\d+ \|.*\*\*部分通过\*\*", head, flags=re.M)),
@@ -83,6 +87,19 @@ def declarations(counts: dict[str, int]) -> list[tuple[str, Path, str]]:
         ("cover letter test count", BASE / "Cover_Letter_JISA_v4.md",
          f"A {counts['tests']}-test suite runs in continuous integration"),
         ("README gate-check count", ROOT / "README.md", f"({counts['gate_checks']} checks"),
+        # The working documents quote the same three numbers.  They drifted -
+        # 45, 46 and 47 against the 48 the gate actually ran - because each was
+        # typed into its own generator; the generators now measure them.
+        ("data-source table gate size", BASE / "数据与资料来源总表.md",
+         f"已接入 {counts['gate_checks']} 项验证闸门"),
+        ("data-source table archive size", BASE / "数据与资料来源总表.md",
+         f"（{counts['bundle_files']} 个文件）"),
+        ("briefing script gate size", BASE / "向老师汇报要点.md",
+         f"{counts['gate_checks']} 项自动检查每次提交前全绿"),
+        ("work log gate size", BASE / "工作日志_论文项目.md",
+         f"| 验证闸门 | {counts['gate_checks']} 项检查全绿"),
+        ("paper introduction gate size", BASE / "论文介绍.md",
+         f"（闸门 {counts['gate_checks']} 项自动复核）"),
         ("gap audit state snapshot", BASE / "研究缺口审计与优先级清单.md", header),
         ("gap audit manuscript length", BASE / "研究缺口审计与优先级清单.md",
          f"{counts['en_words']:,}".replace(",", " ") + f" 词、{counts['figures']} 图、"

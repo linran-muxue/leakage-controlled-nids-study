@@ -184,6 +184,7 @@ CHECKS: list[tuple[str, list[str], tuple[str, ...]]] = [
     ("docx list numbering", ["scripts/check_docx_numbering_v40.py"], ("DOCX_NUMBERING_BROKEN",)),
     ("figure annotations", ["scripts/check_figure_annotations_v44.py"], ("FIGURE_ANNOTATION_MISMATCH",)),
     ("figure reproducibility", ["scripts/check_figure_reproducibility_v45.py"], ("FIGURE_REPRODUCIBILITY_FAILED",)),
+    ("project flowchart", ["scripts/check_project_flowchart_v1.py"], ("FLOWCHART_FAILED",)),
 ]
 
 # Three checks recompute from the *derived* populations (the capping and

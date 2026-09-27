@@ -12,6 +12,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from supplementary_paths_v1 import latest_bundle_name
+import artifact_counts_v1 as repo_counts  # noqa: E402
 BASE = ROOT / "重构版论文_v4_20260915"
 EXPECTED = {
     "English_SCI_Manuscript_v4.docx": ["v1.11.0", "3,469", "aggregation-rule differences"],
@@ -25,13 +26,14 @@ EXPECTED = {
     "Cover_Letter_JISA_v4.docx": ["v1.11.0", "0.000456"],
     # the work log is generated from the records, so it must carry the current
     # guard count and the round ledger rather than an earlier snapshot
-    "工作日志_论文项目.docx": ["工作日志", "45 项检查", "Round 20"],
+    "工作日志_论文项目.docx": ["工作日志", f"{repo_counts.gate_checks()} 项检查", "Round 20"],
     "论文介绍.docx": ["一句话结论", "0.889278", "2 429 503"],
     "向老师汇报要点.docx": ["30 秒版本", "0.005533", "Q8"],
     "数据与资料来源总表.docx": ["数据与资料来源总表", "2 830 743", "CC BY 4.0", "python-pptx"],
     "公式来源与核验.docx": ["公式来源与核验", "二阶展开", "3.19"],
     "数据处理代码与流程.docx": ["数据处理代码与流程", "2,830,743", "prepare_dataset",
                                 "audit_data_processing_v1"],
+    "项目流程图.docx": ["项目流程图", "① 数据获取", "⑥ 论文与交付", "flow_project.pdf"],
 }
 def docx_text(path: Path) -> str:
     document = Document(str(path))

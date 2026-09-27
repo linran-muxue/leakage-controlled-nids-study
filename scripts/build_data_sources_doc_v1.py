@@ -23,6 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 BUNDLE = BASE / "补充材料_S01_S30"
 OUT = BASE / "数据与资料来源总表.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artifact_counts_v1 as counts  # noqa: E402
 RAW_ROOTS = (Path(r"E:\论文\data\raw"), Path(r"E:\论文\data\external"),
              ROOT / "data_external")
 ROLES = {
@@ -254,9 +256,10 @@ def main() -> None:
             size = f"{path.stat().st_size / 1e6:.1f} MB"
             lines.append(f"| `{name}` | {size} | {'有 .sha256 记录' if sha.exists() else '—'} | "
                          f"{'完整研究档案（含被隔离材料的清单）' if 'ARCHIVE' in name or '完整研究档案' in name else '发布包'} |")
-    lines.append(f"| `submission_package/论文投稿包_v1.11.0.zip` | "
-                 f"{(ROOT / 'submission_package' / '论文投稿包_v1.11.0.zip').stat().st_size / 1e6:.2f} MB | "
-                 f"包内 `checksums.sha256`（145 个文件）| 投稿包 |")
+    # the archive is rebuilt after this document is written, so its byte size is
+    # not a stable statement; the staged file count is, because the layout fixes it
+    lines.append(f"| `submission_package/论文投稿包_v1.11.0.zip` | 构建时打印 | "
+                 f"包内 `checksums.sha256`（{counts.bundle_files()} 个文件）| 投稿包 |")
     lines.append("")
     lines.append("## 八、明确移出发布树的材料（第三方或与本稿无关）")
     lines.append("")
@@ -276,7 +279,7 @@ def main() -> None:
     lines.append("## 九、核验方式与边界")
     lines.append("")
     lines.append("1. **摘要比对**：13 项数据集文件的 SHA-256 与登记值逐字节比对"
-                 "（`scripts/audit_data_authenticity_v1.py`，已接入 47 项验证闸门）；")
+                 f"（`scripts/audit_data_authenticity_v1.py`，已接入 {counts.gate_checks()} 项验证闸门）；")
     lines.append(f"2. **行数比对**：CIC 八个 CSV 合计 {total_rows:,} 行，与审计记录的 "
                  f"source_rows = {audit['raw_totals']['source_rows']:,} 一致；"
                  "NSL/UNSW 行数等于官方划分（125 973 / 22 544、175 341 / 82 332）；")

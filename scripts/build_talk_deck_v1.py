@@ -28,6 +28,8 @@ from pptx.util import Emu, Inches, Pt
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artifact_counts_v1 as counts  # noqa: E402
 BASE = ROOT / "重构版论文_v4_20260915"
 FIGURES = BASE / "figures_en"
 OUT = BASE / "汇报用_论文介绍.pptx"
@@ -248,7 +250,8 @@ def main() -> None:
         ("外部基准", "NSL-KDD、UNSW-NB15、N-BaIoT（UCI 442，CC BY 4.0）"),
         ("种子", "42 / 2024 / 3407 / 7 / 13 / 101 / 202 / 303 / 404 / 505"),
         ("统计", "配对差 + 种子级 90%/95% 区间 + 测试行配对 Bootstrap + TOST（0.005/0.01）"),
-        ("可复现", "46 项自动检查全绿；722 个逐样本预测公开；仓库带 tag v1.11.0"),
+        ("可复现", f"{counts.gate_checks()} 项自动检查全绿；722 个逐样本预测公开；"
+                   f"仓库带 tag {counts.latest_tag()}"),
     ]
     for index, (label, body) in enumerate(facts):
         y = Inches(3.25 + index * 0.72)
@@ -257,7 +260,8 @@ def main() -> None:
         textbox(slide, Inches(2.2), y, Inches(10.4), Inches(0.5), body, size=13, color=INK)
     footer(slide, 3)
     notes(slide, "六阶段审计的每一步都有计数与产物记录；外部三个语料是独立原生标签基准；"
-                 "主实验十个种子。特别强调：46 项检查与逐样本预测都公开，审稿时可直接重算。")
+                 f"主实验十个种子。特别强调：{counts.gate_checks()} 项检查与逐样本预测都公开，"
+                 "审稿时可直接重算。")
 
     # 4 - main results table
     slide = deck.slides.add_slide(blank)
@@ -388,7 +392,8 @@ def main() -> None:
     picture(slide, "fig10_calibration_robustness.png", Inches(6.75), Inches(1.9), Inches(2.9))
     picture(slide, "fig11_latency.png", Inches(9.85), Inches(1.9), Inches(2.9))
     textbox(slide, Inches(6.75), Inches(4.75), Inches(6.0), Inches(1.4),
-            "45 项自动检查持续复核这些数字；开放集与代价的每一项都能从公开的逐样本预测重算。",
+            f"{counts.gate_checks()} 项自动检查持续复核这些数字；"
+            "开放集与代价的每一项都能从公开的逐样本预测重算。",
             size=12, color=GREY)
     footer(slide, 7)
     notes(slide, "这是本文对条件加权最不利的两组证据，主动讲比被问要好。"

@@ -17,6 +17,8 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 OUT = BASE / "向老师汇报要点.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artifact_counts_v1 as counts  # noqa: E402
 
 
 def main() -> None:
@@ -147,7 +149,7 @@ def main() -> None:
         ("数据和代码可信吗？",
          "四个数据集的摘要与字节数都与来源记录逐一核对过（CIC 8 个文件 2 830 743 行、"
          "NSL/UNSW 官方划分、N-BaIoT 归档 1 772 922 927 字节），722 个逐样本预测全部公开，"
-         "仓库带 tag；46 项自动检查每次提交前全绿。"),
+         f"仓库带 tag；{counts.gate_checks()} 项自动检查每次提交前全绿。"),
         ("和已有工作有什么不同？",
          "多数工作是提出新的加权方案并报告增益；本文把「加权 vs 等权」放到同一个去泄漏协议里做最直接的对照，"
          "并给出增益何时为零的判据（专家两两分歧率 0.2%–0.4% 时结构上不可能产生增益）。"),

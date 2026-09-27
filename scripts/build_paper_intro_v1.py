@@ -19,6 +19,8 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / "重构版论文_v4_20260915"
 OUT = BASE / "论文介绍.md"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artifact_counts_v1 as counts  # noqa: E402
 
 
 def ten_seed() -> dict[str, float]:
@@ -194,7 +196,7 @@ def main() -> None:
     lines.append("- 补充材料 S01–S30：数据来源与校验和、逐种子指标、门控搜索、边距上界、"
                  "多样性实验、外部基准、规模阶梯、开放集诊断等；")
     lines.append("- 论文包：正式稿件（中英）、Highlights、投稿信、图形摘要、主表 CSV 与投稿文本；")
-    lines.append("- 全部数字可由发布的逐样本预测重算（闸门 45 项自动复核）。")
+    lines.append(f"- 全部数字可由发布的逐样本预测重算（闸门 {counts.gate_checks()} 项自动复核）。")
     lines.append("")
     lines.append("## 八、引用")
     lines.append("")

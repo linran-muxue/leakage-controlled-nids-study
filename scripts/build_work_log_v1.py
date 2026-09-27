@@ -22,6 +22,7 @@ BASE = ROOT / "重构版论文_v4_20260915"
 PY = sys.executable
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from check_deliverable_counts_v1 import measure  # noqa: E402
+import artifact_counts_v1 as repo_counts  # noqa: E402
 
 TAG = "v1.11.0"
 OUT = BASE / "工作日志_论文项目.md"
@@ -74,11 +75,10 @@ def main() -> None:
     supplementary = len([d for d in (BASE / f"补充材料_S01_S30").iterdir() if d.is_dir()])
     auth = run(["scripts/audit_data_authenticity_v1.py"])
     readiness = run(["scripts/check_submission_readiness_v1.py"])
-    archive = ROOT / "submission_package" / f"论文投稿包_{TAG}.zip"
-    packed = 0
-    if archive.exists():
-        with zipfile.ZipFile(archive) as handle:
-            packed = len(handle.namelist())
+    # the entry count of the next archive, not of whatever is on disk right now:
+    # the log is written before the packaging step in a round, and a stale count
+    # there was one of the numbers that had silently drifted
+    packed = repo_counts.bundle_files() + 2  # the archive's README and checksum list
     summary = json.loads((ROOT / "results_full_corpus_v49" /
                           "full_corpus_summary.json").read_text(encoding="utf-8"))
 
@@ -120,7 +120,7 @@ def main() -> None:
     for round_id, sha, date, title in git_rounds():
         lines.append(f"| Round {round_id} | `{sha}` | {date} | {title} |")
     lines.append("")
-    lines.append("## 三、质量守卫（闸门 45 项）")
+    lines.append(f"## 三、质量守卫（闸门 {counts['gate_checks']} 项）")
     lines.append("")
     for index, label in enumerate(gate_checks(), 1):
         lines.append(f"{index}. {label}")
@@ -143,7 +143,7 @@ def main() -> None:
     lines.append("")
     lines.append("```powershell")
     lines.append('$py = "E:\\论文\\.venv\\Scripts\\python.exe"')
-    lines.append("& $py scripts\\verify_all_v8.py                 # 45 项验证闸门")
+    lines.append(f"& $py scripts\\verify_all_v8.py                 # {counts['gate_checks']} 项验证闸门")
     lines.append("& $py scripts\\build_restructured_manuscript_v4.py --only all")
     lines.append("& $py scripts\\convert_equations_word_v41.py")
     lines.append("& $py scripts\\build_publication_manifest.py")
@@ -173,7 +173,7 @@ def main() -> None:
                  "`convert_equations_word_v41.py` → `build_publication_manifest.py` → "
                  "`export_manuscript_tables_v1.py` / `export_submission_text_v1.py` → "
                  "`package_submission_bundle_v18.py`。")
-    lines.append("5. **过闸门**：45 项检查全绿才提交；不绿则回退本轮改动并报告。")
+    lines.append(f"5. **过闸门**：{counts['gate_checks']} 项检查全绿才提交；不绿则回退本轮改动并报告。")
     lines.append("6. **发布**：`git add` → commit（Round NN 小步提交）→ 刷新 tag → push 主干与标签 → "
                  "同步桌面交付目录。")
     lines.append("7. **汇报**：只在「本轮提交了修复」或「发现需用户决定的问题」时汇报，"
