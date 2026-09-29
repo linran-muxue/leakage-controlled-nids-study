@@ -163,7 +163,10 @@ def main() -> None:
         f"中英正式稿件、{n['figures']} 图 {n['tables']} 表、补充材料 S01–S30",
         f"验证闸门 {n['gate']} 项（数字、结构、可复现、真实性）",
         f"公开仓库 tag {n['tag']}；722 个逐样本预测",
-        f"投稿包 {n['bundle']} 文件；工作日志与来源总表",
+        # deliberately no file count here: the archive gains and loses files
+        # every round, and a count in a printed figure would age immediately.
+        # The current figures live in 材料完整性清单 and 数据与资料来源总表.
+        "投稿包与逐文件校验清单；工作日志与来源总表",
     ])
 
     # top row runs left to right, then an elbow connector drops into the bottom

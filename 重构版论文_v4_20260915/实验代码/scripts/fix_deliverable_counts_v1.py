@@ -39,8 +39,6 @@ def main() -> None:
         ],
         BASE / "论文自查表.md": [
             (f"{counts['figures']} 图 7 表", f"{counts['figures']} 图 {counts['tables']} 表"),
-            ("正文数值 token 英文 507 : 中文 507",
-             f"正文数值 token 英文 {counts['tokens_en']} : 中文 {counts['tokens_zh']}"),
             ("118 项单元测试通过", f"{counts['tests']} 项单元测试通过"),
             ("运行 118 项测试、编译全部源码", f"运行 {counts['tests']} 项测试、编译全部源码"),
         ],
@@ -62,6 +60,8 @@ def main() -> None:
             (r"英文 [\d,]+ 词（整篇含参考文献）、\d+ 图、\d+ 主表；中文 [\d,]+ 字",
              f"英文 {counts['en_words']:,} 词（整篇含参考文献）、{counts['figures']} 图、"
              f"{counts['tables']} 主表；中文 {counts['zh_chars']:,} 字"),
+            (r"正文数值 token 英文 \d+ : 中文 \d+",
+             f"正文数值 token 英文 {counts['tokens_en']} : 中文 {counts['tokens_zh']}"),
         ],
         BASE / "研究缺口审计与优先级清单.md": [
             (r"[\d ]+ 词、\d+ 图、\d+ 表",

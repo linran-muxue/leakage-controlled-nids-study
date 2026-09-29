@@ -252,9 +252,49 @@ def open_set_ranges(open_set: "pd.DataFrame") -> None:
                       f"printed {printed}, source {value:.6f} renders as {rounded}")
 
 
+def equal_fusion() -> None:
+    """The same-members control added after the supervisor's logic review."""
+    global passed, mismatches
+    print()
+    print("== 5.2 same-members equal-weight fusion control ==")
+    summary = json.loads((ROOT / "results_equal_fusion_control_v1" /
+                          "equal_fusion_summary.json").read_text(encoding="utf-8"))
+    metrics = pd.read_csv(ROOT / "results_equal_fusion_control_v1" / "metrics_by_seed.csv")
+    check("equal-fusion mean Macro-F1", 0.889268, summary["fusion_mean_macro_f1"], 5e-7)
+    check("gated mean Macro-F1 (same run)", 0.889278, summary["gated_mean_macro_f1"], 5e-7)
+    check("single-view mean Macro-F1", 0.889734, summary["single_view_mean_macro_f1"], 5e-7)
+    check("mean difference (fusion - gated)", -0.000010,
+          summary["mean_difference_fusion_minus_gated"], 5e-7)
+    low, high = summary["seed_level_90_interval"]
+    check("90% interval lower bound", -0.000029, low, 1e-6)
+    check("90% interval upper bound", 0.000008, high, 1e-6)
+    check("labels changed by the gate (all seeds)", 1,
+          summary["total_rows_disagreeing_with_gated"], 0.5)
+    comparisons = int(metrics["rows_vs_gated"].sum())
+    check("test predictions compared", 79_860, comparisons, 0.5)
+    print(f"  per-seed fusion Macro-F1 {metrics.macro_f1.min():.6f} - {metrics.macro_f1.max():.6f}"
+          f"; disagreements per seed {int(metrics.disagreements_vs_gated.max())} max")
+
+    text = {name: (ROOT / "重构版论文_v4_20260915" / name).read_text(encoding="utf-8")
+            for name in ("English_SCI_Manuscript_v4.md", "中文SCI论文_v4_重构版.md")}
+    for name, body in text.items():
+        for needle in ("0.000010", "0.000029", "0.000008"):
+            if needle not in body.replace("−", "-"):
+                mismatches += 1
+                print(f"ISSUE {name:<50}does not quote {needle}")
+            else:
+                passed += 1
+        if "79,860" not in body and "79 860" not in body:
+            mismatches += 1
+            print(f"ISSUE {name:<50}does not quote the 79,860 comparisons")
+        else:
+            passed += 1
+
+
 def main() -> int:
     protocol()
     secondary()
+    equal_fusion()
     print()
     print(f"assertions passed {passed} | mismatches {mismatches}")
     return 1 if mismatches else 0

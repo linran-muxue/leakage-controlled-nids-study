@@ -1,0 +1,20 @@
+{
+  "control": "equal-weight fusion of the identical four experts",
+  "compared_with": "released gated predictions (results_seeds10_v5)",
+  "population": "data_processed_cic_natural_v3b",
+  "n_seeds": 10,
+  "test_rows": 7986,
+  "fusion_mean_macro_f1": 0.8892681259331947,
+  "gated_mean_macro_f1": 0.8892782820171663,
+  "single_view_mean_macro_f1": 0.8897341182289404,
+  "mean_difference_fusion_minus_gated": -1.0156083971568642e-05,
+  "sd_difference": 3.211635745808566e-05,
+  "seed_level_90_interval": [
+    -2.8772185891453958e-05,
+    8.460017948316677e-06
+  ],
+  "total_rows_disagreeing_with_gated": 1,
+  "max_rows_disagreeing_with_gated": 1,
+  "seeds_favouring_fusion": 0,
+  "seeds_favouring_gated": 1
+}

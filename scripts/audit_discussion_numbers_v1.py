@@ -238,6 +238,14 @@ def conclusion() -> None:
     print()
     print("== 7 conclusion ==")
     ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv").set_index("model")
+    # the same-members control that closed the H2 logic gap: the conclusion now
+    # quotes its difference and its single changed label
+    same_members = json.loads((ROOT / "results_equal_fusion_control_v1" /
+                              "equal_fusion_summary.json").read_text(encoding="utf-8"))
+    check("conclusion, same-members difference", -0.000010,
+          same_members["mean_difference_fusion_minus_gated"], 5e-7)
+    check("conclusion, labels changed by the gate", 1,
+          same_members["total_rows_disagreeing_with_gated"], 0.5)
     power = pd.read_csv(ROOT / "results_seeds10_v5" / "power_analysis.csv").set_index("comparison")
     row = power.loc["rccf_minus_equal_rf_chi2"]
     check("conclusion, mean difference", -0.000456, row.mean_difference, 5e-6)

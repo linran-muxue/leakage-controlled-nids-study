@@ -76,7 +76,10 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_seeds10_v5/table4a_10seeds.csv",
              "results_seeds10_v5/power_analysis.csv",
              "results_seeds10_v5/effect_sizes.csv",
-             "results_equivalence_10seeds_v5/tost_results.csv"]),
+             "results_equivalence_10seeds_v5/tost_results.csv",
+             # the same-members control added after the supervisor's logic review
+             "results_equal_fusion_control_v1/equal_fusion_summary.json",
+             "results_equal_fusion_control_v1/metrics_by_seed.csv"]),
     "S21": ("近重复审计与敏感性检验",
             ["results_near_duplicate_v5/near_duplicate_summary.csv",
              "results_near_duplicate_v5/near_duplicate_sensitivity.csv"]),
