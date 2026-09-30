@@ -142,6 +142,19 @@ def optimisation_experiments() -> None:
     check("k = 40 labels changed", 0, sweep[40]["logistic_changed_labels_total"], 0.5)
     check("k = 80 labels changed", 0, sweep[80]["logistic_changed_labels_total"], 0.5)
 
+    disagreement = json.loads((ROOT / "results_expert_disagreement_v1" /
+                               "expert_disagreement_summary.json").read_text(encoding="utf-8"))
+    check("expert disagreement floor (%)", 0.15,
+          disagreement["pairwise_disagreement_pct_min"], 5e-3)
+    check("expert disagreement ceiling (%)", 0.66,
+          disagreement["pairwise_disagreement_pct_max"], 5e-3)
+    check("expert disagreement mean (%)", 0.370,
+          disagreement["pairwise_disagreement_pct_mean"], 5e-4)
+    check("expert disagreement rows, minimum", 12,
+          disagreement["rows_differing_min"], 0.5)
+    check("expert disagreement rows, maximum", 53,
+          disagreement["rows_differing_max"], 0.5)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -73,7 +73,11 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
              "results_margin_bound_v5/margin_bound_summary.json"]),
     "S18": ("专家多样性实验（五类专家集合 x 三种子）",
             ["results_diversity_v5/diversity_suite_results.csv",
-             "results_diversity_v5/diversity_gain_regression.json"]),
+             "results_diversity_v5/diversity_gain_regression.json",
+             # how much the four primary experts actually disagree (added after a
+             # data check showed the "no disagreement" claim was wrong)
+             "results_expert_disagreement_v1/expert_disagreement_summary.json",
+             "results_expert_disagreement_v1/disagreement_by_seed.csv"]),
     "S19": ("神经基线结果与选优门控的测试集确认",
             ["results_mlp_final_v5/metrics_aggregate.csv",
              "results_mlp_final_v5/mlp_vs_rccf_paired.csv",

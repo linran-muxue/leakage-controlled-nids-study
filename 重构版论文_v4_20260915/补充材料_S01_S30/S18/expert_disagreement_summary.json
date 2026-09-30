@@ -1,0 +1,25 @@
+{
+  "population": "data_processed_cic_natural_v3b",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "test_rows_per_seed": 7986,
+  "pairwise_disagreement_pct_min": 0.15026296018031554,
+  "pairwise_disagreement_pct_max": 0.6636614074630603,
+  "pairwise_disagreement_pct_mean": 0.36981384088822106,
+  "rows_differing_min": 12,
+  "rows_differing_max": 53,
+  "seed_42_pairs_pct_range": [
+    0.2128725269221137,
+    0.4883546205860255
+  ]
+}

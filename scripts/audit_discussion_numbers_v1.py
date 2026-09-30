@@ -132,6 +132,14 @@ def discussion() -> None:
     capacity = json.loads((ROOT / "results_gate_capacity_v1" /
                            "gate_capacity_summary.json").read_text(encoding="utf-8"))
     check("6.5 boosted gate gain", 0.000050, capacity["hgb_gain_vs_equal"], 5e-7)
+    # the conclusion now states how much the experts actually disagree, instead
+    # of claiming they never do
+    disagreement = json.loads((ROOT / "results_expert_disagreement_v1" /
+                               "expert_disagreement_summary.json").read_text(encoding="utf-8"))
+    check("conclusion expert disagreement floor (%)", 0.15,
+          disagreement["pairwise_disagreement_pct_min"], 5e-3)
+    check("conclusion expert disagreement ceiling (%)", 0.66,
+          disagreement["pairwise_disagreement_pct_max"], 5e-3)
 
     splits = pd.read_csv(ROOT / "results_repeated_splits_v3" / "summary.csv", header=[0, 1])
     splits = splits.set_index(splits.columns[0])
