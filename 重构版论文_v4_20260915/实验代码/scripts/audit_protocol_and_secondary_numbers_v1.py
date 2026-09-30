@@ -45,6 +45,12 @@ def protocol() -> None:
     balanced = pd.read_csv(ROOT / "results_rccf_cic_balanced_v3b" / "metrics_aggregate.csv")
     balanced_f1 = float(balanced.macro_f1_mean.iloc[0])
     check("class prior (balanced control)", 0.961807, balanced_f1, 5e-7)
+    balanced10 = pd.read_csv(ROOT / "results_rccf_cic_balanced_v10" /
+                             "metrics_by_seed.csv")
+    check("class prior (balanced control, ten seeds)", 0.962665,
+          balanced10.macro_f1.mean(), 5e-6)
+    check("class-prior difference (ten seeds)", 0.0734,
+          balanced10.macro_f1.mean() - ten.loc["rccf", "macro_f1"], 5e-5)
     check("class prior (natural prior)", 0.889278, ten.loc["rccf", "macro_f1"], 5e-7)
     check("class-prior difference", 0.0725, balanced_f1 - ten.loc["rccf", "macro_f1"], 5e-5)
 

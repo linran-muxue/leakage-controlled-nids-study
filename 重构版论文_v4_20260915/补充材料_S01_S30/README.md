@@ -17,7 +17,7 @@
 | S13 | UNSW-NB15 逐类别指标与划分敏感性 | classification_report_seed42.csv; metrics_aggregate.csv |
 | S14 | 文件级外推压力测试逐文件结果 | file_external_results.csv |
 | S15 | 校准、扰动鲁棒性与延迟百分位原始数值 | metrics.csv; robustness_shared.csv; latency_percentiles.csv |
-| S16 | 门控 108 种超参数配置搜索记录 | gate_search_results.csv; gate_search_summary.csv; selected_gate_config.json |
+| S16 | 门控 108 种超参数配置搜索记录 | gate_search_results.csv; gate_search_summary.csv; selected_gate_config.json; gate_capacity_summary__results_gate_capacity_v1.json; metrics_by_seed.csv; gate_capacity_summary__results_gate_capacity_k20.json; gate_capacity_summary__results_gate_capacity_k40.json; gate_capacity_summary__results_gate_capacity_k80.json |
 | S17 | 逐测试行的边距与扰动上界 | margin_bound_summary.csv; margin_bound_summary.json |
 | S18 | 专家多样性实验（五类专家集合 x 三种子） | diversity_suite_results.csv; diversity_gain_regression.json |
 | S19 | 神经基线结果与选优门控的测试集确认 | metrics_aggregate.csv; mlp_vs_rccf_paired.csv; tuned_vs_default_test.csv |

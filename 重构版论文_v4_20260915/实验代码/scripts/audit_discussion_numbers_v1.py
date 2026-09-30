@@ -127,6 +127,11 @@ def discussion() -> None:
                          "margin_bound_summary.json").read_text(encoding="utf-8"))
     check("median decision margin", 1.0, margin["median_margin_mean"])
     check("provably immune share (%)", 99.91, margin["provable_by_bound_rate_mean"] * 100, 5e-3)
+    # the model-side intervention reported in 6.5: a higher-capacity gate still
+    # cannot act, so the associational caveat stays but is bounded on that side
+    capacity = json.loads((ROOT / "results_gate_capacity_v1" /
+                           "gate_capacity_summary.json").read_text(encoding="utf-8"))
+    check("6.5 boosted gate gain", 0.000050, capacity["hgb_gain_vs_equal"], 5e-7)
 
     splits = pd.read_csv(ROOT / "results_repeated_splits_v3" / "summary.csv", header=[0, 1])
     splits = splits.set_index(splits.columns[0])

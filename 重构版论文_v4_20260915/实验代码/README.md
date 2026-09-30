@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 387 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 389 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -16,6 +16,7 @@
 | `scripts/add_full_corpus_supplementary_v57.py` | `051520ab2886fa0b` | 81 | 5.0 KB |
 | `scripts/add_nbaiot_references_v53.py` | `58800f103a8a8f68` | 70 | 2.6 KB |
 | `scripts/add_open_set_supplementary_v1.py` | `21eb7d80f449273e` | 185 | 8.5 KB |
+| `scripts/add_optimisation_experiments_v1.py` | `57c2459b6c033fee` | 129 | 7.5 KB |
 | `scripts/add_scale_ladder_table_v1.py` | `62a78cccc2fba1cf` | 93 | 4.8 KB |
 | `scripts/align_aux_documents_v13.py` | `eaad76d7860c085c` | 48 | 2.1 KB |
 | `scripts/align_contribution3_v29.py` | `feeba0ec3d652cac` | 38 | 2.0 KB |
@@ -70,7 +71,7 @@
 | `scripts/apply_scale_and_nbaiot_v49.py` | `16683f55f33ad68d` | 99 | 14.0 KB |
 | `scripts/apply_v7_fixes.py` | `80c4c5929814f0de` | 63 | 2.4 KB |
 | `scripts/artifact_counts_v1.py` | `05801c48fd49f4f3` | 65 | 2.5 KB |
-| `scripts/assemble_supplementary_v5.py` | `c926885f0f0a5371` | 207 | 11.8 KB |
+| `scripts/assemble_supplementary_v5.py` | `f3705f048ff57dd3` | 214 | 12.3 KB |
 | `scripts/audit_abbreviations_v5.py` | `06a364fc784530f8` | 39 | 1.4 KB |
 | `scripts/audit_baseline_reproduction_v1.py` | `0660bca690404d9b` | 110 | 5.2 KB |
 | `scripts/audit_calibration_and_external_numbers_v1.py` | `8860dada500de215` | 146 | 6.8 KB |
@@ -79,7 +80,7 @@
 | `scripts/audit_crosslanguage_v5.py` | `3f825161fccc4029` | 49 | 1.9 KB |
 | `scripts/audit_data_authenticity_v1.py` | `c392c45976391718` | 206 | 7.8 KB |
 | `scripts/audit_data_processing_v1.py` | `c98952971ea1b4c1` | 137 | 7.7 KB |
-| `scripts/audit_discussion_numbers_v1.py` | `74c371674bd3db33` | 358 | 18.4 KB |
+| `scripts/audit_discussion_numbers_v1.py` | `80a35420e561c628` | 363 | 18.7 KB |
 | `scripts/audit_drc_results_v1.py` | `01a85796f4b62a84` | 75 | 3.6 KB |
 | `scripts/audit_feature_quality_v4.py` | `38ca07adc0346f95` | 41 | 3.3 KB |
 | `scripts/audit_file_label_coverage_v4.py` | `4d134578daf68beb` | 58 | 2.8 KB |
@@ -89,11 +90,11 @@
 | `scripts/audit_main_tables_v1.py` | `78b18895fd5c5fdf` | 246 | 11.9 KB |
 | `scripts/audit_manuscript_claims_v1.py` | `948b9851033ea243` | 59 | 2.9 KB |
 | `scripts/audit_manuscripts_v5.py` | `820731148b00c77c` | 74 | 2.9 KB |
-| `scripts/audit_mechanism_numbers_v1.py` | `3729bf5e23047247` | 118 | 5.3 KB |
+| `scripts/audit_mechanism_numbers_v1.py` | `f62e43ddb8b72e07` | 148 | 6.8 KB |
 | `scripts/audit_number_coverage_v1.py` | `1415840317264b11` | 73 | 2.6 KB |
 | `scripts/audit_number_traceability_v5.py` | `dbadb2a96c89c153` | 214 | 12.6 KB |
 | `scripts/audit_per_class_metrics_v1.py` | `b6af0ea4639708d0` | 141 | 6.8 KB |
-| `scripts/audit_protocol_and_secondary_numbers_v1.py` | `e949c05a12ccbe54` | 305 | 16.1 KB |
+| `scripts/audit_protocol_and_secondary_numbers_v1.py` | `7d6c94bcc19cd538` | 311 | 16.4 KB |
 | `scripts/audit_publication_readiness.py` | `b42c0c1f52c1ba25` | 100 | 6.8 KB |
 | `scripts/audit_redundancy_and_terms_v5.py` | `7e05e77e65e4a3c8` | 50 | 1.9 KB |
 | `scripts/audit_references_v5.py` | `566fdda9b9553e84` | 43 | 1.4 KB |
@@ -301,6 +302,7 @@
 | `scripts/run_equivalence_tests_v5.py` | `d1104eafdf8afd74` | 164 | 6.6 KB |
 | `scripts/run_file_external_generalization_v1.py` | `774326f749dffd3c` | 68 | 5.3 KB |
 | `scripts/run_full_corpus_parallel_v1.py` | `8816b61226759680` | 187 | 7.1 KB |
+| `scripts/run_gate_capacity_test_v1.py` | `4cf9935805965ce2` | 166 | 7.9 KB |
 | `scripts/run_imbalanced_class_reports.py` | `2c50e90c31ba23a6` | 27 | 1.2 KB |
 | `scripts/run_latency_v4.py` | `dc525cb31a116890` | 51 | 2.4 KB |
 | `scripts/run_mlp_baseline_v5.py` | `a34b98f56bd5ae98` | 174 | 7.2 KB |

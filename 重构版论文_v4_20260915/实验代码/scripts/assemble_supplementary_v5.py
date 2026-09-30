@@ -60,7 +60,14 @@ ITEMS: dict[str, tuple[str, list[str]]] = {
     "S16": ("门控 108 种超参数配置搜索记录",
             ["results_gate_tuning_v5/gate_search_results.csv",
              "results_gate_tuning_v5/gate_search_summary.csv",
-             "results_gate_tuning_v5/selected_gate_config.json"]),
+             "results_gate_tuning_v5/selected_gate_config.json",
+             # the model-side intervention (higher-capacity risk model) and the
+             # feature-budget sweep added after the logic review
+             "results_gate_capacity_v1/gate_capacity_summary.json",
+             "results_gate_capacity_v1/metrics_by_seed.csv",
+             "results_gate_capacity_k20/gate_capacity_summary.json",
+             "results_gate_capacity_k40/gate_capacity_summary.json",
+             "results_gate_capacity_k80/gate_capacity_summary.json"]),
     "S17": ("逐测试行的边距与扰动上界",
             ["results_margin_bound_v5/margin_bound_summary.csv",
              "results_margin_bound_v5/margin_bound_summary.json"]),

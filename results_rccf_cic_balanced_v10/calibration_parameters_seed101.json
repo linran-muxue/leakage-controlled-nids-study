@@ -1,0 +1,12 @@
+{
+  "temperature": 1.0,
+  "alpha": 0.1,
+  "classes": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "calibration_rows": 505
+}

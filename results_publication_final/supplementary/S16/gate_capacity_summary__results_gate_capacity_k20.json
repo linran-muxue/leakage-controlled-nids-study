@@ -1,0 +1,14 @@
+{
+  "population": "data_processed_cic_natural_v3b",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "test_rows": 7986,
+  "equal_fusion_mean_macro_f1": 0.8818743347601222,
+  "comparisons": 23958,
+  "logistic_mean_macro_f1": 0.8861618400843568,
+  "logistic_gain_vs_equal": 0.004287505324234682,
+  "logistic_changed_labels_total": 40
+}

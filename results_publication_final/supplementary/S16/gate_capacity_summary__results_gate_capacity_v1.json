@@ -1,0 +1,24 @@
+{
+  "population": "data_processed_cic_natural_v3b",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "test_rows": 7986,
+  "equal_fusion_mean_macro_f1": 0.8892681259331947,
+  "logistic_mean_macro_f1": 0.8892782820171663,
+  "hgb_mean_macro_f1": 0.8893180732974985,
+  "logistic_gain_vs_equal": 1.0156083971568642e-05,
+  "hgb_gain_vs_equal": 4.994736430387059e-05,
+  "logistic_changed_labels_total": 1,
+  "hgb_changed_labels_total": 28,
+  "comparisons": 79860
+}

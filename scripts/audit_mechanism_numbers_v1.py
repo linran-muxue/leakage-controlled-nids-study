@@ -108,9 +108,39 @@ def main() -> int:
                 (f"{name} rows changed", changed, row["changed"], 5e-2)):
             check(label, claimed, recomputed, tol)
 
+    optimisation_experiments()
     print()
     print(f"assertions passed {passed} | mismatches {mismatches}")
     return 1 if mismatches else 0
+
+
+def optimisation_experiments() -> None:
+    """Section 5.3 measurement 7 and the feature-budget sweep."""
+    global passed, mismatches
+    print()
+    print("== 5.3 measurement 7 and the feature-budget sweep ==")
+    capacity = json.loads((ROOT / "results_gate_capacity_v1" /
+                           "gate_capacity_summary.json").read_text(encoding="utf-8"))
+    check("capacity test, logistic gain", 0.000010,
+          capacity["logistic_gain_vs_equal"], 5e-7)
+    check("capacity test, boosted gain", 0.000050, capacity["hgb_gain_vs_equal"], 5e-7)
+    check("capacity test, logistic labels changed", 1,
+          capacity["logistic_changed_labels_total"], 0.5)
+    check("capacity test, boosted labels changed", 28,
+          capacity["hgb_changed_labels_total"], 0.5)
+    check("capacity test, comparisons", 79860, capacity["comparisons"], 0.5)
+
+    sweep = {}
+    for budget in (20, 40, 80):
+        summary = json.loads((ROOT / f"results_gate_capacity_k{budget}" /
+                              "gate_capacity_summary.json").read_text(encoding="utf-8"))
+        sweep[budget] = summary
+        check(f"k = {budget} comparisons", 23958, summary["comparisons"], 0.5)
+    check("k = 20 gate gain", 0.004288, sweep[20]["logistic_gain_vs_equal"], 5e-7)
+    check("k = 20 labels changed", 40,
+          sweep[20]["logistic_changed_labels_total"], 0.5)
+    check("k = 40 labels changed", 0, sweep[40]["logistic_changed_labels_total"], 0.5)
+    check("k = 80 labels changed", 0, sweep[80]["logistic_changed_labels_total"], 0.5)
 
 
 if __name__ == "__main__":
