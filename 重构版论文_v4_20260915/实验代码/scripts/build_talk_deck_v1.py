@@ -416,8 +416,9 @@ def main() -> None:
                 size=12, color=GREY)
     panel(slide, Inches(0.6), Inches(4.85), Inches(7.7), Inches(1.6))
     textbox(slide, Inches(0.85), Inches(5.05), Inches(7.2), Inches(1.2),
-            "增益由专家多样性支配：分歧率 0.20%–0.36% 的专家集合 6 次运行增益恰好为 0；"
-            "刻意去相关的三类集合 9 次运行全为正（斜率 0.0646，r = 0.749）。",
+            "增益与专家多样性同步变化（十五个配置的剂量—反应，属相关性证据）：分歧率 "
+            "0.20%–0.36% 的专家集合 6 次运行增益恰好为 0；刻意去相关的三类集合 9 次运行全为正"
+            "（斜率 0.0646，r = 0.749）。",
             size=13, color=INK)
     picture(slide, "fig5_gate_diagnostics.png", Inches(8.5), Inches(1.95), Inches(4.3))
     footer(slide, 6)
@@ -457,8 +458,9 @@ def main() -> None:
     textbox(slide, Inches(0.6), Inches(1.85), Inches(5.6), Inches(0.4),
             "训练与推理代价", size=15, bold=True, color=BLUE)
     cost = [
-        ("训练耗时", f"截断约 {n['train_multiple']:.0f} 倍，全语料 {n['full_slowdown']:.0f} 倍"),
-        ("模型体积", f"{n['size_multiple']:.1f} 倍（9.09 MB vs 2.21 MB）"),
+        ("训练耗时", f"截断约 {n['train_multiple']:.0f} 倍，全语料 {n['full_slowdown']:.0f} 倍"
+                     f"（十种子均值）"),
+        ("模型体积", f"{n['size_multiple']:.1f} 倍（9.09 MB vs 2.21 MB，单种子画像）"),
         ("代价敏感", "误报漏报代价比 1–100 内没有优势"),
     ]
     for index, (label, value) in enumerate(cost):

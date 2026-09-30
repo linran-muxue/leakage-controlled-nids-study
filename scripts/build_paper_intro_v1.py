@@ -236,7 +236,8 @@ def main() -> None:
                  f"{weight.mean_probability_l1:.6f}（最大 {weight.max_probability_l1:.6f}）；")
     lines.append(f"- 门控 **{len(grid)}** 种超参数配置只产生 **{grid.val_macro_f1.nunique()}** 个不同的验证集取值，"
                  f"锁定后在测试集上改判 0 行；")
-    lines.append(f"- 增益由专家多样性支配：分歧率 0.20%–0.36% 的专家集合 6 次运行增益全为 0，"
+    lines.append(f"- 增益与专家多样性同步变化（十五个构造配置上的剂量—反应关系，属相关性证据，"
+                f"非干预实验）：分歧率 0.20%–0.36% 的专家集合 6 次运行增益全为 0，"
                 f"去相关集合 9 次运行全为正（回归斜率 {regression['slope']:.4f}，"
                 f"Pearson r = {regression['pearson_r']:.3f}）。")
     lines.append(f"- 权重弥散的二阶刻画：式 (3)/(4) 的一阶与二阶展开预测熵亏分别为 "
@@ -282,7 +283,8 @@ def main() -> None:
     lines.append("")
     lines.append("### 4.5 代价与开放集")
     lines.append("")
-    lines.append("- **训练与推理代价**（同一台机器、同一批测试行）：")
+    lines.append("- **训练与推理代价**（同一台机器；训练与整批推理为十种子均值，"
+                 "模型体积与吞吐为单种子资源画像 S22）：")
     lines.append("")
     lines.append("| 项目 | 条件加权 RCCF | 等权 χ² 森林 | 倍数 |")
     lines.append("|---|---:|---:|---:|")

@@ -244,13 +244,14 @@ def main() -> None:
     lines.append("")
     lines.append("**第 8 页 · 代价与开放集（70 秒）**")
     lines.append("")
-    lines.append(f"> 「代价这边我不打算美化：同等总体下条件加权的训练耗时约是等权森林的 80 倍，"
-                 f"全语料 {full['train_slowdown']:.0f} 倍（单种子约 "
+    lines.append(f"> 「代价这边我不打算美化：按十种子均值，同等总体下条件加权的训练耗时约是"
+                 f"等权森林的 80 倍，全语料 {full['train_slowdown']:.0f} 倍（单种子约 "
                  f"{full['rccf_mean_train_seconds'] / 3600:.1f} 小时对 "
                  f"{full['control_mean_train_seconds']:.0f} 秒）；模型体积 "
                  f"{profile['rccf']['model_size_mb'] / profile['equal_rf_chi2']['model_size_mb']:.1f} 倍，"
                  f"批量吞吐 {profile['rccf']['rows_per_second']:.0f} 对 "
-                 f"{profile['equal_rf_chi2']['rows_per_second']:.0f} 行/秒。开放集上，以 PortScan、"
+                 f"{profile['equal_rf_chi2']['rows_per_second']:.0f} 行/秒（体积与吞吐来自单种子"
+                 f"资源画像）。开放集上，以 PortScan、"
                  f"Infiltration、Heartbleed 为未知族时，条件分支 AUROC "
                  f"{conditional.auroc.min():.3f}–{conditional.auroc.max():.3f}、未知类召回 "
                  f"{conditional.unknown_recall.min():.4f}–{conditional.unknown_recall.max():.4f}，"
@@ -290,7 +291,8 @@ def main() -> None:
                  "局限我说三条：公开数据不是生产流量、没有同一测试床的时间分离留出集、"
                  "开放集只覆盖三个未知族。」")
     lines.append("")
-    lines.append("- 数字：训练快 80–175 倍、模型小 4.1 倍、协议效应高一个数量级。")
+    lines.append("- 数字：训练代价 80–175 倍（十种子均值）、模型小 4.1 倍（单种子画像）、"
+                 "协议效应高一个数量级。")
     lines.append("- 提示：留一句「下一步」给老师接话（见 Q18）。")
     lines.append("")
     lines.append("## 五、数字速查（被追问时直接念）")
@@ -407,8 +409,9 @@ def main() -> None:
          "不平衡下准确率会骗人：全语料上 XGBoost 准确率 0.9993 但 Macro-F1 只有 0.800255，"
          "随机森林 0.9958 / 0.759540，极端随机树 0.696629。"),
         ("代价是不是太大？",
-         f"是，这正是结论之一：截断总体训练约 80 倍、全语料 {full['train_slowdown']:.0f} 倍，"
-         "模型体积 4.1 倍、批量推理 5 倍，且在误报漏报代价比 1–100 内没有代价敏感优势。"),
+         f"是，这正是结论之一：按十种子均值，截断总体训练约 80 倍、全语料 "
+         f"{full['train_slowdown']:.0f} 倍；模型体积 4.1 倍、批量推理 5 倍来自单种子资源画像。"
+         "在误报漏报代价比 1–100 内没有代价敏感优势。"),
         ("下一步做什么？",
          "三个方向：显式强制专家去相关的加权机制（检验打破命题 1 前提后能否恢复增益）；"
          "跨时段/跨场景的完整类别协议（把文件级覆盖分析升级为真正的外部有效性检验）；"
