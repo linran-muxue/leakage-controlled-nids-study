@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 410 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 412 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -120,7 +120,7 @@
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
 | `scripts/build_data_products_doc_v1.py` | `af78b86dffa45fe5` | 265 | 12.2 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
-| `scripts/build_data_sources_doc_v1.py` | `fec0563f4350cc84` | 376 | 21.3 KB |
+| `scripts/build_data_sources_doc_v1.py` | `41e8e3a34b5b2655` | 423 | 24.0 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
 | `scripts/build_english_sci_docx_v1.py` | `8466f382fc21426f` | 92 | 4.1 KB |
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
@@ -203,6 +203,7 @@
 | `scripts/extend_dilution_to_three_populations_v1.py` | `9d0cd8b96c78ba6a` | 104 | 7.4 KB |
 | `scripts/extend_discussion_full_corpus_v1.py` | `71d6fb26365b37dc` | 96 | 5.7 KB |
 | `scripts/fetch_2025_corpora_v1.py` | `d7345a0cf9eeaeea` | 69 | 2.6 KB |
+| `scripts/fetch_gotham2025_v1.py` | `3485bb2c94c0e1c2` | 181 | 7.4 KB |
 | `scripts/fetch_new_corpora_v1.py` | `f99f3ee6f505f94d` | 101 | 3.9 KB |
 | `scripts/fetch_recent_corpora_v1.py` | `3cb82ee0984de089` | 89 | 3.4 KB |
 | `scripts/finalize_full_corpus_v56.py` | `debbef91537544dd` | 209 | 10.9 KB |
@@ -283,6 +284,7 @@
 | `scripts/proofread_char_level_v33.py` | `595b592a5d533e47` | 127 | 5.8 KB |
 | `scripts/proposition3_quantify_v6.py` | `156eb16cf7da3470` | 89 | 3.3 KB |
 | `scripts/prose_diagnostics_v35.py` | `ab9883a6d790140c` | 90 | 4.0 KB |
+| `scripts/proxy_node_switch_v1.py` | `08371d3ffbd3ac66` | 151 | 6.0 KB |
 | `scripts/qualify_highlights_and_ga_v1.py` | `a96e17a576bb4ba4` | 67 | 2.8 KB |
 | `scripts/quarantine_superseded_v5.py` | `466925ae2cb92b93` | 58 | 1.9 KB |
 | `scripts/quarantine_unrelated_material_v1.py` | `93b52f32c8b3866e` | 189 | 8.9 KB |

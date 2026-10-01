@@ -40,7 +40,9 @@ ROLES = {
 # from drifting from what was actually downloaded.
 EXTENSION_MANIFESTS = (Path(r"E:\论文\data\external\new_corpora_manifest.json"),
                        Path(r"E:\论文\data\external\recent\recent_corpora_manifest.json"),
-                       Path(r"E:\论文\data\external\y2025\corpora_2025_manifest.json"))
+                       Path(r"E:\论文\data\external\y2025\corpora_2025_manifest.json"),
+                       Path(r"E:\论文\data\external\y2025\Gotham2025"
+                            r"\gotham2025_manifest.json"))
 EXTENSION_SPECS = (
     ("CIC-IDS2018", "2018", "Hugging Face `c01dsnap/CIC-IDS2018`（官方 CIC 逐日 CSV）",
      "原数据集条款（镜像获取）", "CIC-IDS2018"),
@@ -58,6 +60,38 @@ EXTENSION_SPECS = (
     ("GeNIS", "2025", "Zenodo record 14919237", "CC BY 4.0", "GeNIS"),
     ("IDS2025", "2025", "Mendeley Data `pkskt3fv3v`", "记录页许可", "IDS2025"),
 )
+
+# Corpora that were located but are not (yet) part of the evaluation.  Gotham is
+# open and is being downloaded; the other two cannot be obtained without an
+# application or an author request.  They are listed so the search itself is
+# auditable, and Gotham moves into the table above only once it has results.
+CANDIDATES = (
+    ("Gotham-2025", "2025", "Zenodo record 14502760（Gotham 测试床，78 台 IoT 设备的接口级流量）",
+     "CC BY 4.0", "开放",
+     "22.2 GiB 单归档；分块续传中，完成后按同一协议处理。"),
+    ("HybRID-18", "2025", "Sadhana 50:272（Indian Academy of Sciences）", "需向作者索取", "未公开",
+     "论文未附公开仓库、DOI 或校验值，无法核对版本与字节，不满足逐字节复现要求。"),
+    ("CICAPT-IIoT 2024", "2024", "UNB CIC（APT 溯源日志 + 网络流量）", "申请制", "申请制",
+     "经 CIC 在线申请表发放，需提交个人与机构信息；本机无授权下载入口。"),
+    ("DataSense CIC IIoT 2025", "2025", "UNB CIC（Electronics 14:4095）", "申请制", "申请制",
+     "CIC 下载表单发放；任务设定为传感器基准，与流特征分类协议不可直接比较。"),
+)
+
+
+def candidate_table() -> list[list[str]]:
+    rows: list[list[str]] = []
+    state = Path(r"E:\论文\data\external\y2025\Gotham2025"
+                 r"\GothamDataset2025.zip.state.json")
+    progress = ""
+    if state.exists():
+        data = json.loads(state.read_text(encoding="utf-8"))
+        done, total_blocks = len(data["done"]), (data["total"] + (32 << 20) - 1) // (32 << 20)
+        progress = f"（已续传 {done}/{total_blocks} 块）"
+    for display, year, source, licence, access, note in CANDIDATES:
+        if display == "Gotham-2025" and progress:
+            note += progress
+        rows.append([display, year, source, licence, access, note])
+    return rows
 
 
 def extension_records(key: str) -> list[tuple[Path, dict, Path]]:
@@ -89,7 +123,11 @@ def extension_table() -> list[list[str]]:
         total = sum(int(row["bytes"]) for _, row, _ in records)
         stamps = [path.stat().st_mtime for _, _, path in records if path.exists()]
         when = time.strftime("%Y-%m-%d", time.localtime(max(stamps))) if stamps else "—"
-        digests = "、".join(f"`{row['sha256'][:16]}…`" for _, row, _ in records[:1])
+        def checksum(row: dict) -> str:
+            value = row.get("sha256") or row.get("md5") or ""
+            return value[:16]
+
+        digests = "、".join(f"`{checksum(row)}…`" for _, row, _ in records[:1])
         if len(records) > 1:
             digests += f"（共 {len(records)} 个文件）"
         rows.append([display, year, source, licence,
@@ -208,6 +246,15 @@ def main() -> None:
     lines.append("| 数据集 | 发布年 | 来源 | 许可 | 本地体积 | SHA-256（前 16 位）| 本地获取日期 |")
     lines.append("|---|---|---|---|---|---|---|")
     for row in extension_table():
+        lines.append("| " + " | ".join(row) + " |")
+    lines.append("")
+    lines.append("**候选语料与获取状态（2025 年检索）。** 为回应「语料年代」的质疑，本文另检索了下列更晚"
+                 "发布的候选数据集；它们**尚未进入正文结果**，此处登记的是检索与获取状态，"
+                 "以免读者以为作者没有检索过：")
+    lines.append("")
+    lines.append("| 数据集 | 发布年 | 来源 | 许可 | 获取方式 | 状态 |")
+    lines.append("|---|---|---|---|---|---|")
+    for row in candidate_table():
         lines.append("| " + " | ".join(row) + " |")
     lines.append("")
     lines.append("## 二、逐文件校验（生成时重新计算）")
