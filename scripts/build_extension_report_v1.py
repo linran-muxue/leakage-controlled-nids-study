@@ -204,6 +204,30 @@ def main() -> None:
             "其中 ACI-IoT-2023 与 RT-IoT2022 的绝对水平（0.778 / 0.940）明显低于 2017 数据，"
             "说明结论不依赖语料年代，也不依赖判别难度。")
 
+    y2025 = []
+    for name, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025（2025-05）"),
+                        ("results_rccf_genis2025_v1", "GeNIS（2025-02）"),
+                        ("results_rccf_ids2025_v1", "IDS2025（2025-11）")):
+        detail = read_json(ROOT / name / "benchmark_summary.json")
+        if detail:
+            y2025.append((f"{label}：{len(detail['classes'])} 类，测试 {detail['test_rows']:,} 条",
+                          f"RCCF {detail['rccf_mean_macro_f1']:.6f}，同成员等权融合 "
+                          f"{detail['equal_fusion_mean_macro_f1']:.6f}，差 "
+                          f"{detail['same_members_difference']:+.6f}"))
+    if y2025:
+        lines += section(
+            "八、2025 年语料（近一年）",
+            "换成最近一年发布的语料，结论是否仍然成立？",
+            "三份 2025 年公开语料（Zenodo / Mendeley，CC BY 4.0 或记录页许可），"
+            "同一水库去重与分层协议，三种子、三个确定性视图。",
+            r"& $py scripts\fetch_2025_corpora_v1.py"
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_uavids2025_v1 --seeds 42 2024 3407 --experts full chi2 anova",
+            "`E:\\论文\\data\\external\\y2025\\`（原始文件 + `corpora_2025_manifest.json` 的 SHA-256）；"
+            "处理与结果在 `data_processed_*2025_v1/`、`results_rccf_*2025_v1/`",
+            y2025,
+            "2025 年语料上，门控与同成员等权融合的差值同样在 0.000000–0.0002 量级；"
+            "结论不依赖语料年代。")
+
     text = "\n".join(lines) + "\n"
     out = Path(args.outdir) / "扩展实验报告.md" if args.outdir else OUT
     out.write_text(text, encoding="utf-8")

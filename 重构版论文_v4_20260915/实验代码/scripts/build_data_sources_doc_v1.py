@@ -14,6 +14,7 @@ import hashlib
 import json
 import re
 import sys
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -33,6 +34,67 @@ ROLES = {
     "UNSW-NB15": "外部基准：§5.5（十类，含跨划分特征键重叠的记录）",
     "N-BaIoT": "跨域基准：§5.7（消费级 IoT 僵尸网络流量，CC BY 4.0）",
 }
+
+# The nine extension corpora of Sections 5.7-5.8.  Their provenance lives in the
+# fetch manifests next to the raw files; reading it from there keeps this table
+# from drifting from what was actually downloaded.
+EXTENSION_MANIFESTS = (Path(r"E:\论文\data\external\new_corpora_manifest.json"),
+                       Path(r"E:\论文\data\external\recent\recent_corpora_manifest.json"),
+                       Path(r"E:\论文\data\external\y2025\corpora_2025_manifest.json"))
+EXTENSION_SPECS = (
+    ("CIC-IDS2018", "2018", "Hugging Face `c01dsnap/CIC-IDS2018`（官方 CIC 逐日 CSV）",
+     "原数据集条款（镜像获取）", "CIC-IDS2018"),
+    ("CIC-IoT-2023", "2023", "Hugging Face `lacg030175/CIC-IoT-2023-full`（ML 表镜像）",
+     "原数据集条款（镜像获取）", "CIC-IoT-2023"),
+    ("LITNET-2020", "2020", "Hugging Face `sukengine/LITNET2020-S0.001`",
+     "原数据集条款（镜像获取）", "LITNET-2020-S0.001"),
+    ("IoT-23", "2020", "Hugging Face `19kmunz/iot-23-preprocessed`",
+     "原数据集条款（镜像获取）", "IoT-23"),
+    ("RT-IoT2022", "2022", "Hugging Face `michaelmallari/rt-iot2022`",
+     "原数据集条款（镜像获取）", "RT-IoT2022"),
+    ("ACI-IoT-2023", "2023", "Hugging Face `knhn1004/aci-iot-2023-processed`",
+     "原数据集条款（镜像获取）", "ACI-IoT-2023"),
+    ("UAVIDS-2025", "2025", "Zenodo record 15336998", "CC BY 4.0", "UAVIDS-2025"),
+    ("GeNIS", "2025", "Zenodo record 14919237", "CC BY 4.0", "GeNIS"),
+    ("IDS2025", "2025", "Mendeley Data `pkskt3fv3v`", "记录页许可", "IDS2025"),
+)
+
+
+def extension_records(key: str) -> list[tuple[Path, dict, Path]]:
+    """Records for one corpus, as (manifest, row, resolved file path)."""
+    records: list[tuple[Path, dict, Path]] = []
+    for manifest in EXTENSION_MANIFESTS:
+        if not manifest.exists():
+            continue
+        for row in json.loads(manifest.read_text(encoding="utf-8")):
+            if row.get("dataset") == key:
+                path = Path(row["file"])
+                if not path.is_absolute():
+                    beside = manifest.parent / path
+                    # the Hugging Face mirrors were later moved under a
+                    # per-corpus directory, so fall back to the recursive find
+                    path = beside if beside.exists() else (find(path.name) or beside)
+                records.append((manifest, row, path))
+    return records
+
+
+def extension_table() -> list[list[str]]:
+    """One row per extension corpus: volume, digest and the local fetch date."""
+    rows: list[list[str]] = []
+    for display, year, source, licence, key in EXTENSION_SPECS:
+        records = extension_records(key)
+        if not records:
+            rows.append([display, year, source, licence, "本地无获取清单", "—", "—"])
+            continue
+        total = sum(int(row["bytes"]) for _, row, _ in records)
+        stamps = [path.stat().st_mtime for _, _, path in records if path.exists()]
+        when = time.strftime("%Y-%m-%d", time.localtime(max(stamps))) if stamps else "—"
+        digests = "、".join(f"`{row['sha256'][:16]}…`" for _, row, _ in records[:1])
+        if len(records) > 1:
+            digests += f"（共 {len(records)} 个文件）"
+        rows.append([display, year, source, licence,
+                     f"{total / 1e6:.1f} MB / {len(records)} 个文件", digests, when])
+    return rows
 
 
 def find(name: str) -> Path | None:
@@ -135,6 +197,18 @@ def main() -> None:
                  "、".join(f"`docs/source_records/{p.name}`"
                           for p in sorted((ROOT / "docs" / "source_records").glob("*"))
                           if p.is_file()) + "。")
+    lines.append("")
+    lines.append("**扩展语料（第 5.8 节，九项）**")
+    lines.append("")
+    lines.append("这九项与上面四项一样，都在同一套处理与评估协议下运行，只是只用于扩展实验。"
+                 "原始文件与获取清单保存在 `E:\\论文\\data\\external\\`，不随包分发；"
+                 "可用 `scripts/fetch_new_corpora_v1.py`、`scripts/fetch_recent_corpora_v1.py`、"
+                 "`scripts/fetch_2025_corpora_v1.py` 重新取得，并与下表的 SHA-256 逐字节核对。")
+    lines.append("")
+    lines.append("| 数据集 | 发布年 | 来源 | 许可 | 本地体积 | SHA-256（前 16 位）| 本地获取日期 |")
+    lines.append("|---|---|---|---|---|---|---|")
+    for row in extension_table():
+        lines.append("| " + " | ".join(row) + " |")
     lines.append("")
     lines.append("## 二、逐文件校验（生成时重新计算）")
     lines.append("")

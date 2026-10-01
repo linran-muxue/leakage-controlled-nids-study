@@ -1,0 +1,105 @@
+{
+  "train": {
+    "rows_scanned": 85520,
+    "per_class_total": {
+      "Blackhole Attack": 18231,
+      "Sybil Attack": 16778,
+      "Flooding Attack": 13928,
+      "Normal Traffic": 18321,
+      "Wormhole Attack": 18262
+    },
+    "per_class_kept": {
+      "Blackhole Attack": 5000,
+      "Sybil Attack": 5000,
+      "Flooding Attack": 5000,
+      "Normal Traffic": 5000,
+      "Wormhole Attack": 5000
+    },
+    "per_class_duplicates_in_reservoir": {
+      "Flooding Attack": 1792,
+      "Sybil Attack": 29
+    },
+    "dropped_non_numeric_columns": [
+      "SrcAddr",
+      "DstAddr",
+      "Protocol"
+    ],
+    "features": [
+      "FlowDuration/s",
+      "SrcPort",
+      "DstPort",
+      "TxPackets",
+      "RxPackets",
+      "LostPackets",
+      "TxBytes",
+      "RxBytes",
+      "TxPacketRate/s",
+      "RxPacketRate/s",
+      "TxByteRate/s",
+      "RxByteRate/s",
+      "MeanDelay/s",
+      "MeanJitter/s",
+      "Throughput/Kbps",
+      "MeanPacketSize",
+      "PacketDropRate",
+      "AverageHopCount"
+    ],
+    "cap": 5000
+  },
+  "test": {
+    "rows_scanned": 36651,
+    "per_class_total": {
+      "Wormhole Attack": 7824,
+      "Normal Traffic": 7851,
+      "Sybil Attack": 7299,
+      "Blackhole Attack": 7879,
+      "Flooding Attack": 5798
+    },
+    "per_class_kept": {
+      "Wormhole Attack": 2000,
+      "Normal Traffic": 2000,
+      "Sybil Attack": 2000,
+      "Blackhole Attack": 2000,
+      "Flooding Attack": 2000
+    },
+    "per_class_duplicates_in_reservoir": {
+      "Flooding Attack": 283,
+      "Sybil Attack": 8
+    },
+    "dropped_non_numeric_columns": [
+      "SrcAddr",
+      "DstAddr",
+      "Protocol"
+    ],
+    "features": [
+      "FlowDuration/s",
+      "SrcPort",
+      "DstPort",
+      "TxPackets",
+      "RxPackets",
+      "LostPackets",
+      "TxBytes",
+      "RxBytes",
+      "TxPacketRate/s",
+      "RxPacketRate/s",
+      "TxByteRate/s",
+      "RxByteRate/s",
+      "MeanDelay/s",
+      "MeanJitter/s",
+      "Throughput/Kbps",
+      "MeanPacketSize",
+      "PacketDropRate",
+      "AverageHopCount"
+    ],
+    "cap": 2000
+  },
+  "splits": {
+    "train": 21250,
+    "validation": 3750,
+    "test": 10000
+  },
+  "file_sha256": {
+    "train.csv": "736f67967ad88451dc40b5868f02963adcf5468812de0b56c25816589e32672b",
+    "test.csv": "ae2c951295275b79e89fccf12f6cba7c0b7b1707e435608d6e3bbd1b3d6e582a"
+  }
+}

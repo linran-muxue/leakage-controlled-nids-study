@@ -50,6 +50,12 @@ def main() -> int:
                                        "benchmark_summary.json"],
         "results_rccf_aci_iot2023_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
                                         "benchmark_summary.json"],
+        "results_rccf_uavids2025_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_genis2025_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                      "benchmark_summary.json"],
+        "results_rccf_ids2025_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                    "benchmark_summary.json"],
     }
     for folder, files in required.items():
         for name in files:
@@ -93,6 +99,12 @@ def main() -> int:
         detail = json.loads((ROOT / folder / "benchmark_summary.json").read_text(encoding="utf-8"))
         checks.append((f"{label} same-members difference",
                        detail["same_members_difference"], 6))
+    for folder, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025"),
+                          ("results_rccf_genis2025_v1", "GeNIS"),
+                          ("results_rccf_ids2025_v1", "IDS2025")):
+        detail = json.loads((ROOT / folder / "benchmark_summary.json").read_text(encoding="utf-8"))
+        checks.append((f"{label} same-members difference",
+                       detail["same_members_difference"], 6))
 
     for label, value, digits in checks:
         rendered = f"{value:.{digits}f}"
@@ -103,7 +115,7 @@ def main() -> int:
     if problems:
         print("EXTENSION_FAILED: " + "; ".join(problems[:8]))
         return 1
-    print(f"EXTENSION_OK experiments=10 quoted={len(checks)} "
+    print(f"EXTENSION_OK experiments=13 quoted={len(checks)} "
           f"prediction_files="
           f"{sum(len(list((ROOT / folder).glob('predictions*.csv'))) for folder in required)}")
     return 0

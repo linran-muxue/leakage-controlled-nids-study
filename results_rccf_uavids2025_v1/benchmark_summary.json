@@ -1,0 +1,19 @@
+{
+  "population": "data_processed_uavids2025_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "Blackhole Attack",
+    "Flooding Attack",
+    "Normal Traffic",
+    "Sybil Attack",
+    "Wormhole Attack"
+  ],
+  "test_rows": 10000,
+  "rccf_mean_macro_f1": 0.944895349407823,
+  "equal_fusion_mean_macro_f1": 0.944895349407823,
+  "same_members_difference": 0.0
+}

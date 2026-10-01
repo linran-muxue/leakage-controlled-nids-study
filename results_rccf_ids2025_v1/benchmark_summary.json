@@ -1,0 +1,21 @@
+{
+  "population": "data_processed_ids2025_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "Botnet ARES",
+    "Brute Force",
+    "Dos/DDos",
+    "Infiltration",
+    "Normal",
+    "PortScan",
+    "Web Attack"
+  ],
+  "test_rows": 9114,
+  "rccf_mean_macro_f1": 0.9749970153507684,
+  "equal_fusion_mean_macro_f1": 0.9749970153507684,
+  "same_members_difference": 0.0
+}

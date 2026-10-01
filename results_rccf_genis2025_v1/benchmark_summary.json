@@ -1,0 +1,18 @@
+{
+  "population": "data_processed_genis2025_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "benign",
+    "bruteforce",
+    "dos",
+    "recon"
+  ],
+  "test_rows": 8000,
+  "rccf_mean_macro_f1": 0.9998749999921875,
+  "equal_fusion_mean_macro_f1": 0.9998749999921875,
+  "same_members_difference": 0.0
+}

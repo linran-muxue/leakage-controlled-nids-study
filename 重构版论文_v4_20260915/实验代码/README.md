@@ -1,12 +1,13 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 408 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 410 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
 | `scripts/__init__.py` | `3d15f94e12c9119b` | 3 | 0.1 KB |
 | `scripts/_generated_build_complete_paper_v6_impl.py` | `578c791fe41fcfa9` | 145 | 8.6 KB |
 | `scripts/_generated_build_complete_paper_v7_impl.py` | `4e05b215c4d3bbea` | 13 | 1.8 KB |
+| `scripts/add_2025_corpora_section_v1.py` | `a7f4e23f26afb78b` | 186 | 11.8 KB |
 | `scripts/add_commit_to_manuscript_v1.py` | `9163033e167b4887` | 14 | 0.5 KB |
 | `scripts/add_content_selfcheck_v6.py` | `3150df1c52d566ba` | 49 | 3.6 KB |
 | `scripts/add_dataset_scope_note_v5.py` | `bf34f97952413794` | 36 | 1.6 KB |
@@ -119,13 +120,13 @@
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
 | `scripts/build_data_products_doc_v1.py` | `af78b86dffa45fe5` | 265 | 12.2 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
-| `scripts/build_data_sources_doc_v1.py` | `0a4f20c46582b785` | 302 | 17.1 KB |
+| `scripts/build_data_sources_doc_v1.py` | `fec0563f4350cc84` | 376 | 21.3 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
 | `scripts/build_english_sci_docx_v1.py` | `8466f382fc21426f` | 92 | 4.1 KB |
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
-| `scripts/build_extension_report_v1.py` | `b4c2392f0bc41b38` | 216 | 12.4 KB |
+| `scripts/build_extension_report_v1.py` | `a5557c1737d5057b` | 240 | 14.0 KB |
 | `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
@@ -160,7 +161,7 @@
 | `scripts/check_docx_numbering_v40.py` | `2e110c917ec7c52f` | 83 | 3.9 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
-| `scripts/check_extension_report_v1.py` | `cc5e20f7f7ef30bc` | 114 | 5.8 KB |
+| `scripts/check_extension_report_v1.py` | `075eaafe7d8cd000` | 126 | 6.6 KB |
 | `scripts/check_figure_annotations_v44.py` | `da6073372674a04e` | 73 | 3.0 KB |
 | `scripts/check_figure_reproducibility_v45.py` | `6ea15e19dad0e439` | 80 | 3.7 KB |
 | `scripts/check_full_corpus_status_v1.py` | `928fe5120a1065aa` | 108 | 4.6 KB |
@@ -201,6 +202,7 @@
 | `scripts/export_submission_text_v1.py` | `1fe10bb6160b29b9` | 55 | 2.2 KB |
 | `scripts/extend_dilution_to_three_populations_v1.py` | `9d0cd8b96c78ba6a` | 104 | 7.4 KB |
 | `scripts/extend_discussion_full_corpus_v1.py` | `71d6fb26365b37dc` | 96 | 5.7 KB |
+| `scripts/fetch_2025_corpora_v1.py` | `d7345a0cf9eeaeea` | 69 | 2.6 KB |
 | `scripts/fetch_new_corpora_v1.py` | `f99f3ee6f505f94d` | 101 | 3.9 KB |
 | `scripts/fetch_recent_corpora_v1.py` | `3cb82ee0984de089` | 89 | 3.4 KB |
 | `scripts/finalize_full_corpus_v56.py` | `debbef91537544dd` | 209 | 10.9 KB |
@@ -219,7 +221,7 @@
 | `scripts/fix_doi_punctuation_v19.py` | `86a927dee9d87dcd` | 37 | 1.5 KB |
 | `scripts/fix_equal_fusion_wording_v1.py` | `5f74c66222c4d607` | 134 | 7.2 KB |
 | `scripts/fix_expert_disagreement_claim_v1.py` | `9d51c426fa404dd8` | 162 | 9.1 KB |
-| `scripts/fix_extension_metrics_v1.py` | `3d4801e2b0a786be` | 73 | 2.9 KB |
+| `scripts/fix_extension_metrics_v1.py` | `b31aaa0480625602` | 75 | 3.0 KB |
 | `scripts/fix_figure_order_v5.py` | `c70cd17870164f2e` | 41 | 1.8 KB |
 | `scripts/fix_full_corpus_split_counts_v1.py` | `01dd4ddc7429dd61` | 75 | 3.8 KB |
 | `scripts/fix_full_corpus_wording_v1.py` | `581c67528a094787` | 68 | 3.1 KB |
@@ -268,7 +270,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `0c5a1a2ee2cc5e82` | 235 | 14.6 KB |
+| `scripts/package_submission_bundle_v18.py` | `e6396b367dcb7150` | 244 | 15.2 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
