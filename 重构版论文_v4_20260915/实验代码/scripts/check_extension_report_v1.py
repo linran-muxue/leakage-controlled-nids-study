@@ -42,6 +42,14 @@ def main() -> int:
         "results_rccf_nsl_v10": ["metrics_by_seed.csv", "metrics_aggregate.csv"],
         "results_rccf_unsw_v10": ["metrics_by_seed.csv", "metrics_aggregate.csv"],
         "results_rccf_nbaiot_v10": ["metrics_by_seed.csv", "metrics_aggregate.csv"],
+        "results_rccf_litnet2020_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_iot23_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                  "benchmark_summary.json"],
+        "results_rccf_rt_iot2022_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_aci_iot2023_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                        "benchmark_summary.json"],
     }
     for folder, files in required.items():
         for name in files:
@@ -78,6 +86,13 @@ def main() -> int:
                           ("results_rccf_nbaiot_v10", "N-BaIoT")):
         frame = pd.read_csv(ROOT / folder / "metrics_aggregate.csv")
         checks.append((f"{label} ten-seed Macro-F1", float(frame["macro_f1_mean"].iloc[0]), 6))
+    for folder, label in (("results_rccf_litnet2020_v1", "LITNET-2020"),
+                          ("results_rccf_iot23_v1", "IoT-23"),
+                          ("results_rccf_rt_iot2022_v1", "RT-IoT2022"),
+                          ("results_rccf_aci_iot2023_v1", "ACI-IoT-2023")):
+        detail = json.loads((ROOT / folder / "benchmark_summary.json").read_text(encoding="utf-8"))
+        checks.append((f"{label} same-members difference",
+                       detail["same_members_difference"], 6))
 
     for label, value, digits in checks:
         rendered = f"{value:.{digits}f}"
@@ -88,7 +103,7 @@ def main() -> int:
     if problems:
         print("EXTENSION_FAILED: " + "; ".join(problems[:8]))
         return 1
-    print(f"EXTENSION_OK experiments=6 quoted={len(checks)} "
+    print(f"EXTENSION_OK experiments=10 quoted={len(checks)} "
           f"prediction_files="
           f"{sum(len(list((ROOT / folder).glob('predictions*.csv'))) for folder in required)}")
     return 0

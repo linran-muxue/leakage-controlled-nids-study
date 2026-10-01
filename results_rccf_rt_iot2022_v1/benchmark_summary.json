@@ -1,0 +1,25 @@
+{
+  "population": "data_processed_rt_iot2022_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "ARP_poisioning",
+    "DDOS_Slowloris",
+    "DOS_SYN_Hping",
+    "MQTT_Publish",
+    "Metasploit_Brute_Force_SSH",
+    "NMAP_OS_DETECTION",
+    "NMAP_TCP_scan",
+    "NMAP_UDP_SCAN",
+    "NMAP_XMAS_TREE_SCAN",
+    "Thing_Speak",
+    "Wipro_bulb"
+  ],
+  "test_rows": 5390,
+  "rccf_mean_macro_f1": 0.9402919330912413,
+  "equal_fusion_mean_macro_f1": 0.9400566551730883,
+  "same_members_difference": 0.00023527791815292076
+}

@@ -1,0 +1,25 @@
+{
+  "population": "data_processed_aci_iot2023_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "Benign",
+    "DNS Flood",
+    "Dictionary Attack",
+    "ICMP Flood",
+    "OS Scan",
+    "Ping Sweep",
+    "Port Scan",
+    "SYN Flood",
+    "Slowloris",
+    "UDP Flood",
+    "Vulnerability Scan"
+  ],
+  "test_rows": 19404,
+  "rccf_mean_macro_f1": 0.7776769829795773,
+  "equal_fusion_mean_macro_f1": 0.7776769829795773,
+  "same_members_difference": 0.0
+}

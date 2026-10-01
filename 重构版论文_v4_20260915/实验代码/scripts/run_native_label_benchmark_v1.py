@@ -22,8 +22,10 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score, log_loss
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
 from src.feature_selection import chi2_top_k
+import src.rccf_forest as rccf
 from src.rccf_forest import RCCFForest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,6 +59,26 @@ def write_predictions(path: Path, y_true, prediction, probability, classes):
     frame.to_csv(path, index=False, encoding="utf-8-sig")
 
 
+def split_with_minimum(y, test_size: float, seed: int, minimum: int = 2):
+    """Stratified split that guarantees at least ``minimum`` rows per class on
+    the calibration side; rare classes are moved across rather than dropped."""
+    train_idx, cal_idx = train_test_split(np.arange(len(y)), test_size=test_size,
+                                          stratify=y, random_state=seed)
+    cal_counts = pd.Series(y[cal_idx]).value_counts()
+    for label in pd.unique(y):
+        held = int(cal_counts.get(label, 0))
+        if held >= minimum:
+            continue
+        needed = minimum - held
+        pool = train_idx[y[train_idx] == label]
+        if len(pool) < needed:
+            raise SystemExit(f"class {label!r} has fewer than {minimum} rows")
+        moved = pool[:needed]
+        train_idx = np.setdiff1d(train_idx, moved)
+        cal_idx = np.concatenate([cal_idx, moved])
+    return train_idx, cal_idx
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--processed-dir", required=True)
@@ -64,6 +86,10 @@ def main() -> None:
     ap.add_argument("--seeds", nargs="+", type=int, default=[42, 2024, 3407])
     ap.add_argument("--n-estimators", type=int, default=100)
     ap.add_argument("--feature-k", type=int, default=60)
+    ap.add_argument("--experts", nargs="+",
+                    default=["full", "chi2", "mutual_info", "anova"],
+                    help="expert views; the recent-corpus extension uses three "
+                         "deterministic views and records the deviation")
     args = ap.parse_args()
 
     data = ROOT / args.processed_dir
@@ -73,6 +99,20 @@ def main() -> None:
     X_val, y_val = load(data / "validation.csv")
     X_test, y_test = load(data / "test.csv")
     labels = np.unique(y_train)
+    rccf.RCCFForest.expert_names = tuple(args.experts)
+    min_count = int(pd.Series(y_train).value_counts().min())
+    counts = pd.Series(y_train).value_counts()
+    # every class must survive a five-fold stratified split inside the training
+    # partition, otherwise RCCFForest's out-of-fold buffer cannot be filled
+    rare = [label for label, count in counts.items() if count < 5]
+    if rare:
+        keep = ~np.isin(y_train, rare)
+        X_train, y_train = X_train[keep], y_train[keep]
+        keep = ~np.isin(y_test, rare)
+        X_test, y_test = X_test[keep], y_test[keep]
+        labels = np.unique(y_train)
+        min_count = int(pd.Series(y_train).value_counts().min())
+        print(f"pruned classes with fewer than five training rows: {rare}", flush=True)
     print(f"train {X_train.shape} test {X_test.shape} classes {len(labels)}: "
           f"{list(labels)}", flush=True)
     rows = []
@@ -80,7 +120,9 @@ def main() -> None:
         model = RCCFForest(n_estimators=args.n_estimators, feature_k=args.feature_k,
                            cv=5, random_state=seed)
         start = time.perf_counter()
-        model.fit(X_train, y_train, X_val, y_val)
+        train_idx, cal_idx = split_with_minimum(y_train, 0.15, seed)
+        model.fit(X_train[train_idx], y_train[train_idx],
+                  X_train[cal_idx], y_train[cal_idx])
         train_seconds = time.perf_counter() - start
         probability = model.predict_proba(X_test)
         prediction = model.classes_[probability.argmax(axis=1)]

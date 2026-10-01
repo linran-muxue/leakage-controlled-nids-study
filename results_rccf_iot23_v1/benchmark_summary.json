@@ -1,0 +1,16 @@
+{
+  "population": "data_processed_iot23_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "Benign",
+    "Malicious"
+  ],
+  "test_rows": 4000,
+  "rccf_mean_macro_f1": 0.985331767176441,
+  "equal_fusion_mean_macro_f1": 0.985331767176441,
+  "same_members_difference": 0.0
+}

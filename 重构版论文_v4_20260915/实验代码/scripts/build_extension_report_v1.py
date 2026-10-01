@@ -178,6 +178,32 @@ def main() -> None:
                              "新语料的结论见上表；与 CIC-IDS2017 相同，"
                              "条件加权没有超过同成员等权融合。")
 
+    recent = []
+    for name, label in (("results_rccf_litnet2020_v1", "LITNET-2020（2020）"),
+                        ("results_rccf_iot23_v1", "IoT-23（2020）"),
+                        ("results_rccf_rt_iot2022_v1", "RT-IoT2022（2022）"),
+                        ("results_rccf_aci_iot2023_v1", "ACI-IoT-2023（2023）")):
+        detail = read_json(ROOT / name / "benchmark_summary.json")
+        if detail:
+            recent.append((f"{label}：{len(detail['classes'])} 类，测试 {detail['test_rows']:,} 条",
+                           f"RCCF {detail['rccf_mean_macro_f1']:.6f}，同成员等权融合 "
+                           f"{detail['equal_fusion_mean_macro_f1']:.6f}，差 "
+                           f"{detail['same_members_difference']:+.6f}"))
+    if recent:
+        lines += section(
+            "七、近年语料（2020–2023）",
+            "换成 2020–2023 年发布、难度更高的语料后，结论是否仍然成立？",
+            "四份公开镜像语料按同一水库去重与分层协议处理，每类上限 5 000（训练）/2 000（测试）；"
+            "三种子、三个确定性视图，与扩展协议一致。",
+            r"& $py scripts\prepare_tabular_corpus_v1.py --name RT-IoT2022 ..."
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_rt_iot2022_v1 --experiments 42 2024 3407",
+            "`data_processed_*_v1/` 与 `results_rccf_*_v1/`（逐种子预测与汇总）；原始文件在 "
+            "`E:\\论文\\data\\external\\recent\\`，附 `recent_corpora_manifest.json`",
+            recent,
+            "四个 2020–2023 语料上，门控与同成员等权融合的差值为 0.000000–0.000235 Macro-F1；"
+            "其中 ACI-IoT-2023 与 RT-IoT2022 的绝对水平（0.778 / 0.940）明显低于 2017 数据，"
+            "说明结论不依赖语料年代，也不依赖判别难度。")
+
     text = "\n".join(lines) + "\n"
     out = Path(args.outdir) / "扩展实验报告.md" if args.outdir else OUT
     out.write_text(text, encoding="utf-8")
