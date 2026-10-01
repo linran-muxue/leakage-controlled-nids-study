@@ -3,7 +3,14 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "ARP_poisioning",
@@ -19,7 +26,7 @@
     "Wipro_bulb"
   ],
   "test_rows": 5390,
-  "rccf_mean_macro_f1": 0.9402919330912413,
-  "equal_fusion_mean_macro_f1": 0.9400566551730883,
-  "same_members_difference": 0.00023527791815292076
+  "rccf_mean_macro_f1": 0.9392315106445634,
+  "equal_fusion_mean_macro_f1": 0.9391609272691175,
+  "same_members_difference": 7.058337544596505e-05
 }

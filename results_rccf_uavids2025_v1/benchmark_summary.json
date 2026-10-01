@@ -3,7 +3,14 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "Blackhole Attack",
@@ -13,7 +20,7 @@
     "Wormhole Attack"
   ],
   "test_rows": 10000,
-  "rccf_mean_macro_f1": 0.944895349407823,
-  "equal_fusion_mean_macro_f1": 0.944895349407823,
-  "same_members_difference": 0.0
+  "rccf_mean_macro_f1": 0.9450103462654116,
+  "equal_fusion_mean_macro_f1": 0.9449900948179104,
+  "same_members_difference": 2.0251447501173914e-05
 }

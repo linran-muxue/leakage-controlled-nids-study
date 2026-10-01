@@ -3,7 +3,14 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "Botnet ARES",
@@ -15,7 +22,7 @@
     "Web Attack"
   ],
   "test_rows": 9114,
-  "rccf_mean_macro_f1": 0.9749970153507684,
-  "equal_fusion_mean_macro_f1": 0.9749970153507684,
-  "same_members_difference": 0.0
+  "rccf_mean_macro_f1": 0.9809970795790495,
+  "equal_fusion_mean_macro_f1": 0.9809810174474448,
+  "same_members_difference": 1.6062131604654972e-05
 }

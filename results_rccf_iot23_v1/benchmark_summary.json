@@ -3,14 +3,21 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "Benign",
     "Malicious"
   ],
   "test_rows": 4000,
-  "rccf_mean_macro_f1": 0.985331767176441,
-  "equal_fusion_mean_macro_f1": 0.985331767176441,
+  "rccf_mean_macro_f1": 0.9854484706452968,
+  "equal_fusion_mean_macro_f1": 0.9854484706452968,
   "same_members_difference": 0.0
 }

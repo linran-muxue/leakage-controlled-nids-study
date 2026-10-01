@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 412 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 413 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -126,7 +126,7 @@
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
-| `scripts/build_extension_report_v1.py` | `a5557c1737d5057b` | 240 | 14.0 KB |
+| `scripts/build_extension_report_v1.py` | `6a92addad7bcf98d` | 240 | 14.3 KB |
 | `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
@@ -300,6 +300,7 @@
 | `scripts/restore_keywords_v23.py` | `9de291521864f65a` | 42 | 1.6 KB |
 | `scripts/retire_data_sources_doc_v1.py` | `83cd82d88cc2a939` | 47 | 1.8 KB |
 | `scripts/rewrite_data_processing_section_v6.py` | `7a93c0239161655d` | 51 | 6.3 KB |
+| `scripts/rewrite_extension_seed_numbers_v1.py` | `9182bf0574ba0607` | 174 | 10.2 KB |
 | `scripts/rewrite_selfcheck_closing_v11.py` | `c899f3025775284c` | 70 | 3.9 KB |
 | `scripts/run_additional_evidence_v4.py` | `f05375a579f9f5c6` | 153 | 9.8 KB |
 | `scripts/run_cfrg_calibration_v1.py` | `2d645df093d3dbd6` | 53 | 4.3 KB |

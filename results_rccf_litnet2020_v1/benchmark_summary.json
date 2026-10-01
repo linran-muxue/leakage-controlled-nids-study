@@ -3,7 +3,14 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "0",
@@ -21,7 +28,7 @@
     "12"
   ],
   "test_rows": 9522,
-  "rccf_mean_macro_f1": 0.9993353824726768,
-  "equal_fusion_mean_macro_f1": 0.9993353824726768,
+  "rccf_mean_macro_f1": 0.9994142442498581,
+  "equal_fusion_mean_macro_f1": 0.9994142442498581,
   "same_members_difference": 0.0
 }

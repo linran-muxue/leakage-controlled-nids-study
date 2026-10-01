@@ -3,7 +3,14 @@
   "seeds": [
     42,
     2024,
-    3407
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
   ],
   "classes": [
     "Benign",
@@ -19,7 +26,7 @@
     "Vulnerability Scan"
   ],
   "test_rows": 19404,
-  "rccf_mean_macro_f1": 0.7776769829795773,
-  "equal_fusion_mean_macro_f1": 0.7776769829795773,
-  "same_members_difference": 0.0
+  "rccf_mean_macro_f1": 0.7781630297879424,
+  "equal_fusion_mean_macro_f1": 0.7781588141638369,
+  "same_members_difference": 4.215624105463611e-06
 }

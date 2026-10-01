@@ -194,14 +194,14 @@ def main() -> None:
             "七、近年语料（2020–2023）",
             "换成 2020–2023 年发布、难度更高的语料后，结论是否仍然成立？",
             "四份公开镜像语料按同一水库去重与分层协议处理，每类上限 5 000（训练）/2 000（测试）；"
-            "三种子、三个确定性视图，与扩展协议一致。",
+            "十种子（与主实验同一组种子）、三个确定性视图。",
             r"& $py scripts\prepare_tabular_corpus_v1.py --name RT-IoT2022 ..."
-            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_rt_iot2022_v1 --experiments 42 2024 3407",
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_rt_iot2022_v1 --seeds 42 2024 3407 7 13 101 202 303 404 505",
             "`data_processed_*_v1/` 与 `results_rccf_*_v1/`（逐种子预测与汇总）；原始文件在 "
             "`E:\\论文\\data\\external\\recent\\`，附 `recent_corpora_manifest.json`",
             recent,
-            "四个 2020–2023 语料上，门控与同成员等权融合的差值为 0.000000–0.000235 Macro-F1；"
-            "其中 ACI-IoT-2023 与 RT-IoT2022 的绝对水平（0.778 / 0.940）明显低于 2017 数据，"
+            "四个 2020–2023 语料上（十种子），门控与同成员等权融合的差值为 +0.000000–+0.000071 Macro-F1；"
+            "其中 ACI-IoT-2023 与 RT-IoT2022 的绝对水平（0.778 / 0.939）明显低于 2017 数据，"
             "说明结论不依赖语料年代，也不依赖判别难度。")
 
     y2025 = []
@@ -219,13 +219,13 @@ def main() -> None:
             "八、2025 年语料（近一年）",
             "换成最近一年发布的语料，结论是否仍然成立？",
             "三份 2025 年公开语料（Zenodo / Mendeley，CC BY 4.0 或记录页许可），"
-            "同一水库去重与分层协议，三种子、三个确定性视图。",
+            "同一水库去重与分层协议，十种子、三个确定性视图。",
             r"& $py scripts\fetch_2025_corpora_v1.py"
-            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_uavids2025_v1 --seeds 42 2024 3407 --experts full chi2 anova",
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_uavids2025_v1 --seeds 42 2024 3407 7 13 101 202 303 404 505 --experts full chi2 anova",
             "`E:\\论文\\data\\external\\y2025\\`（原始文件 + `corpora_2025_manifest.json` 的 SHA-256）；"
             "处理与结果在 `data_processed_*2025_v1/`、`results_rccf_*2025_v1/`",
             y2025,
-            "2025 年语料上，门控与同成员等权融合的差值同样在 0.000000–0.0002 量级；"
+            "2025 年语料上（十种子），门控与同成员等权融合的差值同样在 +0.000000–+0.000020 量级；"
             "结论不依赖语料年代。")
 
     text = "\n".join(lines) + "\n"
