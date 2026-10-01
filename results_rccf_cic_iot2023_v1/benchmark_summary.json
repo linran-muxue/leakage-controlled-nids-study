@@ -1,0 +1,22 @@
+{
+  "population": "data_processed_cic_iot2023_v1",
+  "seeds": [
+    42,
+    2024,
+    3407
+  ],
+  "classes": [
+    "BruteForce",
+    "DDoS",
+    "DoS",
+    "Mirai",
+    "Normal",
+    "Recon",
+    "Spoofing",
+    "Web-based"
+  ],
+  "test_rows": 37516,
+  "rccf_mean_macro_f1": 0.7523752923920589,
+  "equal_fusion_mean_macro_f1": 0.7523468474274471,
+  "same_members_difference": 2.8444964611851198e-05
+}

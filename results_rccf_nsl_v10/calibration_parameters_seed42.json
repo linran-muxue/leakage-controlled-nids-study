@@ -1,0 +1,12 @@
+{
+  "temperature": 0.5,
+  "alpha": 0.1,
+  "calibration_rows": 18896,
+  "classes": [
+    "DoS",
+    "Normal",
+    "Probe",
+    "R2L",
+    "U2R"
+  ]
+}

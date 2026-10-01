@@ -1,0 +1,2 @@
+﻿model,macro_f1_mean,macro_f1_std,accuracy_mean,balanced_accuracy_mean,log_loss_mean,train_seconds_mean,test_samples_mean
+rccf,0.5187562004818327,0.003373993410427472,0.7483144073811213,0.4949483609943138,1.6229571579817015,45.825439715385436,22544

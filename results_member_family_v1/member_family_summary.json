@@ -1,0 +1,52 @@
+{
+  "families": {
+    "members": 4,
+    "member_names": "rf_full|rf_chi2|xgb_chi2|et_chi2",
+    "equal_mean_macro_f1": 0.8886510978030223,
+    "gate_mean_macro_f1": 0.8900721023596226,
+    "mean_gain": 0.0014210045566002878,
+    "labelled_changes_total": 21,
+    "comparisons": 23958,
+    "mean_pairwise_disagreement": 0.022929014664551852
+  },
+  "q2": {
+    "members": 2,
+    "member_names": "rf_chi2|rf_full",
+    "equal_mean_macro_f1": 0.8873011716913064,
+    "gate_mean_macro_f1": 0.8870882173675748,
+    "mean_gain": -0.00021295432373169554,
+    "labelled_changes_total": 2,
+    "comparisons": 23958,
+    "mean_pairwise_disagreement": 0.010059270389848902
+  },
+  "q3": {
+    "members": 3,
+    "member_names": "rf_chi2|rf_full|rf_mutual_info",
+    "equal_mean_macro_f1": 0.8888895270791654,
+    "gate_mean_macro_f1": 0.8890083165514198,
+    "mean_gain": 0.00011878947225448429,
+    "labelled_changes_total": 1,
+    "comparisons": 23958,
+    "mean_pairwise_disagreement": 0.007318362690263516
+  },
+  "q4": {
+    "members": 4,
+    "member_names": "rf_chi2|rf_full|rf_mutual_info|rf_anova",
+    "equal_mean_macro_f1": 0.8873275399896512,
+    "gate_mean_macro_f1": 0.8874675734057123,
+    "mean_gain": 0.00014003341606105835,
+    "labelled_changes_total": 1,
+    "comparisons": 23958,
+    "mean_pairwise_disagreement": 0.006420958900297743
+  },
+  "q6": {
+    "members": 6,
+    "member_names": "rf_chi2|rf_full|rf_mutual_info|rf_anova|xgb_chi2|et_chi2",
+    "equal_mean_macro_f1": 0.8892805786355078,
+    "gate_mean_macro_f1": 0.8909413962014003,
+    "mean_gain": 0.0016608175658925362,
+    "labelled_changes_total": 23,
+    "comparisons": 23958,
+    "mean_pairwise_disagreement": 0.016826668892784596
+  }
+}

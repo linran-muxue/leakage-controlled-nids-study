@@ -1,0 +1,6 @@
+﻿class,true_count,predicted_count
+DoS,7458,5893
+Normal,9711,14673
+Probe,2421,1695
+R2L,2754,264
+U2R,200,19

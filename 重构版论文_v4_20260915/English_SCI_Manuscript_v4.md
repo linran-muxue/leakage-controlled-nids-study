@@ -119,7 +119,7 @@ The section proceeds from provenance to population: 3.1 records the sources, ret
 
 ### 3.1 Datasets, sources and licensing
 
-Four public datasets are used, all obtained from official or public sources [14-18]. No scanning, probing or live attack traffic was generated at any point. Table 2 records sources, versions, retrieval dates, licence status and file hashes. The datasets are not redistributed; only processing scripts and the code that produces the derived statistics are released.
+Four public datasets are used, all obtained from official or public sources [14-18]. Two further corpora, CIC-IDS2018 and CIC-IoT-2023, are used only in the extension experiments of Section 5.8. No scanning, probing or live attack traffic was generated at any point. Table 2 records sources, versions, retrieval dates, licence status and file hashes. The datasets are not redistributed; only processing scripts and the code that produces the derived statistics are released.
 
 Licence status deserves an explicit note. The CIC-IDS2017 and UNSW-NB15 release pages do not display a standard SPDX licence identifier, so the datasets are used under the terms of those pages and the original papers are cited. For NSL-KDD a public mirror snapshot was used and no standard licence identifier could be verified. We therefore do not infer any licence and only record provenance and hashes. This is deliberately conservative: where permission cannot be confirmed, the study reports origin rather than asserting redistribution rights.
 
@@ -504,6 +504,20 @@ Together the three runs bound the result from both sides, and the bound is narro
 
 Per-seed paired statistics, per-class reports and the scale summaries for all three runs are provided in Supplementary S27-S29.
 
+### 5.8 Extension experiments
+
+Five extensions probe the boundaries of the main result; their per-seed data and a standalone report ship with the release (扩展实验报告, `results_*_v1/`).
+
+**Member family and count.** Replacing the four same-family filter views (pairwise disagreement 0.64%, gain +0.000140) with cross-family members (random forest, extremely randomised trees and XGBoost) raises disagreement to 2.29% and the gain to +0.001421; six members give +0.001661. The gate therefore acts once the members are dissimilar enough, but even the most diverse configuration stays inside the 0.005 margin.
+
+**Temporal holdout.** Splitting CIC-IDS2017 by capture day (train on four days, test on the fifth, per-class cap 20,000) drops Macro-F1 to 0.133-0.317 across the five held-out days. The cause is compositional: Monday contains only Normal traffic, Tuesday only Normal and Brute Force, and so on, so no day carries the full label set. The day-level split is therefore constructible but not category-complete - the quantified form of the limitation in Section 6.5.
+
+**External benchmarks at ten seeds.** Under the three deterministic views (the mutual-information expert is omitted because its k-nearest-neighbour estimator does not scale to these training sizes), NSL-KDD reaches 0.518756 +/- 0.003374, UNSW-NB15 0.483371 +/- 0.005582 and N-BaIoT 0.999941 +/- 0.000053 over ten seeds.
+
+**Two further corpora.** CIC-IDS2018 (16.2 M raw rows, 4.10 M duplicates removed) gives a 56,055/12,012/12,012 five-class benchmark on which the gate and the same-members equal fusion are identical across five seeds (0.964124, zero labels changed). CIC-IoT-2023 (38.4 M rows, eight coarse classes) gives 0.752375 for the gate against 0.752347 for the same-members fusion over three seeds - a +0.000028 difference. Both reproduce the primary finding on corpora the study had not used.
+
+**Deployment view.** At the model's own operating point the full-corpus false-positive rate on benign flows is 0.00441 for the equal-weight chi-square forest and 0.00018 for XGBoost, and the conditional model reaches AUROC 0.99987 with FPR 0.00033 at 95% detection on the primary population. The aggregation-rule effect is an order of magnitude smaller than the model-family effect on the same axis.
+
 ## 6. Discussion
 
 The discussion reads the results in four steps: the failure conditions and their hierarchy (6.1), how to interpret reported weighting gains in that light (6.2), a decision matrix for practitioners (6.3), reporting recommendations for future evaluations (6.4), and the limitations that remain (6.5).
@@ -584,7 +598,7 @@ The conclusions are bounded as follows, and these bounds should be cited alongsi
 
 **Near-duplicates are removed only in their exact form.** The introduction identifies near-duplicate flows as a hazard of public datasets, and the audit removes exact duplicate feature vectors. Rounding every feature to four significant digits and hashing the result shows that a further 0.36% of the study population forms near-duplicate groups at that resolution, and that 104 rows sit in near-duplicate groups that span the partitions, of which 17 test rows (0.21% of the test set) share a rounded feature vector with a training row. Removing those rows changes Macro-F1 by at most 0.00057 for any of the three models, so the overlap cannot explain the reported differences; coarser resolutions are reported in the supplementary material.
 
-**Four datasets were evaluated, and every corpus comes from one collection programme.** The conclusions are conditional on CIC-IDS2017 (both its capped populations and the full deduplicated corpus), NSL-KDD, UNSW-NB15 and N-BaIoT. N-BaIoT is saturated for flow-feature classifiers (every model at or above 0.9998 Macro-F1), so it probes the mechanics of the aggregation step rather than discrimination difficulty, and the external datasets remain independent native-label benchmarks rather than transfer tests. None of the four datasets represents production traffic, and no time-separated holdout on a common testbed exists in any of them.
+**Six datasets were evaluated, and every corpus comes from one collection programme.** The conclusions are conditional on CIC-IDS2017 (capped populations and the full deduplicated corpus), NSL-KDD, UNSW-NB15 and N-BaIoT; CIC-IDS2018 and CIC-IoT-2023 were added as extension corpora (Section 5.8) and reproduce the primary comparison. N-BaIoT is saturated for flow-feature classifiers (every model at or above 0.9998 Macro-F1), so it probes the mechanics of the aggregation step rather than discrimination difficulty, and the external datasets remain independent native-label benchmarks rather than transfer tests. None of the six represents production traffic. A day-level split of CIC-IDS2017 is constructible, but every capture day carries only a subset of the five classes (Monday Normal only; Tuesday Normal and Brute Force; Wednesday Normal and DoS/DDoS; Thursday adds Web Attack; Friday adds Bot), so it is not category-complete: the measured day-holdout Macro-F1 collapses to 0.13-0.32 across the five days, which is what that limitation now quantifies.
 
 **Adversarial robustness was not assessed.** Only random perturbations and feature masking were applied. No evasion or gradient-based attack was constructed, and the reported degradation figures are not robustness guarantees against an adaptive adversary.
 

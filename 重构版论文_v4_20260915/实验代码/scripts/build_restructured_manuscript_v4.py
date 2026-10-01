@@ -289,6 +289,7 @@ def main() -> None:
                                            "flowchart", "experiments",
                                            "materials",
                                            "dataproducts",
+                                           "extension",
                                            "both", "all"],
                         default="both")
     args = parser.parse_args()
@@ -303,6 +304,7 @@ def main() -> None:
         "experiments": (SRC / "实验代码与运行记录.md", SRC / "实验代码与运行记录.docx"),
         "materials": (SRC / "材料完整性清单.md", SRC / "材料完整性清单.docx"),
         "dataproducts": (SRC / "数据产物清单.md", SRC / "数据产物清单.docx"),
+        "extension": (SRC / "扩展实验报告.md", SRC / "扩展实验报告.docx"),
         "manuscript": (SRC / "中文SCI论文_v4_重构版.md", SRC / "中文SCI论文_v4_重构版.docx"),
         "plan": (SRC / "论文结构诊断与重构方案.md", SRC / "论文结构诊断与重构方案.docx"),
         "audit": (SRC / "研究缺口审计与优先级清单.md", SRC / "研究缺口审计与优先级清单.docx"),
@@ -327,6 +329,7 @@ def main() -> None:
         names.append("experiments")
         names.append("materials")
         names.append("dataproducts")
+        names.append("extension")
     else:
         names = [args.only]
     for name in names:

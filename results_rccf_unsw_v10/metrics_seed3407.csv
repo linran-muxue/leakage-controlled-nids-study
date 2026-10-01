@@ -1,0 +1,2 @@
+﻿model,seed,train_seconds,macro_f1,accuracy,balanced_accuracy,log_loss,equal_fusion_macro_f1,labels_changed_vs_equal
+rccf,3407,109.06097984313963,0.4901892744276551,0.7119953359568576,0.5676328064039784,0.6533251274923403,0.4899382722716587,98

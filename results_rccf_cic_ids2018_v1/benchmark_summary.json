@@ -1,0 +1,21 @@
+{
+  "population": "data_processed_cic_ids2018_v1",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13
+  ],
+  "classes": [
+    "Bot",
+    "Brute Force",
+    "DoS/DDoS",
+    "Normal",
+    "Web Attack"
+  ],
+  "test_rows": 12012,
+  "rccf_mean_macro_f1": 0.964123782193824,
+  "equal_fusion_mean_macro_f1": 0.964123782193824,
+  "same_members_difference": 0.0
+}

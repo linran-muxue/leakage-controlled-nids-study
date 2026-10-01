@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 391 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 404 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -13,6 +13,7 @@
 | `scripts/add_dilution_account_v1.py` | `1390065eea96b419` | 74 | 4.4 KB |
 | `scripts/add_dilution_failure_condition_v1.py` | `06d16b720d918e84` | 114 | 7.9 KB |
 | `scripts/add_dilution_to_conclusion_v1.py` | `06516ee734bfb89f` | 63 | 2.9 KB |
+| `scripts/add_extension_section_v1.py` | `a5ad2c74180215d9` | 128 | 8.2 KB |
 | `scripts/add_full_corpus_supplementary_v57.py` | `051520ab2886fa0b` | 81 | 5.0 KB |
 | `scripts/add_nbaiot_references_v53.py` | `58800f103a8a8f68` | 70 | 2.6 KB |
 | `scripts/add_open_set_supplementary_v1.py` | `21eb7d80f449273e` | 185 | 8.5 KB |
@@ -123,6 +124,7 @@
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
+| `scripts/build_extension_report_v1.py` | `520c3be67b57fa35` | 190 | 10.5 KB |
 | `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
@@ -135,7 +137,7 @@
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
 | `scripts/build_rccf_figures_v1.py` | `6cf2ffccf07792aa` | 138 | 5.3 KB |
 | `scripts/build_restructured_figures_v4.py` | `2f52c587130338ad` | 529 | 27.9 KB |
-| `scripts/build_restructured_manuscript_v4.py` | `4a03e4fd3e9920df` | 341 | 13.3 KB |
+| `scripts/build_restructured_manuscript_v4.py` | `f82c899d44e71e4b` | 344 | 13.5 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
 | `scripts/build_talk_deck_v1.py` | `17b5da60bedcf57a` | 663 | 38.6 KB |
@@ -153,10 +155,11 @@
 | `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
 | `scripts/check_deliverable_counts_v1.py` | `8313d345357cf964` | 153 | 7.5 KB |
-| `scripts/check_docx_freshness_v17.py` | `7a66b7a728a9ecf1` | 71 | 3.6 KB |
-| `scripts/check_docx_numbering_v40.py` | `cbecd9191879e774` | 82 | 3.8 KB |
+| `scripts/check_docx_freshness_v17.py` | `57c69eda9dec66b9` | 72 | 3.6 KB |
+| `scripts/check_docx_numbering_v40.py` | `2e110c917ec7c52f` | 83 | 3.9 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
+| `scripts/check_extension_report_v1.py` | `53968014b4c708fb` | 99 | 4.7 KB |
 | `scripts/check_figure_annotations_v44.py` | `da6073372674a04e` | 73 | 3.0 KB |
 | `scripts/check_figure_reproducibility_v45.py` | `6ea15e19dad0e439` | 80 | 3.7 KB |
 | `scripts/check_full_corpus_status_v1.py` | `928fe5120a1065aa` | 108 | 4.6 KB |
@@ -197,6 +200,7 @@
 | `scripts/export_submission_text_v1.py` | `1fe10bb6160b29b9` | 55 | 2.2 KB |
 | `scripts/extend_dilution_to_three_populations_v1.py` | `9d0cd8b96c78ba6a` | 104 | 7.4 KB |
 | `scripts/extend_discussion_full_corpus_v1.py` | `71d6fb26365b37dc` | 96 | 5.7 KB |
+| `scripts/fetch_new_corpora_v1.py` | `f99f3ee6f505f94d` | 101 | 3.9 KB |
 | `scripts/finalize_full_corpus_v56.py` | `debbef91537544dd` | 209 | 10.9 KB |
 | `scripts/finalize_jisa_materials_v1.py` | `20dea03d5bf1cd22` | 60 | 4.4 KB |
 | `scripts/finalize_references_v5.py` | `3541642dd0e60d22` | 76 | 3.0 KB |
@@ -213,6 +217,7 @@
 | `scripts/fix_doi_punctuation_v19.py` | `86a927dee9d87dcd` | 37 | 1.5 KB |
 | `scripts/fix_equal_fusion_wording_v1.py` | `5f74c66222c4d607` | 134 | 7.2 KB |
 | `scripts/fix_expert_disagreement_claim_v1.py` | `9d51c426fa404dd8` | 162 | 9.1 KB |
+| `scripts/fix_extension_metrics_v1.py` | `bd01f0a99cffc49a` | 71 | 2.8 KB |
 | `scripts/fix_figure_order_v5.py` | `c70cd17870164f2e` | 41 | 1.8 KB |
 | `scripts/fix_full_corpus_split_counts_v1.py` | `01dd4ddc7429dd61` | 75 | 3.8 KB |
 | `scripts/fix_full_corpus_wording_v1.py` | `581c67528a094787` | 68 | 3.1 KB |
@@ -261,10 +266,12 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `c0d7e99fd46346f3` | 195 | 12.1 KB |
+| `scripts/package_submission_bundle_v18.py` | `0e87c4c081e7e7b2` | 223 | 13.7 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
+| `scripts/prepare_cic_ids2018_v1.py` | `7fb971d27dea0ad9` | 254 | 11.8 KB |
+| `scripts/prepare_cic_iot2023_v1.py` | `fe51b2ae800acd5e` | 145 | 6.8 KB |
 | `scripts/prepare_nbaiot_v48.py` | `37aa833e83be0376` | 110 | 4.9 KB |
 | `scripts/prepare_nsl_kdd.py` | `238116acc243e838` | 44 | 3.5 KB |
 | `scripts/prepare_sci_manuscript_v5.py` | `40320353cee200bb` | 59 | 5.7 KB |
@@ -296,18 +303,23 @@
 | `scripts/run_cfrg_repeated_splits_v1.py` | `8ec405b65268b183` | 44 | 3.7 KB |
 | `scripts/run_cfrg_strong_baselines_v1.py` | `83582a522834ac2e` | 49 | 4.3 KB |
 | `scripts/run_cost_sensitive_v5.py` | `fe7285c88a6311ca` | 94 | 3.6 KB |
+| `scripts/run_day_holdout_v1.py` | `18d1f66c740dbe9c` | 194 | 8.9 KB |
+| `scripts/run_deployment_metrics_v1.py` | `2f6e6229b6e028c6` | 153 | 6.7 KB |
 | `scripts/run_diversity_suite_v5.py` | `3f3ff2580ed4b9d9` | 261 | 11.3 KB |
 | `scripts/run_drc_forest_cic_v1.py` | `00cbd39a81045523` | 225 | 12.7 KB |
 | `scripts/run_drc_forest_external_v1.py` | `1889f27db8b3ea5d` | 149 | 8.7 KB |
 | `scripts/run_equal_fusion_control_v1.py` | `0939e99eede0cbac` | 144 | 6.5 KB |
 | `scripts/run_equivalence_tests_v5.py` | `d1104eafdf8afd74` | 164 | 6.6 KB |
 | `scripts/run_expert_disagreement_v1.py` | `f5719ca5e944649d` | 108 | 4.8 KB |
+| `scripts/run_external_seed_extension_v1.py` | `f7f8cb242b3faa95` | 145 | 7.0 KB |
 | `scripts/run_file_external_generalization_v1.py` | `774326f749dffd3c` | 68 | 5.3 KB |
 | `scripts/run_full_corpus_parallel_v1.py` | `8816b61226759680` | 187 | 7.1 KB |
 | `scripts/run_gate_capacity_test_v1.py` | `4cf9935805965ce2` | 166 | 7.9 KB |
 | `scripts/run_imbalanced_class_reports.py` | `2c50e90c31ba23a6` | 27 | 1.2 KB |
 | `scripts/run_latency_v4.py` | `dc525cb31a116890` | 51 | 2.4 KB |
+| `scripts/run_member_family_experiments_v1.py` | `17f531737d48e413` | 225 | 10.7 KB |
 | `scripts/run_mlp_baseline_v5.py` | `a34b98f56bd5ae98` | 174 | 7.2 KB |
+| `scripts/run_native_label_benchmark_v1.py` | `cd08d7a5d3183edd` | 158 | 7.2 KB |
 | `scripts/run_near_duplicate_v5.py` | `09b8e6dd619e26d9` | 104 | 4.1 KB |
 | `scripts/run_nested_cv_v1.py` | `168075e9140b85d8` | 126 | 7.8 KB |
 | `scripts/run_nested_modelwise_v1.py` | `b10989f6c33c6176` | 68 | 5.3 KB |
@@ -351,6 +363,7 @@
 | `scripts/update_abstracts_v50.py` | `23e22e23daa844cd` | 66 | 5.0 KB |
 | `scripts/update_availability_statement_v5.py` | `738701e5a4e9fd05` | 28 | 0.9 KB |
 | `scripts/update_counts_v54.py` | `ecc8fe8f6e73093f` | 44 | 2.0 KB |
+| `scripts/update_dataset_scope_v1.py` | `0f52d3d925b91899` | 80 | 4.3 KB |
 | `scripts/update_external_manifest_v1.py` | `6623c2d7b065e03c` | 60 | 2.7 KB |
 | `scripts/update_provenance_cic_v1.py` | `61f00ef1f6cafbaf` | 48 | 2.1 KB |
 | `scripts/update_public_metadata_v15.py` | `d41929a487dc59a2` | 49 | 2.5 KB |
@@ -365,7 +378,7 @@
 | `scripts/update_selfcheck_v31.py` | `4621f6652901206c` | 41 | 2.3 KB |
 | `scripts/update_selfcheck_v5b.py` | `0dfbcc974a57de6d` | 80 | 5.0 KB |
 | `scripts/update_selfcheck_v6.py` | `e0970ee1cc76c71e` | 66 | 4.4 KB |
-| `scripts/verify_all_v8.py` | `55cfc4c44af244d9` | 271 | 16.6 KB |
+| `scripts/verify_all_v8.py` | `10372a5ee995d831` | 272 | 16.7 KB |
 | `scripts/verify_dois_v5.py` | `40e971c4c94d3993` | 165 | 7.3 KB |
 | `scripts/verify_paired_counts_v5.py` | `108ee9d3f3b7621b` | 66 | 2.5 KB |
 | `scripts/verify_selfcheck_counts_v7.py` | `2ba3f50ccc7dcfff` | 113 | 4.6 KB |
