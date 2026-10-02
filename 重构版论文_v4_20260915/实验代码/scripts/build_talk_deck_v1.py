@@ -230,7 +230,8 @@ def notes(slide, text):
 
 def main() -> None:
     corpora = 4 + len([path for path in ROOT.glob("results_rccf_*_v1")
-                       if (path / "benchmark_summary.json").exists()])
+                       if not path.name.endswith("_k8")
+                       and (path / "benchmark_summary.json").exists()])
     n = numbers()
     deck = Presentation()
     deck.slide_width, deck.slide_height = SLIDE_W, SLIDE_H
@@ -530,8 +531,10 @@ def main() -> None:
             f"{n['file_lo']:.4f}–{n['file_hi']:.4f}，文件之间的差异比聚合规则差异大两到三个数量级；\n"
             f"· 三个外部语料用各自原生标签，不重采样、不跨语料迁移，因此只能作为"
             f"「结论方向不随语料改变」的旁证，不能当作迁移实验；\n"
-            f"· 语料年代：{corpora} 个语料里八个发布于 2020 年及以后，其中三份发布于 2025 年，"
-            f"差值与上表同量级（见《向老师汇报要点》Q5）。",
+            f"· 语料年代：{corpora} 个语料里八个发布于 2020 年及以后，其中四份发布于 2025 年，"
+            f"差值与上表同量级（见《向老师汇报要点》Q5）；\n"
+            f"· 门控并非永远无效：2025 年 Gotham-2025 语料上视图重合时差值恰为 0.000000，"
+            f"把 16 列压到 8 列、视图分化后增益 +0.0063（十个种子方向一致）。",
             size=13, color=INK, line_spacing=1.35)
     footer(slide, 9)
     notes(slide, "这一页回应两个可能的攻击：结论是不是被某一档类别先验制造出来的、"

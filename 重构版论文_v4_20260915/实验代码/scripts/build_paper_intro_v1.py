@@ -26,13 +26,15 @@ def corpus_facts() -> tuple[int, int, str]:
     twice while the recent corpora were being added.
     """
     extension = [path for path in ROOT.glob("results_rccf_*_v1")
-                 if (path / "benchmark_summary.json").exists()]
+                 if not path.name.endswith("_k8")
+                 and (path / "benchmark_summary.json").exists()]
     corpora = 4 + len(extension)
     predictions = len(list(ROOT.glob("results_*/**/predictions*.csv")))
     y2025 = []
     for folder, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025"),
                           ("results_rccf_genis2025_v1", "GeNIS"),
-                          ("results_rccf_ids2025_v1", "IDS2025")):
+                          ("results_rccf_ids2025_v1", "IDS2025"),
+                          ("results_rccf_gotham2025_v1", "Gotham-2025")):
         path = ROOT / folder / "benchmark_summary.json"
         if not path.exists():
             continue
@@ -169,7 +171,7 @@ def main() -> None:
                  f"「可证不变比例」+ 权重弥散度 + 门控搜索的取值多样性 |")
     lines.append(f"| RQ3 | 结论随规模、先验与语料如何变化？| 三档总体（53 237 / 413 209 / 2 429 503）"
                  f"+ 平衡控制总体 + 三个独立原生标签基准 + {corpora} 个语料"
-                 f"（含 2025 年发布的三份）|")
+                 f"（含 2025 年发布的四份）|")
     lines.append("")
     lines.append("**为什么用等价检验而不是「p > 0.05」**：十种子下 80% 功效能检出的最小差是 "
                  f"{row.min_detectable_effect_80pct:.6f}，与观测差 {abs(row.mean_difference):.6f} 同量级——"
@@ -282,8 +284,10 @@ def main() -> None:
                  f"结构上不可能产生增益（命题 1 的失效区间）；本文的主实验正落在该区间内。")
     lines.append("")
     lines.append(f"- **语料年代不是结论的前提**：本文共评测 {corpora} 个语料，其中八个发布于 "
-                 f"2020 年及以后、三份发布于 2025 年；2025 年语料上门控与同成员等权融合的"
-                 f"差值仍在 0.000004-0.000020 量级：{y2025_line}。")
+                 f"2020 年及以后、四份发布于 2025 年；2025 年语料上门控与同成员等权融合的"
+                 f"差值仍在 0.000004-0.000020 量级：{y2025_line}。"
+                 f"Gotham-2025 另给出全文唯一一个门控为正的案例：视图重合时差值恰为 0.000000，"
+                 f"把 16 列拆成 8 列让视图分化后增益 +0.0063（十个种子方向一致）。")
     lines.append("")
     lines.append("### 4.4 先验、外部基准与文件级外推")
     lines.append("")

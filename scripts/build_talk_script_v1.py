@@ -24,13 +24,15 @@ def corpus_facts() -> tuple[int, int, str]:
     twice while the recent corpora were being added.
     """
     extension = [path for path in ROOT.glob("results_rccf_*_v1")
-                 if (path / "benchmark_summary.json").exists()]
+                 if not path.name.endswith("_k8")
+                 and (path / "benchmark_summary.json").exists()]
     corpora = 4 + len(extension)
     predictions = len(list(ROOT.glob("results_*/**/predictions*.csv")))
     y2025 = []
     for folder, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025"),
                           ("results_rccf_genis2025_v1", "GeNIS"),
-                          ("results_rccf_ids2025_v1", "IDS2025")):
+                          ("results_rccf_ids2025_v1", "IDS2025"),
+                          ("results_rccf_gotham2025_v1", "Gotham-2025")):
         path = ROOT / folder / "benchmark_summary.json"
         if not path.exists():
             continue
@@ -407,10 +409,10 @@ def main() -> None:
     lines.append("| Bootstrap 区间 | 对测试行或种子重采样得到差值的经验分布区间，不依赖正态假设 | 表 5、S20 |")
     lines.append("| 稀释诊断 | 多路平均把某一专家的偏差按 1/Q 摊进融合结果，与加权本身无关 | 式 (6)、第 6.2 节 |")
     lines.append("")
-    lines.append("## 七、老师最可能追问的 23 个问题")
+    lines.append("## 七、老师最可能追问的 24 个问题")
     lines.append("")
-    lines.append("前八问每次汇报都会出现；后面十五问按老师追问的方向取用"
-                 "（设计 4、统计 4、数据 4、流程与边界 3）。")
+    lines.append("前八问每次汇报都会出现；后面十六问按老师追问的方向取用"
+                 "（设计 4、统计 4、数据 4、机制 1、流程与边界 3）。")
     lines.append("")
     faq = [
         ("你怎么能说「没有增益」？",
@@ -430,10 +432,16 @@ def main() -> None:
          f"{predictions:,} 个逐样本预测全部公开，"
          f"仓库带 tag；{counts.gate_checks()} 项自动检查每次提交前全绿。"),
         ("数据集是不是太老了？",
-         f"评测的 {corpora} 个语料里八个发布于 2020 年及以后，其中三份发布于 2025 年："
+         f"评测的 {corpora} 个语料里八个发布于 2020 年及以后，其中四份发布于 2025 年："
          f"{y2025_line}；"
          "全部语料都按同一套水库去重、同一组十个种子、同一组确定性视图评测，"
          "结论不随语料年代改变。"),
+        ("门控到底有没有用？",
+         "有用，但有条件——而且条件是可检验的。2025 年的 Gotham-2025 语料上，"
+         "16 列特征用满（60 维预算会选中全部列）时三个视图完全重合，差值恰为 0.000000；"
+         "把预算压到 16 选 8、让卡方与方差分析真正分歧后，门控以 +0.0063 超过同成员等权"
+         "融合，十个种子方向一致。这正是命题 1 预测的边界：成员可互换时门控必然无效，"
+         "成员可区分时它才可能有用。全文其余语料都在前一种情形里。"),
         ("和已有工作有什么不同？",
          "多数工作是提出新的加权方案并报告增益；本文把「加权 vs 等权」放到同一个去泄漏协议里做最直接的对照，"
          "并给出增益何时为零的判据（专家两两分歧率 0.2%–0.4% 时结构上不可能产生增益）。"),

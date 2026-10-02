@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 415 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 420 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -16,6 +16,8 @@
 | `scripts/add_dilution_to_conclusion_v1.py` | `06516ee734bfb89f` | 63 | 2.9 KB |
 | `scripts/add_extension_section_v1.py` | `a5ad2c74180215d9` | 128 | 8.2 KB |
 | `scripts/add_full_corpus_supplementary_v57.py` | `051520ab2886fa0b` | 81 | 5.0 KB |
+| `scripts/add_gotham_to_briefings_v1.py` | `c744e398fed23d36` | 121 | 7.4 KB |
+| `scripts/add_gotham_to_paper_v1.py` | `a7e972d7343d2ee5` | 295 | 20.3 KB |
 | `scripts/add_nbaiot_references_v53.py` | `58800f103a8a8f68` | 70 | 2.6 KB |
 | `scripts/add_open_set_supplementary_v1.py` | `21eb7d80f449273e` | 185 | 8.5 KB |
 | `scripts/add_optimisation_experiments_v1.py` | `57c2459b6c033fee` | 129 | 7.5 KB |
@@ -119,22 +121,22 @@
 | `scripts/build_data_evidence_pack_v1.py` | `d655212657c4eb85` | 153 | 8.6 KB |
 | `scripts/build_data_processing_doc_v1.py` | `6d60070099407be9` | 237 | 12.8 KB |
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
-| `scripts/build_data_products_doc_v1.py` | `af78b86dffa45fe5` | 265 | 12.2 KB |
+| `scripts/build_data_products_doc_v1.py` | `a435b765000b5df7` | 267 | 12.6 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
-| `scripts/build_data_sources_doc_v1.py` | `41e8e3a34b5b2655` | 423 | 24.0 KB |
+| `scripts/build_data_sources_doc_v1.py` | `b1814eea8b9b4c3d` | 424 | 24.4 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
 | `scripts/build_english_sci_docx_v1.py` | `8466f382fc21426f` | 92 | 4.1 KB |
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
-| `scripts/build_extension_report_v1.py` | `2851537151701a25` | 241 | 14.4 KB |
+| `scripts/build_extension_report_v1.py` | `e4e3feb0f134a842` | 268 | 16.6 KB |
 | `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
 | `scripts/build_jisa_graphical_abstract_v1.py` | `0449bf016c7133e2` | 54 | 2.9 KB |
 | `scripts/build_material_index_v1.py` | `f5a3b7fd613bf203` | 271 | 13.9 KB |
 | `scripts/build_paper_docx.py` | `7b78efe54bdf4a16` | 107 | 4.2 KB |
-| `scripts/build_paper_intro_v1.py` | `074eea74c8e7c241` | 437 | 31.6 KB |
+| `scripts/build_paper_intro_v1.py` | `9e1e841c9dbaa30a` | 441 | 32.0 KB |
 | `scripts/build_probability_and_feature_evidence_v4.py` | `807492413709dd35` | 42 | 4.2 KB |
 | `scripts/build_project_flowchart_v1.py` | `395f6cf63f353483` | 241 | 11.5 KB |
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
@@ -143,8 +145,8 @@
 | `scripts/build_restructured_manuscript_v4.py` | `f82c899d44e71e4b` | 344 | 13.5 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
-| `scripts/build_talk_deck_v1.py` | `72adf975885556d1` | 667 | 39.0 KB |
-| `scripts/build_talk_script_v1.py` | `d3c7d79b142cb639` | 577 | 45.5 KB |
+| `scripts/build_talk_deck_v1.py` | `8a358660170f3483` | 670 | 39.9 KB |
+| `scripts/build_talk_script_v1.py` | `377b051a6645d386` | 585 | 46.2 KB |
 | `scripts/build_unsw_chapter4_materials_v1.py` | `cd11e45fafbd3939` | 150 | 15.6 KB |
 | `scripts/build_v2_docx.py` | `ba701e2806d5aa26` | 89 | 9.8 KB |
 | `scripts/build_v5_figures.py` | `8d69ffa6a48948f7` | 135 | 5.6 KB |
@@ -162,7 +164,7 @@
 | `scripts/check_docx_numbering_v40.py` | `2e110c917ec7c52f` | 83 | 3.9 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
-| `scripts/check_extension_report_v1.py` | `075eaafe7d8cd000` | 126 | 6.6 KB |
+| `scripts/check_extension_report_v1.py` | `640324e9effe2cdc` | 132 | 7.2 KB |
 | `scripts/check_figure_annotations_v44.py` | `da6073372674a04e` | 73 | 3.0 KB |
 | `scripts/check_figure_reproducibility_v45.py` | `6ea15e19dad0e439` | 80 | 3.7 KB |
 | `scripts/check_full_corpus_status_v1.py` | `928fe5120a1065aa` | 108 | 4.6 KB |
@@ -224,10 +226,12 @@
 | `scripts/fix_equal_fusion_wording_v1.py` | `5f74c66222c4d607` | 134 | 7.2 KB |
 | `scripts/fix_expert_disagreement_claim_v1.py` | `9d51c426fa404dd8` | 162 | 9.1 KB |
 | `scripts/fix_extension_counts_v1.py` | `f31f0c3c28161ed8` | 67 | 3.3 KB |
-| `scripts/fix_extension_metrics_v1.py` | `b31aaa0480625602` | 75 | 3.0 KB |
+| `scripts/fix_extension_metrics_v1.py` | `5b0b4fae5fd4e777` | 76 | 3.2 KB |
 | `scripts/fix_figure_order_v5.py` | `c70cd17870164f2e` | 41 | 1.8 KB |
 | `scripts/fix_full_corpus_split_counts_v1.py` | `01dd4ddc7429dd61` | 75 | 3.8 KB |
 | `scripts/fix_full_corpus_wording_v1.py` | `581c67528a094787` | 68 | 3.1 KB |
+| `scripts/fix_gotham_packet_count_v1.py` | `eaded66aaf7768a3` | 44 | 1.6 KB |
+| `scripts/fix_gotham_zh_separators_v1.py` | `a62e421d49c91744` | 61 | 3.7 KB |
 | `scripts/fix_highlight_precision_v1.py` | `65cf6a9c1b2fe958` | 45 | 1.4 KB |
 | `scripts/fix_highlight_seed_wording_v1.py` | `ab6b97681be2efd8` | 42 | 1.3 KB |
 | `scripts/fix_logic_softspots_v1.py` | `3b4c0a19fdf0bf72` | 205 | 12.4 KB |
@@ -273,12 +277,13 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `cde2b5bb2161a2c8` | 244 | 15.3 KB |
+| `scripts/package_submission_bundle_v18.py` | `889b5a12971bcce3` | 250 | 15.7 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
 | `scripts/prepare_cic_ids2018_v1.py` | `7fb971d27dea0ad9` | 254 | 11.8 KB |
 | `scripts/prepare_cic_iot2023_v1.py` | `fe51b2ae800acd5e` | 145 | 6.8 KB |
+| `scripts/prepare_gotham2025_v1.py` | `ebefcd8790df033a` | 224 | 10.2 KB |
 | `scripts/prepare_nbaiot_v48.py` | `37aa833e83be0376` | 110 | 4.9 KB |
 | `scripts/prepare_nsl_kdd.py` | `238116acc243e838` | 44 | 3.5 KB |
 | `scripts/prepare_sci_manuscript_v5.py` | `40320353cee200bb` | 59 | 5.7 KB |
@@ -286,7 +291,7 @@
 | `scripts/proofread_char_level_v33.py` | `595b592a5d533e47` | 127 | 5.8 KB |
 | `scripts/proposition3_quantify_v6.py` | `156eb16cf7da3470` | 89 | 3.3 KB |
 | `scripts/prose_diagnostics_v35.py` | `ab9883a6d790140c` | 90 | 4.0 KB |
-| `scripts/proxy_node_switch_v1.py` | `08371d3ffbd3ac66` | 151 | 6.0 KB |
+| `scripts/proxy_node_switch_v1.py` | `204825075a7e66bc` | 194 | 7.6 KB |
 | `scripts/qualify_highlights_and_ga_v1.py` | `a96e17a576bb4ba4` | 67 | 2.8 KB |
 | `scripts/quarantine_superseded_v5.py` | `466925ae2cb92b93` | 58 | 1.9 KB |
 | `scripts/quarantine_unrelated_material_v1.py` | `93b52f32c8b3866e` | 189 | 8.9 KB |

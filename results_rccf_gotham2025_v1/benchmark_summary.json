@@ -1,0 +1,39 @@
+{
+  "population": "data_processed_gotham2025_v1",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "classes": [
+    "Benign",
+    "C&C Communication",
+    "CoAP Amplification",
+    "File Download",
+    "Ingress Tool Transfer",
+    "Merlin C&C Communication",
+    "Merlin ICMP Flooding",
+    "Merlin TCP Flooding",
+    "Merlin UDP Flooding",
+    "Mirai C&C Communication",
+    "Mirai GRE Flooding",
+    "Mirai TCP Flooding",
+    "Mirai UDP Flooding",
+    "Reporting",
+    "TCP Scan",
+    "Telnet Brute Force",
+    "UDP Scan",
+    "Unknown"
+  ],
+  "test_rows": 29718,
+  "rccf_mean_macro_f1": 0.9929076997159033,
+  "equal_fusion_mean_macro_f1": 0.9929076997159033,
+  "same_members_difference": 0.0
+}

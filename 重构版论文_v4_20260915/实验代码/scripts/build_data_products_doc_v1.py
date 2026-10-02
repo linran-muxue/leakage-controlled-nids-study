@@ -30,6 +30,8 @@ PUBLISHED = {
     "data_processed_cic_natural_v4_full": ("全去重语料", "表 7、S29", 364_426),
     "data_processed_nbaiot_v48": ("N-BaIoT 三分类基准", "表 8、S28", 27_000),
     "data_external_nsl_kdd_processed_v2": ("NSL-KDD 原生标签", "表 8、S28", 22_544),
+    "data_processed_gotham2025_v1": ("Gotham-2025 数据包级基准（2025）",
+                                      "扩展实验报告九、S31", 29_718),
 }
 
 

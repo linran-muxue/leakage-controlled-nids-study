@@ -46,8 +46,9 @@ def main() -> None:
     parser.add_argument("--outdir", default=None)
     args = parser.parse_args()
     lines = ["# 扩展实验报告", "",
-             "> 八个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
-             "CIC-IDS2018、CIC-IoT-2023、2020–2023 年语料四份、2025 年语料三份。"
+             "> 九个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
+             "CIC-IDS2018、CIC-IoT-2023、2020–2023 年语料四份、2025 年语料三份、"
+             "2025 年数据包级语料 Gotham-2025。"
              "每个实验的逐种子数据都保存在对应的 `results_*` 目录中，"
              "本报告只从那些文件读数字。", ""]
 
@@ -229,6 +230,32 @@ def main() -> None:
             "2025 年语料上（十种子），门控与同成员等权融合的差值同样在 +0.000000–+0.000020 量级；"
             "结论不依赖语料年代。")
 
+    full = read_json(ROOT / "results_rccf_gotham2025_v1" / "benchmark_summary.json")
+    k8 = read_json(ROOT / "results_rccf_gotham2025_v1_k8" / "benchmark_summary.json")
+    if full and k8:
+        lines += section(
+            "九、2025 年数据包级语料 Gotham-2025",
+            "门控在什么条件下才有用？",
+            f"Gotham-2025（Zenodo 14502760，CC BY 4.0）在 78 台 IoT 设备上采集 35 134 281 条"
+            f"数据包、{len(full['classes'])} 个类别，按同一水库协议处理；设备地址与时间戳作为"
+            "泄漏控制被剔除，余下十六列。",
+            r"& $py scripts\prepare_gotham2025_v1.py"
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_gotham2025_v1 --output-dir results_rccf_gotham2025_v1 --seeds 42 2024 3407 7 13 101 202 303 404 505 --experts full chi2 anova"
+            "\n" r"& $py scripts\run_native_label_benchmark_v1.py --processed-dir data_processed_gotham2025_v1 --output-dir results_rccf_gotham2025_v1_k8 --seeds 42 2024 3407 7 13 101 202 303 404 505 --experts full chi2 anova --feature-k 8",
+            "`data_processed_gotham2025_v1/`、`results_rccf_gotham2025_v1/`（60 维预算，"
+            "视图重合）、`results_rccf_gotham2025_v1_k8/`（8/16 维，视图分化）",
+            [(f"60 维预算（全部 16 列）",
+              f"RCCF {full['rccf_mean_macro_f1']:.6f}，同成员等权融合 "
+              f"{full['equal_fusion_mean_macro_f1']:.6f}，差 "
+              f"{full['same_members_difference']:+.6f}"),
+             (f"8/16 维预算（视图分化）",
+              f"RCCF {k8['rccf_mean_macro_f1']:.6f}，同成员等权融合 "
+              f"{k8['equal_fusion_mean_macro_f1']:.6f}，差 "
+              f"{k8['same_members_difference']:+.6f}")],
+            f"同一语料、同一批专家：特征预算让三个视图重合时门控完全无效"
+            f"（{full['same_members_difference']:+.6f}），让它们分化时门控"
+            f"以 {k8['same_members_difference']:+.6f} 超过同成员等权融合，"
+            "十个种子方向一致。这是全文唯一一个门控稳定为正的语料，边界与命题 1 一致。")
     text = "\n".join(lines) + "\n"
     out = Path(args.outdir) / "扩展实验报告.md" if args.outdir else OUT
     out.write_text(text, encoding="utf-8")

@@ -21,23 +21,66 @@ import time
 import urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-PIPE = r"\\.\pipe\verge-mihomo"
+PIPE_CANDIDATES = (r"\\.\pipe\verge-mihomo",
+                   # Clash Verge 2.x names the sidecar pipe after its build hash
+                   r"\\.\pipe\verge-mihomo-sidecar-release-4d199f1d5a446eca6db55ff9c3089b54579125a8f00175621c42667443996c50")
 SECRET = "set-your-secret"
 DELAY_URL = "https://www.gstatic.com/generate_204"
 
 _k32 = ctypes.WinDLL("kernel32", use_last_error=True)
 _k32.CreateFileW.restype = ctypes.c_void_p
+_k32.WaitNamedPipeW.restype = ctypes.c_int
 GENERIC_READ, GENERIC_WRITE, OPEN_EXISTING = 0x80000000, 0x40000000, 3
 INVALID = ctypes.c_void_p(-1).value
+ERROR_PIPE_BUSY = 231
+
+
+def connect_pipe(name: str, attempts: int = 5) -> int:
+    """Open a control pipe, waiting out ERROR_PIPE_BUSY (the GUI holds instances)."""
+    last = 0
+    for _ in range(attempts):
+        handle = _k32.CreateFileW(name, GENERIC_READ | GENERIC_WRITE, 0, None,
+                                  OPEN_EXISTING, 0, None)
+        if handle not in (INVALID, None):
+            return handle
+        last = ctypes.get_last_error()
+        if last != ERROR_PIPE_BUSY:
+            break
+        _k32.WaitNamedPipeW(name, 2000)
+    raise SystemExit(f"cannot open {name}: error {last}")
 
 
 class Pipe:
+    def _discover(self) -> str:
+        """Return the first mihomo control pipe that opens."""
+        import os
+        names = list(PIPE_CANDIDATES)
+        try:
+            entries = os.listdir(r"\\.\pipe\\")
+        except OSError:
+            entries = []
+        for name in entries:
+            if "verge-mihomo" in name:
+                candidate = "\\\\.\\pipe\\" + name
+                if candidate not in names:
+                    names.append(candidate)
+        last = 0
+        for candidate in names:
+            try:
+                handle = connect_pipe(candidate, attempts=2)
+            except SystemExit as exc:
+                last = str(exc)
+                continue
+            _k32.CloseHandle(ctypes.c_void_p(handle))
+            return candidate
+        raise SystemExit(f"cannot open any mihomo control pipe ({last})")
+
     def _open(self) -> int:
-        self.handle = _k32.CreateFileW(PIPE, GENERIC_READ | GENERIC_WRITE, 0, None,
-                                       OPEN_EXISTING, 0, None)
-        if self.handle in (INVALID, None):
-            raise SystemExit(f"cannot open {PIPE}: error {ctypes.get_last_error()}")
+        self.handle = connect_pipe(self.pipe_name)
         return self.handle
+
+    def __init__(self) -> None:
+        self.pipe_name = self._discover()
 
     def request(self, method: str, path: str, body: dict | None = None,
                 timeout: float = 20.0) -> dict:

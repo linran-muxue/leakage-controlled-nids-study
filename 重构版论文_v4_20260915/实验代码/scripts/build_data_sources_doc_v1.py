@@ -59,6 +59,9 @@ EXTENSION_SPECS = (
     ("UAVIDS-2025", "2025", "Zenodo record 15336998", "CC BY 4.0", "UAVIDS-2025"),
     ("GeNIS", "2025", "Zenodo record 14919237", "CC BY 4.0", "GeNIS"),
     ("IDS2025", "2025", "Mendeley Data `pkskt3fv3v`", "记录页许可", "IDS2025"),
+    ("Gotham-2025", "2025",
+     "Zenodo record 14502760（Gotham 测试床，78 台 IoT 设备，CC BY 4.0）", "CC BY 4.0",
+     "GothamDataset2025"),
 )
 
 # Corpora that were located but are not (yet) part of the evaluation.  Gotham is
@@ -66,9 +69,6 @@ EXTENSION_SPECS = (
 # application or an author request.  They are listed so the search itself is
 # auditable, and Gotham moves into the table above only once it has results.
 CANDIDATES = (
-    ("Gotham-2025", "2025", "Zenodo record 14502760（Gotham 测试床，78 台 IoT 设备的接口级流量）",
-     "CC BY 4.0", "开放",
-     "22.2 GiB 单归档；分块续传中，完成后按同一协议处理。"),
     ("HybRID-18", "2025", "Sadhana 50:272（Indian Academy of Sciences）", "需向作者索取", "未公开",
      "论文未附公开仓库、DOI 或校验值，无法核对版本与字节，不满足逐字节复现要求。"),
     ("CICAPT-IIoT 2024", "2024", "UNB CIC（APT 溯源日志 + 网络流量）", "申请制", "申请制",
@@ -236,12 +236,13 @@ def main() -> None:
                           for p in sorted((ROOT / "docs" / "source_records").glob("*"))
                           if p.is_file()) + "。")
     lines.append("")
-    lines.append("**扩展语料（第 5.8 节，九项）**")
+    lines.append("**扩展语料（第 5.8 节，十项）**")
     lines.append("")
-    lines.append("这九项与上面四项一样，都在同一套处理与评估协议下运行，只是只用于扩展实验。"
+    lines.append("这十项与上面四项一样，都在同一套处理与评估协议下运行，只是只用于扩展实验。"
                  "原始文件与获取清单保存在 `E:\\论文\\data\\external\\`，不随包分发；"
                  "可用 `scripts/fetch_new_corpora_v1.py`、`scripts/fetch_recent_corpora_v1.py`、"
-                 "`scripts/fetch_2025_corpora_v1.py` 重新取得，并与下表的 SHA-256 逐字节核对。")
+                 "`scripts/fetch_2025_corpora_v1.py`、`scripts/fetch_gotham2025_v1.py` 重新取得，"
+                 "并与下表的校验值逐字节核对。")
     lines.append("")
     lines.append("| 数据集 | 发布年 | 来源 | 许可 | 本地体积 | SHA-256（前 16 位）| 本地获取日期 |")
     lines.append("|---|---|---|---|---|---|---|")
