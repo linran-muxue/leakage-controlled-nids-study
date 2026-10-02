@@ -1,0 +1,46 @@
+{
+  "corpora_in_pool": 12,
+  "corpora_reported_separately": 1,
+  "seeds_per_corpus": 10,
+  "pooled_005": {
+    "n": 120,
+    "mean": 6.799161967936211e-06,
+    "ci90_low": -6.012013186933198e-06,
+    "ci90_high": 1.961033712280562e-05,
+    "equivalent": true
+  },
+  "pooled_010": {
+    "n": 120,
+    "mean": 6.799161967936211e-06,
+    "ci90_low": -6.012013186933198e-06,
+    "ci90_high": 1.961033712280562e-05,
+    "equivalent": true
+  },
+  "pooled_with_positive_005": {
+    "n": 130,
+    "mean": 0.00048719386512956485,
+    "ci90_low": 0.00024266277449471683,
+    "ci90_high": 0.0007317249557644129,
+    "equivalent": true
+  },
+  "positive_case": {
+    "corpus": "Gotham-2025 (8/16 features)",
+    "mean_difference": 0.006251930303069109,
+    "seeds_positive": 10,
+    "seeds": 10
+  },
+  "publication_years": [
+    2020,
+    2020,
+    2022,
+    2023,
+    2023,
+    2025,
+    2025,
+    2025,
+    2025,
+    2026,
+    2026,
+    2026
+  ]
+}

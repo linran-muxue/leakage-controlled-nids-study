@@ -299,6 +299,13 @@ def conclusion() -> None:
     check("conclusion, low-diversity runs", 6, len(low), 0)
     check("conclusion, low-diversity gains all zero", 0.0, low.gate_gain.abs().max(), 0)
     check("conclusion, decorrelated runs", 9, len(high), 0)
+    # 6.5 quotes the pooled modern-corpus replication, so its interval is asserted
+    # against the released summary rather than left as a loose decimal.
+    modern = json.loads((ROOT / "results_modern_replication_v1" /
+                         "summary.json").read_text(encoding="utf-8"))["pooled_005"]
+    check("6.5 modern pool mean", 0.000007, modern["mean"], 5e-7)
+    check("6.5 modern pool 90% low", -0.000006, modern["ci90_low"], 5e-7)
+    check("6.5 modern pool 90% high", 0.000020, modern["ci90_high"], 5e-7)
     check("conclusion, smallest decorrelated mean gain", 0.00271, mean_gain[decorrelated].min(), 5e-6)
     check("conclusion, largest decorrelated mean gain", 0.00401, mean_gain[decorrelated].max(), 5e-6)
     positive("conclusion, decorrelated gains all positive", high.gate_gain.min())

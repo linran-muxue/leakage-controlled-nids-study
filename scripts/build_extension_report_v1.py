@@ -46,9 +46,9 @@ def main() -> None:
     parser.add_argument("--outdir", default=None)
     args = parser.parse_args()
     lines = ["# 扩展实验报告", "",
-             "> 十个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
+             "> 十一个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
              "CIC-IDS2018、CIC-IoT-2023、2020–2023 年语料四份、2025 年语料四份、"
-             "2026 年语料三份。"
+             "2026 年语料三份，以及十二个现代语料的合并等价性检验。"
              "每个实验的逐种子数据都保存在对应的 `results_*` 目录中，"
              "本报告只从那些文件读数字。", ""]
 
@@ -230,30 +230,6 @@ def main() -> None:
             "2025 年语料上（十种子），门控与同成员等权融合的差值同样在 +0.000000–+0.000020 量级；"
             "结论不依赖语料年代。")
 
-    y2026 = []
-    for name, label in (("results_rccf_ctu_idseval6_v1", "CTU-IDSEVAL-6（2026）"),
-                        ("results_rccf_6tisch2026_v1", "6TiSCHSet-2026（2026）"),
-                        ("results_rccf_rtn2026_v1", "RTN 数据包表（2026）")):
-        detail = read_json(ROOT / name / "benchmark_summary.json")
-        if detail:
-            y2026.append((f"{label}：{len(detail['classes'])} 类，测试 "
-                          f"{detail['test_rows']:,} 条",
-                          f"RCCF {detail['rccf_mean_macro_f1']:.6f}，同成员等权融合 "
-                          f"{detail['equal_fusion_mean_macro_f1']:.6f}，差 "
-                          f"{detail['same_members_difference']:+.6f}"))
-    if y2026:
-        lines += section(
-            "十、2026 年语料（最新一批）",
-            "最新发布的开放语料是否改变结论？",
-            "三份 2026 年发布、CC BY 4.0 的语料，同一水库协议、同一组十个种子；"
-            "6TiSCHSet-2026 按它自己的模式文档剔除三个标识列。",
-            r"& $py scripts\fetch_2026_corpora_v1.py"
-            "\n" r"& $py scripts\prepare_2026_corpora_v1.py --dataset ctu" "\n" r"& $py scripts\prepare_2026_corpora_v1.py --dataset 6tisch" "\n" r"& $py scripts\prepare_2026_corpora_v1.py --dataset rtn",
-            "`E:\论文\data\external\y2026\`（原始文件 + `corpora_2026_manifest.json` "
-            "的 MD5）；处理与结果在 `data_processed_*2026_v1/`、`results_rccf_*2026_v1/`",
-            y2026,
-            "三份最新语料上门控与同成员等权融合的差值在 -0.000026–0.000000 之间，"
-            "其中 RTN 已饱和；结论不随语料年代改变。")
     full = read_json(ROOT / "results_rccf_gotham2025_v1" / "benchmark_summary.json")
     k8 = read_json(ROOT / "results_rccf_gotham2025_v1_k8" / "benchmark_summary.json")
     if full and k8:
@@ -304,6 +280,28 @@ def main() -> None:
             y2026,
             "三份最新语料上门控与同成员等权融合的差值在 -0.000026–0.000000 之间，"
             "其中 RTN 已饱和；结论不随语料年代改变。")
+    pooled = read_json(ROOT / "results_modern_replication_v1" / "summary.json")
+    if pooled:
+        five = pooled["pooled_005"]
+        with_pos = pooled["pooled_with_positive_005"]
+        positive = pooled["positive_case"]
+        lines += section(
+            "十一、现代语料的合并等价性检验",
+            "把 2020–2026 年的语料合并起来，等价性还成立吗？",
+            f"十二个 2020–2026 年发布的语料，同一协议、同一组十个种子、同一套同成员对照；"
+            "每个语料的逐种子配对差由它自己发布的逐样本预测重算。",
+            r"& $py scripts\analyse_modern_replication_v1.py",
+            "`results_modern_replication_v1/`（per_corpus_differences.csv、summary.json）",
+            [(f"合并（{five['n']} 个种子级比较）",
+              f"均值 {five['mean']:+.6f}，90% 区间 "
+              f"[{five['ci90_low']:+.6f}, {five['ci90_high']:+.6f}]，"
+              f"0.005 边界内等价={five['equivalent']}"),
+             ("并入 Gotham-2025 降维正例",
+              f"均值 {with_pos['mean']:+.6f}，90% 区间 "
+              f"[{with_pos['ci90_low']:+.6f}, {with_pos['ci90_high']:+.6f}]，"
+              f"仍等价={with_pos['equivalent']}")],
+            "把等价性结论从 2017 年的单一语料搬到 2020–2026 年的十二个语料上：合并区间"
+            "比 0.005 边界窄两个数量级，唯一的正例（Gotham 降维）并入后总体仍等价。")
     text = "\n".join(lines) + "\n"
     out = Path(args.outdir) / "扩展实验报告.md" if args.outdir else OUT
     out.write_text(text, encoding="utf-8")
