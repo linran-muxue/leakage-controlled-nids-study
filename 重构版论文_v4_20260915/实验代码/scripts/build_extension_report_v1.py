@@ -46,9 +46,10 @@ def main() -> None:
     parser.add_argument("--outdir", default=None)
     args = parser.parse_args()
     lines = ["# 扩展实验报告", "",
-             "> 六个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
-             "CIC-IDS2018、CIC-IoT-2023。每个实验的逐种子数据都保存在对应的 "
-             "`results_*` 目录中，本报告只从那些文件读数字。", ""]
+             "> 八个扩展实验：专家家族与数量、按天留出、外部队列十种子、部署向指标、"
+             "CIC-IDS2018、CIC-IoT-2023、2020–2023 年语料四份、2025 年语料三份。"
+             "每个实验的逐种子数据都保存在对应的 `results_*` 目录中，"
+             "本报告只从那些文件读数字。", ""]
 
     families = read_json(ROOT / "results_member_family_v1" / "member_family_summary.json")
     if families:

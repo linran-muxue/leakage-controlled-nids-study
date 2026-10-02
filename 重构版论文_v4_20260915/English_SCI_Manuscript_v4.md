@@ -506,7 +506,7 @@ Per-seed paired statistics, per-class reports and the scale summaries for all th
 
 ### 5.8 Extension experiments
 
-Five extensions probe the boundaries of the main result; their per-seed data and a standalone report ship with the release (扩展实验报告, `results_*_v1/`).
+Six extensions probe the boundaries of the main result; their per-seed data and a standalone report ship with the release (扩展实验报告, `results_*_v1/`).
 
 **Member family and count.** Replacing the four same-family filter views (pairwise disagreement 0.64%, gain +0.000140) with cross-family members (random forest, extremely randomised trees and XGBoost) raises disagreement to 2.29% and the gain to +0.001421; six members give +0.001661. The gate therefore acts once the members are dissimilar enough, but even the most diverse configuration stays inside the 0.005 margin.
 

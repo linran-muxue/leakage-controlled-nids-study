@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 413 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 414 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -126,7 +126,7 @@
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
-| `scripts/build_extension_report_v1.py` | `6a92addad7bcf98d` | 240 | 14.3 KB |
+| `scripts/build_extension_report_v1.py` | `2851537151701a25` | 241 | 14.4 KB |
 | `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
@@ -222,6 +222,7 @@
 | `scripts/fix_doi_punctuation_v19.py` | `86a927dee9d87dcd` | 37 | 1.5 KB |
 | `scripts/fix_equal_fusion_wording_v1.py` | `5f74c66222c4d607` | 134 | 7.2 KB |
 | `scripts/fix_expert_disagreement_claim_v1.py` | `9d51c426fa404dd8` | 162 | 9.1 KB |
+| `scripts/fix_extension_counts_v1.py` | `f31f0c3c28161ed8` | 67 | 3.3 KB |
 | `scripts/fix_extension_metrics_v1.py` | `b31aaa0480625602` | 75 | 3.0 KB |
 | `scripts/fix_figure_order_v5.py` | `c70cd17870164f2e` | 41 | 1.8 KB |
 | `scripts/fix_full_corpus_split_counts_v1.py` | `01dd4ddc7429dd61` | 75 | 3.8 KB |
@@ -271,7 +272,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `e6396b367dcb7150` | 244 | 15.2 KB |
+| `scripts/package_submission_bundle_v18.py` | `93af204f039489b6` | 244 | 15.3 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |
