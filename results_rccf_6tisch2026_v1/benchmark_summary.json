@@ -1,0 +1,29 @@
+{
+  "population": "data_processed_6tisch2026_v1",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "classes": [
+    "6P Exhaustion",
+    "App Flooding",
+    "Blackhole",
+    "DIS Flooding",
+    "Decreased Rank",
+    "NONE",
+    "Shared Cell",
+    "TSCH Desync"
+  ],
+  "test_rows": 15957,
+  "rccf_mean_macro_f1": 0.9946233071932251,
+  "equal_fusion_mean_macro_f1": 0.9946233071932251,
+  "same_members_difference": 0.0
+}

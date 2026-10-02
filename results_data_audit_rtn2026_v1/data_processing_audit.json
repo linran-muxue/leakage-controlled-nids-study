@@ -1,0 +1,55 @@
+{
+  "rows_scanned": 221253,
+  "per_class_total": {
+    "Benign": 1968,
+    "Attack": 219285
+  },
+  "per_class_kept_train": {
+    "Benign": 1396,
+    "Attack": 5000
+  },
+  "per_class_kept_test": {
+    "Benign": 538,
+    "Attack": 2000
+  },
+  "duplicates_in_reservoir": {
+    "train": 3,
+    "test": 31
+  },
+  "dropped_all_nan_columns": [
+    "ip.flags",
+    "tcp.flags"
+  ],
+  "features": [
+    "frame.len",
+    "ip.len",
+    "ip.ttl",
+    "ip.proto",
+    "ip.checksum",
+    "tcp.srcport",
+    "tcp.dstport",
+    "tcp.seq",
+    "tcp.ack",
+    "tcp.len",
+    "tcp.window_size",
+    "tcp.checksum",
+    "udp.srcport",
+    "udp.dstport",
+    "udp.length",
+    "udp.checksum",
+    "http.response.code",
+    "tcp.flags_count",
+    "ip.flags_count"
+  ],
+  "split_rule": "fingerprint % 100 < 30 -> test",
+  "caps": {
+    "train": 5000,
+    "test": 2000
+  },
+  "splits": {
+    "train": 5436,
+    "validation": 960,
+    "test": 2538
+  },
+  "dropped_small_classes": null
+}

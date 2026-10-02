@@ -1,0 +1,24 @@
+{
+  "population": "data_processed_ctu_idseval6_v1",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "classes": [
+    "Background",
+    "Benign",
+    "Malicious"
+  ],
+  "test_rows": 4599,
+  "rccf_mean_macro_f1": 0.8932811616928976,
+  "equal_fusion_mean_macro_f1": 0.8933069807791993,
+  "same_members_difference": -2.5819086301726024e-05
+}

@@ -60,6 +60,24 @@ def main() -> int:
                                        "benchmark_summary.json"],
         "results_rccf_gotham2025_v1_k8": ["metrics_by_seed.csv", "metrics_aggregate.csv",
                                           "benchmark_summary.json"],
+        "results_rccf_ctu_idseval6_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                         "benchmark_summary.json"],
+        "results_rccf_6tisch2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_rtn2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                    "benchmark_summary.json"],
+        "results_rccf_ctu_idseval6_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                         "benchmark_summary.json"],
+        "results_rccf_6tisch2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_rtn2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                    "benchmark_summary.json"],
+        "results_rccf_ctu_idseval6_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                         "benchmark_summary.json"],
+        "results_rccf_6tisch2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                       "benchmark_summary.json"],
+        "results_rccf_rtn2026_v1": ["metrics_by_seed.csv", "metrics_aggregate.csv",
+                                    "benchmark_summary.json"],
     }
     for folder, files in required.items():
         for name in files:
@@ -107,7 +125,10 @@ def main() -> int:
                           ("results_rccf_genis2025_v1", "GeNIS"),
                           ("results_rccf_ids2025_v1", "IDS2025"),
                           ("results_rccf_gotham2025_v1", "Gotham-2025 (60 features)"),
-                          ("results_rccf_gotham2025_v1_k8", "Gotham-2025 (8/16 features)")):
+                          ("results_rccf_gotham2025_v1_k8", "Gotham-2025 (8/16 features)"),
+                          ("results_rccf_ctu_idseval6_v1", "CTU-IDSEVAL-6"),
+                          ("results_rccf_6tisch2026_v1", "6TiSCHSet-2026"),
+                          ("results_rccf_rtn2026_v1", "RTN 数据包表")):
         detail = json.loads((ROOT / folder / "benchmark_summary.json").read_text(encoding="utf-8"))
         checks.append((f"{label} same-members difference",
                        detail["same_members_difference"], 6))
@@ -121,7 +142,7 @@ def main() -> int:
     if problems:
         print("EXTENSION_FAILED: " + "; ".join(problems[:8]))
         return 1
-    print(f"EXTENSION_OK experiments=14 quoted={len(checks)} "
+    print(f"EXTENSION_OK experiments=17 quoted={len(checks)} "
           f"prediction_files="
           f"{sum(len(list((ROOT / folder).glob('predictions*.csv'))) for folder in required)}")
     return 0

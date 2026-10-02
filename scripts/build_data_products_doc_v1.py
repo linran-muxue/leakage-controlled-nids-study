@@ -32,6 +32,11 @@ PUBLISHED = {
     "data_external_nsl_kdd_processed_v2": ("NSL-KDD 原生标签", "表 8、S28", 22_544),
     "data_processed_gotham2025_v1": ("Gotham-2025 数据包级基准（2025）",
                                       "扩展实验报告九、S31", 29_718),
+    "data_processed_ctu_idseval6_v1": ("CTU-IDSEVAL-6 Zeek 流基准（2026）",
+                                       "扩展实验报告十", 4_599),
+    "data_processed_6tisch2026_v1": ("6TiSCHSet-2026 遥测基准（2026）",
+                                     "扩展实验报告十", 15_957),
+    "data_processed_rtn2026_v1": ("RTN 数据包表（2026）", "扩展实验报告十", 2_538),
 }
 
 

@@ -1,0 +1,5 @@
+﻿model,macro_f1_mean,macro_f1_std,accuracy_mean,balanced_accuracy_mean,log_loss_mean,train_seconds_mean,test_samples_mean
+equal_fusion,1.0,0.0,1.0,1.0,0.00111992201063539,,2538
+equal_rf_all,1.0,0.0,1.0,1.0,0.00085480892751853,,2538
+equal_rf_chi2,1.0,0.0,1.0,1.0,0.00085480892751851,,2538
+rccf,1.0,0.0,1.0,1.0,0.00016786908686202152,7.117522770000505,2538

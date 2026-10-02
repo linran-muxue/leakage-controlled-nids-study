@@ -21,7 +21,8 @@ DIRS = ["results_rccf_nsl_v10", "results_rccf_unsw_v10", "results_rccf_nbaiot_v1
         "results_rccf_rt_iot2022_v1", "results_rccf_aci_iot2023_v1",
         "results_rccf_uavids2025_v1", "results_rccf_genis2025_v1",
         "results_rccf_ids2025_v1", "results_rccf_gotham2025_v1",
-        "results_rccf_gotham2025_v1_k8"]
+        "results_rccf_gotham2025_v1_k8", "results_rccf_ctu_idseval6_v1",
+        "results_rccf_6tisch2026_v1", "results_rccf_rtn2026_v1"]
 
 
 def data_rows(path: Path) -> int:

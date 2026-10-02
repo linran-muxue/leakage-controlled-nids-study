@@ -42,7 +42,9 @@ EXTENSION_MANIFESTS = (Path(r"E:\论文\data\external\new_corpora_manifest.json"
                        Path(r"E:\论文\data\external\recent\recent_corpora_manifest.json"),
                        Path(r"E:\论文\data\external\y2025\corpora_2025_manifest.json"),
                        Path(r"E:\论文\data\external\y2025\Gotham2025"
-                            r"\gotham2025_manifest.json"))
+                            r"\gotham2025_manifest.json"),
+                       Path(r"E:\论文\data\external\y2026"
+                            r"\corpora_2026_manifest.json"))
 EXTENSION_SPECS = (
     ("CIC-IDS2018", "2018", "Hugging Face `c01dsnap/CIC-IDS2018`（官方 CIC 逐日 CSV）",
      "原数据集条款（镜像获取）", "CIC-IDS2018"),
@@ -62,6 +64,13 @@ EXTENSION_SPECS = (
     ("Gotham-2025", "2025",
      "Zenodo record 14502760（Gotham 测试床，78 台 IoT 设备，CC BY 4.0）", "CC BY 4.0",
      "GothamDataset2025"),
+    ("CTU-IDSEVAL-6", "2026", "Zenodo record 21027042（Zeek 连接日志，CTU）", "CC BY 4.0",
+     "CTU-IDSEVAL-6"),
+    ("6TiSCHSet-2026", "2026",
+     "Zenodo record 22113022（6TiSCH 遥测，自带泄漏感知基准）", "CC BY 4.0",
+     "6TiSCHSet-2026"),
+    ("RTN-traffic-2026", "2026", "Zenodo record 18910837（数据包级 CSV）", "CC BY 4.0",
+     "RTN-traffic"),
 )
 
 # Corpora that were located but are not (yet) part of the evaluation.  Gotham is
@@ -236,12 +245,13 @@ def main() -> None:
                           for p in sorted((ROOT / "docs" / "source_records").glob("*"))
                           if p.is_file()) + "。")
     lines.append("")
-    lines.append("**扩展语料（第 5.8 节，十项）**")
+    lines.append("**扩展语料（第 5.8 节，十三项）**")
     lines.append("")
-    lines.append("这十项与上面四项一样，都在同一套处理与评估协议下运行，只是只用于扩展实验。"
+    lines.append("这十三项与上面四项一样，都在同一套处理与评估协议下运行，只是只用于扩展实验。"
                  "原始文件与获取清单保存在 `E:\\论文\\data\\external\\`，不随包分发；"
                  "可用 `scripts/fetch_new_corpora_v1.py`、`scripts/fetch_recent_corpora_v1.py`、"
-                 "`scripts/fetch_2025_corpora_v1.py`、`scripts/fetch_gotham2025_v1.py` 重新取得，"
+                 "`scripts/fetch_2025_corpora_v1.py`、`scripts/fetch_gotham2025_v1.py`、"
+                 "`scripts/fetch_2026_corpora_v1.py` 重新取得，"
                  "并与下表的校验值逐字节核对。")
     lines.append("")
     lines.append("| 数据集 | 发布年 | 来源 | 许可 | 本地体积 | SHA-256（前 16 位）| 本地获取日期 |")

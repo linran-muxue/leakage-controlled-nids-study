@@ -1,0 +1,23 @@
+{
+  "population": "data_processed_rtn2026_v1",
+  "seeds": [
+    42,
+    2024,
+    3407,
+    7,
+    13,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "classes": [
+    "Attack",
+    "Benign"
+  ],
+  "test_rows": 2538,
+  "rccf_mean_macro_f1": 1.0,
+  "equal_fusion_mean_macro_f1": 1.0,
+  "same_members_difference": 0.0
+}
