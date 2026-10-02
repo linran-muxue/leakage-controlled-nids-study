@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 414 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 415 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -19,6 +19,7 @@
 | `scripts/add_nbaiot_references_v53.py` | `58800f103a8a8f68` | 70 | 2.6 KB |
 | `scripts/add_open_set_supplementary_v1.py` | `21eb7d80f449273e` | 185 | 8.5 KB |
 | `scripts/add_optimisation_experiments_v1.py` | `57c2459b6c033fee` | 129 | 7.5 KB |
+| `scripts/add_recency_to_briefings_v1.py` | `f4213b7e3e42d95d` | 155 | 8.4 KB |
 | `scripts/add_recent_corpora_section_v1.py` | `66a57d95439399fd` | 85 | 4.5 KB |
 | `scripts/add_scale_ladder_table_v1.py` | `62a78cccc2fba1cf` | 93 | 4.8 KB |
 | `scripts/align_aux_documents_v13.py` | `eaad76d7860c085c` | 48 | 2.1 KB |
@@ -133,7 +134,7 @@
 | `scripts/build_jisa_graphical_abstract_v1.py` | `0449bf016c7133e2` | 54 | 2.9 KB |
 | `scripts/build_material_index_v1.py` | `f5a3b7fd613bf203` | 271 | 13.9 KB |
 | `scripts/build_paper_docx.py` | `7b78efe54bdf4a16` | 107 | 4.2 KB |
-| `scripts/build_paper_intro_v1.py` | `d88e226d931d41a6` | 405 | 29.6 KB |
+| `scripts/build_paper_intro_v1.py` | `074eea74c8e7c241` | 437 | 31.6 KB |
 | `scripts/build_probability_and_feature_evidence_v4.py` | `807492413709dd35` | 42 | 4.2 KB |
 | `scripts/build_project_flowchart_v1.py` | `395f6cf63f353483` | 241 | 11.5 KB |
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
@@ -142,8 +143,8 @@
 | `scripts/build_restructured_manuscript_v4.py` | `f82c899d44e71e4b` | 344 | 13.5 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
-| `scripts/build_talk_deck_v1.py` | `17b5da60bedcf57a` | 663 | 38.6 KB |
-| `scripts/build_talk_script_v1.py` | `4796789665684caf` | 544 | 43.3 KB |
+| `scripts/build_talk_deck_v1.py` | `72adf975885556d1` | 667 | 39.0 KB |
+| `scripts/build_talk_script_v1.py` | `d3c7d79b142cb639` | 577 | 45.5 KB |
 | `scripts/build_unsw_chapter4_materials_v1.py` | `cd11e45fafbd3939` | 150 | 15.6 KB |
 | `scripts/build_v2_docx.py` | `ba701e2806d5aa26` | 89 | 9.8 KB |
 | `scripts/build_v5_figures.py` | `8d69ffa6a48948f7` | 135 | 5.6 KB |
@@ -272,7 +273,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `93af204f039489b6` | 244 | 15.3 KB |
+| `scripts/package_submission_bundle_v18.py` | `cde2b5bb2161a2c8` | 244 | 15.3 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |
 | `scripts/power_and_effect_size_v5.py` | `6f3f5f669faad6c4` | 145 | 5.8 KB |

@@ -229,6 +229,8 @@ def notes(slide, text):
 
 
 def main() -> None:
+    corpora = 4 + len([path for path in ROOT.glob("results_rccf_*_v1")
+                       if (path / "benchmark_summary.json").exists()])
     n = numbers()
     deck = Presentation()
     deck.slide_width, deck.slide_height = SLIDE_W, SLIDE_H
@@ -290,7 +292,7 @@ def main() -> None:
 
     # 3 - protocol
     slide = deck.slides.add_slide(blank)
-    header(slide, "六阶段审计 + 四个语料 + 十个种子", "做法")
+    header(slide, f"六阶段审计 + {corpora} 个语料 + 十个种子", "做法")
     stages = ["标签映射", "非有限值清理", "物理范围筛查", "全局去重", "分层划分", "训练侧特征选择"]
     for index, stage in enumerate(stages):
         x = Inches(0.6 + index * 2.02)
@@ -527,7 +529,9 @@ def main() -> None:
             f"· 文件级外推：把周一到周五的每个原始文件当留出集，已知类 Macro-F1 覆盖 "
             f"{n['file_lo']:.4f}–{n['file_hi']:.4f}，文件之间的差异比聚合规则差异大两到三个数量级；\n"
             f"· 三个外部语料用各自原生标签，不重采样、不跨语料迁移，因此只能作为"
-            f"「结论方向不随语料改变」的旁证，不能当作迁移实验。",
+            f"「结论方向不随语料改变」的旁证，不能当作迁移实验；\n"
+            f"· 语料年代：{corpora} 个语料里八个发布于 2020 年及以后，其中三份发布于 2025 年，"
+            f"差值与上表同量级（见《向老师汇报要点》Q5）。",
             size=13, color=INK, line_spacing=1.35)
     footer(slide, 9)
     notes(slide, "这一页回应两个可能的攻击：结论是不是被某一档类别先验制造出来的、"

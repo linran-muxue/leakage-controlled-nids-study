@@ -15,6 +15,31 @@ import pandas as pd
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def corpus_facts() -> tuple[int, int, str]:
+    """(evaluated corpora, released prediction files, the 2025 summary line).
+
+    Counted from the working tree rather than typed: both numbers moved
+    twice while the recent corpora were being added.
+    """
+    extension = [path for path in ROOT.glob("results_rccf_*_v1")
+                 if (path / "benchmark_summary.json").exists()]
+    corpora = 4 + len(extension)
+    predictions = len(list(ROOT.glob("results_*/**/predictions*.csv")))
+    y2025 = []
+    for folder, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025"),
+                          ("results_rccf_genis2025_v1", "GeNIS"),
+                          ("results_rccf_ids2025_v1", "IDS2025")):
+        path = ROOT / folder / "benchmark_summary.json"
+        if not path.exists():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        y2025.append(f"{label}（{len(data['classes'])} 类，Macro-F1 "
+                     f"{data['rccf_mean_macro_f1']:.4f}，差 "
+                     f"{data['same_members_difference']:+.6f}）")
+    return corpora, predictions, "、".join(y2025)
+
 BASE = ROOT / "重构版论文_v4_20260915"
 OUT = BASE / "向老师汇报要点.md"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -22,6 +47,7 @@ import artifact_counts_v1 as counts  # noqa: E402
 
 
 def main() -> None:
+    corpora, predictions, y2025_line = corpus_facts()
     ten = pd.read_csv(ROOT / "results_seeds10_v5" / "table4a_10seeds.csv").set_index("model")
     power = pd.read_csv(ROOT / "results_seeds10_v5" / "power_analysis.csv").set_index("comparison")
     row = power.loc["rccf_minus_equal_rf_chi2"]
@@ -381,10 +407,10 @@ def main() -> None:
     lines.append("| Bootstrap 区间 | 对测试行或种子重采样得到差值的经验分布区间，不依赖正态假设 | 表 5、S20 |")
     lines.append("| 稀释诊断 | 多路平均把某一专家的偏差按 1/Q 摊进融合结果，与加权本身无关 | 式 (6)、第 6.2 节 |")
     lines.append("")
-    lines.append("## 七、老师最可能追问的 22 个问题")
+    lines.append("## 七、老师最可能追问的 23 个问题")
     lines.append("")
-    lines.append("前八问每次汇报都会出现；后面十四问按老师追问的方向取用"
-                 "（设计 4、统计 4、数据 3、流程与边界 3）。")
+    lines.append("前八问每次汇报都会出现；后面十五问按老师追问的方向取用"
+                 "（设计 4、统计 4、数据 4、流程与边界 3）。")
     lines.append("")
     faq = [
         ("你怎么能说「没有增益」？",
@@ -399,9 +425,15 @@ def main() -> None:
          "一组可证伪的可辨识性条件（其中一条可逐行计算），以及一张量化地图——"
          "协议效应比聚合规则差异大一个数量级；三者都能被别人直接拿去用。"),
         ("数据和代码可信吗？",
-         "四个数据集的摘要与字节数都与来源记录逐一核对过（CIC 8 个文件 2 830 743 行、"
-         "NSL/UNSW 官方划分、N-BaIoT 归档 1 772 922 927 字节），722 个逐样本预测全部公开，"
+         f"{corpora} 个语料的摘要与字节数都与来源记录逐一核对过（CIC 8 个文件 2 830 743 行、"
+         "NSL/UNSW 官方划分、N-BaIoT 归档 1 772 922 927 字节），"
+         f"{predictions:,} 个逐样本预测全部公开，"
          f"仓库带 tag；{counts.gate_checks()} 项自动检查每次提交前全绿。"),
+        ("数据集是不是太老了？",
+         f"评测的 {corpora} 个语料里八个发布于 2020 年及以后，其中三份发布于 2025 年："
+         f"{y2025_line}；"
+         "全部语料都按同一套水库去重、同一组十个种子、同一组确定性视图评测，"
+         "结论不随语料年代改变。"),
         ("和已有工作有什么不同？",
          "多数工作是提出新的加权方案并报告增益；本文把「加权 vs 等权」放到同一个去泄漏协议里做最直接的对照，"
          "并给出增益何时为零的判据（专家两两分歧率 0.2%–0.4% 时结构上不可能产生增益）。"),
@@ -465,7 +497,7 @@ def main() -> None:
          "类别先验与调参预算差异。前两类用全局去重（前向/反向双哈希、跨划分重叠 0），"
          "第三类把选择器限制在训练侧，第四类用平衡控制总体单独量化。"),
         ("为什么不用时间切分？",
-         "四个公开语料都不提供同一测试床上的时间戳，无法构造真正的时间留出集；"
+         f"{corpora} 个公开语料都不提供同一测试床上的时间戳，无法构造真正的时间留出集；"
          f"作为部分替代做了文件级覆盖分析（Macro-F1 {file_level.macro_f1_known.min():.4f}–"
          f"{file_level.macro_f1_known.max():.4f}），并在稿件里明确写成局限。"),
         ("为什么 NSL-KDD 的分数这么低？",
@@ -495,7 +527,8 @@ def main() -> None:
     lines.append("- 不说「首次提出」「证明了加权无用」；说「在流特征公开数据与本文协议下，未观测到判别增益」；")
     lines.append(f"- 不把全语料的 {full['mean_difference']:.6f} 说成「显著变差」——它在 0.01 边界上仍等价，"
                  "只是方向稳定为负；")
-    lines.append("- 不说「生产可用」：四个语料都不含生产流量，也没有同一测试床上的时间分离留出集；")
+    lines.append(f"- 不说「生产可用」：{corpora} 个语料都不含生产流量，"
+                 "也没有同一测试床上的时间分离留出集；")
     lines.append("- 不提「准确率 99% 以上」作为优点：本文的论点恰恰是准确率会误导，主指标是 Macro-F1；")
     lines.append("- 引用外部基准时说明是「独立原生标签基准」，不是迁移实验。")
     lines.append("- 不说「权重完全没用」：命题只覆盖可辨识区间，专家高度去相关时增益是存在的"

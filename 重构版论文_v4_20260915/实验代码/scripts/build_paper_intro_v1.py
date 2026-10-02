@@ -17,6 +17,31 @@ import pandas as pd
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def corpus_facts() -> tuple[int, int, str]:
+    """(evaluated corpora, released prediction files, the 2025 summary line).
+
+    Counted from the working tree rather than typed: both numbers moved
+    twice while the recent corpora were being added.
+    """
+    extension = [path for path in ROOT.glob("results_rccf_*_v1")
+                 if (path / "benchmark_summary.json").exists()]
+    corpora = 4 + len(extension)
+    predictions = len(list(ROOT.glob("results_*/**/predictions*.csv")))
+    y2025 = []
+    for folder, label in (("results_rccf_uavids2025_v1", "UAVIDS-2025"),
+                          ("results_rccf_genis2025_v1", "GeNIS"),
+                          ("results_rccf_ids2025_v1", "IDS2025")):
+        path = ROOT / folder / "benchmark_summary.json"
+        if not path.exists():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        y2025.append(f"{label}（{len(data['classes'])} 类，Macro-F1 "
+                     f"{data['rccf_mean_macro_f1']:.4f}，差 "
+                     f"{data['same_members_difference']:+.6f}）")
+    return corpora, predictions, "、".join(y2025)
+
 BASE = ROOT / "重构版论文_v4_20260915"
 OUT = BASE / "论文介绍.md"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -30,6 +55,7 @@ def ten_seed() -> dict[str, float]:
 
 
 def main() -> None:
+    corpora, predictions, y2025_line = corpus_facts()
     title = (BASE / "English_SCI_Manuscript_v4.md").read_text(
         encoding="utf-8").splitlines()[0].lstrip("# ").strip()
     zh_title = (BASE / "中文SCI论文_v4_重构版.md").read_text(
@@ -142,7 +168,8 @@ def main() -> None:
     lines.append(f"| RQ2 | 若没有增益，机制上为什么动不了预测？| 逐行可计算上界（式 2）给出的"
                  f"「可证不变比例」+ 权重弥散度 + 门控搜索的取值多样性 |")
     lines.append(f"| RQ3 | 结论随规模、先验与语料如何变化？| 三档总体（53 237 / 413 209 / 2 429 503）"
-                 f"+ 平衡控制总体 + 三个独立原生标签基准 |")
+                 f"+ 平衡控制总体 + 三个独立原生标签基准 + {corpora} 个语料"
+                 f"（含 2025 年发布的三份）|")
     lines.append("")
     lines.append("**为什么用等价检验而不是「p > 0.05」**：十种子下 80% 功效能检出的最小差是 "
                  f"{row.min_detectable_effect_80pct:.6f}，与观测差 {abs(row.mean_difference):.6f} 同量级——"
@@ -254,6 +281,10 @@ def main() -> None:
     lines.append(f"- 专家集合的分歧率决定增益大小：当专家两两分歧率降到 0.2%–0.4% 时，"
                  f"结构上不可能产生增益（命题 1 的失效区间）；本文的主实验正落在该区间内。")
     lines.append("")
+    lines.append(f"- **语料年代不是结论的前提**：本文共评测 {corpora} 个语料，其中八个发布于 "
+                 f"2020 年及以后、三份发布于 2025 年；2025 年语料上门控与同成员等权融合的"
+                 f"差值仍在 0.000004-0.000020 量级：{y2025_line}。")
+    lines.append("")
     lines.append("### 4.4 先验、外部基准与文件级外推")
     lines.append("")
     lines.append(f"- **类别先验是最大的单一效应**：平衡控制总体（3 365 条、三类等量、测试 505 条）"
@@ -338,7 +369,8 @@ def main() -> None:
     lines.append("")
     lines.append("## 六、诚实的边界")
     lines.append("")
-    lines.append("- 研究总体是审计后的公开数据子集，**不是生产流量**；四个语料都不提供同一测试床上的时间分离留出集；")
+    lines.append(f"- 研究总体是审计后的公开数据子集，**不是生产流量**；{corpora} 个语料都不提供"
+                 "同一测试床上的时间分离留出集；")
     lines.append("- 文件级实验不是时间外推；开放集只覆盖三个未知族与一个显著性水平；")
     lines.append("- 延迟测量不含抓包与特征提取；对抗性规避未评估（只做了随机扰动与特征屏蔽）；")
     lines.append("- 等价边界 0.005 与 0.01 是**研究者预设**的，不是从数据里估出来的；"
@@ -379,7 +411,7 @@ def main() -> None:
                  "多样性实验、外部基准、规模阶梯、开放集诊断等；")
     lines.append("- 论文包：正式稿件（中英）、Highlights、投稿信、图形摘要、主表 CSV 与投稿文本；")
     lines.append("- 汇报材料：`向老师汇报要点.md/.docx`（三个时长版本、逐页讲稿、"
-                 "22 问预判问答、检查清单）与 `汇报用_论文介绍.pptx`（12 页）；")
+                 "23 问预判问答、检查清单）与 `汇报用_论文介绍.pptx`（12 页）；")
     lines.append(f"- 一页全流程：`项目流程图.md/.docx`（六阶段，含各阶段入口与产物）；")
     lines.append(f"- 全部数字可由发布的逐样本预测重算（闸门 {counts.gate_checks()} 项自动复核）。")
     lines.append("")
