@@ -1,0 +1,48 @@
+{
+  "rows_scanned": 286702,
+  "per_class_total": {
+    "Benign": 78742,
+    "Background": 33163,
+    "Malicious": 174797
+  },
+  "per_class_kept_train": {
+    "Benign": 2801,
+    "Background": 3006,
+    "Malicious": 122401
+  },
+  "per_class_kept_test": {
+    "Benign": 1264,
+    "Background": 1335,
+    "Malicious": 52384
+  },
+  "duplicates_in_reservoir": {
+    "train": 9405,
+    "test": 94106
+  },
+  "dropped_all_nan_columns": [
+    "ip_proto"
+  ],
+  "features": [
+    "duration",
+    "orig_bytes",
+    "resp_bytes",
+    "missed_bytes",
+    "orig_pkts",
+    "orig_ip_bytes",
+    "resp_pkts",
+    "resp_ip_bytes",
+    "id.orig_p",
+    "id.resp_p"
+  ],
+  "split_rule": "fingerprint % 100 < 30 -> test",
+  "caps": {
+    "train": 100000000,
+    "test": 100000000
+  },
+  "splits": {
+    "train": 108976,
+    "validation": 19232,
+    "test": 54983
+  },
+  "dropped_small_classes": null
+}

@@ -141,6 +141,28 @@ def discussion() -> None:
     check("conclusion expert disagreement ceiling (%)", 0.66,
           disagreement["pairwise_disagreement_pct_max"], 5e-3)
 
+
+def ladder() -> None:
+    """Re-derive the modern-corpus ladder numbers quoted in Section 6.5."""
+    print()
+    print("== 6.5 modern-corpus ladder ==")
+    c = json.loads((ROOT / "results_rccf_cic_iot2023_cap500k" /
+                    "benchmark_summary.json").read_text(encoding="utf-8"))
+    full = json.loads((ROOT / "results_rccf_gotham2025_full" /
+                       "benchmark_summary.json").read_text(encoding="utf-8"))
+    budget = {}
+    for k in (8, 32, 60):
+        budget[k] = json.loads((ROOT / f"results_rccf_cic_iot2023_k{k}" /
+                                "benchmark_summary.json").read_text(encoding="utf-8"))
+    check("6.5 ladder CIC-IoT-2023 500k deficit", -0.000004,
+          c["same_members_difference"], 5e-7)
+    check("6.5 ladder Gotham-2025 uncapped", 0.000009,
+          full["same_members_difference"], 5e-7)
+    check("6.5 ladder budget k=8 gain", 0.001663,
+          budget[8]["same_members_difference"], 5e-7)
+    check("6.5 ladder budget k=32 gain", -0.000002,
+          budget[32]["same_members_difference"], 5e-7)
+
     splits = pd.read_csv(ROOT / "results_repeated_splits_v3" / "summary.csv", header=[0, 1])
     splits = splits.set_index(splits.columns[0])
     check("split noise (Macro-F1 sd over ten splits)", 0.011,
@@ -364,6 +386,7 @@ def cross_language() -> None:
 def main() -> int:
     populations()
     discussion()
+    ladder()
     decision_matrix()
     limitations()
     conclusion()

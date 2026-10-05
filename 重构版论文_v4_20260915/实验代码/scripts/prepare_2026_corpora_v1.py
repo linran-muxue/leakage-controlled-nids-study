@@ -199,9 +199,16 @@ def main() -> None:
     ap.add_argument("--min-class-rows", type=int, default=200)
     ap.add_argument("--test-fraction", type=float, default=0.30)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--processed-dir", default=None,
+                    help="override the output directory (used for the uncapped variant)")
+    ap.add_argument("--audit-dir", default=None)
     args = ap.parse_args()
 
     processed, audit_dir, title = DIRS[args.dataset]
+    if args.processed_dir:
+        processed = args.processed_dir
+    if args.audit_dir:
+        audit_dir = args.audit_dir
     out = ROOT / processed
     out.mkdir(parents=True, exist_ok=True)
     (ROOT / audit_dir).mkdir(parents=True, exist_ok=True)

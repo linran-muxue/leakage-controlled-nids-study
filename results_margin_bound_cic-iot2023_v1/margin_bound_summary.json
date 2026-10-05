@@ -1,0 +1,10 @@
+{
+  "n_seeds": 10,
+  "total_rows": 375160,
+  "empirical_changed_rows": 12,
+  "provable_by_bound_rate_mean": 0.9945010129011622,
+  "provable_by_actual_rate_mean": 0.9998453992963002,
+  "median_delta_bound_mean": 0.00115639963769084,
+  "median_margin_mean": 0.54941001945258,
+  "derivation": "||p_w - p_bar||_1 <= sum_e |w_e - 1/Q|; argmax invariant if 2*Delta < margin"
+}

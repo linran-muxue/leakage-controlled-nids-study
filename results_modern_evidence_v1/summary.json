@@ -1,0 +1,7 @@
+{
+  "corpora": 14,
+  "max_labels_moved_mean": 44.6,
+  "min_prediction_agreement": 0.9984992260582812,
+  "max_ece_gate": 0.028033154126708447,
+  "min_ece_gate": 0.0001542437894937255
+}

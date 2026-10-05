@@ -1,0 +1,10 @@
+{
+  "processed_dir": "data_processed_gotham2025_grouped_v1",
+  "groups_total": 78,
+  "groups_evaluated": 12,
+  "rccf_macro_f1_mean": 0.9671266261637231,
+  "rccf_macro_f1_min": 0.7649094434784471,
+  "rccf_macro_f1_max": 1.0,
+  "equal_fusion_macro_f1_mean": 0.9671266261637231,
+  "mean_difference": 0.0
+}

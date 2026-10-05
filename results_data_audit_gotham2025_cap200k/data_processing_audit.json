@@ -1,0 +1,107 @@
+{
+  "rows_scanned": 35134281,
+  "per_class_total": {
+    "Benign": 12256883,
+    "Telnet Brute Force": 227649,
+    "TCP Scan": 737764,
+    "Ingress Tool Transfer": 21587,
+    "Unknown": 7670,
+    "File Download": 7196,
+    "C&C Communication": 528,
+    "Reporting": 450,
+    "Mirai C&C Communication": 1074,
+    "Mirai UDP Flooding": 8897895,
+    "Mirai TCP Flooding": 6548173,
+    "Mirai GRE Flooding": 5911401,
+    "Merlin C&C Communication": 29356,
+    "Merlin ICMP Flooding": 57580,
+    "Merlin UDP Flooding": 29996,
+    "Merlin TCP Flooding": 120000,
+    "UDP Scan": 4242,
+    "CoAP Amplification": 274837
+  },
+  "per_class_kept_train": {
+    "Benign": 200000,
+    "Telnet Brute Force": 140722,
+    "TCP Scan": 200000,
+    "Ingress Tool Transfer": 12939,
+    "Unknown": 4784,
+    "File Download": 4166,
+    "C&C Communication": 301,
+    "Reporting": 273,
+    "Mirai C&C Communication": 732,
+    "Mirai UDP Flooding": 200000,
+    "Mirai TCP Flooding": 200000,
+    "Mirai GRE Flooding": 200000,
+    "Merlin C&C Communication": 20638,
+    "Merlin ICMP Flooding": 29968,
+    "Merlin UDP Flooding": 21011,
+    "Merlin TCP Flooding": 83917,
+    "UDP Scan": 2935,
+    "CoAP Amplification": 87739
+  },
+  "per_class_kept_test": {
+    "Benign": 50000,
+    "Telnet Brute Force": 50000,
+    "TCP Scan": 50000,
+    "Ingress Tool Transfer": 5442,
+    "Unknown": 2043,
+    "File Download": 1820,
+    "C&C Communication": 137,
+    "Reporting": 113,
+    "Mirai C&C Communication": 342,
+    "Mirai UDP Flooding": 50000,
+    "Mirai TCP Flooding": 50000,
+    "Mirai GRE Flooding": 50000,
+    "Merlin C&C Communication": 8716,
+    "Merlin ICMP Flooding": 12919,
+    "Merlin UDP Flooding": 8985,
+    "Merlin TCP Flooding": 36083,
+    "UDP Scan": 1306,
+    "CoAP Amplification": 37317
+  },
+  "duplicates_in_reservoir": {
+    "train": 733016,
+    "test": 273096
+  },
+  "dropped_all_nan_columns": [
+    "ip.tos"
+  ],
+  "dropped_by_leakage_control": [
+    "eth.src",
+    "eth.dst",
+    "ip.src",
+    "ip.dst",
+    "frame.time"
+  ],
+  "features": [
+    "frame.len",
+    "frame.protocol_depth",
+    "ip.flags_int",
+    "ip.ttl",
+    "ip.proto",
+    "ip.checksum_int",
+    "tcp.srcport",
+    "tcp.dstport",
+    "tcp.flags_int",
+    "tcp.window_size_value",
+    "tcp.window_size_scalefactor",
+    "tcp.checksum_int",
+    "tcp.options_len",
+    "tcp.pdu.size",
+    "udp.srcport",
+    "udp.dstport"
+  ],
+  "split_rule": "fingerprint % 100 < 30 -> test",
+  "caps": {
+    "train": 200000,
+    "test": 50000
+  },
+  "splits": {
+    "train": 1198606,
+    "validation": 211519,
+    "test": 415223
+  },
+  "archive_sha256": "not hashed (larger than 2 GiB)",
+  "archive_md5": "7ca78c0517ccb3d2854e823678e0f206"
+}

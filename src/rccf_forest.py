@@ -138,6 +138,14 @@ class RCCFForest:
         risk_features = np.concatenate(
             [oof.reshape(len(y), -1), oof_desc[:, :, desc_cols].reshape(len(y), -1)], axis=1)
         risk_targets = np.stack([(np.argmax(oof[:, i], axis=1) != y_idx).astype(int) for i in range(len(self.expert_names))], axis=1)
+        # oof and oof_desc are dead from here on, and on an uncapped corpus they
+        # are two of the largest objects in the process: for 12.1 M training rows,
+        # 4 experts and 18 classes, oof alone is ~7 GB and oof_desc ~1.2 GB.  The
+        # four risk models below each allocate a full copy of risk_features, so
+        # releasing these first lowers the peak by roughly 8 GB.  This only drops
+        # references - every value that is read later is untouched, so no
+        # reported number can move.
+        del oof, oof_desc
         self.risk_models_ = []
         self.risk_scalers_ = []
         for eidx in range(len(self.expert_names)):
@@ -152,6 +160,9 @@ class RCCFForest:
                 model.fit(scaled, target)
             self.risk_scalers_.append(scaler)
             self.risk_models_.append(model)
+        # risk_features is only used by the loop above; the four full-data experts
+        # built on the next line are far larger than this dictionary.
+        del risk_features, risk_targets, scaled
         self.experts_ = [self._fit_expert(name, X, y, self.random_state + i) for i, name in enumerate(self.expert_names)]
         self.calibration_classes_ = self.classes_.copy()
         if X_cal is None or y_cal is None:

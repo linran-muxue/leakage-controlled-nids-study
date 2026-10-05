@@ -43,8 +43,12 @@ def load(path: Path):
     return frame.drop(columns=["target"]).apply(pd.to_numeric).to_numpy(), frame["target"].to_numpy()
 
 
-def macro_f1(y, pred) -> float:
-    return float(f1_score(y, pred, average="macro", labels=LABELS, zero_division=0))
+def macro_f1(y, pred, labels=None) -> float:
+    """Macro-F1 over ``labels``; without an argument it keeps the historical
+    five CIC-IDS2017 classes, which is what every reported number used."""
+    return float(f1_score(y, pred, average="macro",
+                          labels=LABELS if labels is None else labels,
+                          zero_division=0))
 
 
 def build_expert(spec: dict, X: np.ndarray, y, seed: int):
@@ -112,7 +116,7 @@ def build_expert(spec: dict, X: np.ndarray, y, seed: int):
     return predict_proba
 
 
-def diversity_metrics(probs: np.ndarray, classes, y_true) -> dict:
+def diversity_metrics(probs: np.ndarray, classes, y_true, labels=None) -> dict:
     """probs: (n_samples, n_experts, n_classes)."""
     q = probs.shape[1]
     preds = np.stack([classes[np.argmax(probs[:, i], axis=1)] for i in range(q)], axis=1)
@@ -132,9 +136,11 @@ def diversity_metrics(probs: np.ndarray, classes, y_true) -> dict:
         "mean_pairwise_kl": float(np.mean(kls)),
         "mean_confidence_correlation": float(np.mean(corrs)) if corrs else float("nan"),
         "mean_single_expert_macro_f1": float(np.mean(
-            [macro_f1(y_true, classes[np.argmax(probs[:, i], axis=1)]) for i in range(q)])),
+            [macro_f1(y_true, classes[np.argmax(probs[:, i], axis=1)], labels)
+             for i in range(q)])),
         "max_single_expert_macro_f1": float(np.max(
-            [macro_f1(y_true, classes[np.argmax(probs[:, i], axis=1)]) for i in range(q)])),
+            [macro_f1(y_true, classes[np.argmax(probs[:, i], axis=1)], labels)
+             for i in range(q)])),
     }
 
 
@@ -186,8 +192,26 @@ def gate_fit_predict(specs, Xtr, ytr, Xte, yte, cv: int, seed: int, risk_C: floa
 TOP60 = list(range(60))
 
 
-def expert_sets() -> dict[str, list[dict]]:
+def expert_sets(width: int | None = None) -> dict[str, list[dict]]:
+    """The five expert-set configurations.
+
+    ``disjoint_views_k60`` needs 60 columns and the modern anchors do not always
+    have them (CIC-IoT-2023 has 39 features).  Cut from the columns that exist,
+    the set still means "four experts that never see the same feature"; on a
+    corpus 60 columns wide or wider the layout is exactly the historical four
+    groups of 15 over the first 60, so the reported CIC-IDS2017 numbers stay
+    reproducible.
+    """
     rf = lambda **kw: {"family": "rf", **kw}
+    if width is None or width >= 60:
+        views = [TOP60[i * 15:(i + 1) * 15] for i in range(4)]
+    else:
+        edges = np.linspace(0, width, 5).round().astype(int).tolist()
+        views = [list(range(edges[i], edges[i + 1])) for i in range(4)]
+    flat = [column for view in views for column in view]
+    assert len(flat) == len(set(flat)), "disjoint views must not share a column"
+    assert flat == list(range(min(width if width is not None else 60, 60))), \
+        "disjoint views must cover every column that exists"
     return {
         "rf_views_k20": [rf(selector="chi2", k=20), rf(selector="mutual_info", k=20),
                          rf(selector="anova", k=20), rf(k=None)],
@@ -197,7 +221,7 @@ def expert_sets() -> dict[str, list[dict]]:
                                rf(selector="chi2", k=60), rf(selector="chi2", k=60)],
         "hetero_families": [rf(k=None), {"family": "extra_trees", "k": None},
                             {"family": "xgboost", "k": None}, {"family": "knn", "k": None}],
-        "disjoint_views_k60": [rf(columns=TOP60[i * 15:(i + 1) * 15]) for i in range(4)],
+        "disjoint_views_k60": [rf(columns=view) for view in views],
     }
 
 
@@ -217,16 +241,26 @@ def main() -> None:
     Xtr, ytr = load(proc / "train.csv")
     Xte, yte = load(proc / "test.csv")
 
-    registry = expert_sets()
+    # Score F1 on the corpus's own vocabulary.  For the historical
+    # data_processed_cic_natural_v3b this is exactly the five classes the suite
+    # used to hard-code - asserted below - so previously reported numbers are
+    # unchanged; for a corpus with a different vocabulary (CIC-IoT-2023 has
+    # BruteForce/DDoS/DoS/Mirai/Normal/Recon/Spoofing/Web-based) the old
+    # hard-coded list scored every class as 0 and made the gains meaningless.
+    corpus_labels = sorted(np.unique(ytr).tolist())
+    if args.processed_dir.endswith("cic_natural_v3b"):
+        assert corpus_labels == LABELS, (corpus_labels, LABELS)
+    registry = expert_sets(Xtr.shape[1])
     rows = []
     for name in args.sets:
         specs = registry[name]
         for seed in args.seeds:
             start = time.perf_counter()
             result = gate_fit_predict(specs, Xtr, ytr, Xte, yte, args.cv, seed, args.risk_C)
-            metrics = diversity_metrics(result["test_probs"], np.unique(ytr), yte)
-            gated_f1 = macro_f1(yte, result["gated_pred"])
-            equal_f1 = macro_f1(yte, result["equal_pred"])
+            metrics = diversity_metrics(result["test_probs"], np.unique(ytr), yte,
+                                        corpus_labels)
+            gated_f1 = macro_f1(yte, result["gated_pred"], corpus_labels)
+            equal_f1 = macro_f1(yte, result["equal_pred"], corpus_labels)
             rows.append({
                 "expert_set": name, "seed": seed, "n_experts": len(specs), "cv": args.cv,
                 "n_features": Xtr.shape[1],

@@ -1,0 +1,10 @@
+{
+  "processed_dir": "data_processed_6tisch2026_grouped_v1",
+  "groups_total": 122,
+  "groups_evaluated": 12,
+  "rccf_macro_f1_mean": 0.5223261411648351,
+  "rccf_macro_f1_min": 0.16777408637873756,
+  "rccf_macro_f1_max": 1.0,
+  "equal_fusion_macro_f1_mean": 0.5222027421989249,
+  "mean_difference": 0.00012339896591020047
+}

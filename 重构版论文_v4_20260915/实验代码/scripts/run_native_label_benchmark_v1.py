@@ -9,6 +9,7 @@ each arm.
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import sys
 import time
@@ -90,6 +91,14 @@ def main() -> None:
                     default=["full", "chi2", "mutual_info", "anova"],
                     help="expert views; the recent-corpus extension uses three "
                          "deterministic views and records the deviation")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip a seed whose four prediction files already exist and "
+                         "recompute its metrics from them (identically, because every "
+                         "reported metric is a function of those files)")
+    ap.add_argument("--n-jobs", type=int, default=-1,
+                    help="threads per forest; every worker holds its own bootstrap "
+                         "index and label-encoding buffer, so lowering this lowers "
+                         "peak memory without changing any reported number")
     args = ap.parse_args()
 
     data = ROOT / args.processed_dir
@@ -116,9 +125,40 @@ def main() -> None:
     print(f"train {X_train.shape} test {X_test.shape} classes {len(labels)}: "
           f"{list(labels)}", flush=True)
     rows = []
+    previous = {}
+    metrics_path = out / "metrics_by_seed.csv"
+    if args.resume and metrics_path.exists():
+        for row in pd.read_csv(metrics_path).to_dict("records"):
+            previous[(row["model"], int(row["seed"]))] = row.get("train_seconds")
     for seed in args.seeds:
+        saved = {name: out / f"predictions_{name}_seed{seed}.csv"
+                 for name in ("rccf", "equal_fusion", "equal_rf_chi2", "equal_rf_all")}
+        if args.resume and all(path.exists() for path in saved.values()):
+            # The gate and the fusion arms are deterministic given (seed, data), and
+            # every reported metric is a function of the saved rows, so a resumed
+            # seed reproduces the same numbers without retraining.
+            frames = {name: pd.read_csv(path) for name, path in saved.items()}
+            for name, model in (("rccf", "rccf"), ("equal_fusion", "equal_fusion"),
+                                ("equal_rf_chi2", "equal_rf_chi2"),
+                                ("equal_rf_all", "equal_rf_all")):
+                frame = frames[name]
+                prob_columns = [c for c in frame.columns if c.startswith("prob_")]
+                classes = np.array([c[len("prob_"):] for c in prob_columns])
+                rows.append({"model": model, "seed": seed,
+                             "train_seconds": previous.get((model, int(seed)), np.nan),
+                             **metrics(frame["true_label"].to_numpy(),
+                                       frame["predicted_label"].to_numpy(),
+                                       frame[prob_columns].to_numpy(dtype=float),
+                                       classes, labels)})
+            rccf_f1 = next(r["macro_f1"] for r in rows
+                           if r["model"] == "rccf" and r["seed"] == seed)
+            equal_f1 = next(r["macro_f1"] for r in rows
+                            if r["model"] == "equal_fusion" and r["seed"] == seed)
+            print(f"seed {seed}: resumed from saved predictions "
+                  f"(rccf {rccf_f1:.6f} vs equal {equal_f1:.6f})", flush=True)
+            continue
         model = RCCFForest(n_estimators=args.n_estimators, feature_k=args.feature_k,
-                           cv=5, random_state=seed)
+                           cv=5, random_state=seed, n_jobs=args.n_jobs)
         start = time.perf_counter()
         train_idx, cal_idx = split_with_minimum(y_train, 0.15, seed)
         model.fit(X_train[train_idx], y_train[train_idx],
@@ -132,17 +172,35 @@ def main() -> None:
                      "train_seconds": train_seconds,
                      **metrics(y_test, prediction, probability, model.classes_, labels)})
 
-        probabilities = []
-        for expert in model.experts_:
-            probabilities.append(model._expert_proba(expert, X_test))
         classes = model.classes_
-        equal = np.mean(probabilities, axis=0)
+        # Accumulate the unweighted mean rather than materialising one
+        # 7.19 M x 18 float64 array per expert (four of them is 4 GB on the
+        # uncapped Gotham corpus, and the host has to fit the run in ~10 GB).
+        # Adding in the same order and dividing by the same count is
+        # bit-identical to np.mean over the stacked list, so no reported number
+        # moves.
+        equal = None
+        for expert in model.experts_:
+            member = model._expert_proba(expert, X_test)
+            equal = member if equal is None else equal + member
+            del member
+        equal = equal / len(model.experts_)
         equal_pred = classes[equal.argmax(axis=1)]
         write_predictions(out / f"predictions_equal_fusion_seed{seed}.csv", y_test,
                           equal_pred, equal, classes)
         rows.append({"model": "equal_fusion", "seed": seed, "train_seconds": np.nan,
                      **metrics(y_test, equal_pred, equal, classes, labels)})
         disagreements = int((equal_pred != prediction).sum())
+
+        # The gate's four fitted expert forests are this run's memory peak on the
+        # 14.25 M-row Gotham corpus.  They are no longer needed once the gate's
+        # own predictions are on disk, and releasing them before the single-view
+        # controls are fitted keeps the run inside the host's memory ceiling
+        # (two attempts died in the fit below with a 109 MiB allocation error).
+        # Dropping the reference cannot change a reported number: every metric
+        # is a function of the prediction files that are already written.
+        del equal, equal_pred, model
+        gc.collect()
 
         scaler = MinMaxScaler().fit(X_train)
         X_train_s, X_test_s = scaler.transform(X_train), scaler.transform(X_test)
@@ -151,9 +209,10 @@ def main() -> None:
             "equal_rf_chi2": (selection.select(X_train_s), selection.select(X_test_s)),
             "equal_rf_all": (X_train_s, X_test_s),
         }
-        for name, (Xa, Xb) in views.items():
+        for name in list(views):
+            Xa, Xb = views.pop(name)
             forest = RandomForestClassifier(n_estimators=args.n_estimators,
-                                            min_samples_leaf=2, n_jobs=-1,
+                                            min_samples_leaf=2, n_jobs=args.n_jobs,
                                             class_weight="balanced_subsample",
                                             random_state=seed).fit(Xa, y_train)
             probability = forest.predict_proba(Xb)
@@ -163,6 +222,10 @@ def main() -> None:
             rows.append({"model": name, "seed": seed, "train_seconds": np.nan,
                          **metrics(y_test, prediction, probability, forest.classes_,
                                    labels)})
+            del forest, probability, prediction, Xa, Xb
+            gc.collect()
+        del X_train_s, X_test_s, scaler, selection
+        gc.collect()
         rccf_f1 = next(r["macro_f1"] for r in rows
                        if r["model"] == "rccf" and r["seed"] == seed)
         equal_f1 = next(r["macro_f1"] for r in rows

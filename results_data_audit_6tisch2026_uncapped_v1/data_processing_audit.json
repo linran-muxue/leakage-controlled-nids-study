@@ -1,0 +1,68 @@
+{
+  "rows_scanned": 1229568,
+  "per_class_total": {
+    "NONE": 1137254,
+    "Blackhole": 13678,
+    "DIS Flooding": 14519,
+    "TSCH Desync": 14876,
+    "Decreased Rank": 16432,
+    "App Flooding": 16689,
+    "Shared Cell": 6514,
+    "6P Exhaustion": 9606
+  },
+  "per_class_kept_train": {
+    "NONE": 786125,
+    "Blackhole": 9504,
+    "DIS Flooding": 10170,
+    "TSCH Desync": 10375,
+    "Decreased Rank": 11537,
+    "App Flooding": 11662,
+    "Shared Cell": 4557,
+    "6P Exhaustion": 6730
+  },
+  "per_class_kept_test": {
+    "NONE": 337040,
+    "Blackhole": 4172,
+    "DIS Flooding": 4349,
+    "TSCH Desync": 4500,
+    "Decreased Rank": 4895,
+    "App Flooding": 5027,
+    "Shared Cell": 1957,
+    "6P Exhaustion": 2876
+  },
+  "duplicates_in_reservoir": {
+    "train": 9752,
+    "test": 4340
+  },
+  "dropped_all_nan_columns": [],
+  "features": [
+    "rank",
+    "buf_occupancy",
+    "dio_sent",
+    "dao_sent",
+    "dis_sent",
+    "nbr_count",
+    "tx_slot_count",
+    "parent_switch_count",
+    "rssi",
+    "route_count",
+    "delta_tx",
+    "delta_rx",
+    "app_packet_count",
+    "forward_ratio",
+    "bcast_tx",
+    "rank_increase",
+    "d_app"
+  ],
+  "split_rule": "fingerprint % 100 < 30 -> test",
+  "caps": {
+    "train": 100000000,
+    "test": 100000000
+  },
+  "splits": {
+    "train": 723061,
+    "validation": 127599,
+    "test": 364816
+  },
+  "dropped_small_classes": null
+}
