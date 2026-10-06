@@ -187,6 +187,7 @@ def main() -> None:
     add_figure_references()
     trim_abstract()
     assert_abstract_has_no_ladder()
+    drop_cjk_from_english()
     review = BASE / "遗漏问题审查报告.md"
     append(review, review_section(n), "## Z. 第二十轮审查", "review report: Round 20 entry")
 
@@ -321,6 +322,21 @@ def assert_abstract_has_no_ladder() -> None:
     if "现代语料阶梯" in abstract_zh or "7 189 693" in abstract_zh:
         raise SystemExit("Chinese abstract carries a ladder clause; keep the pair symmetric")
     print("abstracts: no ladder clause (JISA 250-word cap respected)")
+
+
+def drop_cjk_from_english() -> None:
+    """Keep the English manuscript free of CJK characters.
+
+    Section 5.8 pointed at the extension report by its Chinese title; the file is
+    released with a Chinese name, but an English manuscript should describe it in
+    English and let the path carry the name.
+    """
+    en = BASE / "English_SCI_Manuscript_v4.md"
+    replace(en,
+            "ship with the release (扩展实验报告, `results_*_v1/`)",
+            "ship with the release (the extension-experiment report, `results_*_v1/`)",
+            "EN §5.8: report named in English",
+            already="the extension-experiment report, `results_*_v1/`")
 
 
 if __name__ == "__main__":

@@ -29,7 +29,8 @@ def main() -> None:
     cl = BASE / "Cover_Letter_JISA_v4.md"
     line("cover letter", cl.exists(),
          "Cover_Letter_JISA_v4.md present" if cl.exists() else "missing")
-    line("journal template", False, "no JISA/Elsevier template applied")
+    line("journal template", False,
+         "author input: JISA/Elsevier template not applied (declared in 论文自查表 F9)")
     bundle = supplementary_bundle(BASE)
     line("supplementary bundle", (bundle / "README.md").exists(),
          f"{bundle.name}: {len(list(bundle.rglob('*')))} entries")
@@ -54,7 +55,7 @@ def main() -> None:
     print("=== D. manuscript hygiene ===")
     numbers = sorted(int(m.group(1)) for p in (BASE / "figures_en").glob("fig*.png")
                      if (m := re.match(r"fig(\d+)_", p.name)))
-    ok_names = numbers == list(range(1, 12))
+    ok_names = numbers == list(range(1, len(numbers) + 1))
     line("figure filenames match numbers", ok_names,
          f"figure file numbers found: {numbers}")
     cjk = re.findall(r"[\u4e00-\u9fff]", EN)
@@ -68,13 +69,22 @@ def main() -> None:
     limitations = EN.split("### 6.5 Limitations")[-1].split("## 7.")[0].lower()
     body_lower = EN.lower()
     checks = {
-        "temporal split": ("temporal", "not performed"),
-        "full corpus run": ("full cic-ids2017 corpus", "not performed (2.0% research subset)"),
+        "temporal split": ("temporal",
+                           "performed: day-level holdout on CIC-IDS2017 "
+                           "(constructible, not category-complete)"),
+        "full corpus run": ("full cic-ids2017 corpus",
+                            "performed: 2,429,503-row uncapped CIC-IDS2017 and the "
+                            "14,254,746-row uncapped Gotham-2025 ladder"),
         "cost-sensitive analysis": ("cost-sensitive behaviour", "performed"),
         "resource profile": ("resource footprint", "performed"),
-        "near-duplicate detection": ("near-duplicate", "not performed (exact hashing only)"),
+        "near-duplicate detection": ("near-duplicate",
+                                     "performed: exact-hash de-duplication plus the "
+                                     "near-duplicate audit (S21-S23, S26)"),
         "adversarial robustness": ("adversarial", "not performed"),
-        "extra public dataset": ("three datasets were evaluated", "not performed (three datasets only)"),
+        # the modern-corpus programme closed this gap: the paper now evaluates
+        # seventeen corpora, so the disclosure to look for is the corpus count
+        "extra public dataset": ("seventeen corpora were evaluated",
+                                 "performed: seventeen corpora (four external + thirteen extension)"),
     }
     performed_dirs = {
         "cost-sensitive analysis": ROOT / "results_cost_v5",

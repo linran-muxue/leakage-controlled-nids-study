@@ -218,7 +218,7 @@
 | `scripts/fetch_gotham2025_v1.py` | `3485bb2c94c0e1c2` | 181 | 7.4 KB |
 | `scripts/fetch_new_corpora_v1.py` | `f99f3ee6f505f94d` | 101 | 3.9 KB |
 | `scripts/fetch_recent_corpora_v1.py` | `3cb82ee0984de089` | 89 | 3.4 KB |
-| `scripts/finalise_round20_docs_v1.py` | `83b45d78cc7b276c` | 328 | 19.8 KB |
+| `scripts/finalise_round20_docs_v1.py` | `ab6d8382b5ed9810` | 344 | 20.5 KB |
 | `scripts/finalize_full_corpus_v56.py` | `debbef91537544dd` | 209 | 10.9 KB |
 | `scripts/finalize_jisa_materials_v1.py` | `20dea03d5bf1cd22` | 60 | 4.4 KB |
 | `scripts/finalize_references_v5.py` | `3541642dd0e60d22` | 76 | 3.0 KB |
@@ -317,7 +317,7 @@
 | `scripts/repair_jisa_manuscript_v2.py` | `462e57e9c0267d35` | 54 | 4.9 KB |
 | `scripts/repair_round19_duplication_v1.py` | `caadfb71eddaa986` | 80 | 3.5 KB |
 | `scripts/report_doi_pending_v5.py` | `73c60478dc550224` | 14 | 0.5 KB |
-| `scripts/residual_gap_check_v5.py` | `6d52d6abb85d6199` | 101 | 4.8 KB |
+| `scripts/residual_gap_check_v5.py` | `17286ff72fbb8db6` | 111 | 5.4 KB |
 | `scripts/restore_keywords_v23.py` | `9de291521864f65a` | 42 | 1.6 KB |
 | `scripts/retire_data_sources_doc_v1.py` | `83cd82d88cc2a939` | 47 | 1.8 KB |
 | `scripts/rewrite_data_processing_section_v6.py` | `7a93c0239161655d` | 51 | 6.3 KB |
@@ -384,7 +384,7 @@
 | `scripts/set_release_tag_v1.py` | `d6eab4452c43ceb6` | 22 | 0.9 KB |
 | `scripts/shorten_abstracts_v20.py` | `56977c4b6044cfbe` | 69 | 5.0 KB |
 | `scripts/split_single_table_v1.py` | `a0a59d8aa6cdd753` | 41 | 1.3 KB |
-| `scripts/spotcheck_citations_v5.py` | `fba7e92408bf748e` | 38 | 1.2 KB |
+| `scripts/spotcheck_citations_v5.py` | `da3e51ac8a94cd13` | 39 | 1.3 KB |
 | `scripts/stamp_aux_status_v14.py` | `cdfbd6115ef3d1fa` | 62 | 3.4 KB |
 | `scripts/summarize_gate_tuning_v5.py` | `4c0275a0a7aa8f5e` | 40 | 1.5 KB |
 | `scripts/summarize_nested_statistics_v1.py` | `8889f34ad041b54c` | 26 | 1.1 KB |
