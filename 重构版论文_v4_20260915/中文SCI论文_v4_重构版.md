@@ -16,7 +16,7 @@
 
 然而这些结论的可比性存在系统性疑问。公开流量数据集普遍存在三类问题。第一，**重复与近重复样本**：同一段攻击流量在特征空间中被重复记录，若在划分之后才发现，训练集与测试集之间就会存在实质重叠。第二，**标签冲突**：完全相同的特征向量被赋予不同标签，模型被迫在矛盾的监督信号上拟合。第三，**变换泄漏**：标准化、特征选择或过采样如果在划分之前执行，测试集信息会通过变换参数渗入训练过程。
 
-当这些因素未被控制时，模型之间的比较就不再是对算法能力的比较，而是对数据划分偶然性的比较。近年多个工作表明，泄漏与预处理顺序足以改变入侵检测研究中的结论方向 [20-22]。因此，一个自然的科学问题是：**在把上述因素全部控制住之后，那些被广泛汇报的性能提升还剩下多少？**
+当这些因素未被控制时，模型之间的比较就不再是对算法能力的比较，而是对数据划分偶然性的比较。近年多个工作表明，泄漏与预处理顺序足以改变入侵检测研究中的结论方向 [20-22]。安全领域之外也有同类证据：仅泄漏一项就足以系统性抬高另一领域的报告性能 [50]，而机器学习用于计算机安全的评测陷阱已被整理成可执行清单 [48]。因此，一个自然的科学问题是：**在把上述因素全部控制住之后，那些被广泛汇报的性能提升还剩下多少？**
 
 ### 1.2 三个未经检验的假设
 
@@ -71,7 +71,7 @@ H3 尤其关键，因为在文献中它从未被显式声明：它从不被显�
 
 CIC-IDS2017 由 Sharafaldin 等人在 2018 年发布 [14]，包含五天的正常流量与多种攻击流量，经 CICFlowMeter 提取为 78 维流特征，是当前使用最广的公开入侵检测数据集之一。NSL-KDD 是 KDD CUP 99 的改进版本 [15]，移除了部分冗余记录，使用 Normal、DoS、Probe、R2L、U2R 五类原生标签。UNSW-NB15 由 Moustafa 与 Slay 在 2015 年发布 [16]，提供官方训练/测试划分与九类攻击的分类标签。
 
-围绕这些数据集，文献已经识别出多项结构性缺陷 [19]：类别极度不平衡（CIC-IDS2017 中 Web Attack 与 Infiltration 的样本量比 BENIGN 低三到五个数量级）、特征中包含数据集特有的恒定列与采集伪影、部分攻击类别的流量由同一工具在同一时段生成因而高度同质、以及训练集与测试集之间可能存在重复。Engelen 等人与 Liu 等人分别指出 [20,21]，预处理顺序与数据划分方式足以显著改变入侵检测模型的报告性能。这些工作构成本文 H3 假设的直接动因：如果协议可以改变结论方向，那么协议本身就必须成为被报告、被检验的对象。 这一立场属于对安全领域机器学习方法更广泛的方法学批评的一部分 [22,23,26]。
+围绕这些数据集，文献已经识别出多项结构性缺陷 [19,49]：类别极度不平衡（CIC-IDS2017 中 Web Attack 与 Infiltration 的样本量比 BENIGN 低三到五个数量级）、特征中包含数据集特有的恒定列与采集伪影、部分攻击类别的流量由同一工具在同一时段生成因而高度同质、以及训练集与测试集之间可能存在重复。Engelen 等人与 Liu 等人分别指出 [20,21]，预处理顺序与数据划分方式足以显著改变入侵检测模型的报告性能。这些工作构成本文 H3 假设的直接动因：如果协议可以改变结论方向，那么协议本身就必须成为被报告、被检验的对象。 这一立场属于对安全领域机器学习方法更广泛的方法学批评的一部分 [22,23,26]。
 
 ### 2.2 特征选择与泄漏
 
@@ -83,7 +83,9 @@ CIC-IDS2017 由 Sharafaldin 等人在 2018 年发布 [14]，包含五天的正�
 
 Breiman 的随机森林通过自助采样与随机特征子空间构造多棵决策树，以等权投票或概率平均聚合 [1,2,8,9]。等权聚合的理论依据是方差抵消：只要各树错误不完全相关，平均就能降低方差。由此产生的一个自然推广是**不等权聚合**：若能够估计每一棵树或每一个专家在给定样本上的可靠性，就按可靠性加权。
 
-这一思路在文献中有多种实现形式： [8-11,31]按验证集准确率为树赋权、按袋外误差赋权、用元学习器学习样本相关的权重、以概率校准后的置信度作为权重、以及用深度集成中的不确定性估计驱动加权。这类方法通常报告在特定数据集上的提升，但很少同时满足三个条件：（i）加权所用信息完全来自训练与验证分区；（ii）在等权对照上使用相同的特征视图与调参预算；（iii）报告配对显著性检验与多次划分稳定性。缺少这三条时，"加权带来提升"与"某一划分带来了提升"无法区分。
+这一思路在文献中有多种实现形式： [8-11,31]按验证集准确率为树赋权、按袋外误差赋权、用元学习器学习样本相关的权重、以概率校准后的置信度作为权重、以及用深度集成中的不确定性估计驱动加权。
+
+**成员在变，聚合规则没有变。** 当前入侵检测使用的专家族已经换代——Transformer 与大语言模型 [51]、图神经网络 [52]——但本文分析的对象不是成员，而是把成员合并起来的那条规则。把 Transformer 或图网络放在条件加权门控之后，它仍然是一个成员，其输出仍可与同样这些成员的等权平均相比较；4.3 节的可辨识性条件取决于这些成员是否可互换，而与它们的架构无关。5.10 节的特征预算扫描给出了这一条件的可控实例：k=8 时成员真正互斥，门控增益 +0.001663；从 k=32 起视图重新重叠，增益消失。融合方向的综述从另一侧得到相同的结构性结论：成员多样性是任何加权组合能够起作用的前提 [53]。这类方法通常报告在特定数据集上的提升，但很少同时满足三个条件：（i）加权所用信息完全来自训练与验证分区；（ii）在等权对照上使用相同的特征视图与调参预算；（iii）报告配对显著性检验与多次划分稳定性。缺少这三条时，"加权带来提升"与"某一划分带来了提升"无法区分。
 
 近期面向开放集的入侵检测工作进一步引入了极值理论、原型学习与自编码器重构误差来构造拒绝机制 [27,28,42,43]。这类方法把已知类判别与未知类拒绝作为两个目标，因而其成本结构也更复杂。本文把开放集拒绝作为诊断性指标单独报告，不并入主结论。
 
@@ -462,6 +464,8 @@ $$H_{norm}(x)=-\frac{1}{\log Q}\sum_{e=1}^{Q} w_e(x)\log w_e(x).  (5)$$
 
 ![图 10 概率校准与共享扰动鲁棒性](figures/fig10_calibration_robustness.png)
 
+这些次生指标有两条近期脉络可对照：不确定性量化已被论证为机器学习入侵检测自身的可信性要求 [59]，而部署导向的评测框架不再只看准确率，而是同时评估迁移性与运行成本 [60]。下文的结果即在这一框架下报告。
+
 **概率校准。** 自然先验总体下 RCCF 的 Log Loss（0.05183）优于等权森林（0.05220），但 Brier（0.006365 对 0.006255）与 ECE（0.006849 对 0.004493）都更差。温度缩放可以把条件加权分支的 ECE 从约 0.0238 降到约 0.0119（平衡控制协议），而等权森林的温度参数被优化为 1.0、校准指标不变。结论是：**硬标签持平不意味着概率质量相同，但概率质量的改善方向依赖于具体指标**，不能只挑一个有利指标报告。
 
 **鲁棒性。** 在完全相同的扰动掩码下，1% 高斯噪声使 RCCF 的 Macro-F1 相对下降 43.30%，等权卡方森林下降 42.64%；5% 特征屏蔽下分别为 1.23% 与 1.27%。两者差异极小，且连续噪声下两个模型都严重退化。因此可以说“在本扰动协议下两者鲁棒性相当，且都不耐受 1% 量级的连续噪声”。需要指出的是，极端随机树在同一扰动下明显更稳健：其相对下降仅 11.57%，约为条件加权分支 43.30% 的四分之一（图 10b）。正确的读法不是“门控提升了鲁棒性”（它没有），而是“另一个基线族提升了鲁棒性”，且这一差异大于门控在两个森林变体之间造成的任何差异。
@@ -659,15 +663,19 @@ k≥32 时三视图重叠，差值回到噪声。k=60 一档与主实验的 CIC-
 
 **近重复只按精确形式剔除。** 引言把「重复与近重复样本」列为公开数据集的危害之一，而审计只删除了完全相同的特征向量。把所有特征四舍五入到四位有效数字后做哈希，发现研究总体中另有 0.36% 的行在该分辨率下构成近重复组，其中 104 行位于跨划分的近重复组内，其中 17 条测试行（占测试集 0.21%）与训练行共享同一个舍入后特征向量。剔除这些行后，三个模型的 Macro-F1 变化均不超过 0.00057，因此该重叠不足以解释本文报告的差异；更粗分辨率的结果见补充材料。
 
-**评测了十七个语料，但它们来自同一批采集计划的有限覆盖。** 本文结论以 CIC-IDS2017（含截断总体与完整去重语料）、NSL-KDD、UNSW-NB15 与 N-BaIoT 为条件；其余十三个语料（CIC-IDS2018、CIC-IoT-2023、LITNET-2020、IoT-23、RT-IoT2022、ACI-IoT-2023，2025 年的 UAVIDS-2025、GeNIS、IDS2025、Gotham-2025，以及 2026 年的 CTU-IDSEVAL-6、6TiSCHSet-2026 与 RTN 数据包表）作为 5.8 节的扩展语料复现了主比较。N-BaIoT 对流量特征分类器已经饱和（所有模型 Macro-F1 均在 0.9998 以上），它检验的是聚合环节的机制而非判别难度；两个外部数据集仍只是独立原生标签基准，不构成迁移实验。十七个语料都不代表生产流量，也都无法提供同一测试床上时间分离的留出集。把其中 2020 年及以后发布的十二个合并起来，得到 120 个种子级比较：均值为 +0.000007，90% 区间 [-0.000006, +0.000020]，仍落在 0.005 边界内——等价性结论并不只依赖 2017 年那一个语料。
+**评测了十七个语料，但它们来自同一批采集计划的有限覆盖。** 本文结论以 CIC-IDS2017（含截断总体与完整去重语料）、NSL-KDD、UNSW-NB15 与 N-BaIoT 为条件；其余十三个语料（CIC-IDS2018、CIC-IoT-2023、LITNET-2020、IoT-23、RT-IoT2022、ACI-IoT-2023，2025 年的 UAVIDS-2025、GeNIS、IDS2025、Gotham-2025，以及 2026 年的 CTU-IDSEVAL-6、6TiSCHSet-2026 与 RTN 数据包表）作为 5.8 节的扩展语料复现了主比较。N-BaIoT 对流量特征分类器已经饱和（所有模型 Macro-F1 均在 0.9998 以上），它检验的是聚合环节的机制而非判别难度；两个外部数据集仍只是独立原生标签基准，不构成迁移实验。十七个语料都不代表生产流量，也都无法提供同一测试床上时间分离的留出集。全部扩展语料的来源记录见参考文献 [61-73]。把其中 2020 年及以后发布的十二个合并起来，得到 120 个种子级比较：均值为 +0.000007，90% 区间 [-0.000006, +0.000020]，仍落在 0.005 边界内——等价性结论并不只依赖 2017 年那一个语料。
 
-**未评估对抗鲁棒性。** 本文只施加了随机扰动与特征屏蔽，没有构造规避攻击或基于梯度的攻击，报告的退化数字不构成对自适应对手的鲁棒性保证。
+**未评估对抗鲁棒性。** 本文只施加了随机扰动与特征屏蔽，没有构造规避攻击或基于梯度的攻击，报告的退化数字不构成对自适应对手的鲁棒性保证。针对机器学习检测器设计的规避攻击 [54] 与本文测过的标签污染、特征值污染属于不同威胁模型。
 
 **未知族支持量不均衡。** PortScan 有 158 930 条，而 Infiltration 仅 36 条、Heartbleed 仅 11 条。开放集指标对保留哪一族高度敏感，本文只报告分族结果，不给出合并结论；各家族组合的矩阵见补充材料 S30。
 
 **Bootstrap 区间的解释范围。** 配对 Bootstrap 量化的是测试行重采样不确定性，不包含网络环境变化、时间漂移与流量构成变化带来的不确定性。
 
 **单一硬件与单一实现。** 延迟结果依赖具体硬件、BLAS 后端与线程设置；本文固定环境并记录版本，但不主张跨平台可移植。
+
+**本文测的是静态分布位移，不是时间漂移。** 5.10 节留出整台设备与整次运行，改变的是部署几何，时间轴本身没有动。概念漂移感知检测 [55,56] 与演化威胁下的持续学习 [57] 处理的是时间维度；CIC-IDS2017 无法支撑类别完整的时间协议，因此这一项因语料结构而开放，而非因取舍而放弃。
+
+**跨域适应是同一位移的模型侧应对。** 域适应方法通过改变模型来对抗分布位移 [58]；本文的来源留出测量的是聚合规则受影响的程度，而不是适应能挽回多少。
 
 ---
 
@@ -691,6 +699,8 @@ k≥32 时三视图重叠，差值回到噪声。k=60 一档与主实验的 CIC-
 
 ## 数据与代码可用性
 
+**最直接的后续验证在成员侧。** 把当前主流模型族的专家——Transformer、大语言模型与图网络 [51,52]——放进 5.10 节所识别的互斥区间，并重做同成员对照，就能把可辨识性条件放到当前主流架构上检验；该条件本身就预测了这类成员何时会、何时不会改变聚合规则的结论。
+
 处理脚本、审计中间结果、逐样本预测与图表生成代码发布于公开仓库：https://github.com/linran-muxue/leakage-controlled-nids-study （发布版本 v1.11.0，标签 v1.11.0）。原始数据集不随论文分发；论文记录来源地址、检索日期、版本快照与 SHA-256 校验值。
 
 ## 基金
@@ -713,7 +723,7 @@ k≥32 时三视图重叠，差值回到噪声。k=60 一档与主实验的 CIC-
 
 ## 参考文献
 
-说明：全部 DOI 已于 2026-09-23 通过 Crossref 或 DataCite 核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。逐条核验记录见补充材料 S24。
+说明：第 1-47 条 DOI 已于 2026-09-23 通过 Crossref 或 DataCite 核验；第 48-73 条于 2026-10-07 通过同一途径核验。对不分配 Crossref DOI 的出版方（PMLR、NeurIPS、JMLR、USENIX），标注为无 DOI，而不再留待核验。逐条核验记录见补充材料 S24。
 
 1. Breiman L. Random forests. Machine Learning, 2001, 45(1): 5-32. DOI:10.1023/A:1010933404324.
 2. Breiman L. Bagging predictors. Machine Learning, 1996, 24(2): 123-140. DOI:10.1007/BF00058655.
@@ -762,6 +772,33 @@ k≥32 时三视图重叠，差值回到噪声。k=60 一档与主实验的 CIC-
 45. Harris C R, Millman K J, van der Walt S J, et al. Array programming with NumPy. Nature, 2020, 585: 357-362. DOI:10.1038/s41586-020-2649-2.
 46. McKinney W. Data structures for statistical computing in Python. SciPy 2010: 56-61. DOI:10.25080/Majora-92bf1922-00a.
 47. Hunter J D. Matplotlib: A 2D graphics environment. Computing in Science & Engineering, 2007, 9(3): 90-95. DOI:10.1109/MCSE.2007.55.
+48. Arp D, Quiring E, Pendlebury F, et al. Pitfalls in machine learning for computer security. Communications of the ACM, 2024. DOI:10.1145/3643456.
+49. Layeghy S, Portmann M. Benchmarking the benchmark - Comparing synthetic and real-world Network IDS datasets. Journal of Information Security and Applications, 2024. DOI:10.1016/j.jisa.2023.103689.
+50. Rosenblatt M, et al. Data leakage inflates prediction performance in connectome-based machine learning models. Nature Communications, 2024. DOI:10.1038/s41467-024-46150-w.
+51. Kheddar H, et al. Transformers and large language models for efficient intrusion detection systems: A comprehensive survey. Information Fusion, 2025. DOI:10.1016/j.inffus.2025.103347.
+52. Zhong M, et al. A survey on graph neural networks for intrusion detection systems: Methods, trends and challenges. Computers & Security, 2024. DOI:10.1016/j.cose.2024.103821.
+53. Garrido-Labrador J L, et al. Ensemble methods and semi-supervised learning for information fusion: A review and future research directions. Information Fusion, 2024. DOI:10.1016/j.inffus.2024.102310.
+54. Zhang H, et al. Explainable and transferable adversarial attack for ML-based network intrusion detectors. IEEE Transactions on Dependable and Secure Computing, 2025. DOI:10.1109/TDSC.2025.3560486.
+55. Komarchesqui M, et al. A comprehensive survey on concept-drift-resilient network intrusion detection systems. IEEE Access, 2026. DOI:10.1109/ACCESS.2026.3691262.
+56. De Paola A, et al. HOIDS: Concept drift aware hybrid online intrusion detection system. Journal of Network and Computer Applications, 2026. DOI:10.1016/j.jnca.2026.104556.
+57. Guo C, et al. Continual learning for intrusion detection under evolving network threats. Future Internet, 2025. DOI:10.3390/fi17100456.
+58. Chen Y, et al. Causal inference-based adversarial domain adaptation for cross-domain industrial intrusion detection. IEEE Transactions on Industrial Informatics, 2024. DOI:10.1109/TII.2024.3470902.
+59. Talpini J, et al. Enhancing trustworthiness in ML-based network intrusion detection with uncertainty quantification. Journal of Reliable Intelligent Environments, 2024. DOI:10.1007/s40860-024-00238-8.
+60. Ha Thanh D, et al. A transfer-aware, deployment-oriented evaluation framework for NetFlow-based intrusion detection systems. PLoS ONE, 2026. DOI:10.1371/journal.pone.0346801.
+61. Neto E C P, Dadkhah S, Ferreira R, et al. CICIoT2023: A real-time dataset and benchmark for large-scale attacks in IoT environment. Sensors, 2023. DOI:10.3390/s23135941.
+62. Damasevicius R, Venckauskas A, Toldinas J, et al. LITNET-2020: An annotated real-world network flow dataset for network intrusion detection. Electronics, 2020. DOI:10.3390/electronics9050800.
+63. Garcia S, Parmisano A, Erquiaga M J. IoT-23: A labeled dataset with malicious and benign IoT network traffic. Zenodo, 2020. DOI:10.5281/zenodo.4743746.
+64. Rohini Nagapadma B S. RT-IoT2022 [dataset]. UCI Machine Learning Repository, 2023. DOI:10.24432/C5P338.
+65. Zeng Q, Bashir A, Nait-Abdesselam F. UAVIDS-2025: A benchmark dataset for intrusion detection in UAV networks using machine learning techniques. Zenodo, 2025. DOI:10.5281/zenodo.15336998.
+66. Silva M, Pinto D, Vitorino J, et al. GeNIS: GECAD network intrusion scenarios. Zenodo, 2025. DOI:10.5281/zenodo.14919237.
+67. Panigrahi R, Borah S. IDS2025 (balanced intrusion detection evaluation dataset) [dataset]. Mendeley Data, 2025. DOI:10.17632/pkskt3fv3v.
+68. Belarbi O, Spyridopoulos T, Anthi E, et al. A device-level IoT network traffic dataset with distributed capture and non-IID characteristics (Gotham-2025). Zenodo, 2025. DOI:10.5281/zenodo.14502760.
+69. Garcia S, Valeros V, Alya G. CTU-IDSEVAL-6: A labeled network dataset for the evaluation of intrusion detection systems. Zenodo, 2026. DOI:10.5281/zenodo.21027042.
+70. Aydin B, Aydin H, Jin Y, et al. 6TiSCHSet-2026: A multi-layer 6TiSCH attack dataset and leakage-aware IDS benchmark. Zenodo, 2026. DOI:10.5281/zenodo.22113022.
+71. Chaudhari R, Deshpande M. Real-time network traffic dataset for IDS (RTN) [dataset]. Zenodo, 2026. DOI:10.5281/zenodo.18910837.
+72. Canadian Institute for Cybersecurity. CSE-CIC-IDS2018 [dataset]. University of New Brunswick, 2018. https://www.unb.ca/cic/datasets/ids-2018.html (no DOI).
+73. ACI-IoT-2023 [dataset]. Hugging Face dataset knhn1004/aci-iot-2023-processed, 2023. https://huggingface.co/datasets/knhn1004/aci-iot-2023-processed (no DOI).
+
 ---
 
 ## 补充材料清单
@@ -797,5 +834,4 @@ k≥32 时三视图重叠，差值回到噪声。k=60 一档与主实验的 CIC-
 | S27 | 规模敏感性：413 209 条总体与十种子配对比较 |
 | S28 | N-BaIoT 基准：审计、类别支持度、逐种子指标与配对比较 |
 | S29 | 全语料运行：2 429 503 条、逐种子指标与配对比较 |
-| S30 | 开放集诊断：三个留出未知族、逐种子与逐概率导出 |
 | S30 | 开放集诊断：三个留出未知族、逐种子与逐概率导出 |

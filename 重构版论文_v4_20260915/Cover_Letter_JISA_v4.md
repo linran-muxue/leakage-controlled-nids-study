@@ -1,6 +1,6 @@
 # Cover letter
 
-**To:** The Editor-in-Chief, *Journal of Information Security and Applications*
+**To:** The Editor-in-Chief, *Journal of Information Security and Applications The journal has already published work of exactly this kind - Layeghy and Portmann's "Benchmarking the benchmark" (2024) compares synthetic and real-world NIDS datasets - which is why the evaluation-methodology contribution of this manuscript fits the journal's scope.*
 
 **Subject:** Submission of a research article — "Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting"
 

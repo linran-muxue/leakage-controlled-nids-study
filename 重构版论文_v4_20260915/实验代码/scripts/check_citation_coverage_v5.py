@@ -25,13 +25,23 @@ def cited(path: Path, split_token: str) -> set[int]:
     return found
 
 
+def total(path: Path, split_token: str) -> int:
+    """Number of entries in the reference list, derived rather than hard-coded."""
+    block = path.read_text(encoding="utf-8").split(split_token)[-1]
+    return len(re.findall(r"^(\d+)\. ", block, flags=re.M))
+
+
 def main() -> None:
     for label, name, token in (("en", "English_SCI_Manuscript_v4.md", "## References"),
                                ("zh", "中文SCI论文_v4_重构版.md", "## 参考文献")):
         path = BASE / name
         have = cited(path, token)
-        missing = sorted(set(range(1, 46)) - have)
-        print(f"{label}: cited {len(have)}/47, uncited = {missing}")
+        n = total(path, token)
+        missing = sorted(set(range(1, n + 1)) - have)
+        extra = sorted(x for x in have if x > n)
+        status = "OK" if not missing and not extra else "ISSUE"
+        print(f"{label}: {status} cited {len(have)}/{n}, uncited = {missing}"
+              + (f", out-of-range = {extra}" if extra else ""))
 
 
 if __name__ == "__main__":

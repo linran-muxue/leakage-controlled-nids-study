@@ -364,7 +364,7 @@ def main() -> None:
     lines.append("- 文献检索与选题来源：`docs/recent_sci_literature_scan_2026-09-11.md`、"
                  "`docs/sci_innovation_literature_2026-09.md`、`docs/journal_target_research.md`；")
     lines.append("- 引用与正文的一致性由 `scripts/check_citation_coverage_v5.py` 与 "
-                 "`scripts/audit_references_v5.py` 持续检查（47/47 全部被正文引用）。")
+                 "`scripts/audit_references_v5.py` 持续检查（73/73 全部被正文引用）。")
     lines.append("")
     lines.append("## 六、期刊与格式要求来源")
     lines.append("")

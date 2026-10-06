@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 441 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 442 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -28,6 +28,7 @@
 | `scripts/add_optimisation_experiments_v1.py` | `57c2459b6c033fee` | 129 | 7.5 KB |
 | `scripts/add_recency_to_briefings_v1.py` | `f4213b7e3e42d95d` | 155 | 8.4 KB |
 | `scripts/add_recent_corpora_section_v1.py` | `66a57d95439399fd` | 85 | 4.5 KB |
+| `scripts/add_recent_literature_v1.py` | `e7bbfa34ec31a3c3` | 397 | 23.7 KB |
 | `scripts/add_scale_ladder_table_v1.py` | `62a78cccc2fba1cf` | 93 | 4.8 KB |
 | `scripts/align_aux_documents_v13.py` | `eaad76d7860c085c` | 48 | 2.1 KB |
 | `scripts/align_contribution3_v29.py` | `feeba0ec3d652cac` | 38 | 2.0 KB |
@@ -131,7 +132,7 @@
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
 | `scripts/build_data_products_doc_v1.py` | `fd3725678459512d` | 272 | 13.0 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
-| `scripts/build_data_sources_doc_v1.py` | `657b51d533e42899` | 468 | 27.3 KB |
+| `scripts/build_data_sources_doc_v1.py` | `5ee4bb0c195b803b` | 468 | 27.3 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
 | `scripts/build_english_sci_docx_v1.py` | `8466f382fc21426f` | 92 | 4.1 KB |
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
@@ -164,7 +165,7 @@
 | `scripts/check_abstract_numbers_v1.py` | `95c3e27e5f06db58` | 55 | 1.9 KB |
 | `scripts/check_audit_chain_numbers_v1.py` | `ca4d8e81ff7cf495` | 91 | 4.1 KB |
 | `scripts/check_aux_documents_v13.py` | `883780bd947626be` | 110 | 5.9 KB |
-| `scripts/check_citation_coverage_v5.py` | `e35ab8a51f553695` | 39 | 1.2 KB |
+| `scripts/check_citation_coverage_v5.py` | `fdd91ea81a7f3239` | 49 | 1.7 KB |
 | `scripts/check_cited_paths_v1.py` | `f483fa8d4941b7bc` | 62 | 2.4 KB |
 | `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
