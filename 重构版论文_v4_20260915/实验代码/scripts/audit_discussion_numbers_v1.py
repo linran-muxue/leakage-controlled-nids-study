@@ -162,6 +162,12 @@ def ladder() -> None:
           budget[8]["same_members_difference"], 5e-7)
     check("6.5 ladder budget k=32 gain", -0.000002,
           budget[32]["same_members_difference"], 5e-7)
+    # the 6.5 sentence states the tree-weight range; both endpoints come from the
+    # Gotham weight-mechanism summary
+    weight = pd.read_csv(ROOT / "results_weight_mechanism_gotham2025_v1" /
+                         "weight_mechanism_summary.csv").iloc[0]
+    check("6.5 ladder tree weight minimum", 0.0091, weight.weight_min, 5e-5)
+    check("6.5 ladder tree weight maximum", 0.0102, weight.weight_max, 5e-5)
 
     splits = pd.read_csv(ROOT / "results_repeated_splits_v3" / "summary.csv", header=[0, 1])
     splits = splits.set_index(splits.columns[0])

@@ -34,6 +34,19 @@ never mixes them, but the two must not be subtracted from one another. The full
 evidence is in `docs/reproducibility_notes_v1.md`; `src/feature_selection.py`
 defines the canonical selection used by the current runner.
 
+## 重型预测产物与再生成
+
+现代语料阶梯那几档（Gotham 全档、CIC-IoT-2023 两档、6TiSCH/CTU 不限上限、特征预算四档）的逐样本预测是多 GB 级文件，合计约 70 GB，存放于本地重产物卷 `E:\论文\_heavy_results\`（工作区的同名目录是指向它的联接），并已列入 `.gitignore`；随仓库与投稿包分发的是汇总、逐种子指标与 `checksums.sha256`。
+
+再生成方式（幂等，产物已存在则跳过）：
+
+```powershell
+& $py scripts\run_modern_ladder_queue_v1.py     # 总队列
+& $py scripts\run_modern_ladder_phase2_v1.py    # 守护：等 Gotham 全档并补齐后续步骤
+```
+
+脚本清单与运行顺序见 `docs/ladder_scripts_index.md`。
+
 ## Main artifacts
 
 - `src/`: reusable data and experiment components.

@@ -657,11 +657,32 @@ def main() -> None:
     notes(slide, "这一页只在被问到复现性时使用：四条命令、检查覆盖的四类风险、"
                  "以及五份可以当场打开的证据文档。")
 
+    # 13 - modern-corpus ladder (backup page)
+    slide = deck.slides.add_slide(blank)
+    header(slide, "现代语料阶梯：规模、分布位移与机制", "附加页 · 2026-10-03 批次")
+    panel(slide, Inches(0.6), Inches(1.9), Inches(12.1), Inches(3.4), PAPER)
+    textbox(slide, Inches(0.9), Inches(2.1), Inches(11.5), Inches(3.0),
+            "规模：CIC-IoT-2023 每类 20 万 −0.000021 / 每类 50 万 −0.000004；"
+            "Gotham-2025 每类 20 万 +0.000011 / 不限上限（7 189 693 行）+0.000009。\n"
+            "分布位移：Gotham 逐设备留出 12/78 台，RCCF 均值 0.9671，两臂差 +0.000000；"
+            "6TiSCHSet 逐运行留出 12/122 次，均值 0.5223，两臂差 +0.000123。\n"
+            "剂量—反应：特征预算 k=8 +0.001663 → k=16 +0.000402 → k=32 −0.000002 → k=60 −0.000004。\n"
+            "机制：Gotham 全档改判 0/297 180 行；CIC-IoT-2023 改判 12/375 160 行（理论界可证 99.45%）；"
+            "树权重落在 0.0091–0.0102 之间；增益与分歧回归 r = 0.744。",
+            size=14, color=INK, line_spacing=1.35)
+    textbox(slide, Inches(0.9), Inches(5.5), Inches(11.5), Inches(1.2),
+            "一句话：2017 语料上那个 −0.005533 的规模性劣势没有在现代语料上复现；"
+            "决定等价性的是成员可互换性，而不是语料年代或训练规模。",
+            size=13, color=GREY, line_spacing=1.3)
+    footer(slide, 13)
+    notes(slide, "被问到「语料太老」时先讲这一页：规模、留出、预算扫描、机制四条证据，"
+                 "再把 k=8 的正例与「成员可互换性」连起来。")
+
     deck.save(OUT)
     print(f"DECK_WRITTEN={OUT}")
     slides = len(deck.slides._sldIdLst)
-    # ten spoken slides plus the two backup pages the talk script points at
-    assert slides == 12, f"the deck ships twelve slides, built {slides}"
+    # ten spoken slides plus three backup pages the talk script points at
+    assert slides == 13, f"the deck ships thirteen slides, built {slides}"
     print(f"slides={slides}")
 
 

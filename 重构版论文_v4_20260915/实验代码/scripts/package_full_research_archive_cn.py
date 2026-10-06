@@ -14,7 +14,30 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDE_DIRS = {".git", ".venv", ".pytest_cache", "__pycache__"}
+EXCLUDE_DIRS = {".git", ".venv", ".pytest_cache", "__pycache__",
+                # the paper-generation skill vault is 14.8 GB of third-party
+                # material and is git-ignored; it never belongs in a research
+                # archive of this study
+                "research-skills-vault",
+                # scratch material the release notes explicitly move out of the
+                # distribution tree
+                ".quarantine", "_release_stage_v3b_20260912", ".review_render",
+                # 2026-10-03 modern-corpus ladder: these directories hold the
+                # multi-gigabyte per-row prediction dumps (Gotham's uncapped run
+                # alone is 27 GB) and live on the local heavy-results volume.
+                # Their summaries, per-seed metrics and the submission package
+                # ship instead, and every file is regenerable with
+                # scripts/run_modern_ladder_queue_v1.py.
+                "data_processed_gotham2025_full", "data_processed_gotham2025_cap200k",
+                "data_processed_cic_iot2023_cap200k", "data_processed_cic_iot2023_cap20k",
+                "data_processed_cic_iot2023_cap500k", "data_processed_6tisch2026_uncapped_v1",
+                "data_processed_ctu_idseval6_uncapped_v1",
+                "results_rccf_gotham2025_full", "results_rccf_gotham2025_cap200k",
+                "results_rccf_cic_iot2023_cap200k", "results_rccf_cic_iot2023_cap20k",
+                "results_rccf_cic_iot2023_cap500k", "results_rccf_cic_iot2023_k8",
+                "results_rccf_cic_iot2023_k16", "results_rccf_cic_iot2023_k32",
+                "results_rccf_cic_iot2023_k60", "results_rccf_6tisch2026_uncapped",
+                "results_rccf_ctu_idseval6_uncapped"}
 CANONICAL_DATA = {"data_processed_cic_natural_v3b", "data_processed_cic_balanced_v3b"}
 CANONICAL_RESULTS = {
     "results_rccf_cic_natural_v3b", "results_rccf_cic_balanced_v3b",

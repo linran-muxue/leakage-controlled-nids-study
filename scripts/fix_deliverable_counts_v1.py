@@ -38,7 +38,7 @@ def main() -> None:
             ("A 118-test suite", f"A {counts['tests']}-test suite"),
         ],
         BASE / "论文自查表.md": [
-            (f"{counts['figures']} 图 7 表", f"{counts['figures']} 图 {counts['tables']} 表"),
+            ("118 项单元测试通过", f"{counts['tests']} 项单元测试通过"),
             ("118 项单元测试通过", f"{counts['tests']} 项单元测试通过"),
             ("运行 118 项测试、编译全部源码", f"运行 {counts['tests']} 项测试、编译全部源码"),
         ],
@@ -51,12 +51,18 @@ def main() -> None:
     # the review report's own header block names how many rounds it documents
     covered_old = "第一至第十一轮"
     covered_new = checker.report_coverage()
+    coverage_patterns: dict[Path, list[tuple[str, str]]] = {}
     for name in ("研究缺口审计与优先级清单.md", "P0_P1执行手册.md", "论文结构诊断与重构方案.md"):
-        edits.setdefault(BASE / name, []).append((covered_old, covered_new))
+        # The coverage sentence is derived from the review report's own headings,
+        # so it is rewritten by pattern: a literal pair went stale the third time
+        # the report grew, and the range now moves with every round.
+        coverage_patterns.setdefault(BASE / name, []).append(
+            (r"第一至第[一二三四五六七八九十百]+轮", covered_new))
     # The length statements drift whenever the manuscript is edited, and the
     # literals above went stale twice; they are rewritten by pattern instead.
     patterns: dict[Path, list[tuple[str, str]]] = {
         BASE / "论文自查表.md": [
+            (r"\d+ 图 \d+ 表", f"{counts['figures']} 图 {counts['tables']} 表"),
             (r"英文 [\d,]+ 词（整篇含参考文献）、\d+ 图、\d+ 主表；中文 [\d,]+ 字",
              f"英文 {counts['en_words']:,} 词（整篇含参考文献）、{counts['figures']} 图、"
              f"{counts['tables']} 主表；中文 {counts['zh_chars']:,} 字"),
@@ -68,6 +74,8 @@ def main() -> None:
              f"{spaced_words} 词、{counts['figures']} 图、{counts['tables']} 表"),
         ],
     }
+    for path, extra in coverage_patterns.items():
+        patterns.setdefault(path, []).extend(extra)
     for path, pairs in patterns.items():
         text = path.read_text(encoding="utf-8")
         for pattern, new in pairs:

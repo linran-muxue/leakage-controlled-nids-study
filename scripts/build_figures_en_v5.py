@@ -464,6 +464,13 @@ def main() -> None:
     for fn in [fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10, fig11]:
         fn()
         print(f"EN_FIGURE_OK={fn.__name__}")
+    # Figure 12 (the 2026-10-03 modern-corpus ladder) is drawn by its own module
+    # so both language editions share one implementation; it is invoked here so
+    # this builder remains the single declared producer of figures_en/
+    import build_ladder_figure_v1 as ladder
+
+    ladder.draw(ladder.collect(), "en", OUT / "fig12_ladder_modern.png")
+    print("EN_FIGURE_OK=ladder")
     print(f"OUTPUT_DIR={OUT}")
 
 

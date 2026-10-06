@@ -56,6 +56,18 @@ def ten_seed() -> dict[str, float]:
             for model in ("rccf", "equal_rf_chi2", "equal_rf_all", "extra_trees_chi2")}
 
 
+def ladder_facts() -> str:
+    """The modern-corpus ladder one-liner, read from the released summaries."""
+    return (
+        "把主语料整体换成现代语料后结论不变：Gotham-2025 不限上限的 7 189 693 条测试行上"
+        "两条臂差 +0.000009，逐设备留出（12/78 台，均值 0.9671）与逐运行留出"
+        "（12/122 次，均值 0.5223）下依然不可区分（差 +0.000000 与 +0.000123）；"
+        "只有把特征预算压到 8 维、让成员真正互斥时门控才占优（+0.001663），"
+        "用满 60 维回到 -0.000004。机制上 Gotham 全档两条臂只改判 0 行、"
+        "树权重落在 0.0091–0.0102 之间（均匀值为 0.01）。"
+    )
+
+
 def main() -> None:
     corpora, predictions, y2025_line = corpus_facts()
     title = (BASE / "English_SCI_Manuscript_v4.md").read_text(
@@ -290,7 +302,8 @@ def main() -> None:
                  f"把 16 列拆成 8 列让视图分化后增益 +0.0063（十个种子方向一致）。"
                  f"2026 年新发布的三份语料（CTU-IDSEVAL-6、6TiSCHSet-2026、RTN 数据包表）"
                  f"差值在 -0.000026 到 0.000000 之间。"
-                 f"把 2020–2026 年的十二个语料合并起来是 120 个种子级比较，均值 +0.000007、90% 区间 [-0.000006, +0.000020]，仍在 0.005 边界内。")
+                 f"把 2020–2026 年的十二个语料合并起来是 120 个种子级比较，均值 +0.000007、90% 区间 [-0.000006, +0.000020]，仍在 0.005 边界内。"
+                 f"{ladder_facts()}")
     lines.append("")
     lines.append("### 4.4 先验、外部基准与文件级外推")
     lines.append("")

@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 435 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 439 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -19,7 +19,8 @@
 | `scripts/add_full_corpus_supplementary_v57.py` | `051520ab2886fa0b` | 81 | 5.0 KB |
 | `scripts/add_gotham_to_briefings_v1.py` | `c744e398fed23d36` | 121 | 7.4 KB |
 | `scripts/add_gotham_to_paper_v1.py` | `a7e972d7343d2ee5` | 295 | 20.3 KB |
-| `scripts/add_modern_ladder_to_paper_v1.py` | `a9f75d0de7c1b5de` | 418 | 26.2 KB |
+| `scripts/add_ladder_to_briefings_v1.py` | `c877afaa9ec73e26` | 161 | 9.3 KB |
+| `scripts/add_modern_ladder_to_paper_v1.py` | `d71fa9fea64bce81` | 418 | 26.7 KB |
 | `scripts/add_modern_replication_reports_v1.py` | `6871db4860903705` | 106 | 6.4 KB |
 | `scripts/add_modern_replication_section_v1.py` | `7d9dda38f304baec` | 127 | 6.7 KB |
 | `scripts/add_nbaiot_references_v53.py` | `58800f103a8a8f68` | 70 | 2.6 KB |
@@ -92,7 +93,7 @@
 | `scripts/audit_crosslanguage_v5.py` | `3f825161fccc4029` | 49 | 1.9 KB |
 | `scripts/audit_data_authenticity_v1.py` | `c392c45976391718` | 206 | 7.8 KB |
 | `scripts/audit_data_processing_v1.py` | `c98952971ea1b4c1` | 137 | 7.7 KB |
-| `scripts/audit_discussion_numbers_v1.py` | `f5b91d2a6a37e398` | 401 | 20.8 KB |
+| `scripts/audit_discussion_numbers_v1.py` | `7d517e5347ee8d99` | 407 | 21.2 KB |
 | `scripts/audit_drc_results_v1.py` | `01a85796f4b62a84` | 75 | 3.6 KB |
 | `scripts/audit_feature_quality_v4.py` | `38ca07adc0346f95` | 41 | 3.3 KB |
 | `scripts/audit_file_label_coverage_v4.py` | `4d134578daf68beb` | 58 | 2.8 KB |
@@ -129,30 +130,31 @@
 | `scripts/build_data_processing_tables_v1.py` | `19baaba7cae11bbc` | 44 | 3.7 KB |
 | `scripts/build_data_products_doc_v1.py` | `fd3725678459512d` | 272 | 13.0 KB |
 | `scripts/build_data_provenance_v4.py` | `18b8997db08cf333` | 53 | 3.2 KB |
-| `scripts/build_data_sources_doc_v1.py` | `d9505a94fa7b7851` | 434 | 25.0 KB |
+| `scripts/build_data_sources_doc_v1.py` | `657b51d533e42899` | 468 | 27.3 KB |
 | `scripts/build_dataset_coverage_matrix_v6.py` | `4179baa387e886f8` | 42 | 1.8 KB |
 | `scripts/build_english_sci_docx_v1.py` | `8466f382fc21426f` | 92 | 4.1 KB |
 | `scripts/build_english_sci_docx_v3.py` | `fec8009904910e48` | 92 | 4.1 KB |
 | `scripts/build_equation_sources_doc_v1.py` | `665dd7171fc92f37` | 170 | 9.7 KB |
 | `scripts/build_experiment_record_v1.py` | `3af77d5840f21e98` | 961 | 52.5 KB |
-| `scripts/build_extension_report_v1.py` | `543617f0dcd24ef2` | 408 | 26.5 KB |
-| `scripts/build_figures_en_v5.py` | `c2438f82a8470acf` | 472 | 26.4 KB |
+| `scripts/build_extension_report_v1.py` | `e90de394e37f93c6` | 408 | 26.5 KB |
+| `scripts/build_figures_en_v5.py` | `90d709f55ed629cf` | 479 | 26.8 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
 | `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
 | `scripts/build_jisa_graphical_abstract_v1.py` | `0449bf016c7133e2` | 54 | 2.9 KB |
+| `scripts/build_ladder_figure_v1.py` | `9f2ca01285356d14` | 139 | 6.5 KB |
 | `scripts/build_material_index_v1.py` | `f5a3b7fd613bf203` | 271 | 13.9 KB |
 | `scripts/build_paper_docx.py` | `7b78efe54bdf4a16` | 107 | 4.2 KB |
-| `scripts/build_paper_intro_v1.py` | `56a6ac1b4e54bfb3` | 444 | 32.3 KB |
+| `scripts/build_paper_intro_v1.py` | `e6cd2f16ca757e5a` | 457 | 33.1 KB |
 | `scripts/build_probability_and_feature_evidence_v4.py` | `807492413709dd35` | 42 | 4.2 KB |
 | `scripts/build_project_flowchart_v1.py` | `395f6cf63f353483` | 241 | 11.5 KB |
 | `scripts/build_publication_manifest.py` | `bc461fb772222fcb` | 185 | 10.3 KB |
 | `scripts/build_rccf_figures_v1.py` | `6cf2ffccf07792aa` | 138 | 5.3 KB |
-| `scripts/build_restructured_figures_v4.py` | `2f52c587130338ad` | 529 | 27.9 KB |
+| `scripts/build_restructured_figures_v4.py` | `38b202fbad906681` | 536 | 28.3 KB |
 | `scripts/build_restructured_manuscript_v4.py` | `f82c899d44e71e4b` | 344 | 13.5 KB |
 | `scripts/build_statistical_effects_v4.py` | `f1fcc6a953297bf9` | 28 | 1.4 KB |
 | `scripts/build_table4_10seeds_v5.py` | `6352903e9048dd35` | 94 | 3.8 KB |
-| `scripts/build_talk_deck_v1.py` | `8a358660170f3483` | 670 | 39.9 KB |
-| `scripts/build_talk_script_v1.py` | `8484052e234ddb03` | 587 | 46.5 KB |
+| `scripts/build_talk_deck_v1.py` | `c5778cb6be5fd466` | 691 | 41.6 KB |
+| `scripts/build_talk_script_v1.py` | `803dcfbfdfb7e824` | 593 | 47.1 KB |
 | `scripts/build_unsw_chapter4_materials_v1.py` | `cd11e45fafbd3939` | 150 | 15.6 KB |
 | `scripts/build_v2_docx.py` | `ba701e2806d5aa26` | 89 | 9.8 KB |
 | `scripts/build_v5_figures.py` | `8d69ffa6a48948f7` | 135 | 5.6 KB |
@@ -216,6 +218,7 @@
 | `scripts/fetch_gotham2025_v1.py` | `3485bb2c94c0e1c2` | 181 | 7.4 KB |
 | `scripts/fetch_new_corpora_v1.py` | `f99f3ee6f505f94d` | 101 | 3.9 KB |
 | `scripts/fetch_recent_corpora_v1.py` | `3cb82ee0984de089` | 89 | 3.4 KB |
+| `scripts/finalise_round20_docs_v1.py` | `83b45d78cc7b276c` | 328 | 19.8 KB |
 | `scripts/finalize_full_corpus_v56.py` | `debbef91537544dd` | 209 | 10.9 KB |
 | `scripts/finalize_jisa_materials_v1.py` | `20dea03d5bf1cd22` | 60 | 4.4 KB |
 | `scripts/finalize_references_v5.py` | `3541642dd0e60d22` | 76 | 3.0 KB |
@@ -227,7 +230,7 @@
 | `scripts/fix_char_level_v34.py` | `7fc010b1607d6b02` | 41 | 1.7 KB |
 | `scripts/fix_conclusion_duplication_v1.py` | `a8f13c97e6abb846` | 110 | 5.8 KB |
 | `scripts/fix_cover_letter_title_v6.py` | `0540bfdb09e7647b` | 34 | 1.5 KB |
-| `scripts/fix_deliverable_counts_v1.py` | `402d8afefb503a3a` | 120 | 5.8 KB |
+| `scripts/fix_deliverable_counts_v1.py` | `9720d66a28e2736a` | 128 | 6.4 KB |
 | `scripts/fix_discussion_numbers_v1.py` | `a36fd50304d00137` | 124 | 6.2 KB |
 | `scripts/fix_doi_punctuation_v19.py` | `86a927dee9d87dcd` | 37 | 1.5 KB |
 | `scripts/fix_equal_fusion_wording_v1.py` | `5f74c66222c4d607` | 134 | 7.2 KB |
@@ -284,7 +287,7 @@
 | `scripts/normalise_doi_terminator_v19b.py` | `684a0a83977ff631` | 36 | 1.4 KB |
 | `scripts/normalize_jisa_manuscript.py` | `b64204adbe8d3fdc` | 40 | 3.1 KB |
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
-| `scripts/package_full_research_archive_cn.py` | `4d245e0e05674b8b` | 164 | 7.3 KB |
+| `scripts/package_full_research_archive_cn.py` | `a9c97e2d2ba06d12` | 187 | 9.0 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
 | `scripts/package_submission_bundle_v18.py` | `2b1abaa2bc2dad3b` | 259 | 16.4 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
@@ -348,7 +351,7 @@
 | `scripts/run_mlp_baseline_v5.py` | `a34b98f56bd5ae98` | 174 | 7.2 KB |
 | `scripts/run_modern_ladder_phase2_v1.py` | `02e7ce2854f284a4` | 103 | 4.8 KB |
 | `scripts/run_modern_ladder_queue_v1.py` | `807fe8dc7e6179dd` | 219 | 9.9 KB |
-| `scripts/run_native_label_benchmark_v1.py` | `bda7df498275ef50` | 263 | 13.2 KB |
+| `scripts/run_native_label_benchmark_v1.py` | `65404014e9fef823` | 316 | 15.7 KB |
 | `scripts/run_near_duplicate_v5.py` | `09b8e6dd619e26d9` | 104 | 4.1 KB |
 | `scripts/run_nested_cv_v1.py` | `168075e9140b85d8` | 126 | 7.8 KB |
 | `scripts/run_nested_modelwise_v1.py` | `b10989f6c33c6176` | 68 | 5.3 KB |
@@ -387,6 +390,7 @@
 | `scripts/summarize_nested_statistics_v1.py` | `8889f34ad041b54c` | 26 | 1.1 KB |
 | `scripts/summarize_unsw_nb15_v1.py` | `8bbf408ad82ab3e2` | 27 | 1.2 KB |
 | `scripts/supplementary_paths_v1.py` | `906180d408e13db5` | 34 | 1.3 KB |
+| `scripts/sync_desktop_delivery_v1.py` | `189d8ea2b071b171` | 65 | 2.7 KB |
 | `scripts/sync_supplementary_mirror_v16.py` | `75e83984ef705708` | 75 | 3.2 KB |
 | `scripts/tune_all_baselines.py` | `a26ac39273fb8699` | 69 | 5.5 KB |
 | `scripts/tune_gate_v5.py` | `436ae6d4ceea914e` | 219 | 9.8 KB |

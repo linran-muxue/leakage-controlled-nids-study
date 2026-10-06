@@ -207,7 +207,7 @@ def build_extension_sections(n: dict) -> None:
          ("Gotham 树权重区间", "0.009091–0.010197（围绕均匀值 0.01）"),
          ("多样性剂量—反应", f"增益 ~ 平均成对分歧，斜率 {{div['slope']:+.6f}}，"
                               f"Pearson r = {{div['pearson_r']:.3f}}")],
-        "门控确实在调权，但幅度只偏离均匀值约 ±3%，而两条臂的改判行数在 12/375160 与 "
+        "门控确实在调权，但幅度落在 0.0091–0.0102 之间（均匀值为 0.01），而两条臂的改判行数在 12/375160 与 "
         "0/297180 这个量级；当专家分歧被放大（互斥特征视图）时增益随之升到 +0.0026，"
         "方向与剂量都符合可辨识性预测。")
 
@@ -249,7 +249,7 @@ def main() -> None:
         "6TiSCHSet 逐运行留出（12/122 次）均值 "
         f"{ht['rccf_macro_f1_mean']:.6f}、两臂差 {ht['mean_difference']:+.6f}。"
         "机制套件给出原因：Gotham 全档上两条臂的改判行数为 0/297 180，"
-        "CIC-IoT-2023 上为 12/375 160（理论界可证 99.45%），树权重只偏离均匀值约 ±3%。"
+        "CIC-IoT-2023 上为 12/375 160（理论界可证 99.45%），树权重落在 0.0091–0.0102 之间（均匀值为 0.01）。"
     )
     ladder_en = ("**The modern-corpus ladder.** The 2017 scale ladder was re-run on modern "
             "corpora: CIC-IoT-2023 at 200k per class (307,516 test rows) differs by "
@@ -264,7 +264,7 @@ def main() -> None:
             f"{ht['rccf_macro_f1_mean']:.6f}, gap {ht['mean_difference']:+.6f}. "
             "The mechanism suite explains why: the arms change 0 of 297,180 Gotham "
             "labels and 12 of 375,160 CIC-IoT-2023 labels (99.45% ruled out by the "
-            "bound), with tree weights within about ±3% of uniform.")
+            "bound), with tree weights in 0.0091-0.0102 against the 0.01 uniform value.")
     # An earlier non-idempotent run inserted both ladder paragraphs twice; the
     # duplicate is removed here so the file is byte-identical to a clean run.
     dedupe(zh, ladder_zh + "\n", "中文 §5.8 ladder paragraph")
@@ -308,7 +308,7 @@ def main() -> None:
             "+0.000009，十个种子无一例外。因此「条件加权与等权投票不可区分」这一结论"
             "必须与所测总体一同引用，但它至少不随语料年代或训练规模机械地失效——"
             "真正决定它的是成员可互换性，特征预算扫描（k=8 +0.001663 到 k=32 -0.000002）"
-            "与机制套件（改判行数 0–12 行、权重偏离均匀值约 ±3%）给了这一点定量形式。",
+            "与机制套件（改判行数 0–12 行、权重落在 0.0091–0.0102 之间）给了这一点定量形式。",
             "中文 §6.5 scale limitation",
             already="但在 CIC-IDS2017 完全取消类别上限的 2 429 503 条语料上转为小而稳定的劣势")
     replace(en,
@@ -330,7 +330,7 @@ def main() -> None:
             "corpus vintage or training scale; what governs it is member "
             "interchangeability, quantified by the feature-budget sweep (k=8 +0.001663 "
             "down to k=32 -0.000002) and the mechanism suite (0-12 relabelled rows, "
-            "weights within about ±3% of uniform).",
+            "weights in 0.0091-0.0102 against the 0.01 uniform value).",
             "English §6.5 scale limitation",
             already="did not reproduce on modern corpora")
     # The cross-language number audit compares digit strings token by token, so

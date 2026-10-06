@@ -393,6 +393,40 @@ def main() -> None:
     lines.append(f"| `submission_package/论文投稿包_v1.11.0.zip` | 构建时打印 | "
                  f"包内 `checksums.sha256`（{counts.bundle_files()} 个文件）| 投稿包 |")
     lines.append("")
+    # The modern-corpus ladder (2026-10-03 batch) re-used existing corpora, so it
+    # adds rows here rather than to the corpus table above.  The values are read
+    # from the released summaries, never typed.
+    def _ladder(name: str) -> dict:
+        path = ROOT / name
+        return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+    ladder_full = _ladder("results_rccf_gotham2025_full/benchmark_summary.json")
+    if ladder_full:
+        ladder_hg = _ladder("results_source_holdout_gotham_v1/holdout_summary.json")
+        ladder_ht = _ladder("results_source_holdout_6tisch_v1/holdout_summary.json")
+        ladder_mg = _ladder("results_margin_bound_gotham2025_v1/margin_bound_summary.json")
+        lines.append("**现代语料阶梯（第 5.8–5.9 节，2026-10-03 批次）**")
+        lines.append("")
+        lines.append("这一批不引入新语料，而是把已有语料的使用方式补齐到可审计的程度："
+                     "规模档位（CIC-IoT-2023 每类 20 万/50 万，Gotham-2025 每类 20 万与"
+                     "不限上限全档）、来源留出（Gotham 逐设备 12/78、6TiSCHSet 逐运行 12/122）、"
+                     "特征预算扫描（k=8/16/32/60）与机制套件（边距上界、权重机制、多样性）。"
+                     "全部十种子，由 `scripts/` 下的脚本重新生成。")
+        lines.append("")
+        lines.append("| 组件 | 产物目录 | 关键数字 |")
+        lines.append("|---|---|---|")
+        lines.append("| 现代语料阶梯（B/C 档 + Gotham 两档） | `results_rccf_cic_iot2023_"
+                     "cap{200k,500k}/`、`results_rccf_gotham2025_{cap200k,full}/` | "
+                     "差值 -0.000021 / -0.000004 / +0.000011 / "
+                     f"{ladder_full['same_members_difference']:+.6f} |")
+        lines.append("| 来源留出与机制套件 | `results_source_holdout_*_v1/`、"
+                     "`results_margin_bound_*_v1/`、`results_weight_mechanism_*_v1/`、"
+                     "`results_diversity_cic_iot2023_v1/` | "
+                     f"Gotham 改判 {ladder_mg['empirical_changed_rows']}/"
+                     f"{ladder_mg['total_rows']:,} 行；逐设备留出均值 "
+                     f"{ladder_hg['rccf_macro_f1_mean']:.6f}、逐运行留出均值 "
+                     f"{ladder_ht['rccf_macro_f1_mean']:.6f} |")
+        lines.append("")
     lines.append("## 八、明确移出发布树的材料（第三方或与本稿无关）")
     lines.append("")
     lines.append("| 清单 | 数量 | 内容 | 位置 |")

@@ -521,6 +521,13 @@ def main() -> None:
                fig6, fig7, fig8, fig9]:
         fn()
         print(f"FIGURE_OK={fn.__name__}")
+    # Figure 12 (the 2026-10-03 modern-corpus ladder) is drawn by its own module
+    # so both language editions share one implementation; it is invoked here so
+    # this builder remains the single declared producer of figures/
+    import build_ladder_figure_v1 as ladder
+
+    ladder.draw(ladder.collect(), "zh", OUT / "fig12_ladder_modern.png")
+    print("FIGURE_OK=ladder")
     print(f"OUTPUT_DIR={OUT}")
 
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -80,6 +81,44 @@ def split_with_minimum(y, test_size: float, seed: int, minimum: int = 2):
     return train_idx, cal_idx
 
 
+def free_physical_gb() -> float:
+    """Available physical memory in GiB (``inf`` when it cannot be queried)."""
+    if sys.platform != "win32":
+        return float("inf")
+    import ctypes
+
+    class MemoryStatus(ctypes.Structure):
+        _fields_ = [("length", ctypes.c_ulong), ("load", ctypes.c_ulong),
+                    ("total", ctypes.c_ulonglong), ("available", ctypes.c_ulonglong),
+                    ("page_total", ctypes.c_ulonglong), ("page_available", ctypes.c_ulonglong),
+                    ("virtual_total", ctypes.c_ulonglong), ("virtual_available", ctypes.c_ulonglong),
+                    ("virtual_extended", ctypes.c_ulonglong)]
+
+    status = MemoryStatus()
+    status.length = ctypes.sizeof(MemoryStatus)
+    if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
+        return float("inf")
+    return status.available / (1024 ** 3)
+
+
+def guard_jobs(requested: int, minimum_gb: float) -> int:
+    """Cut the worker count when the host is short of physical memory.
+
+    The uncapped 14.25 M-row corpus died four times with
+    ``numpy._ArrayMemoryError`` while other jobs held several GiB.  Random
+    forests are deterministic in ``n_jobs``, so trading speed for headroom here
+    cannot move a reported number.
+    """
+    jobs = requested if requested > 0 else (os.cpu_count() or 8)
+    free = free_physical_gb()
+    if free >= minimum_gb:
+        return jobs
+    capped = max(1, min(jobs, 2 if free < minimum_gb / 2 else 4))
+    print(f"memory guard: {free:.1f} GiB free < {minimum_gb:.1f} GiB floor, "
+          f"workers {jobs} -> {capped}", flush=True)
+    return capped
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--processed-dir", required=True)
@@ -95,11 +134,24 @@ def main() -> None:
                     help="skip a seed whose four prediction files already exist and "
                          "recompute its metrics from them (identically, because every "
                          "reported metric is a function of those files)")
-    ap.add_argument("--n-jobs", type=int, default=-1,
+    ap.add_argument("--n-jobs", type=int, default=int(os.environ.get("RCCF_N_JOBS", "8")),
                     help="threads per forest; every worker holds its own bootstrap "
                          "index and label-encoding buffer, so lowering this lowers "
-                         "peak memory without changing any reported number")
+                         "peak memory without changing any reported number "
+                         "(default 8; override with RCCF_N_JOBS or --n-jobs)")
+    ap.add_argument("--min-free-gb", type=float, default=2.0,
+                    help="before the memory-peak stage, reduce the worker count while "
+                         "free physical memory is below this; a run on the uncapped "
+                         "Gotham corpus was killed four times by allocation failures")
     args = ap.parse_args()
+
+    # joblib keeps its memmaps in a temp directory; on this host the system drive
+    # is the smallest one, so the heavy runs point it at the data drive.
+    temp = os.environ.get("RCCF_TEMP_DIR")
+    if temp:
+        Path(temp).mkdir(parents=True, exist_ok=True)
+        os.environ["JOBLIB_TEMP_FOLDER"] = temp
+        print(f"joblib temp folder: {temp}", flush=True)
 
     data = ROOT / args.processed_dir
     out = ROOT / args.output_dir
@@ -157,8 +209,9 @@ def main() -> None:
             print(f"seed {seed}: resumed from saved predictions "
                   f"(rccf {rccf_f1:.6f} vs equal {equal_f1:.6f})", flush=True)
             continue
+        seed_jobs = guard_jobs(args.n_jobs, args.min_free_gb)
         model = RCCFForest(n_estimators=args.n_estimators, feature_k=args.feature_k,
-                           cv=5, random_state=seed, n_jobs=args.n_jobs)
+                           cv=5, random_state=seed, n_jobs=seed_jobs)
         start = time.perf_counter()
         train_idx, cal_idx = split_with_minimum(y_train, 0.15, seed)
         model.fit(X_train[train_idx], y_train[train_idx],
@@ -212,7 +265,7 @@ def main() -> None:
         for name in list(views):
             Xa, Xb = views.pop(name)
             forest = RandomForestClassifier(n_estimators=args.n_estimators,
-                                            min_samples_leaf=2, n_jobs=args.n_jobs,
+                                            min_samples_leaf=2, n_jobs=seed_jobs,
                                             class_weight="balanced_subsample",
                                             random_state=seed).fit(Xa, y_train)
             probability = forest.predict_proba(Xb)
