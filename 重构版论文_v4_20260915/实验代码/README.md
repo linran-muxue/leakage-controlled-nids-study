@@ -287,7 +287,7 @@
 | `scripts/normalise_doi_terminator_v19b.py` | `684a0a83977ff631` | 36 | 1.4 KB |
 | `scripts/normalize_jisa_manuscript.py` | `b64204adbe8d3fdc` | 40 | 3.1 KB |
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
-| `scripts/package_full_research_archive_cn.py` | `a9c97e2d2ba06d12` | 187 | 9.0 KB |
+| `scripts/package_full_research_archive_cn.py` | `5e82a53e77d338a2` | 208 | 10.3 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
 | `scripts/package_submission_bundle_v18.py` | `2b1abaa2bc2dad3b` | 259 | 16.4 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |

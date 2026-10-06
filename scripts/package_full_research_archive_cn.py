@@ -7,6 +7,7 @@ on them, so the extracted archive remains runnable.
 from __future__ import annotations
 
 import argparse
+import os
 import hashlib
 import json
 import tarfile
@@ -159,9 +160,22 @@ def main() -> None:
     categories: Counter[str] = Counter()
     entries: list[dict[str, object]] = []
     with tarfile.open(args.output, "w:gz") as archive:
-        for path in sorted(ROOT.rglob("*")):
-            if not path.is_file() or excluded(path, args.output):
-                continue
+        # os.walk with pruning instead of rglob: the working tree contains
+        # multi-gigabyte junctions (the ladder's heavy-results volume) and a
+        # 14.8 GB skill vault, and walking into them made this step take hours
+        # while contributing nothing.
+        for folder, dirnames, filenames in os.walk(ROOT):
+            here = Path(folder)
+            rel_here = here.relative_to(ROOT)
+            dirnames[:] = sorted(d for d in dirnames
+                                 if d not in EXCLUDE_DIRS
+                                 and not (rel_here == Path(".")
+                                          and d.startswith("data_processed_")
+                                          and d not in CANONICAL_DATA))
+            for name in sorted(filenames):
+                path = here / name
+                if excluded(path, args.output):
+                    continue
             rel = path.relative_to(ROOT)
             cat = category(rel)
             arcname = archive_name(rel, cat)
