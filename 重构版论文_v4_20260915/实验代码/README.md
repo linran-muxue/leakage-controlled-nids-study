@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 439 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 440 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -41,6 +41,7 @@
 | `scripts/analyze_rccf_evidence_v1.py` | `27cf96cb20172a92` | 203 | 11.4 KB |
 | `scripts/analyze_scale_sensitivity_v47.py` | `5e52eb456942ac00` | 140 | 5.7 KB |
 | `scripts/analyze_weight_mechanism.py` | `84087159d7b5c7f4` | 59 | 3.4 KB |
+| `scripts/append_ladder_section_v1.py` | `8aeafcba97c6d202` | 237 | 14.3 KB |
 | `scripts/append_review_round_v10.py` | `127594b3a7ea36ac` | 57 | 2.9 KB |
 | `scripts/append_review_round_v11.py` | `666f317e02976203` | 61 | 3.7 KB |
 | `scripts/append_review_round_v11_note.py` | `ecb8e2ace906abbb` | 33 | 1.8 KB |

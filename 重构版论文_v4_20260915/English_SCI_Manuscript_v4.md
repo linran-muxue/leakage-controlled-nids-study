@@ -308,7 +308,7 @@ Five control groups are used, all under the same protocol.
 
 ## 5. Results
 
-The chapter follows RQ1 to RQ4. RQ1 is answered in 5.1; RQ2 in 5.2, with the mechanism that explains its outcome in 5.3; RQ3 in 5.4 and again at scale in 5.7; RQ4 in 5.5. Section 5.6 reports calibration, robustness, latency and open-set behaviour, which qualify the comparisons without answering a question of their own. Sections 5.7 to 5.9 extend the same comparisons to scale, to seventeen corpora and to their pooled equivalence test.
+The chapter follows RQ1 to RQ4. RQ1 is answered in 5.1; RQ2 in 5.2, with the mechanism that explains its outcome in 5.3; RQ3 in 5.4 and again at scale in 5.7; RQ4 in 5.5. Section 5.6 reports calibration, robustness, latency and open-set behaviour, which qualify the comparisons without answering a question of their own. Sections 5.7 to 5.10 extend the same comparisons to scale, to seventeen corpora and to their pooled equivalence test.
 
 ### 5.1 RQ1: Training-side feature selection preserves discriminative power
 
@@ -516,7 +516,7 @@ Fourteen extensions probe the boundaries of the main result; their per-seed data
 
 **Two further corpora.** CIC-IDS2018 (16.2 M raw rows, 4.10 M duplicates removed) gives a 56,055/12,012/12,012 five-class benchmark on which the gate and the same-members equal fusion are identical across ten seeds (0.955231, zero labels changed). CIC-IoT-2023 (38.4 M rows, eight coarse classes) gives 0.751051 for the gate against 0.751054 for the same-members fusion over ten seeds - a -0.000004 difference. Both reproduce the primary finding on corpora the study had not used.
 **A 2025 packet-level corpus, and the condition under which the gate helps.** Gotham-2025 (Zenodo 14502760, CC BY 4.0) captures 78 IoT devices on a smart-city testbed; its processed tables hold 35,134,281 packets and 18 classes. Under the study's protocol the table has only sixteen usable columns once the device addresses and timestamps are dropped (they would hand the classifier the attacker's identity), so the 60-feature budget selects every column and the three views coincide: the gate is exactly equal to the same-members fusion on all 29,718 test rows, all ten seeds. Repeating the same comparison at eight of the sixteen features, where chi-square and ANOVA genuinely disagree, reverses that: the gate gains +0.0063 Macro-F1 with all ten seeds positive and 38-50 of the 29,718 labels changed. The gate is inert when its members are interchangeable and helpful when they are not - the boundary the identifiability conditions predict, now observed on a 2025 corpus.
-**The modern-corpus ladder.** The 2017 scale ladder was re-run on modern corpora: CIC-IoT-2023 at 200k per class (307,516 test rows) differs by -0.000021 and at 500k per class (599,792 rows) by -0.000004; Gotham-2025 differs by +0.000011 at 200k per class (415,223 rows) and by +0.000009 on the uncapped 7,189,693-row corpus (18 classes). The feature-budget sweep is monotone (k=8 +0.001663, k=16 +0.000402, k=32 -0.000002, k=60 -0.000004). Source holdouts give the distribution-shift control: 12/78 Gotham devices, RCCF mean 0.967127, arm gap +0.000000; 12/122 6TiSCH runs, mean 0.522326, gap +0.000123. The mechanism suite explains why: the arms change 0 of 297,180 Gotham labels and 12 of 375,160 CIC-IoT-2023 labels (99.45% ruled out by the bound), with tree weights in 0.0091-0.0102 against the 0.01 uniform value.
+**The modern-corpus ladder.** The 2017 scale ladder was re-run on modern corpora: CIC-IoT-2023 at 200k per class (307,516 test rows) differs by -0.000021 and at 500k per class (599,792 rows) by -0.000004; Gotham-2025 differs by +0.000011 at 200k per class (415,223 rows) and by +0.000009 on the uncapped 7,189,693-row corpus (18 classes). The feature-budget sweep is monotone (k=8 +0.001663, k=16 +0.000402, k=32 -0.000002, k=60 -0.000004). Source holdouts give the distribution-shift control: 12/78 Gotham devices, RCCF mean 0.967127, arm gap +0.000000; 12/122 6TiSCH runs, mean 0.522326, gap +0.000123. Section 5.10 gives the full rung table, the source holdouts and the mechanism decomposition. The mechanism suite explains why: the arms change 0 of 297,180 Gotham labels and 12 of 375,160 CIC-IoT-2023 labels (99.45% ruled out by the bound), with tree weights in 0.0091-0.0102 against the 0.01 uniform value.
 
 ![Figure 12. The modern-corpus ladder: scale rungs, feature budget and mechanism](figures_en/fig12_ladder_modern.png)
 
@@ -529,6 +529,60 @@ Fourteen extensions probe the boundaries of the main result; their per-seed data
 ### 5.9 Modern replication across twelve corpora
 
 The equivalence result above rests on CIC-IDS2017. Twelve further corpora published between 2020 and 2026 - four of them in 2025 and three in 2026 - were run under the same protocol, the same ten seeds and the same-members control, and all of them released their per-row predictions. Re-deriving the paired difference from those predictions gives 120 seed-level comparisons with a pooled mean of +0.000007 Macro-F1 and a 90% interval of [-0.000006, +0.000020] - inside both the 0.005 and the 0.01 margin. One corpus is excluded from that pool and reported on its own: Gotham-2025 with the feature budget cut to eight of sixteen columns, where the gate wins +0.006252 with 10 of 10 seeds positive. Adding that case back in still leaves the aggregate equivalent (+0.000487, 90% interval [+0.000243, +0.000732]). The aggregation-rule conclusion therefore does not depend on the vintage of the corpus, and the single deviation from it is the condition the identifiability analysis predicts.
+
+### 5.10 The modern-corpus ladder: scale, distribution shift and the mechanism
+
+Sections 5.7 and 5.9 answer the scale and vintage questions separately, and both rest on random
+splits. This section does three things at once: it moves the 2017 scale ladder onto modern corpora,
+it re-runs the same comparison under a genuine distribution shift (held-out devices and runs), and
+it explains the outcome with the mechanism suite. Same protocol, same ten seeds throughout.
+
+| Rung | Test rows | Conditional weighting | Same-members equal | Difference |
+|---|---:|---:|---:|---:|
+| CIC-IoT-2023 (200k per class) | 307,516 | 0.726505 | 0.726525 | -0.000021 |
+| CIC-IoT-2023 (500k per class) | 599,792 | 0.714826 | 0.714830 | -0.000004 |
+| Gotham-2025 (200k per class) | 415,223 | 0.983863 | 0.983852 | +0.000011 |
+| Gotham-2025 (uncapped) | 7,189,693 | 0.984475 | 0.984465 | +0.000009 |
+| 6TiSCHSet-2026 (uncapped) | 364,816 | 0.937019 | 0.936982 | +0.000037 |
+| CTU-IDSEVAL-6 (uncapped) | 54,983 | 0.892952 | 0.892952 | +0.000000 |
+
+**Scale is not what breaks it.** CIC-IDS2017 turns into a stable -0.005533 deficit on the fully
+uncapped 2,429,503-flow corpus (Section 5.7), but the same ladder on modern corpora returns to
+noise: CIC-IoT-2023 differs by -0.000004 at 2,460,000 training rows, and this book's largest
+population, the uncapped Gotham-2025 corpus, by +0.000009 at 14,250,000 training rows and
+7,190,000 test rows, on all ten seeds. The Section 5.7 deficit is a property of that corpus and
+population, not a general rule that larger data breaks conditional weighting.
+
+**Distribution shift does not change the conclusion.** Random splits put samples from one device in
+both training and test; leave-one-source-out avoids that. Holding out 12 of the 78 Gotham-2025
+devices leaves the gate at Macro-F1 0.967127
+(min 0.764909, max 1.000000) against
+0.967127 for the same-members fusion, a mean difference of
++0.000000; for 6TiSCHSet-2026, holding out 12 of 122 runs gives
+0.522326 against 0.522203, a difference of
++0.000123. The holdout lowers absolute performance a lot (to 0.52 on 6TiSCHSet), but the arm gap stays
+inside the noise - exactly what the identifiability argument predicts: changing devices changes the
+difficulty, not the interchangeability of the members.
+
+**Dose-response: the smaller the budget, the more the gate helps.** With the corpus and the seeds
+fixed and only the feature budget varied, the differences are
++0.001663 (k=8), +0.000402
+(k=16), -0.000002 (k=32) and
+-0.000004 (k=60). At small budgets the chi-square and ANOVA
+views genuinely differ and the gate starts to act; from k=32 the three views overlap again and the
+difference returns to noise. The k=60 rung reproduces the main CIC-IoT-2023 numbers bit for bit.
+
+**The mechanism suite.** Three independent measurements explain why the arms are usually
+indistinguishable: (1) the margin bound - on 297,180 Gotham rows the arms
+relabel 0 rows, and on 375,160
+CIC-IoT-2023 rows they relabel 12, of which
+99.45% are provably unable to flip the argmax;
+(2) the weight mechanism - the gate does reweight, but the tree weights stay in 0.0091-0.0102
+against the 0.01 uniform value, too little to move the argmax; (3) the diversity dose-response -
+across five expert configurations the gain co-varies with mean pairwise disagreement, with slope
++0.004830 and r = 0.744, reaching +0.0026 for the mutually
+exclusive feature views. Figure 12 collects the three panels.
+
 
 ## 6. Discussion
 
