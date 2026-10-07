@@ -8,6 +8,7 @@ refreshed, and a handful of key artefacts are compared by SHA-256 afterwards.
 from __future__ import annotations
 
 import hashlib
+import pathlib
 import subprocess
 import sys
 from pathlib import Path
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "重构版论文_v4_20260915"
 TAG = "v1.11.0"
 DESKTOP = Path(r"C:\Users\27677\Desktop") / f"论文_{TAG}_全语料版"
+ARCHIVE_DIR = Path(r"E:\论文")
 KEY_FILES = ["中文SCI论文_v4_重构版.md", "English_SCI_Manuscript_v4.md",
              "扩展实验报告.md", "数据与资料来源总表.md",
              "中文SCI论文_v4_重构版.docx", "English_SCI_Manuscript_v4.docx"]
@@ -43,6 +45,18 @@ def main() -> int:
         raise SystemExit(f"robocopy failed with {proc.returncode}: {proc.stdout[-400:]}")
     target_zip = DESKTOP / bundle.name
     target_zip.write_bytes(bundle.read_bytes())
+    # the full research archive ships with the delivery too (archive + manifest + checksum)
+    # ship only the newest archive set: an older one from a previous round would
+    # otherwise travel to the delivery folder and confuse which is current
+    sets: dict[str, list[pathlib.Path]] = {}
+    for archive in ARCHIVE_DIR.glob("RCCF_完整研究档案_v1.11.0_*.tar.gz*"):
+        sets.setdefault(archive.name.split(".tar.gz")[0], []).append(archive)
+    newest = max(sets, key=lambda key: max(a.stat().st_mtime for a in sets[key])) if sets else None
+    archive_extra = []
+    for archive in sorted(sets.get(newest, [])):
+        target = DESKTOP / archive.name
+        target.write_bytes(archive.read_bytes())
+        archive_extra.append(target)
     checked = 0
     for name in KEY_FILES:
         source, target = SRC / name, DESKTOP / name
@@ -56,7 +70,7 @@ def main() -> int:
     files = sum(1 for _ in DESKTOP.rglob("*") if _.is_file())
     size_mb = sum(p.stat().st_size for p in DESKTOP.rglob("*") if p.is_file()) / 1e6
     print(f"DESKTOP_SYNCED {DESKTOP} files={files} size_mb={size_mb:.1f} "
-          f"verified={checked + 1}")
+          f"verified={checked + 1} archives={len(archive_extra)}")
     return 0
 
 

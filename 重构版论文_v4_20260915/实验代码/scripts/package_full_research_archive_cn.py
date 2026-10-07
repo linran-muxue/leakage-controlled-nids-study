@@ -192,7 +192,18 @@ def main() -> None:
         "category_file_counts": dict(sorted(categories.items())),
         "canonical_data": sorted(CANONICAL_DATA),
         "canonical_results": sorted(CANONICAL_RESULTS),
-        "excluded": ["data/raw/**", "data_external/UNSW-NB15/**", ".git/**", ".venv/**", "**/__pycache__/**", "**/.pytest_cache/**", "existing archives", "temporary tmp_* paths"],
+        "excluded": ["data/raw/**", "data_external/UNSW-NB15/**", ".git/**", ".venv/**",
+                 "**/__pycache__/**", "**/.pytest_cache/**", "existing archives",
+                 "temporary tmp_* paths",
+                 # 2026-10-03 modern-corpus ladder: multi-gigabyte per-row dumps on the
+                 # local heavy-results volume, plus the third-party skill vault; both are
+                 # regenerable and are described in the README and the data-source table
+                 "data_processed_*/ (except the two canonical v3b populations)",
+                 "results_rccf_{gotham2025_full,gotham2025_cap200k,cic_iot2023_cap200k,"
+                 "cic_iot2023_cap20k,cic_iot2023_cap500k,cic_iot2023_k8,cic_iot2023_k16,"
+                 "cic_iot2023_k32,cic_iot2023_k60,6tisch2026_uncapped,ctu_idseval6_uncapped}/",
+                 "research-skills-vault/**", ".quarantine/**",
+                 "_release_stage_v3b_20260912/**", ".review_render/**"],
         "entries": entries,
     }
     manifest_path = args.output.with_suffix(args.output.suffix + ".manifest.json")

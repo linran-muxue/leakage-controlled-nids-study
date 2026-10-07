@@ -289,7 +289,7 @@
 | `scripts/normalise_doi_terminator_v19b.py` | `684a0a83977ff631` | 36 | 1.4 KB |
 | `scripts/normalize_jisa_manuscript.py` | `b64204adbe8d3fdc` | 40 | 3.1 KB |
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
-| `scripts/package_full_research_archive_cn.py` | `5e82a53e77d338a2` | 208 | 10.3 KB |
+| `scripts/package_full_research_archive_cn.py` | `06f5e20c9a3f8fcf` | 219 | 11.1 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
 | `scripts/package_submission_bundle_v18.py` | `2b1abaa2bc2dad3b` | 259 | 16.4 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
@@ -393,7 +393,7 @@
 | `scripts/summarize_nested_statistics_v1.py` | `8889f34ad041b54c` | 26 | 1.1 KB |
 | `scripts/summarize_unsw_nb15_v1.py` | `8bbf408ad82ab3e2` | 27 | 1.2 KB |
 | `scripts/supplementary_paths_v1.py` | `906180d408e13db5` | 34 | 1.3 KB |
-| `scripts/sync_desktop_delivery_v1.py` | `189d8ea2b071b171` | 65 | 2.7 KB |
+| `scripts/sync_desktop_delivery_v1.py` | `2aa3e2a0b3cdbce3` | 79 | 3.5 KB |
 | `scripts/sync_supplementary_mirror_v16.py` | `75e83984ef705708` | 75 | 3.2 KB |
 | `scripts/tune_all_baselines.py` | `a26ac39273fb8699` | 69 | 5.5 KB |
 | `scripts/tune_gate_v5.py` | `436ae6d4ceea914e` | 219 | 9.8 KB |
