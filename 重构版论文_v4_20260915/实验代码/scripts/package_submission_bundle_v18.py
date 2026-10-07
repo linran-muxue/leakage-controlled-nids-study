@@ -165,6 +165,9 @@ LAYOUT: list[tuple[str, Path, list[Path]]] = [
      [BASE / "论文介绍.md", BASE / "论文介绍.docx",
       BASE / "向老师汇报要点.md", BASE / "向老师汇报要点.docx",
       BASE / "汇报用_论文介绍.pptx"]),
+    # 计算机学报版式的中文稿（作者 2026-10-07 要求按该刊布局重排）
+    ("11_计算机学报排版版", BASE,
+     [BASE / "中文SCI论文_计算机学报排版版.md", BASE / "中文SCI论文_计算机学报排版版.docx"]),
 ]
 
 # The README inside the archive quotes the self-check totals and the figure

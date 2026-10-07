@@ -1,6 +1,6 @@
 # 实验代码（仓库 scripts/ 与 src/ 的原样副本）
 
-本目录由 `scripts/build_experiment_record_v1.py` 生成，共 442 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
+本目录由 `scripts/build_experiment_record_v1.py` 生成，共 444 个 Python 文件，内容与仓库中的同名文件逐字节一致；实验说明见 `../实验代码与运行记录.md`。
 
 | 仓库路径 | SHA-256（前 16 位）| 行数 | 大小 |
 |---|---|---:|---:|
@@ -123,6 +123,8 @@
 | `scripts/bootstrap_unsw_nb15_v1.py` | `1572a28a0f95cd08` | 95 | 4.5 KB |
 | `scripts/build_cfrg_figures_v1.py` | `1acc7c8cd0a1cd23` | 46 | 2.7 KB |
 | `scripts/build_cic_data_quality_pack_v1.py` | `437810a7c2ac0cc8` | 129 | 6.6 KB |
+| `scripts/build_cjc_style_docx_v1.py` | `64e29d329fe04c9c` | 259 | 10.2 KB |
+| `scripts/build_cjc_style_manuscript_v1.py` | `ff64a186b2cb2605` | 124 | 4.6 KB |
 | `scripts/build_complete_paper_v3.py` | `23518463cd78c24e` | 190 | 9.4 KB |
 | `scripts/build_complete_paper_v5.py` | `22b8fbeafb7de4bd` | 139 | 7.8 KB |
 | `scripts/build_complete_paper_v6.py` | `44223587267094cd` | 13 | 1.8 KB |
@@ -291,7 +293,7 @@
 | `scripts/number_equations_v21.py` | `ee3d4f36a73bfa05` | 66 | 3.0 KB |
 | `scripts/package_full_research_archive_cn.py` | `06f5e20c9a3f8fcf` | 219 | 11.1 KB |
 | `scripts/package_full_research_archive_v2.py` | `6f6395a4ffd72026` | 156 | 5.7 KB |
-| `scripts/package_submission_bundle_v18.py` | `2b1abaa2bc2dad3b` | 259 | 16.4 KB |
+| `scripts/package_submission_bundle_v18.py` | `424e4d2603770501` | 262 | 16.7 KB |
 | `scripts/polish_limitations_v38.py` | `ca0c4fa74e7ef71a` | 29 | 1.5 KB |
 | `scripts/polish_prose_round20_v1.py` | `e87e88013209f558` | 141 | 8.0 KB |
 | `scripts/polish_prose_v39.py` | `798b1c4ee1b6a92b` | 51 | 2.6 KB |

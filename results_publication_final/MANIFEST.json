@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-07T11:54:43.963799+00:00",
+  "generated_at_utc": "2026-10-07T16:09:13.060938+00:00",
   "public_repository": "https://github.com/linran-muxue/leakage-controlled-nids-study",
   "public_release_tag": "v1.11.0",
   "canonical_data": "data_processed_cic_natural_v3b",
@@ -408,13 +408,13 @@
     },
     {
       "path": "重构版论文_v4_20260915\\English_SCI_Manuscript_v4.docx",
-      "bytes": 2350053,
-      "sha256": "de560c80f554022a8fc479c4c800cfce35d164f07420d8efec5774a69d42a1c8"
+      "bytes": 2350134,
+      "sha256": "52d18abfc0bbac2e66ba7a9cc0192ba4644e9ff5a4e1eca980d449fb8df7008d"
     },
     {
       "path": "重构版论文_v4_20260915\\中文SCI论文_v4_重构版.docx",
-      "bytes": 2512150,
-      "sha256": "8c43e7c428466fe4211105be22f73dc88e24977276ed16a5d7c8ceb1c7b0aa11"
+      "bytes": 2512115,
+      "sha256": "78a77a2b502616a4247457f15997baf93ab1dad748b4c3b17d4ba222aa4bcf58"
     },
     {
       "path": "results_scale_sensitivity_v46\\scale_sensitivity_summary.json",
