@@ -28,7 +28,7 @@
 | `scripts/add_optimisation_experiments_v1.py` | `57c2459b6c033fee` | 129 | 7.5 KB |
 | `scripts/add_recency_to_briefings_v1.py` | `f4213b7e3e42d95d` | 155 | 8.4 KB |
 | `scripts/add_recent_corpora_section_v1.py` | `66a57d95439399fd` | 85 | 4.5 KB |
-| `scripts/add_recent_literature_v1.py` | `e7bbfa34ec31a3c3` | 397 | 23.7 KB |
+| `scripts/add_recent_literature_v1.py` | `a0fb42d99b4ae1bd` | 445 | 26.7 KB |
 | `scripts/add_scale_ladder_table_v1.py` | `62a78cccc2fba1cf` | 93 | 4.8 KB |
 | `scripts/align_aux_documents_v13.py` | `eaad76d7860c085c` | 48 | 2.1 KB |
 | `scripts/align_contribution3_v29.py` | `feeba0ec3d652cac` | 38 | 2.0 KB |
