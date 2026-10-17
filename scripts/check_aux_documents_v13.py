@@ -60,7 +60,7 @@ def main() -> int:
         print(f"  release tags cited: {versions if versions else 'none'}")
         if versions and versions != [latest]:
             problems.append(f"{name} cites {versions}, latest tag is {latest}")
-        for phrase in ["Protocol Sensitivity Dominates", "JISA", "Journal of Information Security and Applications"]:
+        for phrase in ["Where Equivalence Ends", "JISA", "Journal of Information Security and Applications"]:
             if name.startswith("Cover") and phrase not in text:
                 problems.append(f"{name} is missing '{phrase}'")
     print("=== internal planning documents ===")
@@ -95,7 +95,7 @@ def main() -> int:
     number = latest.lstrip("v")
     if f'version: "{number}"' not in cff:
         problems.append(f"CITATION.cff version does not match {latest}")
-    if "Aggregation-Rule Differences" not in readme:
+    if "Population Construction" not in readme:
         problems.append("README.md does not name the current manuscript title")
     print()
     if problems:

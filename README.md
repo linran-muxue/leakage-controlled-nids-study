@@ -14,7 +14,7 @@ older `audit_v1`--`audit_v6`, `data_processed_cic_natural_v1`--`v3`, and
 `results_*_v1`/`v2` directories are historical artifacts and must not be used
 to reproduce the manuscript tables.
 
-Reproducibility materials for the manuscript *Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting*.
+Reproducibility materials for the manuscript *Where Equivalence Ends: Population Construction, Not the Aggregation Rule, Determines Reported Ensemble Gains in Flow-Based Network Intrusion Detection*.
 
 ## Scope
 

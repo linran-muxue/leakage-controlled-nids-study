@@ -113,6 +113,28 @@ def populations() -> None:
             passed += 1
             print(f"OK    {name} carries the three-population arithmetic")
 
+    print()
+    print("== 7 conclusion: the scale ladder ==")
+    primary = ten.loc["rccf", "macro_f1"] - ten.loc["equal_rf_chi2", "macro_f1"]
+    check("conclusion, primary rung deficit", -0.000456, primary)
+    check("conclusion, middle rung deficit", -0.001137, scaled["mean_difference"], 5e-6)
+    middle_paired = pd.read_csv(ROOT / "results_scale_sensitivity_v46" / "paired_by_seed.csv")
+    check("conclusion, middle rung RCCF mean", 0.856065,
+          middle_paired["rccf_macro_f1"].mean())
+    check("conclusion, middle rung 90% low", -0.002966,
+          scaled["seed_level_90_interval"][0], 5e-6)
+    check("conclusion, middle rung 90% high", 0.000692,
+          scaled["seed_level_90_interval"][1], 5e-6)
+    check("conclusion, full rung RCCF mean", 0.754007, summary["rccf_mean_macro_f1"], 5e-6)
+    check("conclusion, full rung 90% low", -0.007179,
+          summary["seed_level_90_interval"][0], 5e-6)
+    check("conclusion, full rung 90% high", -0.003886,
+          summary["seed_level_90_interval"][1], 5e-6)
+    check("conclusion, primary-to-middle step", 0.000681,
+          abs(primary - scaled["mean_difference"]), 5e-6)
+    check("conclusion, middle-to-full step", 0.004396,
+          abs(scaled["mean_difference"] - summary["mean_difference"]), 5e-6)
+
 
 def discussion() -> None:
     print()

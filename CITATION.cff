@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: "Reproducibility archive for: Protocol Sensitivity Dominates Aggregation-Rule Differences in Flow-Based Network Intrusion Detection: A Leakage-Controlled Study of Conditional Ensemble Weighting"
+title: "Reproducibility archive for: Where Equivalence Ends: Population Construction, Not the Aggregation Rule, Determines Reported Ensemble Gains in Flow-Based Network Intrusion Detection"
 message: "If you use this code or the released evidence, please cite the accompanying manuscript and this archive."
 type: software
 license: MIT

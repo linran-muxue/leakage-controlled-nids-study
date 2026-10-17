@@ -95,7 +95,7 @@
 | `scripts/audit_crosslanguage_v5.py` | `3f825161fccc4029` | 49 | 1.9 KB |
 | `scripts/audit_data_authenticity_v1.py` | `c392c45976391718` | 206 | 7.8 KB |
 | `scripts/audit_data_processing_v1.py` | `c98952971ea1b4c1` | 137 | 7.7 KB |
-| `scripts/audit_discussion_numbers_v1.py` | `7d517e5347ee8d99` | 407 | 21.2 KB |
+| `scripts/audit_discussion_numbers_v1.py` | `3a8d85c8923ec8b9` | 429 | 22.5 KB |
 | `scripts/audit_drc_results_v1.py` | `01a85796f4b62a84` | 75 | 3.6 KB |
 | `scripts/audit_feature_quality_v4.py` | `38ca07adc0346f95` | 41 | 3.3 KB |
 | `scripts/audit_file_label_coverage_v4.py` | `4d134578daf68beb` | 58 | 2.8 KB |
@@ -143,7 +143,7 @@
 | `scripts/build_extension_report_v1.py` | `e90de394e37f93c6` | 408 | 26.5 KB |
 | `scripts/build_figures_en_v5.py` | `90d709f55ed629cf` | 479 | 26.8 KB |
 | `scripts/build_final_manuscripts_v1.py` | `89299a4f68fb933e` | 247 | 12.8 KB |
-| `scripts/build_graphical_abstract_v5.py` | `79a748e5be4a954f` | 121 | 5.8 KB |
+| `scripts/build_graphical_abstract_v5.py` | `ca73b3b3b015d76b` | 121 | 5.9 KB |
 | `scripts/build_jisa_graphical_abstract_v1.py` | `0449bf016c7133e2` | 54 | 2.9 KB |
 | `scripts/build_ladder_figure_v1.py` | `9f2ca01285356d14` | 139 | 6.5 KB |
 | `scripts/build_material_index_v1.py` | `f5a3b7fd613bf203` | 271 | 13.9 KB |
@@ -166,7 +166,7 @@
 | `scripts/bump_release_tag_v58.py` | `aad5fd6dd927d55c` | 113 | 4.7 KB |
 | `scripts/check_abstract_numbers_v1.py` | `95c3e27e5f06db58` | 55 | 1.9 KB |
 | `scripts/check_audit_chain_numbers_v1.py` | `ca4d8e81ff7cf495` | 91 | 4.1 KB |
-| `scripts/check_aux_documents_v13.py` | `883780bd947626be` | 110 | 5.9 KB |
+| `scripts/check_aux_documents_v13.py` | `d7f801815bf2943a` | 110 | 5.9 KB |
 | `scripts/check_citation_coverage_v5.py` | `fdd91ea81a7f3239` | 49 | 1.7 KB |
 | `scripts/check_cited_paths_v1.py` | `f483fa8d4941b7bc` | 62 | 2.4 KB |
 | `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |

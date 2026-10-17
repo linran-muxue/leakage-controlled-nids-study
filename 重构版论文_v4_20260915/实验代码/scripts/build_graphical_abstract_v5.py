@@ -33,7 +33,7 @@ def main() -> None:
     fig = plt.figure(figsize=(11.0, 7.6))
     gs = fig.add_gridspec(2, 2, hspace=0.34, wspace=0.24, top=0.86, bottom=0.09,
                           left=0.07, right=0.97)
-    fig.suptitle("Protocol sensitivity dominates aggregation-rule differences in flow-based NIDS",
+    fig.suptitle("Population construction, not the aggregation rule, sets the reported gain",
                  fontsize=13.5, weight="bold")
 
     # ---- A: protocol -------------------------------------------------------
@@ -52,7 +52,7 @@ def main() -> None:
 
     # ---- B: main result ----------------------------------------------------
     ax = fig.add_subplot(gs[0, 1])
-    ax.set_title("B  Ten seeds: no gain on capped data", fontsize=10.5, weight="bold", loc="left")
+    ax.set_title("B  A scale ladder: equivalence ends at the full corpus", fontsize=10.5, weight="bold", loc="left")
     mean, lo, hi = float(chi2["mean_difference"]), float(chi2["ci90_low"]), float(chi2["ci90_high"])
     ax.axvspan(-0.005, 0.005, color="#eaf5ee", zorder=0)
     ax.axvline(0, color="#444444", lw=1.0, ls="--")
@@ -66,7 +66,7 @@ def main() -> None:
             ha="center", fontsize=8.0, color="#3d7a52")
     ax.text(0.5, 0.12, f"mean {mean:+.6f}; five seeds up, five down",
             transform=ax.transAxes, ha="center", fontsize=8.2, color="#b5525b")
-    ax.text(0.5, 0.04, "full 2.4M corpus: no margin holds (-0.005533)",
+    ax.text(0.5, 0.04, "2,429,503 flows: -0.005533, not equivalent at 0.005",
             transform=ax.transAxes, ha="center", fontsize=7.4, color="#8a6d1f")
     ax.tick_params(axis="x", labelsize=8)
     for s in ("top", "right", "left"):
