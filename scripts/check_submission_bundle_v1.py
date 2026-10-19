@@ -111,8 +111,8 @@ def main() -> int:
         problems.append(f"the README claims {declared.group(1) if declared else '?'} figures "
                         f"per language, the archive holds {figures}")
     tables = len([key for key in data if key.startswith("08_主表/") and key.endswith(".csv")])
-    if tables != 9:
-        problems.append(f"the archive holds {tables} exported tables, expected 9")
+    if tables != 10:
+        problems.append(f"the archive holds {tables} exported tables, expected 10")
     print(f"  figures per language {figures}; exported tables {tables}")
 
     # every exported table must equal the manuscript cells it came from

@@ -172,7 +172,7 @@
 | `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
 | `scripts/check_deliverable_counts_v1.py` | `8313d345357cf964` | 153 | 7.5 KB |
-| `scripts/check_docx_freshness_v17.py` | `57c69eda9dec66b9` | 72 | 3.6 KB |
+| `scripts/check_docx_freshness_v17.py` | `114940b6474055de` | 72 | 3.6 KB |
 | `scripts/check_docx_numbering_v40.py` | `2e110c917ec7c52f` | 83 | 3.9 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |
@@ -194,7 +194,7 @@
 | `scripts/check_seed_scope_v5.py` | `b812879d4b4aaa74` | 128 | 6.1 KB |
 | `scripts/check_selection_reproducibility_v1.py` | `d9bf65ba1df0d205` | 110 | 5.0 KB |
 | `scripts/check_selfcheck_claims_v1.py` | `23db32a3412d8a98` | 76 | 3.1 KB |
-| `scripts/check_submission_bundle_v1.py` | `a72c35713024c3b9` | 157 | 7.1 KB |
+| `scripts/check_submission_bundle_v1.py` | `8c1d2ca5520fd14e` | 157 | 7.1 KB |
 | `scripts/check_submission_readiness_v1.py` | `3d97e495dbf3349e` | 118 | 5.1 KB |
 | `scripts/check_supplementary_index_v1.py` | `92902b4595a84434` | 89 | 3.5 KB |
 | `scripts/cite_scale_supplementary_v1.py` | `a253a2b019dae187` | 54 | 2.0 KB |
