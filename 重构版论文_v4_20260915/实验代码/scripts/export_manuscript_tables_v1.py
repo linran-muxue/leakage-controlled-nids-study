@@ -1,4 +1,4 @@
-"""Export the eight main tables as editable CSV files.
+"""Export the nine main tables as editable CSV files.
 
 The manuscripts carry their tables as Markdown, which is fine for reading and
 for the Word build but awkward to hand to a production editor, who usually
@@ -54,8 +54,8 @@ def parse_tables() -> list[tuple[str, str, str, list[list[str]]]]:
     lines = EN.splitlines()
     captions = [(index, match) for index, line in enumerate(lines)
                 if (match := CAPTION.match(line))]
-    if len(captions) != 8:
-        raise SystemExit(f"expected eight numbered tables, found {len(captions)}")
+    if len(captions) != 9:
+        raise SystemExit(f"expected nine numbered tables, found {len(captions)}")
     parsed_tables = []
     for position, (start, match) in enumerate(captions):
         number, caption = match.group(1), match.group(2).strip()

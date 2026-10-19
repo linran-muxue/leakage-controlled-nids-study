@@ -1,0 +1,6 @@
+﻿Setting,Population,Seeds,Gain,90% interval,Positive
+Automatic EDG,"CIC, 53,237 flows",10,+0.02640,"[0.02538, 0.02743]",10/10
+Quality-matched EDG,"CIC, 53,237 flows",10,+0.00736,"[0.00460, 0.01011]",10/10
+Automatic EDG,"CIC, 2,429,503 flows",10,+0.09768,"[0.09166, 0.10370]",10/10
+Automatic EDG,"UNSW-NB15, 82,332 test flows",10,+0.00904,"[0.00586, 0.01222]",10/10
+Quality-matched EDG,UNSW-NB15,2,+0.00350,n/a,2/2

@@ -213,7 +213,7 @@
 | `scripts/enumeration_audit_v8.py` | `16aaa2bc4479db72` | 57 | 2.7 KB |
 | `scripts/evaluate_tuned_seeds.py` | `98a6492d539f0975` | 30 | 3.2 KB |
 | `scripts/evaluate_tuned_v2.py` | `e9f7a74ec7d22779` | 90 | 4.3 KB |
-| `scripts/export_manuscript_tables_v1.py` | `bda467550fe23d08` | 127 | 5.4 KB |
+| `scripts/export_manuscript_tables_v1.py` | `f9c9dd3de8778c5d` | 127 | 5.4 KB |
 | `scripts/export_submission_text_v1.py` | `1fe10bb6160b29b9` | 55 | 2.2 KB |
 | `scripts/extend_dilution_to_three_populations_v1.py` | `9d0cd8b96c78ba6a` | 104 | 7.4 KB |
 | `scripts/extend_discussion_full_corpus_v1.py` | `71d6fb26365b37dc` | 96 | 5.7 KB |
