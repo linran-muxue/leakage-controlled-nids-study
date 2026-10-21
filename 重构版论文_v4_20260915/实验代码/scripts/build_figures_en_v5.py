@@ -35,66 +35,154 @@ def arrow(ax, p1, p2, color="#444444", lw=1.3):
 
 
 def fig1():
-    fig, ax = plt.subplots(figsize=(12.0, 5.6))
+    fig, ax = plt.subplots(figsize=(13.2, 8.0))
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    steps = [("Raw archive\n8 CSV files\n2,830,743 rows", 0.01),
-             ("Label mapping\n5 retained classes\n2,671,766 rows", 0.165),
-             ("Non-finite\nremoval\n-2,741", 0.32),
-             ("Physical-range\nscreening\n-296", 0.475),
-             ("Global dedup and\nconflict resolution", 0.63),
-             ("Class cap\nnatural 53,237\nbalanced 3,365", 0.785)]
+    ax.text(0.015, 0.935, "A  Data construction and population definitions", fontsize=10.5, weight="bold", color="#1f3552")
+    steps = [
+        ("Raw archive\n8 CSV files / 78 features\n2,830,743 rows", 0.015),
+        ("Label mapping\n5 retained classes\n2,671,766 rows", 0.215),
+        ("Non-finite + physical range\n-2,741 / -296\n2,668,729 rows", 0.415),
+        ("Global dedup + conflicts\n-239,093 / -133\n2,429,503 rows", 0.615),
+        ("Three reported rungs\n53,237 / 413,209 / 2,429,503", 0.815),
+    ]
     for text, x in steps:
-        box(ax, x, 0.63, 0.145, 0.20, text, fs=8.4)
+        box(ax, x, 0.755, 0.165, 0.145, text, fs=7.8)
     for i in range(len(steps) - 1):
-        arrow(ax, (steps[i][1] + 0.145, 0.73), (steps[i + 1][1], 0.73))
-    splits = [("Training 70%", 0.03), ("Validation 15%", 0.26), ("Test 15% (locked)", 0.49)]
-    for text, x in splits:
-        box(ax, x, 0.31, 0.21, 0.15, text, fc="#eaf5ee", ec="#5a9e6f", fs=9)
-    arrow(ax, (0.85, 0.63), (0.13, 0.46), color="#5a9e6f")
-    arrow(ax, (0.85, 0.63), (0.365, 0.46), color="#5a9e6f")
-    arrow(ax, (0.85, 0.63), (0.60, 0.46), color="#5a9e6f")
-    fits = [("Train-side fitting only\nscaler + chi2/MI/ANOVA selectors\nK-fold cross-fitted risk models", 0.03),
-            ("Validation-side calibration\ntemperature scaling\nMondrian conformal alpha = 0.1", 0.37),
-            ("Test side\none-shot evaluation\nper-row predictions released", 0.71)]
-    for text, x in fits:
-        box(ax, x, 0.05, 0.26, 0.17, text, fc="#fdf1e6", ec="#e07b39", fs=8.2)
-    arrow(ax, (0.13, 0.31), (0.16, 0.22), color="#e07b39")
-    arrow(ax, (0.365, 0.31), (0.50, 0.22), color="#e07b39")
-    arrow(ax, (0.60, 0.31), (0.84, 0.22), color="#e07b39")
-    ax.plot([0.01, 0.99], [0.545, 0.545], color="#b5525b", lw=1.8, ls="--")
-    ax.text(0.012, 0.565, "Information boundary: no test-partition label may be read below this line",
-            color="#b5525b", fontsize=8.8, va="bottom")
-    ax.text(0.5, 0.965, "Leakage-controlled protocol: every label-dependent statistic is fitted on train/validation only",
-            ha="center", fontsize=10.2, weight="bold")
+        arrow(ax, (steps[i][1] + 0.165, 0.828), (steps[i + 1][1], 0.828))
+
+    ax.text(0.015, 0.675, "B  Leakage-controlled modelling and intervention", fontsize=10.5, weight="bold", color="#1f3552",
+            bbox=dict(facecolor="white", edgecolor="none", pad=1.8), zorder=10)
+    split = [("Training 70%\n1,700,652 full-corpus rows", 0.02),
+             ("Validation 15%\n364,425", 0.255),
+             ("Test 15% (locked)\n364,426", 0.49)]
+    for text, x in split:
+        box(ax, x, 0.555, 0.205, 0.095, text, fc="#eaf5ee", ec="#5a9e6f", fs=8.0)
+    arrow(ax, (0.895, 0.755), (0.12, 0.65), color="#5a9e6f")
+    arrow(ax, (0.895, 0.755), (0.355, 0.65), color="#5a9e6f")
+    arrow(ax, (0.895, 0.755), (0.59, 0.65), color="#5a9e6f")
+
+    model = [
+        ("Train-side fitting only\nscaler + chi2 / MI / ANOVA\nfour RF experts (100 trees)", 0.02),
+        ("3-fold OOF on training\nprobabilities + confidence / entropy / margin\nrisk models -> conditional weights", 0.255),
+        ("Validation-side choice\ntemperature T, entropy <= 0.95\nKL(weights || uniform) <= 0.10", 0.49),
+        ("One-shot test evaluation\nsame-member equal fusion vs gate\nper-row predictions saved", 0.725),
+    ]
+    for text, x in model:
+        box(ax, x, 0.405, 0.195, 0.105, text, fc="#fdf1e6", ec="#e07b39", fs=7.6)
+        arrow(ax, (x + 0.0975, 0.555), (x + 0.0975, 0.510), color="#e07b39")
+
+    ax.text(0.015, 0.325, "C  Controls, intervention and statistical validation", fontsize=10.5, weight="bold", color="#1f3552")
+    eval_boxes = [
+        ("Primary control\nsame view, same tuning budget\nequal-weight forest", 0.02, "#eef3fa", "#2f6fb3"),
+        ("Constructive EDG\nfour disjoint chi2 views\ndose curve, overlap 0 -> 1", 0.255, "#f3eef9", "#7a6fb0"),
+        ("Quality gradient\nfix delta near 3%\nvary member F1 spread", 0.49, "#fdeff0", "#b5525b"),
+        ("Ten-seed statistics\nmean + 90% interval\nTOST / McNemar / bootstrap", 0.725, "#eef7f0", "#5a9e6f"),
+    ]
+    for text, x, fc, ec in eval_boxes:
+        box(ax, x, 0.195, 0.195, 0.105, text, fc=fc, ec=ec, fs=7.8)
+    for x in (0.1175, 0.3525, 0.5875):
+        arrow(ax, (x, 0.405), (x, 0.300), color="#444444")
+
+    out = [
+        ("Reproducible outputs\naudit counts / models /\nper-row predictions", 0.02),
+        ("Mechanism diagnostics\nentropy / disagreement /\nmargin bound / dilution", 0.255),
+        ("Robustness and external validity\nNSL-KDD / UNSW-NB15 /\nN-BaIoT / modern corpora", 0.49),
+        ("Reporting object\npopulation / protocol /\nrung / cost", 0.725),
+    ]
+    for text, x in out:
+        box(ax, x, 0.045, 0.195, 0.095, text, fc="#f4f6f8", ec="#8c8c8c", fs=7.1)
+    for x in (0.1175, 0.3525, 0.5875, 0.8225):
+        arrow(ax, (x, 0.195), (x, 0.140), color="#8c8c8c")
+
+    ax.plot([0.012, 0.985], [0.362, 0.362], color="#b5525b", lw=1.5, ls="--")
+    ax.text(0.014, 0.367, "Information boundary: no test label may be read before final evaluation",
+            color="#b5525b", fontsize=8.5, va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", pad=1.2), zorder=11)
+    ax.text(0.5, 1.015, "End-to-end workflow: audit -> leakage-controlled modelling -> conditional gate -> EDG intervention -> statistics and release",
+            ha="center", va="top", fontsize=10.8, weight="bold")
     fig.savefig(OUT / "fig1_protocol_pipeline.png")
     plt.close(fig)
 
 
 def fig2():
     audit = json.loads((ROOT / "results_data_audit_cic_natural_v3b" / "data_processing_audit.json").read_text("utf-8"))
+    dedup = json.loads((ROOT / "data_processed_cic_natural_v3b" / "dedup_audit.json").read_text("utf-8"))
     t = audit["raw_totals"]
     stages = [("Raw archive", t["source_rows"]), ("Label mapped", t["mapped_rows"]),
               ("Finite numeric", t["valid_rows"]), ("Physically valid", t["physical_valid_rows"]),
-              ("After class cap", 53237), ("Training split", 37265)]
+              ("Dedup + conflicts", 2429503), ("Natural-prior", 53237)]
     labels = [s[0] for s in stages]; values = [s[1] for s in stages]
-    fig, ax = plt.subplots(figsize=(10.4, 4.6))
+    fig = plt.figure(figsize=(13.2, 7.6))
+    gs = fig.add_gridspec(2, 2, hspace=0.68, wspace=0.25, top=0.88, bottom=0.10,
+                          left=0.08, right=0.97)
+
+    ax = fig.add_subplot(gs[0, 0])
     xs = np.arange(len(stages))
-    ax.bar(xs, values, color=C[: len(stages)], width=0.62)
+    ax.bar(xs, values, color=C[:len(stages)], width=0.62)
     for x, v in zip(xs, values):
-        ax.text(x, v * 1.05, f"{v:,}", ha="center", fontsize=9.2, weight="bold")
-    notes = [("-158,977", 0), ("-2,741", 1), ("-296", 2),
-             ("239,093 duplicate occurrences\n133 conflicting vectors", 3),
-             ("capped at 20,000 per class", 4)]
-    for text, i in notes:
-        ax.annotate(text, xy=(i + 0.5, values[i] * 0.55), xytext=(i + 0.5, values[i] * 0.80),
-                    ha="center", fontsize=7.8, color="#b5525b",
-                    arrowprops=dict(arrowstyle="-|>", color="#b5525b", lw=1.0))
-    ax.set_yscale("log"); ax.set_ylabel("Records (log scale)")
-    ax.set_xticks(xs); ax.set_xticklabels(labels, fontsize=8.6)
-    ax.set_title("CIC-IDS2017 audit chain (natural-prior population)", fontsize=11, weight="bold")
-    ax.grid(axis="y", alpha=0.25)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
+        pct = 100.0 * v / values[0]
+        ax.text(x, v * 1.10, f"{v:,}\n({pct:.1f}%)", ha="center", va="bottom", fontsize=7.2, weight="bold")
+    ax.set_yscale("log"); ax.set_ylim(2e4, 6e6)
+    ax.set_ylabel("Records (log scale)", fontsize=8.4)
+    ax.set_xticks(xs); ax.set_xticklabels(labels, rotation=18, ha="right", fontsize=7.6)
+    ax.set_title("A  Retention along the audit chain", fontsize=10.2, weight="bold", loc="left")
+    ax.grid(axis="y", alpha=0.22)
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    ax = fig.add_subplot(gs[0, 1])
+    class_data = {
+        "53,237": {"Normal": 19999, "DoS/DDoS": 19997, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+        "413,209": {"Normal": 199992, "DoS/DDoS": 199976, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+        "2,429,503": {"Normal": 2094666, "DoS/DDoS": 321596, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+    }
+    class_colors = ["#2f6fb3", "#e07b39", "#5a9e6f", "#b5525b", "#7a6fb0"]
+    ys = np.arange(len(class_data)); left = np.zeros(len(class_data))
+    for colour, cls in zip(class_colors, ["Normal", "DoS/DDoS", "Brute Force", "Bot", "Web Attack"]):
+        shares = np.array([100.0 * class_data[k][cls] / sum(class_data[k].values()) for k in class_data])
+        ax.barh(ys, shares, left=left, color=colour, height=0.55, label=cls)
+        left += shares
+    ax.set_yticks(ys); ax.set_yticklabels(list(class_data), fontsize=8.2)
+    ax.set_xlim(0, 100); ax.set_xlabel("Class share (%)", fontsize=8.4)
+    ax.set_title("B  Class composition across the three rungs", fontsize=10.2, weight="bold", loc="left")
+    ax.legend(ncol=5, fontsize=6.4, frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.30))
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    ax = fig.add_subplot(gs[1, 0])
+    ladder = [("20k/class", 53237, 7986), ("200k/class", 413209, 61982), ("Uncapped", 2429503, 364426)]
+    ys = np.arange(len(ladder)); width = 0.36
+    ax.barh(ys - width/2, [r[1] for r in ladder], height=width, color="#2f6fb3", label="Population")
+    ax.barh(ys + width/2, [r[2] for r in ladder], height=width, color="#e07b39", label="Test rows")
+    for y, row in zip(ys, ladder):
+        ax.text(row[1] * 1.08, y - width/2, f"{row[1]:,}", va="center", fontsize=7.6, weight="bold")
+        ax.text(row[2] * 1.08, y + width/2, f"{row[2]:,}", va="center", fontsize=7.6, color="#a5542f")
+    ax.set_xscale("log"); ax.set_xlim(5e3, 5e6)
+    ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in ladder], fontsize=8.2)
+    ax.set_xlabel("Records (log scale)", fontsize=8.4)
+    ax.set_title("C  Scale ladder and locked test sets", fontsize=10.2, weight="bold", loc="left")
+    ax.legend(fontsize=7.4, frameon=False, loc="lower right")
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    ax = fig.add_subplot(gs[1, 1])
+    removed = [
+        ("Excluded labels", t["excluded_label_rows"], "#8c8c8c"),
+        ("Same-label duplicates", dedup["same_label_duplicate_rows"], "#5a9e6f"),
+        ("Cross-label conflict rows", dedup["cross_label_mismatch_rows"], "#b5525b"),
+        ("Non-finite rows", t["invalid_rows"], "#e07b39"),
+        ("Physical-range rows", dedup["invalid_physical_rows"], "#7a6fb0"),
+        ("Conflict vectors", dedup["unique_rows_removed_for_conflicts"], "#2f6fb3"),
+    ]
+    ys = np.arange(len(removed))
+    ax.barh(ys, [r[1] for r in removed], color=[r[2] for r in removed], height=0.58)
+    for y, r in zip(ys, removed):
+        ax.text(r[1] * 1.10, y, f"{r[1]:,}", va="center", fontsize=7.8, weight="bold")
+    ax.set_xscale("log"); ax.set_xlim(100, 5e5)
+    ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in removed], fontsize=8.2)
+    ax.set_xlabel("Rows removed (log scale)", fontsize=8.4)
+    ax.set_title("D  What was removed, and why", fontsize=10.2, weight="bold", loc="left")
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    fig.suptitle("CIC-IDS2017 data-processing results: retention, class composition, scale and removals",
+                 fontsize=11.6, weight="bold")
     fig.savefig(OUT / "fig2_data_waterfall.png")
     plt.close(fig)
 

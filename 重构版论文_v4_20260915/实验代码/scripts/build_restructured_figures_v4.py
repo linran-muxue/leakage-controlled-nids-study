@@ -48,41 +48,71 @@ def arrow(ax, p1, p2, color="#444444", style="-|>", lw=1.3, ls="-"):
 
 # ---------------------------------------------------------------- figure 1
 def fig1():
-    fig, ax = plt.subplots(figsize=(11.6, 5.4))
+    fig, ax = plt.subplots(figsize=(13.2, 8.0))
     ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
+
+    ax.text(0.015, 0.935, "A  数据构建与总体定义", fontsize=10.5, weight="bold", color="#1f3552")
     steps = [
-        ("原始归档\n8 个 CSV\n2 830 743 行", 0.01, 0.62),
-        ("标签映射\n保留 5 类\n2 671 766 行", 0.155, 0.62),
-        ("非有限值剔除\n−2 741 行", 0.30, 0.62),
-        ("物理范围筛查\n−296 行", 0.445, 0.62),
-        ("全局去重\n与冲突处理", 0.59, 0.62),
-        ("类别截断\n自然先验 53 237\n平衡控制 3 365", 0.735, 0.62),
+        ("原始归档\n8 个 CSV / 78 维\n2 830 743 行", 0.015),
+        ("标签映射\n5 个保留类\n2 671 766 行", 0.215),
+        ("非有限值 + 物理范围\n−2 741 / −296\n2 668 729 行", 0.415),
+        ("全局去重 + 冲突处理\n−239 093 / −133\n2 429 503 行", 0.615),
+        ("三级报告总体\n53 237 / 413 209 / 2 429 503", 0.815),
     ]
-    for text, x, y in steps:
-        box(ax, x, y, 0.135, 0.20, text, fs=8.6)
+    for text, x in steps:
+        box(ax, x, 0.755, 0.165, 0.145, text, fs=7.9)
     for i in range(len(steps) - 1):
-        arrow(ax, (steps[i][1] + 0.135, 0.72), (steps[i + 1][1], 0.72))
+        arrow(ax, (steps[i][1] + 0.165, 0.828), (steps[i + 1][1], 0.828))
 
-    split = [("训练分区 70%", 0.03), ("验证分区 15%", 0.245), ("测试分区 15%（锁定）", 0.46)]
+    ax.text(0.015, 0.675, "B  泄漏受控建模与干预", fontsize=10.5, weight="bold", color="#1f3552",
+            bbox=dict(facecolor="white", edgecolor="none", pad=1.8), zorder=10)
+    split = [("训练 70%\n全量语料 1 700 652", 0.02),
+             ("验证 15%\n364 425", 0.255),
+             ("测试 15%（锁定）\n364 426", 0.49)]
     for text, x in split:
-        box(ax, x, 0.30, 0.20, 0.16, text, fc="#eaf5ee", ec="#5a9e6f", fs=9)
-    arrow(ax, (0.80, 0.62), (0.13, 0.46), color="#5a9e6f")
-    arrow(ax, (0.80, 0.62), (0.345, 0.46), color="#5a9e6f")
-    arrow(ax, (0.80, 0.62), (0.56, 0.46), color="#5a9e6f")
+        box(ax, x, 0.555, 0.205, 0.095, text, fc="#eaf5ee", ec="#5a9e6f", fs=8.1)
+    arrow(ax, (0.895, 0.755), (0.12, 0.65), color="#5a9e6f")
+    arrow(ax, (0.895, 0.755), (0.355, 0.65), color="#5a9e6f")
+    arrow(ax, (0.895, 0.755), (0.59, 0.65), color="#5a9e6f")
 
-    fit = [("仅训练侧拟合\n标准化器 + χ²/MI/ANOVA 选择器\nK 折交叉拟合风险模型", 0.03, 0.045),
-           ("验证侧校准\n温度缩放\n蒙德里安保形阈值 α=0.1", 0.36, 0.045),
-           ("测试侧\n一次性评估\n逐样本预测公开", 0.69, 0.045)]
-    for text, x, y in fit:
-        box(ax, x, y, 0.28, 0.17, text, fc="#fdf1e6", ec="#e07b39", fs=8.6)
-    arrow(ax, (0.13, 0.30), (0.17, 0.215), color="#e07b39")
-    arrow(ax, (0.345, 0.30), (0.50, 0.215), color="#e07b39")
-    arrow(ax, (0.56, 0.30), (0.83, 0.215), color="#e07b39")
+    model = [
+        ("仅训练侧拟合\n标准化器 + χ² / MI / ANOVA\n4 个随机森林专家（100 棵树）", 0.02),
+        ("训练集 3 折 OOF\n概率 + 置信度 / 熵 / 边距\n风险模型 → 条件权重", 0.255),
+        ("验证侧选择\n温度 T、熵 ≤ 0.95\nKL(权重‖均匀) ≤ 0.10", 0.49),
+        ("测试侧一次性评估\n同成员等权 vs 条件门控\n逐样本预测与概率", 0.725),
+    ]
+    for text, x in model:
+        box(ax, x, 0.405, 0.195, 0.105, text, fc="#fdf1e6", ec="#e07b39", fs=7.8)
+        arrow(ax, (x + 0.0975, 0.555), (x + 0.0975, 0.510), color="#e07b39")
 
-    ax.plot([0.01, 0.99], [0.525, 0.525], color="#b5525b", lw=1.8, ls="--")
-    ax.text(0.012, 0.545, "信息边界：以下步骤不得读取测试分区标签", color="#b5525b", fontsize=9, va="bottom")
-    ax.text(0.5, 0.965, "泄漏受控协议：任何依赖标签的统计量只在训练/验证侧拟合",
-            ha="center", fontsize=10.5, weight="bold")
+    ax.text(0.015, 0.325, "C  对照、干预与统计验证", fontsize=10.5, weight="bold", color="#1f3552")
+    eval_boxes = [
+        ("主对照\n同特征视图、同调参预算\n等权森林", 0.02, "#eef3fa", "#2f6fb3"),
+        ("构造性干预 EDG\n四个互斥卡方视图\n重叠度 0 → 1 的剂量曲线", 0.255, "#f3eef9", "#7a6fb0"),
+        ("质量梯度\n固定 δ ≈ 3%\n改变成员 F1 极差", 0.49, "#fdeff0", "#b5525b"),
+        ("十种子统计\n均值 + 90% 区间\nTOST / McNemar / Bootstrap", 0.725, "#eef7f0", "#5a9e6f"),
+    ]
+    for text, x, fc, ec in eval_boxes:
+        box(ax, x, 0.195, 0.195, 0.105, text, fc=fc, ec=ec, fs=7.9)
+    for x in (0.1175, 0.3525, 0.5875):
+        arrow(ax, (x, 0.405), (x, 0.300), color="#444444")
+
+    out = [
+        ("可复现输出\n审计计数 / 模型 /\n逐样本预测", 0.02),
+        ("机制诊断\n权重熵 / 分歧 /\n边距界 / 稀释预测", 0.255),
+        ("稳健性与外部验证\nNSL-KDD / UNSW-NB15 /\nN-BaIoT / 现代语料", 0.49),
+        ("报告对象\n总体 / 协议 /\n阶梯层级 / 代价", 0.725),
+    ]
+    for text, x in out:
+        box(ax, x, 0.045, 0.195, 0.095, text, fc="#f4f6f8", ec="#8c8c8c", fs=7.3)
+    for x in (0.1175, 0.3525, 0.5875, 0.8225):
+        arrow(ax, (x, 0.195), (x, 0.140), color="#8c8c8c")
+
+    ax.plot([0.012, 0.985], [0.362, 0.362], color="#b5525b", lw=1.5, ls="--")
+    ax.text(0.014, 0.367, "信息边界：测试标签在最终评估前不可读取", color="#b5525b", fontsize=8.6, va="bottom",
+            bbox=dict(facecolor="white", edgecolor="none", pad=1.2), zorder=11)
+    ax.text(0.5, 1.015, "端到端实验流程：数据审计 → 泄漏受控建模 → 条件门控 → EDG 干预 → 统计与复现",
+            ha="center", va="top", fontsize=11.2, weight="bold")
     fig.savefig(OUT / "fig1_protocol_pipeline.png")
     plt.close(fig)
 
@@ -90,35 +120,94 @@ def fig1():
 # ---------------------------------------------------------------- figure 2
 def fig2():
     audit = json.loads((ROOT / "results_data_audit_cic_natural_v3b" / "data_processing_audit.json").read_text("utf-8"))
+    dedup = json.loads((ROOT / "data_processed_cic_natural_v3b" / "dedup_audit.json").read_text("utf-8"))
     t = audit["raw_totals"]
     stages = [
         ("原始归档", t["source_rows"]),
         ("标签映射", t["mapped_rows"]),
         ("非有限值剔除", t["valid_rows"]),
         ("物理范围筛查", t["physical_valid_rows"]),
-        ("类别截断后", 53237),
-        ("训练分区", 37265),
+        ("去重与冲突处理", 2429503),
+        ("自然先验总体", 53237),
     ]
     labels = [s[0] for s in stages]
     values = [s[1] for s in stages]
-    fig, ax = plt.subplots(figsize=(10.4, 4.6))
+    fig = plt.figure(figsize=(13.2, 7.6))
+    gs = fig.add_gridspec(2, 2, hspace=0.68, wspace=0.24, top=0.88, bottom=0.10,
+                          left=0.08, right=0.97)
+
+    # A: stage retention
+    ax = fig.add_subplot(gs[0, 0])
     xs = np.arange(len(stages))
-    bars = ax.bar(xs, values, color=COLORS[: len(stages)], width=0.62)
+    ax.bar(xs, values, color=COLORS[:len(stages)], width=0.62)
     for x, v in zip(xs, values):
-        ax.text(x, v * 1.05, f"{v:,}", ha="center", fontsize=9.2, weight="bold")
-    drops = [("−158 977", 0), ("−2 741", 1), ("−296", 2),
-             ("重复 239 093 次 / 冲突向量 133 个", 3), ("按类上限 20 000 截断", 4)]
-    for text, i in drops:
-        ax.annotate(text, xy=(i + 0.5, values[i] * 0.55), xytext=(i + 0.5, values[i] * 0.78),
-                    ha="center", fontsize=8.2, color="#b5525b",
-                    arrowprops=dict(arrowstyle="-|>", color="#b5525b", lw=1.0))
-    ax.set_yscale("log")
-    ax.set_ylabel("记录数（对数刻度）")
-    ax.set_xticks(xs); ax.set_xticklabels(labels, fontsize=9)
-    ax.set_title("CIC-IDS2017 审计阶段计数链（自然先验总体）", fontsize=11.5, weight="bold")
-    ax.grid(axis="y", alpha=0.25)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
+        pct = 100.0 * v / values[0]
+        ax.text(x, v * 1.10, f"{v:,}\n({pct:.1f}%)", ha="center", va="bottom", fontsize=7.4, weight="bold")
+    ax.set_yscale("log"); ax.set_ylim(2e4, 6e6)
+    ax.set_ylabel("记录数（对数刻度）", fontsize=8.4)
+    ax.set_xticks(xs); ax.set_xticklabels(labels, rotation=18, ha="right", fontsize=7.8)
+    ax.set_title("A  审计阶段保留量", fontsize=10.2, weight="bold", loc="left")
+    ax.grid(axis="y", alpha=0.22)
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    # B: class composition across rungs
+    ax = fig.add_subplot(gs[0, 1])
+    class_data = {
+        "53 237": {"Normal": 19999, "DoS/DDoS": 19997, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+        "413 209": {"Normal": 199992, "DoS/DDoS": 199976, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+        "2 429 503": {"Normal": 2094666, "DoS/DDoS": 321596, "Brute Force": 10620, "Bot": 1948, "Web Attack": 673},
+    }
+    class_colors = ["#2f6fb3", "#e07b39", "#5a9e6f", "#b5525b", "#7a6fb0"]
+    ys = np.arange(len(class_data))
+    left = np.zeros(len(class_data))
+    for colour, cls in zip(class_colors, ["Normal", "DoS/DDoS", "Brute Force", "Bot", "Web Attack"]):
+        shares = np.array([100.0 * class_data[k][cls] / sum(class_data[k].values()) for k in class_data])
+        ax.barh(ys, shares, left=left, color=colour, height=0.55, label=cls)
+        left += shares
+    ax.set_yticks(ys); ax.set_yticklabels(list(class_data), fontsize=8.4)
+    ax.set_xlim(0, 100); ax.set_xlabel("类别占比（%）", fontsize=8.4)
+    ax.set_title("B  三个报告总体的类别构成", fontsize=10.2, weight="bold", loc="left")
+    ax.legend(ncol=5, fontsize=6.4, frameon=False, loc="lower center", bbox_to_anchor=(0.5, -0.30))
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    # C: scale ladder and test rows
+    ax = fig.add_subplot(gs[1, 0])
+    ladder = [("20k/类", 53237, 7986), ("200k/类", 413209, 61982), ("全去重", 2429503, 364426)]
+    ys = np.arange(len(ladder)); width = 0.36
+    ax.barh(ys - width/2, [r[1] for r in ladder], height=width, color="#2f6fb3", label="总体记录")
+    ax.barh(ys + width/2, [r[2] for r in ladder], height=width, color="#e07b39", label="测试记录")
+    for y, row in zip(ys, ladder):
+        ax.text(row[1] * 1.08, y - width/2, f"{row[1]:,}", va="center", fontsize=7.8, weight="bold")
+        ax.text(row[2] * 1.08, y + width/2, f"{row[2]:,}", va="center", fontsize=7.8, color="#a5542f")
+    ax.set_xscale("log"); ax.set_xlim(5e3, 5e6)
+    ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in ladder], fontsize=8.4)
+    ax.set_xlabel("记录数（对数刻度）", fontsize=8.4)
+    ax.set_title("C  规模阶梯与锁定测试集", fontsize=10.2, weight="bold", loc="left")
+    ax.legend(fontsize=7.4, frameon=False, loc="lower right")
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    # D: removals
+    ax = fig.add_subplot(gs[1, 1])
+    removed = [
+        ("未纳入的标签", t["excluded_label_rows"], "#8c8c8c"),
+        ("同标签重复", dedup["same_label_duplicate_rows"], "#5a9e6f"),
+        ("跨标签冲突行", dedup["cross_label_mismatch_rows"], "#b5525b"),
+        ("非有限值", t["invalid_rows"], "#e07b39"),
+        ("物理范围异常", dedup["invalid_physical_rows"], "#7a6fb0"),
+        ("冲突特征向量", dedup["unique_rows_removed_for_conflicts"], "#2f6fb3"),
+    ]
+    ys = np.arange(len(removed))
+    ax.barh(ys, [r[1] for r in removed], color=[r[2] for r in removed], height=0.58)
+    for y, r in zip(ys, removed):
+        ax.text(r[1] * 1.10, y, f"{r[1]:,}", va="center", fontsize=8.0, weight="bold")
+    ax.set_xscale("log"); ax.set_xlim(100, 5e5)
+    ax.set_yticks(ys); ax.set_yticklabels([r[0] for r in removed], fontsize=8.4)
+    ax.set_xlabel("移除数量（对数刻度）", fontsize=8.4)
+    ax.set_title("D  数据质量清理构成", fontsize=10.2, weight="bold", loc="left")
+    for s in ("top", "right"): ax.spines[s].set_visible(False)
+
+    fig.suptitle("CIC-IDS2017 数据处理结果：保留率、类别构成、规模阶梯与清理来源",
+                 fontsize=11.6, weight="bold")
     fig.savefig(OUT / "fig2_data_waterfall.png")
     plt.close(fig)
 

@@ -4,8 +4,8 @@ message: "If you use this code or the released evidence, please cite the accompa
 type: software
 license: MIT
 repository-code: "https://github.com/linran-muxue/leakage-controlled-nids-study"
-version: "1.11.2"
-date-released: "2026-10-19"
+version: "1.11.3"
+date-released: "2026-10-21"
 abstract: >-
   Reproducibility archive for a leakage-controlled multi-dataset study of sample-conditional
   ensemble weighting in flow-based network intrusion detection. Includes the audited data

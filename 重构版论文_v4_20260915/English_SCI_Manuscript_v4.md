@@ -120,7 +120,7 @@ This paper is therefore positioned as a **protocol and boundary study**. It does
 
 ## 3. Data, Provenance and Protocol
 
-![Figure 1. Leakage-controlled research framework and information boundary](figures_en/fig1_protocol_pipeline.png)
+![Figure 1. End-to-end experimental workflow: data audit, leakage-controlled modelling, conditional gating, EDG intervention and statistical validation](figures_en/fig1_protocol_pipeline.png)
 
 The section proceeds from provenance to population: 3.1 records the sources, retrieval dates and licences, 3.2 audits CIC-IDS2017 and defines the two research populations, 3.3 describes the two external corpora, 3.4 fixes the leakage-controlled protocol, 3.5 states the estimands and the statistical procedure, and 3.6 lists the threats the design already excludes, leaving the residual ones to 6.5.
 
@@ -170,7 +170,9 @@ The local CIC-IDS2017 archive contains eight CSV files, 2,830,743 raw records an
 | Train / validation / test | 37,265 / 7,986 / 7,986 | - | Stratified 70/15/15 |
 | Balanced control population | 3,365 (673 per class) | - | 2,355 / 505 / 505 |
 
-![Figure 2. CIC-IDS2017 audit chain (log scale)](figures_en/fig2_data_waterfall.png)
+![Figure 2. CIC-IDS2017 data-processing results: stage retention, class composition, the three reported populations and the sources of removed records](figures_en/fig2_data_waterfall.png)
+
+Figure 2 reports the same audit as four linked views rather than a single count chain. Panel A shows the retention rate after every filter and makes the cost of the deduplication step explicit: 85.8% of raw records survive to the deduplicated corpus, but only 1.9% survive the 20,000-per-class cap. Panel B shows why the three rungs are different statistical objects: the 53,237-flow population keeps a 20,000-per-class ceiling and therefore a relatively balanced label mix, whereas the uncapped corpus is 86.2% Normal and only 0.03% Web Attack. Panel C separates population size from test-set size, and Panel D attributes every removal to a named mechanism - excluded labels, duplicates, cross-label conflicts, non-finite values, physical-range violations and conflicting vectors - so that no aggregate reduction is left unexplained.
 
 ### 3.3 NSL-KDD and UNSW-NB15
 
@@ -735,7 +737,7 @@ The principal contribution is not a new state-of-the-art classifier. It is a thr
 
 ## Data and code availability
 
-Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.11.2, tag v1.11.2). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
+Processing scripts, audit intermediates, per-row predictions and figure-generation code are released at https://github.com/linran-muxue/leakage-controlled-nids-study (release v1.11.3, tag v1.11.3). Raw datasets are not redistributed; the paper records source URLs, retrieval dates, version snapshots and SHA-256 checksums.
 
 ## Funding
 
