@@ -172,7 +172,7 @@
 | `scripts/check_data_products_v1.py` | `812d9266a1948c1e` | 79 | 3.1 KB |
 | `scripts/check_deck_fit_v1.py` | `b542b8d668354508` | 113 | 4.4 KB |
 | `scripts/check_deliverable_counts_v1.py` | `8313d345357cf964` | 153 | 7.5 KB |
-| `scripts/check_docx_freshness_v17.py` | `114940b6474055de` | 72 | 3.6 KB |
+| `scripts/check_docx_freshness_v17.py` | `a8c2705f31468625` | 72 | 3.6 KB |
 | `scripts/check_docx_numbering_v40.py` | `2e110c917ec7c52f` | 83 | 3.9 KB |
 | `scripts/check_duplicate_sentences_v27.py` | `e6ef1cf9b0c891ba` | 79 | 3.7 KB |
 | `scripts/check_experiment_record_v1.py` | `9a68a4a84feacf15` | 128 | 5.6 KB |

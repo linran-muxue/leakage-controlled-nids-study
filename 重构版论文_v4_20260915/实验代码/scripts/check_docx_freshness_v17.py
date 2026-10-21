@@ -15,15 +15,15 @@ from supplementary_paths_v1 import latest_bundle_name
 import artifact_counts_v1 as repo_counts  # noqa: E402
 BASE = ROOT / "重构版论文_v4_20260915"
 EXPECTED = {
-    "English_SCI_Manuscript_v4.docx": ["v1.11.2", "3,469", "aggregation-rule differences"],
-    "中文SCI论文_v4_重构版.docx": ["v1.11.2", "3469", "聚合规则差异"],
+    "English_SCI_Manuscript_v4.docx": ["v1.11.3", "3,469", "aggregation-rule differences"],
+    "中文SCI论文_v4_重构版.docx": ["v1.11.3", "3469", "聚合规则差异"],
     "论文自查表.docx": ["E9", latest_bundle_name()],
     "遗漏问题审查报告.docx": ["第十一轮"],
     "论文结构诊断与重构方案.docx": ["状态说明"],
     "研究缺口审计与优先级清单.docx": ["状态说明"],
     "P0_P1执行手册.docx": ["状态说明"],
     "Highlights_v4.docx": ["0.005", "0.0725"],
-    "Cover_Letter_JISA_v4.docx": ["v1.11.2", "0.000456"],
+    "Cover_Letter_JISA_v4.docx": ["v1.11.3", "0.000456"],
     # the work log is generated from the records, so it must carry the current
     # guard count and the round ledger rather than an earlier snapshot
     "工作日志_论文项目.docx": ["工作日志", f"{repo_counts.gate_checks()} 项检查", "Round 20"],
